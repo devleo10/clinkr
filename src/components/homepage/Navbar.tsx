@@ -38,17 +38,22 @@ const Navbar = () => {
 
 
   return (
-    <nav className="border w-full flex items-center justify-between px-6 py-4">
+    <nav className="border w-full flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4">
       {/* Logo and title section */}
-      <div className="flex items-center">
-        <Link to="/">
+      <div className="flex items-center gap-1 sm:gap-2">
+        <Link to="/" className="flex items-center">
           <img 
             src={logo} 
             alt="ClipMetrics Logo" 
-            className="w-6 h-6 md:[w-10 h-10 mr-3 ml-2]" 
+            className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 lg:w-10 lg:h-10" 
           />
         </Link>
-        <h1 className="text-l md:[text-2xl font-bold text-black]">ClipMetrics</h1>
+        <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold relative group">
+          <span className="bg-gradient-to-r from-indigo-600 to-blue-500 bg-clip-text text-transparent group-hover:from-blue-500 group-hover:to-indigo-600 transition-all duration-300">
+            Clinkr
+          </span>
+          <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-gradient-to-r from-indigo-600 to-blue-500 group-hover:w-full transition-all duration-300"></span>
+        </h1>
       </div>
       {/* Center nav links */}
       <div className="hidden sm:flex sm:items-center sm:space-x-6">
