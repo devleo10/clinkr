@@ -200,20 +200,22 @@ const LinkDatas: React.FC<LinkDatasProps> = ({ searchQuery }) => {
           </table>
 
           {/* Mobile Cards */}
-          <div className="sm:hidden space-y-6">
+          <div className="sm:hidden space-y-4">
             {filteredLinks.map((link, index) => {
               return (
-                <div key={index} className="hover:bg-gray-50 transition-colors my-2">
-                  <div className="py-3 px-4 flex items-center space-x-2">
-                    <SocialIcon url={link.url} style={{ height: 25, width: 25 }} />
-                    <span className="font-medium">{link.title}</span>
+                <div key={index} className="bg-white rounded-lg shadow-md p-4 flex flex-col space-y-2">
+                  <div className="flex items-center space-x-3">
+                    <SocialIcon url={link.url} style={{ height: 28, width: 28 }} />
+                    <span className="font-semibold text-gray-800 text-lg">{link.title}</span>
                   </div>
-                  <div className="py-3 px-4 text-blue-600">
+                  <div className="text-blue-600 text-sm truncate">
                     <a href={link.url} target="_blank" rel="noopener noreferrer" className="hover:underline">
                       {link.url}
                     </a>
                   </div>
-                  <div className="py-3 px-4 text-center font-medium">{link.clicks}</div>
+                  <div className="text-right text-gray-600 text-sm">
+                    Clicks: <span className="font-bold">{link.clicks}</span>
+                  </div>
                 </div>
               );
             })}

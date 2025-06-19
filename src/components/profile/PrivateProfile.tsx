@@ -1,11 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 import { Card, CardContent } from "../ui/card";
-import { Button } from "../ui/button";
-import { LayoutDashboard, Edit } from "lucide-react";
+import { Edit } from "lucide-react";
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import logo from "../../assets/Frame.png";
 import { supabase } from '../../lib/supabaseClient';
-import { FaUser,FaLink, FaShare } from 'react-icons/fa';
+import { FaUser,FaShare, FaTrash } from 'react-icons/fa';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "../ui/alert-dialog";
 import { SocialIcon } from 'react-social-icons';
 import { useAuth } from '../auth/AuthProvider';
 
@@ -269,31 +269,29 @@ const PrivateProfile = () => {
     }
   };
   
-  // Function to handle deleting a link
-  const handleDeleteLink = async (index: number) => {
-    if (!profile) return;
-    const updatedLinks = profile.links.filter((_, i) => i !== index);
-    const updatedLinkTitles = profile.link_title.filter((_, i) => i !== index);
-    
+  const [linkToDeleteIndex, setLinkToDeleteIndex] = useState<number | null>(null);
+
+  const handleDeleteLink = async () => {
+    if (linkToDeleteIndex === null) return;
+
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('No user found');
-  
+
+      if (!profile) return;
+
+      const updatedLinks = profile.links.filter((_, index) => index !== linkToDeleteIndex);
+      const updatedLinkTitles = profile.link_title.filter((_, index) => index !== linkToDeleteIndex);
+
       const { error: updateError } = await supabase
         .from('profiles')
-        .update({ 
-          links: updatedLinks,
-          link_title: updatedLinkTitles 
-        })
+        .update({ links: updatedLinks, link_title: updatedLinkTitles })
         .eq('id', user.id);
-  
+
       if (updateError) throw updateError;
-  
-      setProfile(prev => prev ? { 
-        ...prev, 
-        links: updatedLinks,
-        link_title: updatedLinkTitles 
-      } : null);
+
+      setProfile(prev => prev ? { ...prev, links: updatedLinks, link_title: updatedLinkTitles } : null);
+      setLinkToDeleteIndex(null); // Reset after deletion
     } catch (err: any) {
       setError(err.message);
     }
@@ -328,12 +326,11 @@ const PrivateProfile = () => {
                 <div className="absolute bottom-0 left-0 w-0 h-[2px] bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 group-hover:w-full transition-all duration-300"></div>
               </h1>
             </Link>
-          <Link to="/dashboard">
-            <Button variant="outline" className="flex items-center space-x-2">
-              <LayoutDashboard size={16} />
-              <span>View Dashboard</span>
-            </Button>
-          </Link>
+          <div className="bg-[#4F46E5] text-white px-4 py-2 rounded-lg text-sm hover:bg-[#4338CA] transition-colors">
+            <Link to='/dashboard'>
+              Visit Dashboard
+            </Link>
+          </div>
         </div>
     
         {/* Profile Content */}
@@ -471,14 +468,14 @@ const PrivateProfile = () => {
               value={newLink.url}
               onChange={(e) => setNewLink(prev => ({ ...prev, url: e.target.value }))}
               placeholder="Enter new link URL"
-              className="border rounded-md p-2 w-full focus:ring-2 focus:ring-[#4F46E5] focus:border-transparent"
+              className="border rounded-md p-2 w-full focus:ring-[#4F46E5] focus:border-[#4F46E5] hover:border-[#4F46E5]"
             />
             <input
               type="text"
               value={newLink.title}
               onChange={(e) => setNewLink(prev => ({ ...prev, title: e.target.value }))}
               placeholder="Enter link title"
-              className="border rounded-md p-2 w-full focus:ring-2 focus:ring-[#4F46E5] focus:border-transparent"
+              className="border rounded-md p-2 w-full focus:ring-[#4F46E5] focus:border-[#4F46E5] hover:border-[#4F46E5]"
             />
             <button
               onClick={handleAddLink}
@@ -493,7 +490,7 @@ const PrivateProfile = () => {
         <div className="mt-6 space-y-4 max-w-md mx-auto">
           {links.map((link, index) => (
             <Card key={index} className="hover:shadow-md transition-shadow">
-              <CardContent className="flex items-center justify-between p-4">
+              <CardContent className="flex items-center justify-between p-4 group">
                 <div className="flex items-center gap-3 min-w-0 flex-1">
                   <span className="flex-shrink-0">{getSocialIcon(link.url)}</span>
                   <a 
@@ -514,13 +511,23 @@ const PrivateProfile = () => {
                   >
                     ↗
                   </a>
-                  <button
-                    onClick={() => handleDeleteLink(index)}
-                    className="text-gray-400 hover:text-red-500 transition-colors p-2"
-                    aria-label="Delete link"
-                  >
-                    <FaLink />
-                  </button>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <FaTrash className="text-[#4F46E5] cursor-pointer" onClick={() => setLinkToDeleteIndex(index)} />
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          This action cannot be undone. This will permanently delete your link.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel className="bg-gray-200 text-gray-800 hover:bg-gray-300" onClick={() => setLinkToDeleteIndex(null)}>Cancel</AlertDialogCancel>
+                        <AlertDialogAction className="bg-[#4F46E5] text-white hover:bg-[#4338CA]" onClick={handleDeleteLink}>Continue</AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                 </div>
               </CardContent>
             </Card>
