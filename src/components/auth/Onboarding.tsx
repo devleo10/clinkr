@@ -1,5 +1,6 @@
-import { useState, useRef,useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from './AuthProvider';
 import logo from '../../assets/Frame.png';
 import { FaUser, FaLink, FaChartLine, FaCamera } from 'react-icons/fa';
 import Footer from '../homepage/Footer';
@@ -7,6 +8,7 @@ import { supabase } from '../../lib/supabaseClient';
 
 const Onboarding = () => {
   const navigate = useNavigate();
+  const { session } = useAuth();
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [isStepValid, setIsStepValid] = useState(false);
@@ -19,6 +21,38 @@ const Onboarding = () => {
     link_titles: [''] as string[] // Initialize with one empty title
   });
 
+  // Add this useEffect at the top of your component
+  useEffect(() => {
+    const checkProfile = async () => {
+      if (!session?.user?.id) {
+        // If not logged in, redirect to login
+        navigate('/signup');
+        return;
+      }
+
+      try {
+        // Check if user already has a profile
+        const { data: profile, error } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', session.user.id)
+          .single();
+
+        if (error) {
+          if (error.code !== 'PGRST116') { // PGRST116 is the "not found" error code
+            console.error('Error checking profile:', error);
+          }
+        } else if (profile?.username) {
+          // If profile exists and has a username, redirect to dashboard
+          navigate('/dashboard');
+        }
+      } catch (error) {
+        console.error('Error checking profile:', error);
+      }
+    };
+
+    checkProfile();
+  }, [session, navigate]);
 
   // Add validation for each step
   useEffect(() => {
@@ -193,25 +227,41 @@ const Onboarding = () => {
     <div className="min-h-screen flex flex-col justify-between bg-gray-50">
       <div className="flex-grow flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 mb-16">
         <div className="max-w-md w-full space-y-8">
+          {/* Updated Header Section */}
           <div className="text-center">
-            <img src={logo} alt="ClipMetrics Logo" className="mx-auto h-12 w-auto" />
-            <h2 className="mt-6 text-3xl font-bold text-gray-900">Welcome to ClipMetrics</h2>
+            <div className="flex items-center justify-center gap-2">
+              <img 
+                src={logo} 
+                alt="Clinkr Logo" 
+                className="h-8 w-auto sm:h-10" 
+              />
+              <h1 className="text-3xl sm:text-4xl font-extrabold relative group">
+                <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500">
+                  Clinkr
+                </span>
+              </h1>
+            </div>
+            <h2 className="mt-6 text-2xl font-bold text-gray-900">
+              Welcome to Clinkr
+            </h2>
             <p className="mt-2 text-sm text-gray-600">
-              Let's set up your account to get the most out of ClipMetrics
+              Let's set up your account to get the most out of Clinkr
             </p>
           </div>
 
-          {/* Progress Indicator */}
+          {/* Updated Progress Indicator */}
           <div className="relative mb-8">
-            {/* Horizontal line behind the steps */}
-            <div className="absolute left-0 right-0 h-0.5 bg-gray-200 top-5"></div>
+            <div className="absolute left-0 right-0 h-0.5 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 top-5 opacity-20"></div>
             
-            {/* Step indicators */}
             <div className="flex justify-between items-center relative">
               {[1, 2, 3].map((step) => (
                 <div key={step} className="flex flex-col items-center">
                   <div 
-                    className={`w-10 h-10 rounded-full flex items-center justify-center ${currentStep >= step ? 'bg-[#4F46E5] text-white' : 'bg-gray-200 text-gray-500'} relative z-10`}
+                    className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 ${
+                      currentStep >= step 
+                        ? 'bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 text-white' 
+                        : 'bg-gray-200 text-gray-500'
+                    } relative z-10`}
                   >
                     {step === 1 ? <FaUser /> : step === 2 ? <FaLink /> : <FaChartLine />}
                   </div>
@@ -364,51 +414,46 @@ const Onboarding = () => {
               <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
                 <h3 className="text-lg font-medium text-gray-900 mb-2">You're All Set!</h3>
                 <p className="text-gray-600 mb-4">
-                  Your profile is ready to go. Now you can start tracking your link metrics and grow your online presence.
+                  Your Clinkr profile is ready to go. Start tracking your link metrics and grow your online presence.
                 </p>
-                <div className="flex justify-center">
-                  <FaChartLine/>
+                <div className="flex justify-center text-indigo-600">
+                  <FaChartLine size={24} className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500"/>
                 </div>
               </div>
             </div>
           )}
 
-          {/* Navigation Buttons */}
-        <div className="flex justify-between mt-8 gap-4">
-  {/* Back Button (conditionally rendered) */}
-  {currentStep > 1 && (
-    <button
-      onClick={handlePrevStep}
-      disabled={isLoading} // Disable during form submission
-      className="flex-1 py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-      aria-label="Previous step"
-    >
-      Back
-    </button>
-  )}
-
-  {/* Next/Submit Button */}
-  <button
-    onClick={handleNextStep}
-    disabled={isLoading || !isStepValid} // Disable if form is invalid
-    className={`flex-1 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors ${
-      isLoading ? 'bg-indigo-400' : 'bg-indigo-600 hover:bg-indigo-700'
-    } disabled:opacity-50 disabled:cursor-not-allowed`}
-    aria-label={currentStep < 3 ? 'Next step' : 'Finish setup'}
-  >
-    {isLoading ? (
-      <span className="inline-flex items-center">
-        <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-        </svg>
-        Processing...
-      </span>
-    ) : (
-      currentStep < 3 ? 'Next' : 'Get Started'
-    )}
-  </button>
-</div>
+          {/* Updated Navigation Buttons */}
+          <div className="flex justify-between mt-8 gap-4">
+            {currentStep > 1 && (
+              <button
+                onClick={handlePrevStep}
+                disabled={isLoading}
+                className="flex-1 py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                Back
+              </button>
+            )}
+            <button
+              onClick={handleNextStep}
+              disabled={isLoading || !isStepValid}
+              className={`flex-1 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 hover:from-blue-500 hover:via-indigo-600 hover:to-purple-600 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${
+                isLoading ? 'opacity-75' : ''
+              } disabled:opacity-50 disabled:cursor-not-allowed`}
+            >
+              {isLoading ? (
+                <span className="inline-flex items-center">
+                  <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Processing...
+                </span>
+              ) : (
+                currentStep < 3 ? 'Next' : 'Get Started'
+              )}
+            </button>
+          </div>
         </div>
       </div>
       <Footer />

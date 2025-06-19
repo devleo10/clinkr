@@ -1,51 +1,55 @@
 import { useEffect, useState } from 'react';
-import { Navigate } from 'react-router-dom';
-import { supabase } from '../../lib/supabaseClient';
+import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from './AuthProvider';
+import { supabase } from '../../lib/supabaseClient';
 
-interface ProtectedRouteProps {
-  children: React.ReactNode;
-}
-
-const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
-  const { session, loading } = useAuth();
-  const [hasProfile, setHasProfile] = useState(false);
-  const [checkingProfile, setCheckingProfile] = useState(true);
+const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+  const { session } = useAuth();
+  const [hasProfile, setHasProfile] = useState<boolean | null>(null);
+  const location = useLocation();
 
   useEffect(() => {
     const checkProfile = async () => {
-      if (!session?.user) return;
+      if (!session?.user?.id) return;
 
       try {
         const { data: profile, error } = await supabase
           .from('profiles')
-          .select('*')
+          .select('username')
           .eq('id', session.user.id)
           .single();
 
-        if (!error && profile?.username && profile?.full_name) {
-          setHasProfile(true);
+        if (error) {
+          if (error.code === 'PGRST116') {
+            setHasProfile(false);
+          } else {
+            console.error('Error checking profile:', error);
+          }
+        } else {
+          setHasProfile(!!profile?.username);
         }
       } catch (error) {
-        console.error('Profile check failed:', error);
-      } finally {
-        setCheckingProfile(false);
+        console.error('Error checking profile:', error);
       }
     };
 
     checkProfile();
   }, [session]);
 
-  if (loading || checkingProfile) {
+  if (!session) {
+    return <Navigate to="/signup" state={{ from: location }} replace />;
+  }
+
+  if (hasProfile === null) {
     return <div>Loading...</div>;
   }
 
-  if (!session) {
-    return <Navigate to="/signup" replace />;
+  if (!hasProfile && location.pathname !== '/onboarding') {
+    return <Navigate to="/onboarding" replace />;
   }
 
-  if (!hasProfile) {
-    return <Navigate to="/onboarding" replace />;
+  if (hasProfile && location.pathname === '/onboarding') {
+    return <Navigate to="/dashboard" replace />;
   }
 
   return <>{children}</>;

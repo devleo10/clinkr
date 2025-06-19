@@ -306,10 +306,19 @@ const PrivateProfile = () => {
       <div className="max-w-4xl mx-auto px-4 py-8">
         {/* Header Section */}
         <div className="flex justify-between items-center mb-8">
-          <Link to="/" className="flex items-center space-x-2">
-            <img src={logo} alt="ClipMetrics" className="h-8 w-auto" />
-            <span className="font-bold text-xl">ClipMetrics</span>
-          </Link>
+        <Link to="/homepage" className="flex items-center gap-1 sm:gap-2">
+              <img 
+                src={logo} 
+                alt="Clinkr Logo" 
+                className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 lg:w-10 lg:h-10"
+              />
+              <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold relative group">
+                <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 hover:from-blue-500 hover:via-indigo-600 hover:to-purple-600 transition-all duration-300">
+                  Clinkr
+                </span>
+                <div className="absolute bottom-0 left-0 w-0 h-[2px] bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 group-hover:w-full transition-all duration-300"></div>
+              </h1>
+            </Link>
           <Link to="/dashboard">
             <Button variant="outline" className="flex items-center space-x-2">
               <LayoutDashboard size={16} />

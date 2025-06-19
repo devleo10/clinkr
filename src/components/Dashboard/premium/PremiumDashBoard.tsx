@@ -77,17 +77,20 @@ const PremiumDashBoard = () => {
       {/* Header Section */}
       <div className="mb-8">
         <div className="flex justify-between items-center mb-6">
-          <Link to="/homepage" className="flex items-center space-x-2">
-            <img
-              src={logo}
-              alt="Clinkr"
-              className="h-8 w-auto"
-            />
-            <span className="font-bold text-xl text-transparent bg-clip-text bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500">
-              Clinkr
-            </span>
-          </Link>
-          <Link to="/profile">
+        <Link to="/homepage" className="flex items-center gap-1 sm:gap-2">
+              <img 
+                src={logo} 
+                alt="Clinkr Logo" 
+                className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 lg:w-10 lg:h-10"
+              />
+              <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold relative group">
+                <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 hover:from-blue-500 hover:via-indigo-600 hover:to-purple-600 transition-all duration-300">
+                  Clinkr
+                </span>
+                <div className="absolute bottom-0 left-0 w-0 h-[2px] bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 group-hover:w-full transition-all duration-300"></div>
+              </h1>
+            </Link>
+          <Link to="/privateprofile">
             <Button variant="outline" className="flex items-center space-x-2">
               <LayoutDashboard size={16} />
               <span>Go Back to Profile</span>
@@ -96,7 +99,7 @@ const PremiumDashBoard = () => {
         </div>
 
 
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between mt-20 items-center">
           <div>
             <h1 className="text-2xl font-bold">Premium Analytics</h1>
             <p className="text-sm text-gray-500">Last updated: April 21, 2025 11:30 AM</p>
