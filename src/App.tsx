@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { Navigate, RouterProvider, createBrowserRouter } from "react-router-dom";
 import AuthPages from "./components/auth/AuthPages";
 import DashBoard from "./components/Dashboard/DashBoard";
 import HomePage from "./components/homepage/HomePage";
@@ -10,32 +10,79 @@ import PublicProfile from "./components/profile/PublicProfile";
 import GetStarted from "./components/auth/GetStarted";
 import Onboarding from "./components/auth/Onboarding";
 import UserProfile from "./components/profile/UserProfile";
+import { AuthProvider } from "./components/auth/AuthProvider";
 
 function App() {
-  const location = useLocation();
-  const showFooter = location.pathname === '/homepage';
+  const router = createBrowserRouter([
+    {
+      path: "/",
+      element: <Navigate to="/homepage" />,
+    },
+    {
+      path: "/dashboard",
+      element: (
+        <ProtectedRoute>
+          <DashBoard />
+        </ProtectedRoute>
+      ),
+    },
+    {
+      path: "/privateprofile",
+      element: (
+        <ProtectedRoute>
+          <PrivateProfile />
+        </ProtectedRoute>
+      ),
+    },
+    {
+      path: "/:username",
+      element: <PublicProfile />,
+    },
+    {
+      path: "/homepage",
+      element: (
+        <>
+          <HomePage />
+          <Footer />
+        </>
+      ),
+    },
+    {
+      path: "/premiumdashboard",
+      element: (
+        <ProtectedRoute>
+          <PremiumDashBoard />
+        </ProtectedRoute>
+      ),
+    },
+    {
+      path: "/onboarding",
+      element: <Onboarding />,
+    },
+    {
+      path: "/signup",
+      element: <GetStarted />,
+    },
+    {
+      path: "/userprofile",
+      element: <UserProfile />,
+    },
+    {
+      path: "/*",
+      element: <AuthPages />,
+    },
+  ]);
 
-  return (
-    <>
-      <Routes>
-        {/* Redirect from root to homepage */}
-        <Route path="/" element={<Navigate to ="/homepage" />}/>
-        {/* Dashboard route without Navbar/Footer */}
-        <Route path="/dashboard" element={<ProtectedRoute><DashBoard/></ProtectedRoute>} />
-        <Route path="/privateprofile" element={<ProtectedRoute><PrivateProfile/></ProtectedRoute>} />
-        <Route path="/:username" element={<PublicProfile/>} />
-        <Route path="/homepage" element={<HomePage/>} />
-        <Route path="/premiumdashboard" element={<ProtectedRoute><PremiumDashBoard/></ProtectedRoute>} />
-        <Route path="/onboarding" element={<Onboarding />} />
-        <Route path="/signup" element={<GetStarted />} />
-        <Route path="/userprofile" element={<UserProfile />} />
-
-        <Route path="/*" element={<AuthPages />} />
-      </Routes>
-      {showFooter && <Footer/>}
-    </>
-  );
+  return <RouterProvider router={router} />;
 }
 
-export default App;
+const AppWithAuth = () => {
+  return (
+    <AuthProvider>
+      <App />
+    </AuthProvider>
+  );
+};
+
+export default AppWithAuth;
 

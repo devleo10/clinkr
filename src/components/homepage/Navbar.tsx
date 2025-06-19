@@ -1,13 +1,19 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import logo from '../../assets/Frame.png';
+import { useAuth } from '../auth/AuthProvider';
 
 const Navbar = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const navigate = useNavigate();
+  const { session } = useAuth(); // Access the session from the AuthProvider
 
-  const handleGetStarted = () => {
-    navigate('/signup');
+  const handleButtonClick = () => {
+    if (session) {
+      navigate('/dashboard');
+    } else {
+      navigate('/signup');
+    }
   };
 
   const navigateToSection = (sectionId: string) => {
@@ -44,17 +50,18 @@ const Navbar = () => {
         <Link to="/" className="flex items-center">
           <img 
             src={logo} 
-            alt="ClipMetrics Logo" 
+            alt="Clinkr Logo" 
             className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 lg:w-10 lg:h-10" 
           />
         </Link>
         <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold relative group">
-          <span className="bg-gradient-to-r from-indigo-600 to-blue-500 bg-clip-text text-transparent group-hover:from-blue-500 group-hover:to-indigo-600 transition-all duration-300">
+          <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 hover:from-blue-500 hover:via-indigo-600 hover:to-purple-600 transition-all duration-300">
             Clinkr
           </span>
-          <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-gradient-to-r from-indigo-600 to-blue-500 group-hover:w-full transition-all duration-300"></span>
+          <div className="absolute bottom-0 left-0 w-0 h-[2px] bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 group-hover:w-full transition-all duration-300"></div>
         </h1>
       </div>
+
       {/* Center nav links */}
       <div className="hidden sm:flex sm:items-center sm:space-x-6">
         <button 
@@ -78,12 +85,12 @@ const Navbar = () => {
       </div>
       {/* Auth buttons */}
       <div className="space-x-2 flex items-center">
-        <h4 
+        <button
           className="bg-[rgba(79,70,229,1)] text-sm text-white rounded-md px-4 py-2 cursor-pointer transform active:scale-95 transition-transform hover:bg-[rgba(79,70,229,0.9)]"
-          onClick={handleGetStarted}
+          onClick={handleButtonClick}
         >
-          Get Started
-        </h4>
+          {session ? 'Visit Dashboard' : 'Get Started Free'}
+        </button>
         
         {/* Mobile menu dots */}
         <div className="relative sm:hidden ml-4">

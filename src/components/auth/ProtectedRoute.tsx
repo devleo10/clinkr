@@ -1,70 +1,47 @@
 import { useEffect, useState } from 'react';
-import { Navigate} from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { supabase } from '../../lib/supabaseClient';
+import { useAuth } from './AuthProvider';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
 }
 
 const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
-  const [loading, setLoading] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { session, loading } = useAuth();
   const [hasProfile, setHasProfile] = useState(false);
-
+  const [checkingProfile, setCheckingProfile] = useState(true);
 
   useEffect(() => {
-    checkAuth();
-  }, []);
+    const checkProfile = async () => {
+      if (!session?.user) return;
 
-  const checkAuth = async () => {
-    try {
-      // Check if user is authenticated
-      const { data: { user }, error: authError } = await supabase.auth.getUser();
-      
-      if (authError || !user) {
-        console.log('Auth check failed: No user or auth error');
-        setIsAuthenticated(false);
-        setLoading(false);
-        return;
+      try {
+        const { data: profile, error } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', session.user.id)
+          .single();
+
+        if (!error && profile?.username && profile?.full_name) {
+          setHasProfile(true);
+        }
+      } catch (error) {
+        console.error('Profile check failed:', error);
+      } finally {
+        setCheckingProfile(false);
       }
+    };
 
-      setIsAuthenticated(true);
+    checkProfile();
+  }, [session]);
 
-      // Check if user has completed their profile
-      const { data: profile, error: profileError } = await supabase
-        .from('profiles')
-        .select('*')  // Select all fields to debug
-        .eq('id', user.id)
-        .single();
-
-      console.log('Profile check result:', { profile, profileError });
-
-      if (profileError) {
-        console.error('Profile check error:', profileError);
-        setHasProfile(false);
-      } else if (!profile || !profile.username || !profile.full_name) {
-        console.log('Profile incomplete:', profile);
-        setHasProfile(false);
-      } else {
-        console.log('Valid profile found:', profile);
-        setHasProfile(true);
-      }
-    } catch (error) {
-      console.error('Auth check failed:', error);
-      setIsAuthenticated(false);
-      setHasProfile(false);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  if (loading) {
-    // You could return a loading spinner here
+  if (loading || checkingProfile) {
     return <div>Loading...</div>;
   }
 
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
+  if (!session) {
+    return <Navigate to="/signup" replace />;
   }
 
   if (!hasProfile) {

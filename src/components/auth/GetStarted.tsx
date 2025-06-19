@@ -5,21 +5,19 @@ import { FaGithub } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import { supabase } from "../../lib/supabaseClient";
 import { getRedirectUrl } from "../../lib/urlUtils";
+import { useAuth } from "../auth/AuthProvider";
 
 const GetStarted = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
+  const { session } = useAuth();
 
   useEffect(() => {
-    const checkAuth = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        navigate('/dashboard');
-      }
-    };
-    checkAuth();
-  }, [navigate]);
+    if (session) {
+      navigate('/dashboard');
+    }
+  }, [session, navigate]);
   
   // Handle GitHub Sign In
   const handleGitHubSignIn = async () => {
@@ -47,7 +45,7 @@ const GetStarted = () => {
       const { error: oauthError } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: getRedirectUrl('/onboarding')
+          redirectTo: getRedirectUrl('/onboarding'),
         }
       });
       if (oauthError) throw oauthError;
@@ -63,10 +61,12 @@ const GetStarted = () => {
         <div className="max-w-md w-full space-y-8 bg-white rounded-xl shadow-lg p-8">
           <div className="text-center">
           <Link to="/homepage">
-            <img src={logo} alt="ClipMetrics Logo" className="mx-auto h-12 w-auto cursor-pointer" />
+            <img src={logo} alt="Clinkr Logo" className="mx-auto h-12 w-auto cursor-pointer" />
           </Link>
+          <h2 className="mt-6 text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500">
+            Welcome to Clinkr
+          </h2>
           </div>
-          <h2 className="mt-6 text-3xl font-bold text-gray-900 text-center">Welcome to ClipMetrics</h2>
          
 
           <div className="mt-8 space-y-6">

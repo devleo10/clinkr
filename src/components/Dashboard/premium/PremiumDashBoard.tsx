@@ -80,10 +80,12 @@ const PremiumDashBoard = () => {
           <Link to="/homepage" className="flex items-center space-x-2">
             <img
               src={logo}
-              alt="ClipMetrics"
+              alt="Clinkr"
               className="h-8 w-auto"
             />
-            <span className="font-bold text-xl">ClipMetrics</span>
+            <span className="font-bold text-xl text-transparent bg-clip-text bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500">
+              Clinkr
+            </span>
           </Link>
           <Link to="/profile">
             <Button variant="outline" className="flex items-center space-x-2">

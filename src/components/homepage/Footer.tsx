@@ -34,7 +34,7 @@ const Footer = () => {
           <div className='w-full'>
             <Link to="/" className="flex items-center mb-4">
               <img src={logo} alt="" />
-              <span className="text-xl ml-2 font-bold">ClipMetrics</span>
+              <span className="text-xl ml-2 font-bold">Clinkr</span>
             </Link>
             <p className="text-sm text-gray-400">
               Track, analyze, and optimize your bio links for maximum engagement.
