@@ -7,7 +7,6 @@ const AuthPages = () => {
   return (
     <Routes>
        <Route path="/signup" element={<GetStarted />} />
-       <Route path="/password-reset" element={<PasswordReset />} />
        <Route path="/onboarding" element={<Onboarding />} />
     </Routes>
   )

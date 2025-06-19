@@ -71,7 +71,7 @@ const HomePage = () => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <Link to={session ? '/dashboard' : '/signup'} className="text-white">
+                <Link to={session ? '/dashboard' : '/signup'}>
                   {session ? 'Visit Dashboard' : 'Get Started Free'}
                 </Link>
               </motion.button>

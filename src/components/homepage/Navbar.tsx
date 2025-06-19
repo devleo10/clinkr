@@ -89,7 +89,7 @@ const Navbar = () => {
           className="bg-[rgba(79,70,229,1)] text-sm text-white rounded-md px-4 py-2 cursor-pointer transform active:scale-95 transition-transform hover:bg-[rgba(79,70,229,0.9)]"
           onClick={handleButtonClick}
         >
-          {session ? 'Visit Dashboard' : 'Get Started Free'}
+          {session ? 'Visit Dashboard' : 'Get Started'}
         </button>
         
         {/* Mobile menu dots */}

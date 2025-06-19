@@ -2,11 +2,12 @@ import { useState, useEffect, useRef } from 'react';
 import { Card, CardContent } from "../ui/card";
 import { Button } from "../ui/button";
 import { LayoutDashboard, Edit } from "lucide-react";
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import logo from "../../assets/Frame.png";
 import { supabase } from '../../lib/supabaseClient';
 import { FaUser,FaLink, FaShare } from 'react-icons/fa';
 import { SocialIcon } from 'react-social-icons';
+import { useAuth } from '../auth/AuthProvider';
 
 interface UserProfile {
   full_name: string;
@@ -24,6 +25,14 @@ interface EditState {
   profilePicture: boolean;
 }
 const PrivateProfile = () => {
+  const { session } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!session) {
+      navigate('/signup');
+    }
+  }, [session, navigate]);
 
   // Remove these state variable
   const [profile, setProfile] = useState<UserProfile | null>(null);

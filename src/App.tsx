@@ -11,6 +11,7 @@ import GetStarted from "./components/auth/GetStarted";
 import Onboarding from "./components/auth/Onboarding";
 import UserProfile from "./components/profile/UserProfile";
 import { AuthProvider } from "./components/auth/AuthProvider";
+import PasswordReset from "./components/auth/PasswordReset";
 
 function App() {
   const router = createBrowserRouter([
@@ -19,9 +20,25 @@ function App() {
       element: <Navigate to="/homepage" />,
     },
     {
+      path: "/homepage",
+      element: <HomePage />,
+    },
+    {
+      path: "/signup",
+      element: <GetStarted />,
+    },
+    {
+      path: "/onboarding",
+      element: (
+        <ProtectedRoute requireAuth={true} requireProfile={false}>
+          <Onboarding />
+        </ProtectedRoute>
+      ),
+    },
+    {
       path: "/dashboard",
       element: (
-        <ProtectedRoute>
+        <ProtectedRoute requireAuth={true} requireProfile={true}>
           <DashBoard />
         </ProtectedRoute>
       ),
@@ -29,43 +46,28 @@ function App() {
     {
       path: "/privateprofile",
       element: (
-        <ProtectedRoute>
+        <ProtectedRoute requireAuth={true} requireProfile={true}>
           <PrivateProfile />
         </ProtectedRoute>
       ),
     },
     {
-      path: "/:username",
-      element: <PublicProfile />,
-    },
-    {
-      path: "/homepage",
-      element: (
-        <>
-          <HomePage />
-          <Footer />
-        </>
-      ),
-    },
-    {
       path: "/premiumdashboard",
       element: (
-        <ProtectedRoute>
+        <ProtectedRoute requireAuth={true} requireProfile={true}>
           <PremiumDashBoard />
         </ProtectedRoute>
       ),
     },
+  
     {
-      path: "/onboarding",
-      element: <Onboarding />,
+      path: "/:username",
+      element: <PublicProfile />,
     },
+    // Auth routes
     {
-      path: "/signup",
-      element: <GetStarted />,
-    },
-    {
-      path: "/userprofile",
-      element: <UserProfile />,
+      path: "/password-reset",
+      element: <PasswordReset />,
     },
     {
       path: "/*",
@@ -73,16 +75,12 @@ function App() {
     },
   ]);
 
-  return <RouterProvider router={router} />;
-}
-
-const AppWithAuth = () => {
   return (
     <AuthProvider>
-      <App />
+      <RouterProvider router={router} />
     </AuthProvider>
   );
-};
+}
 
-export default AppWithAuth;
+export default App;
 
