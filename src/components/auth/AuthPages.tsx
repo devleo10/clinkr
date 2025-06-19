@@ -1,6 +1,5 @@
 import { Route, Routes } from "react-router-dom"
 import GetStarted from "./GetStarted"
-import PasswordReset from "./PasswordReset"
 import Onboarding from "./Onboarding"
 
 const AuthPages = () => {
