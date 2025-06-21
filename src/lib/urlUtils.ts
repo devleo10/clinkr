@@ -12,7 +12,7 @@ export const getBaseUrl = () => {
     const port = window.location.port ? `:${window.location.port}` : '';
     return `${protocol}//${host}${port}`;
   }
-  return process.env.VITE_APP_URL || 'http://192.168.249.43:5173/';
+  return process.env.VITE_APP_URL || 'https://clinkr.live/';
 };
 
 // Utility function to generate OAuth redirect URLs

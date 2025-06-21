@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from './AuthProvider';
 import { supabase } from '../../lib/supabaseClient';
+import LoadingScreen from '../ui/loadingScreen';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -59,7 +60,7 @@ const ProtectedRoute = ({ children, requireAuth, requireProfile = false }: Prote
   }, [session, requireProfile]);
 
   if (authLoading || !profileCheckComplete) {
-    return <div>Loading...</div>;
+    return <LoadingScreen />;
   }
 
   // If auth is required and there's no session, redirect to signup

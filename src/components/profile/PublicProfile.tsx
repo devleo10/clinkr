@@ -7,6 +7,7 @@ import { supabase } from '../../lib/supabaseClient';
 import { FaUser } from 'react-icons/fa';
 import { SocialIcon } from 'react-social-icons';
 import { motion, AnimatePresence } from 'framer-motion';
+import LinkWithIcon from "../ui/linkwithicon";
 
 interface UserProfile {
   full_name: string;
@@ -484,7 +485,7 @@ const PublicProfile = () => {
                         whileHover={{ rotate: [0, -10, 10, -5, 5, 0], scale: 1.1 }}
                         transition={{ duration: 0.5 }}
                       >
-                        {getSocialIcon(link.url)}
+                       <LinkWithIcon url={link.url} />
                       </motion.span>
                       <motion.a
                         href={link.url}
@@ -504,6 +505,7 @@ const PublicProfile = () => {
             ))}
           </AnimatePresence>
         </motion.div>
+      
       </motion.div>
     </div>
   );

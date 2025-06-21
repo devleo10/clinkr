@@ -1,15 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { FaLink, FaTwitter, FaYoutube, FaInstagram, FaFacebook, FaLinkedin, FaTiktok, FaGlobe, FaPinterest, FaReddit, FaSnapchat, FaWhatsapp, FaTelegram, FaDiscord, FaSpotify, FaTwitch } from 'react-icons/fa';
 import { supabase } from '../../lib/supabaseClient';
-import { SocialIcon } from 'react-social-icons';
 
 interface Link {
   title: string;
   url: string;
   clicks: number;
 }
-
-
 
 interface LinkDatasProps {
   searchQuery: string;
@@ -92,11 +88,36 @@ const LinkDatas: React.FC<LinkDatasProps> = ({ searchQuery }) => {
     link.url.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const LinkWithIcon = ({ url }: { url: string }) => {
+    let domain = "";
+    try {
+      domain = new URL(url).hostname;
+    } catch {
+      domain = url;
+    }
+
+    return (
+      <div className="flex items-center gap-2">
+        <img
+          src={`https://logo.clearbit.com/${domain}`}
+          onError={(e) => {
+            (e.target as HTMLImageElement).src = `https://www.google.com/s2/favicons?sz=64&domain=${domain}`;
+          }}
+          alt={`${domain} icon`}
+          className="w-6 h-6 rounded"
+        />
+        <a href={url} target="_blank" rel="noopener noreferrer" className="hover:underline text-blue-600">
+          {url}
+        </a>
+      </div>
+    );
+  };
+
   if (loading) {
     return (
       <div className="w-full h-auto min-h-20 mb-10 md:mb-20 bg-[#F9FAFB] px-10 py-6 md:py-0 flex flex-col justify-center items-center space-y-4">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
-        <p className="text-gray-700 text-lg font-medium">Loading your links, please wait...</p>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-[#4F46E5]"></div>
+        <p className="text-[#4F46E5] text-lg font-medium">Loading your links, please wait...</p>
       </div>
     );
   }
@@ -122,103 +143,38 @@ const LinkDatas: React.FC<LinkDatasProps> = ({ searchQuery }) => {
             <thead className="bg-gray-50">
               <tr>
                 <th className="py-3 px-4 border-b text-left font-medium text-gray-700">Title</th>
-                <th className="py-3 px-4 border-b text-left font-medium text-gray-700">Short URL</th>
+                <th className="py-3 px-4 border-b text-left font-medium text-gray-700"> URL</th>
                 <th className="py-3 px-4 border-b text-center font-medium text-gray-700">Clicks</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200 border-spacing-y-2">
-              {filteredLinks.map((link, index) => {
-                // Determine which icon to use based on the URL
-                let LinkIcon = FaLink;
-                let iconColor = "text-blue-500";
-                
-                if (link.url.includes("twitter.com") || link.url.includes("x.com")) {
-                  LinkIcon = FaTwitter;
-                  iconColor = "text-[#1DA1F2]";
-                } else if (link.url.includes("youtube.com") || link.url.includes("youtu.be")) {
-                  LinkIcon = FaYoutube;
-                  iconColor = "text-[#FF0000]";
-                } else if (link.url.includes("instagram.com")) {
-                  LinkIcon = FaInstagram;
-                  iconColor = "text-[#E1306C]";
-                } else if (link.url.includes("facebook.com") || link.url.includes("fb.com")) {
-                  LinkIcon = FaFacebook;
-                  iconColor = "text-[#4267B2]";
-                } else if (link.url.includes("linkedin.com")) {
-                  LinkIcon = FaLinkedin;
-                  iconColor = "text-[#0077B5]";
-                } else if (link.url.includes("tiktok.com")) {
-                  LinkIcon = FaTiktok;
-                  iconColor = "text-[#000000]";
-                } else if (link.url.includes("pinterest.com")) {
-                  LinkIcon = FaPinterest;
-                  iconColor = "text-[#E60023]";
-                } else if (link.url.includes("reddit.com")) {
-                  LinkIcon = FaReddit;
-                  iconColor = "text-[#FF4500]";
-                } else if (link.url.includes("snapchat.com")) {
-                  LinkIcon = FaSnapchat;
-                  iconColor = "text-[#FFFC00]";
-                } else if (link.url.includes("whatsapp.com")) {
-                  LinkIcon = FaWhatsapp;
-                  iconColor = "text-[#25D366]";
-                } else if (link.url.includes("t.me") || link.url.includes("telegram.org")) {
-                  LinkIcon = FaTelegram;
-                  iconColor = "text-[#0088cc]";
-                } else if (link.url.includes("discord.com") || link.url.includes("discord.gg")) {
-                  LinkIcon = FaDiscord;
-                  iconColor = "text-[#5865F2]";
-                } else if (link.url.includes("spotify.com")) {
-                  LinkIcon = FaSpotify;
-                  iconColor = "text-[#1DB954]";
-                } else if (link.url.includes("twitch.tv")) {
-                  LinkIcon = FaTwitch;
-                  iconColor = "text-[#9146FF]";
-                } else {
-                  LinkIcon = FaGlobe;
-                  iconColor = "text-blue-500";
-                }
-                
-                return (
-                  <tr key={index} className="hover:bg-gray-50 transition-colors my-2">
-                    <td className="py-3 px-4 flex items-center space-x-2">
-                      <span className={iconColor}>
-                        <LinkIcon />
-                      </span>
-                      <span className="font-medium">{link.title}</span>
-                    </td>
-                    <td className="py-3 px-4 text-blue-600">
-                      <a href={link.url} target="_blank" rel="noopener noreferrer" className="hover:underline">
-                        {link.url}
-                      </a>
-                    </td>
-                    <td className="py-3 px-4 text-center font-medium">{link.clicks}</td>
-                  </tr>
-                );
-              })}
+              {filteredLinks.map((link, index) => (
+                <tr key={index} className="hover:bg-gray-50 transition-colors my-2">
+                  <td className="py-3 px-4">
+                    <span className="font-medium">{link.title}</span>
+                  </td>
+                  <td className="py-3 px-4">
+                    <LinkWithIcon url={link.url} />
+                  </td>
+                  <td className="py-3 px-4 text-center font-medium">{link.clicks}</td>
+                </tr>
+              ))}
             </tbody>
           </table>
 
           {/* Mobile Cards */}
           <div className="sm:hidden space-y-4">
-            {filteredLinks.map((link, index) => {
-              return (
-                <div key={index} className="bg-white rounded-lg shadow-md p-4 flex flex-col space-y-2">
-                  <div className="flex items-center space-x-3">
-                    <SocialIcon url={link.url} style={{ height: 28, width: 28 }} />
-                    <span className="font-semibold text-gray-800 text-lg">{link.title}</span>
-                  </div>
-                  <div className="text-blue-600 text-sm truncate">
-                    <a href={link.url} target="_blank" rel="noopener noreferrer" className="hover:underline">
-                      {link.url}
-                    </a>
-                  </div>
-                  <div className="text-right text-gray-600 text-sm">
-                    Clicks: <span className="font-bold">{link.clicks}</span>
-                  </div>
+            {filteredLinks.map((link, index) => (
+              <div key={index} className="bg-white rounded-lg shadow-md p-4 flex flex-col space-y-2">
+                <div className="flex items-center space-x-3">
+                  <span className="font-semibold text-gray-800 text-lg">{link.title}</span>
                 </div>
-              );
-            })}
+                <LinkWithIcon url={link.url} />
+                <div className="text-right text-gray-600 text-sm">
+                  Clicks: <span className="font-bold">{link.clicks}</span>
+                </div>
+              </div>
+            ))}
           </div>
         </>
       )}

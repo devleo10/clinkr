@@ -6,8 +6,8 @@ import logo from "../../assets/Frame.png";
 import { supabase } from '../../lib/supabaseClient';
 import { FaUser,FaShare, FaTrash } from 'react-icons/fa';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "../ui/alert-dialog";
-import { SocialIcon } from 'react-social-icons';
 import { useAuth } from '../auth/AuthProvider';
+import LinkWithIcon from "../ui/linkwithicon";
 
 interface UserProfile {
   full_name: string;
@@ -204,21 +204,13 @@ const PrivateProfile = () => {
     }
   };
 
-  const getSocialIcon = (url: string) => {
-    if (typeof url !== 'string') return <SocialIcon url="https://example.com" style={{ width: 25, height: 25 }} />;
-    return <SocialIcon url={url} style={{ width: 25, height: 25 }} />;
-  };
-
-
   // Transform profile links into the required format
   const links = Array.isArray(profile?.links) ? profile.links.map((url, index) => {
-    // Make sure we're returning a properly structured object with string values
     return {
       title: profile?.link_title && profile.link_title[index] 
         ? String(profile.link_title[index]) 
         : String(url),
       clicks: 0,
-      icon: getSocialIcon(typeof url === 'string' ? url : ''),
       url: typeof url === 'string' ? url : '',
     };
   }) : [];
@@ -399,7 +391,7 @@ const PrivateProfile = () => {
               </div>
             ) : (
               <div className="group relative inline-block">
-                <h1 className="text-2xl font-bold inline-block">{profile?.full_name || 'Loading...'}</h1>
+                <h1 className="text-2xl font-bold inline-block">{profile?.full_name}</h1>
                 <button
                   onClick={() => {
                     setEditedFullName(profile?.full_name || '');
@@ -492,7 +484,8 @@ const PrivateProfile = () => {
             <Card key={index} className="hover:shadow-md transition-shadow">
               <CardContent className="flex items-center justify-between p-4 group">
                 <div className="flex items-center gap-3 min-w-0 flex-1">
-                  <span className="flex-shrink-0">{getSocialIcon(link.url)}</span>
+                  {/* Use LinkWithIcon here */}
+                  <LinkWithIcon url={link.url} />
                   <a 
                     href={typeof link.url === 'string' ? link.url : ''} 
                     target="_blank" 
