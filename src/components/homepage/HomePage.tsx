@@ -67,7 +67,7 @@ const HomePage = () => {
               transition={{ delay: 1 }}
             >
               <motion.button 
-                className="bg-[#4F46E5] text-white px-6 py-3 rounded-lg font-medium"
+                className="bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 text-white font-bold px-6 py-2 rounded-lg shadow hover:from-blue-500 hover:via-indigo-600 hover:to-purple-600 transition-all duration-300"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >

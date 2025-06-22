@@ -86,7 +86,7 @@ const Navbar = () => {
       {/* Auth buttons */}
       <div className="space-x-2 flex items-center">
         <button
-          className="bg-[rgba(79,70,229,1)] text-sm text-white rounded-md px-4 py-2 cursor-pointer transform active:scale-95 transition-transform hover:bg-[rgba(79,70,229,0.9)]"
+          className="bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 text-white font-bold px-6 py-2 rounded-lg shadow hover:from-blue-500 hover:via-indigo-600 hover:to-purple-600 transition-all duration-300"
           onClick={handleButtonClick}
         >
           {session ? 'Visit Dashboard' : 'Get Started'}
