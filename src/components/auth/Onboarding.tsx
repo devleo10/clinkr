@@ -5,6 +5,7 @@ import logo from '../../assets/Frame.png';
 import { FaUser, FaLink, FaChartLine, FaCamera } from 'react-icons/fa';
 import Footer from '../homepage/Footer';
 import { supabase } from '../../lib/supabaseClient';
+import LinkValidator from '../../lib/link-validator';
 
 const Onboarding = () => {
   const navigate = useNavigate();
@@ -356,18 +357,27 @@ const Onboarding = () => {
                 <p className="text-xs text-gray-500 mb-4">You can add up to 5 links</p>
                 <div className="space-y-2">
                   {formData.links.map((link, index) => (
-                    <div key={index} className="flex items-center">
-                      <input
-                        type="text"
-                        value={link}
-                        onChange={(e) => {
-                          const newLinks = [...formData.links];
-                          newLinks[index] = e.target.value;
-                          setFormData(prev => ({ ...prev, links: newLinks }));
-                        }}
-                        className="flex-1 appearance-none rounded-lg relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-[#4F46E5] focus:border-[#4F46E5] focus:z-10 sm:text-sm"
-                        placeholder="https://example.com"
-                      />
+                    <div key={index} className="flex flex-col gap-1 mb-2">
+                      <LinkValidator url={link}>
+                        {(isValid, message) => (
+                          <>
+                            <input
+                              type="text"
+                              value={link}
+                              onChange={(e) => {
+                                const newLinks = [...formData.links];
+                                newLinks[index] = e.target.value;
+                                setFormData(prev => ({ ...prev, links: newLinks }));
+                              }}
+                              className={`flex-1 rounded-lg px-3 py-2 border ${!isValid && link ? "border-red-500" : "border-gray-300"} placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-[#4F46E5] focus:border-[#4F46E5] sm:text-sm`}
+                              placeholder="https://example.com"
+                            />
+                            {!isValid && link && (
+                              <span className="text-xs text-red-500">{message}</span>
+                            )}
+                          </>
+                        )}
+                      </LinkValidator>
                       <input
                         type="text"
                         value={formData.link_titles[index]}

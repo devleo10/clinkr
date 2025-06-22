@@ -278,7 +278,7 @@ const Geography = () => {
   return (
     <div className="w-full h-full">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold">Geography Insights</h2>
+        <h2 className="text-xl font-semibold">Geographical Insights</h2>
         
         <div className="flex gap-4">
           {/* Time Period Filter */}
@@ -299,7 +299,7 @@ const Geography = () => {
               <SelectTrigger className="w-[150px]">
                 <SelectValue placeholder="Device Type" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className='z-[9999]'>
                 <SelectItem value="all">All Devices</SelectItem>
                 <SelectItem value="mobile">Mobile Only</SelectItem>
                 <SelectItem value="desktop">Desktop Only</SelectItem>

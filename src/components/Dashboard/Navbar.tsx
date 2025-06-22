@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom';
-import { FaUserCircle } from 'react-icons/fa';
 import logo from '../../assets/Frame.png';
 
 const Navbar = () => {
@@ -25,16 +24,15 @@ const Navbar = () => {
           </div>
 
           {/* Centered Analytics Dashboard text */}
-          <span className="font-bold text-gray-700 text-center w-1/3">
+          <span className="font-bold text-2xl sm:text-3xl text-gray-800 text-center w-1/3">
             Analytics Dashboard
           </span>
 
           {/* Right Section */}
           <div className="flex items-center space-x-4 w-1/4 justify-end">
             <Link to="/privateprofile">
-              <button className="flex items-center space-x-1 rounded-full hover:bg-gray-100 p-2 transition-colors">
-                <p className='font-bold text-center'>Visit Profile</p>
-                <FaUserCircle size={24} />
+              <button className="bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 text-white font-bold px-6 py-2 rounded-lg shadow hover:from-blue-500 hover:via-indigo-600 hover:to-purple-600 transition-all duration-300">
+                Visit Profile
               </button>
             </Link>
           </div>

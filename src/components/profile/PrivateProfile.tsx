@@ -8,6 +8,7 @@ import { FaUser,FaShare, FaTrash } from 'react-icons/fa';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "../ui/alert-dialog";
 import { useAuth } from '../auth/AuthProvider';
 import LinkWithIcon from "../ui/linkwithicon";
+import LinkValidator from "../../lib/link-validator";
 
 interface UserProfile {
   full_name: string;
@@ -318,7 +319,7 @@ const PrivateProfile = () => {
                 <div className="absolute bottom-0 left-0 w-0 h-[2px] bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 group-hover:w-full transition-all duration-300"></div>
               </h1>
             </Link>
-          <div className="bg-[#4F46E5] text-white px-4 py-2 rounded-lg text-sm hover:bg-[#4338CA] transition-colors">
+          <div className="bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 text-white font-bold px-6 py-2 rounded-lg shadow hover:from-blue-500 hover:via-indigo-600 hover:to-purple-600 transition-all duration-300">
             <Link to='/dashboard'>
               Visit Dashboard
             </Link>
@@ -455,13 +456,22 @@ const PrivateProfile = () => {
         {/* Links Section */}
         <div className="mt-8 border-b pb-4">
           <div className="flex flex-col gap-2 max-w-md mx-auto">
-            <input
-              type="text"
-              value={newLink.url}
-              onChange={(e) => setNewLink(prev => ({ ...prev, url: e.target.value }))}
-              placeholder="Enter new link URL"
-              className="border rounded-md p-2 w-full focus:ring-[#4F46E5] focus:border-[#4F46E5] hover:border-[#4F46E5]"
-            />
+            <LinkValidator url={newLink.url}>
+              {(isValid, message) => (
+                <>
+                  <input
+                    type="text"
+                    value={newLink.url}
+                    onChange={(e) => setNewLink(prev => ({ ...prev, url: e.target.value }))}
+                    placeholder="Enter new link URL"
+                    className={`border rounded-md p-2 w-full focus:ring-[#4F46E5] focus:border-[#4F46E5] hover:border-[#4F46E5] ${!isValid && newLink.url ? "border-red-500" : ""}`}
+                  />
+                  {!isValid && newLink.url && (
+                    <span className="text-xs text-red-500">{message}</span>
+                  )}
+                </>
+              )}
+            </LinkValidator>
             <input
               type="text"
               value={newLink.title}
@@ -471,7 +481,7 @@ const PrivateProfile = () => {
             />
             <button
               onClick={handleAddLink}
-              className="px-4 py-2 bg-[#4F46E5] text-white rounded-md hover:bg-[#4338CA] transition-colors w-full"
+              className="bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 text-white font-bold px-6 py-2 rounded-lg shadow hover:from-blue-500 hover:via-indigo-600 hover:to-purple-600 transition-all duration-300"
             >
               Add More Link
             </button>
@@ -496,17 +506,13 @@ const PrivateProfile = () => {
                   </a>
                 </div>
                 <div className="flex items-center gap-2 ml-2 flex-shrink-0">
-                  <a 
-                    href={typeof link.url === 'string' ? link.url : ''} 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
-                    className="text-[#4F46E5] hover:text-[#4338CA] p-2"
-                  >
-                    ↗
-                  </a>
+                 
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
-                      <FaTrash className="text-[#4F46E5] cursor-pointer" onClick={() => setLinkToDeleteIndex(index)} />
+                      <FaTrash
+      className="text-[#4F46E5] cursor-pointer transition-colors duration-200 hover:text-red-600"
+      onClick={() => setLinkToDeleteIndex(index)}
+    />
                     </AlertDialogTrigger>
                     <AlertDialogContent>
                       <AlertDialogHeader>
@@ -517,7 +523,7 @@ const PrivateProfile = () => {
                       </AlertDialogHeader>
                       <AlertDialogFooter>
                         <AlertDialogCancel className="bg-gray-200 text-gray-800 hover:bg-gray-300" onClick={() => setLinkToDeleteIndex(null)}>Cancel</AlertDialogCancel>
-                        <AlertDialogAction className="bg-[#4F46E5] text-white hover:bg-[#4338CA]" onClick={handleDeleteLink}>Continue</AlertDialogAction>
+                        <AlertDialogAction className="bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 text-white font-bold px-6 py-2 rounded-lg shadow hover:from-blue-500 hover:via-indigo-600 hover:to-purple-600 transition-all duration-300" onClick={handleDeleteLink}>Continue</AlertDialogAction>
                       </AlertDialogFooter>
                     </AlertDialogContent>
                   </AlertDialog>
