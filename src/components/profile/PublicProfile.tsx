@@ -10,7 +10,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import LinkWithIcon from "../ui/linkwithicon";
 
 interface UserProfile {
-  full_name: string;
   username: string;
   bio: string;
   profile_picture: string | null;
@@ -157,7 +156,6 @@ const PublicProfile = () => {
   
       const profileData: UserProfile = {
         id: data.id,
-        full_name: data.full_name || '',
         username: data.username || '',
         bio: data.bio || '',
         profile_picture: data.profile_picture,
@@ -398,7 +396,7 @@ const PublicProfile = () => {
           ) : profile?.profile_picture ? (
             <motion.img
               src={profile.profile_picture}
-              alt={profile.full_name}
+              alt={profile.username}
               className="w-full h-full object-cover"
               initial={{ scale: 1.1, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
@@ -432,7 +430,7 @@ const PublicProfile = () => {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
           >
-            {loading ? 'Loading...' : profile?.full_name || 'Profile not found'}
+            {loading ? 'Loading...' : profile?.username || 'Profile not found'}
           </motion.h1>
         </motion.div>
   

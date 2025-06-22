@@ -11,7 +11,6 @@ import LinkWithIcon from "../ui/linkwithicon";
 import LinkValidator from "../../lib/link-validator";
 
 interface UserProfile {
-  full_name: string;
   username: string;
   bio: string;
   profile_picture: string | null;
@@ -46,7 +45,6 @@ const PrivateProfile = () => {
     profilePicture: false
   });
   const [editedBio, setEditedBio] = useState('');
-  const [editedFullName, setEditedFullName] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -71,7 +69,6 @@ const PrivateProfile = () => {
   
       const profileData: UserProfile = {
         id: data.id,
-        full_name: data.full_name || '',
         username: data.username || '',
         bio: data.bio || '',
         profile_picture: data.profile_picture,
@@ -186,25 +183,7 @@ const PrivateProfile = () => {
     }
   };
 
-  const handleFullNameUpdate = async () => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('No user found');
-
-      const { error: updateError } = await supabase
-        .from('profiles')
-        .update({ full_name: editedFullName })
-        .eq('id', user.id);
-
-      if (updateError) throw updateError;
-
-      setProfile(prev => prev ? { ...prev, full_name: editedFullName } : null);
-      setEditState(prev => ({ ...prev, fullName: false }));
-    } catch (err: any) {
-      setError(err.message);
-    }
-  };
-
+  
   // Transform profile links into the required format
   const links = Array.isArray(profile?.links) ? profile.links.map((url, index) => {
     return {
@@ -337,7 +316,7 @@ const PrivateProfile = () => {
             ) : profile?.profile_picture ? (
               <img
                 src={profile.profile_picture}
-                alt={profile.full_name}
+                alt={profile.username}
                 className="w-full h-full object-cover"
                 onError={handleImageError}
               />
@@ -373,40 +352,7 @@ const PrivateProfile = () => {
             )}
           </div>
     
-          <div className="relative inline-block">
-            {editState.fullName ? (
-              <div className="flex items-center gap-2">
-                <input
-                  type="text"
-                  value={editedFullName}
-                  onChange={(e) => setEditedFullName(e.target.value)}
-                  className="text-2xl font-bold px-2 py-1 border rounded focus:ring-2 focus:ring-[#4F46E5] focus:border-transparent"
-                  placeholder="Enter your name"
-                />
-                <button
-                  onClick={handleFullNameUpdate}
-                  className="p-1 text-[#4F46E5] hover:text-[#4338CA]"
-                >
-                  Save
-                </button>
-              </div>
-            ) : (
-              <div className="group relative inline-block">
-                <h1 className="text-2xl font-bold inline-block">{profile?.full_name}</h1>
-                <button
-                  onClick={() => {
-                    setEditedFullName(profile?.full_name || '');
-                    setEditState(prev => ({ ...prev, fullName: true }));
-                  }}
-                  className="absolute -right-6 top-1/2 -translate-y-1/2 p-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                  aria-label="Edit name"
-                >
-                  <Edit size={12} />
-                </button>
-              </div>
-            )}
-          </div>
-    
+         
           <p className="text-[#4F46E5] mb-2">@{profile?.username}</p>
     
           <div className="relative inline-block">

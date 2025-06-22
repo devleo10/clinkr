@@ -14,7 +14,6 @@ const Onboarding = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isStepValid, setIsStepValid] = useState(false);
   const [formData, setFormData] = useState({
-    full_name: '',  // Updated to match UserProfile interface
     username: '',
     bio: '',
     profile_picture: null as File | null,  // Updated to match UserProfile interface
@@ -60,7 +59,6 @@ const Onboarding = () => {
     switch (currentStep) {
       case 1:
         setIsStepValid(
-          formData.full_name.trim() !== '' &&
           formData.username.trim() !== '' &&
           formData.bio.trim().length <= 160 // Limit bio to 160 characters
         );
@@ -192,7 +190,6 @@ const Onboarding = () => {
         .from('profiles')
         .upsert({
           id: user.id,
-          full_name: formData.full_name,
           username: formData.username,
           bio: formData.bio,
           profile_picture: profilePictureUrl,
@@ -308,19 +305,7 @@ const Onboarding = () => {
                 />
                 <p className="text-sm text-gray-500">Upload a profile picture</p>
               </div>
-              <div>
-                <label htmlFor="fullName" className="block text-sm font-medium text-gray-700">Full Name</label>
-                <input
-                  id="fullName"
-                  name="full_name" // Update this to match the formData key
-                  type="text"
-                  required
-                  className="mt-1 appearance-none rounded-lg relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-[#4F46E5] focus:border-[#4F46E5] focus:z-10 sm:text-sm"
-                  placeholder="John Doe"
-                  value={formData.full_name}
-                  onChange={handleInputChange}
-                />
-              </div>
+            
               <div>
                 <label htmlFor="username" className="block text-sm font-medium text-gray-700">Username</label>
                 <input
