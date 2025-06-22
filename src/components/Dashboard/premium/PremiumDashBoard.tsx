@@ -15,48 +15,81 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../../ui/dropdown-menu";
+import { supabase } from '../../../lib/supabaseClient';
 
 
 
 const PremiumDashBoard = () => {
   const [isExporting, setIsExporting] = useState(false);
-  const [deviceData] = useState([
-    { type: 'Desktop', percentage: 65 },
-    { type: 'Mobile', percentage: 30 },
-    { type: 'Tablet', percentage: 5 }
-  ]);
-  const [viewTrends] = useState({
-    total: 98432,
-    growth: 22,
-    dailyAverage: 3281,
-    peakTime: "2-4 PM"
-  });
 
   const handleExport = async (format: 'pdf' | 'csv') => {
     setIsExporting(true);
     try {
-      // Collect actual data from components
+      // Get current user
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("User not authenticated");
+
+      // Fetch analytics data
+      const { data: analyticsData, error: analyticsError } = await supabase
+        .from('link_analytics')
+        .select('*')
+        .eq('profile_id', user.id);
+
+      if (analyticsError) throw analyticsError;
+
+      // Fetch profile views data
+      const { data: profileViewsData, error: profileViewsError } = await supabase
+        .from('profile_views')
+        .select('*')
+        .eq('profile_id', user.id);
+
+      if (profileViewsError) throw profileViewsError;
+
+      // Calculate overview stats
+     
+      const totalViews = profileViewsData.length;
+
+      // Geography aggregation
+      const countryVisits: Record<string, number> = {};
+      analyticsData.forEach(item => {
+        const country = item.country_code || 'Unknown';
+        countryVisits[country] = (countryVisits[country] || 0) + 1;
+      });
+      const geography = Object.entries(countryVisits).map(([country, visits]) => ({ country, visits }));
+
+      // Devices aggregation
+      const deviceCounts: Record<string, number> = {};
+      analyticsData.forEach(item => {
+        const device = item.device_type || 'Unknown';
+        deviceCounts[device] = (deviceCounts[device] || 0) + 1;
+      });
+      const totalDeviceCount = Object.values(deviceCounts).reduce((a, b) => a + b, 0);
+      const devices = Object.entries(deviceCounts).map(([type, count]) => ({
+        type,
+        percentage: totalDeviceCount ? Math.round((count / totalDeviceCount) * 100) : 0,
+      }));
+
+      // Trends aggregation (example: monthly views for last 3 months)
+      const now = new Date();
+      const trends = [0, 1, 2].map(offset => {
+        const month = new Date(now.getFullYear(), now.getMonth() - offset, 1);
+        const monthStr = month.toISOString().slice(0, 7);
+        const views = analyticsData.filter(item =>
+          item.created_at &&
+          item.created_at.startsWith(monthStr)
+        ).length;
+        return { date: monthStr, views };
+      }).reverse();
+
+      // Compose export data
       const data = {
         overview: {
-          totalClicks: viewTrends.total,
-          uniqueVisitors: deviceData.reduce((acc, device) => acc + device.percentage, 0),
-          conversionRate: deviceData[2].percentage,
-          avgTime: viewTrends.peakTime,
-          totalViews: viewTrends.total,
-          changes: { clicks: '+12.3%', visitors: '+8.7%', conversion: '-1.4%', time: '+0.8%', views: `+${viewTrends.growth}%` },
-          change: `+${viewTrends.growth}%`
+          totalViews,
+          change: '+0%', // You can calculate real change if you want
         },
-        geography: [
-          { country: 'USA', visits: 2104 },
-          { country: 'India', visits: 892 },
-          { country: 'UK', visits: 654 }
-        ],
-        devices: deviceData,
-        trends: [
-          { date: new Date().toISOString().slice(0, 7), views: viewTrends.total },
-          { date: new Date(new Date().setMonth(new Date().getMonth() - 1)).toISOString().slice(0, 7), views: Math.round(viewTrends.total / (1 + viewTrends.growth/100)) },
-          { date: new Date(new Date().setMonth(new Date().getMonth() - 2)).toISOString().slice(0, 7), views: Math.round(viewTrends.total / (1 + viewTrends.growth/100) * 0.9) }
-        ]
+        geography,
+        devices,
+        trends,
       };
 
       if (format === 'pdf') {
@@ -66,7 +99,7 @@ const PremiumDashBoard = () => {
       }
     } catch (error) {
       console.error('Export failed:', error);
-      // You might want to show an error toast here
+      // Optionally show an error toast here
     } finally {
       setIsExporting(false);
     }
@@ -93,7 +126,7 @@ const PremiumDashBoard = () => {
           <Link to="/privateprofile">
             <Button
               variant="outline"
-              className="flex items-center gap-2 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 text-white font-bold px-5 py-2 rounded-lg shadow hover:from-blue-500 hover:via-indigo-600 hover:to-purple-600 transition-all duration-300"
+              className="flex items-center gap-2 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 text-white font-bold px-5 py-2 rounded-lg shadow hover:from-blue-500 hover:via-indigo-600 hover:to-purple-600 hover:text-white transition-all duration-300"
             >
               <LayoutDashboard size={18} />
               <span>Go Back to Profile</span>
@@ -116,7 +149,7 @@ const PremiumDashBoard = () => {
             <DropdownMenuTrigger asChild>
               <Button
                 variant="outline"
-                className="flex items-center bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 text-white font-bold px-5 py-2 rounded-lg shadow hover:from-blue-500 hover:via-indigo-600 hover:to-purple-600 transition-all duration-300"
+                className="flex items-center bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 text-white font-bold px-5 py-2 rounded-lg shadow hover:from-blue-500 hover:via-indigo-600 hover:to-purple-600 hover:text-white transition-all duration-300"
                 disabled={isExporting}
               >
                 <span className="mr-2">{isExporting ? 'Exporting...' : 'Export Data'}</span>

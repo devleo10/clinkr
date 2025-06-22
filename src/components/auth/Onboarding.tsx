@@ -17,9 +17,9 @@ const Onboarding = () => {
     username: '',
     bio: '',
     profile_picture: null as File | null,  // Updated to match UserProfile interface
-    links: [''] as string[], // Initialize with one empty link
-    link_titles: [''] as string[] // Initialize with one empty title
+    links: [{ title: '', url: '' }], // Initialize with one empty link
   });
+  const [linkInputs, setLinkInputs] = useState([{ url: '', title: '' }]);
 
   // Add this useEffect at the top of your component
   useEffect(() => {
@@ -64,7 +64,7 @@ const Onboarding = () => {
         );
         break;
       case 2:
-        setIsStepValid(formData.links.length > 0 && formData.links.every(link => link.trim() !== ''));
+        setIsStepValid(formData.links.length > 0 && formData.links.every(link => link.url.trim() !== ''));
         break;
       case 3:
         setIsStepValid(true);
@@ -100,6 +100,15 @@ const Onboarding = () => {
         profile_picture: file // Ensure this matches the state key
       }));
     }
+  };
+
+  // Handle link input changes
+  const handleLinkChange = (idx: number, field: 'url' | 'title', value: string) => {
+    setLinkInputs(inputs =>
+      inputs.map((input, i) =>
+        i === idx ? { ...input, [field]: value } : input
+      )
+    );
   };
 
   // Handle next step
@@ -185,6 +194,9 @@ const Onboarding = () => {
         }
       }
   
+      // Separate URLs and titles
+      const link_title = linkInputs.map(input => input.title);
+  
       // Save profile data with RLS handling
       const { data: profileData, error: profileError } = await supabase
         .from('profiles')
@@ -194,6 +206,7 @@ const Onboarding = () => {
           bio: formData.bio,
           profile_picture: profilePictureUrl,
           links: formData.links,
+          link_title: link_title,
           updated_at: new Date().toISOString()
         })
         .select()
@@ -341,23 +354,24 @@ const Onboarding = () => {
                 <label className="block text-sm font-medium text-gray-700 mb-2">Add Your Links</label>
                 <p className="text-xs text-gray-500 mb-4">You can add up to 5 links</p>
                 <div className="space-y-2">
-                  {formData.links.map((link, index) => (
+                  {linkInputs.map((link, index) => (
                     <div key={index} className="flex flex-col gap-1 mb-2">
-                      <LinkValidator url={link}>
+                      <LinkValidator url={link.url}>
                         {(isValid, message) => (
                           <>
                             <input
                               type="text"
-                              value={link}
+                              value={link.url}
                               onChange={(e) => {
                                 const newLinks = [...formData.links];
-                                newLinks[index] = e.target.value;
+                                newLinks[index].url = e.target.value;
                                 setFormData(prev => ({ ...prev, links: newLinks }));
+                                handleLinkChange(index, 'url', e.target.value);
                               }}
-                              className={`flex-1 rounded-lg px-3 py-2 border ${!isValid && link ? "border-red-500" : "border-gray-300"} placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-[#4F46E5] focus:border-[#4F46E5] sm:text-sm`}
+                              className={`flex-1 rounded-lg px-3 py-2 border ${!isValid && link.url ? "border-red-500" : "border-gray-300"} placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-[#4F46E5] focus:border-[#4F46E5] sm:text-sm`}
                               placeholder="https://example.com"
                             />
-                            {!isValid && link && (
+                            {!isValid && link.url && (
                               <span className="text-xs text-red-500">{message}</span>
                             )}
                           </>
@@ -365,11 +379,12 @@ const Onboarding = () => {
                       </LinkValidator>
                       <input
                         type="text"
-                        value={formData.link_titles[index]}
+                        value={link.title}
                         onChange={(e) => {
-                          const newTitles = [...formData.link_titles];
-                          newTitles[index] = e.target.value;
-                          setFormData(prev => ({ ...prev, link_titles: newTitles }));
+                          const newLinks = [...formData.links];
+                          newLinks[index].title = e.target.value;
+                          setFormData(prev => ({ ...prev, links: newLinks }));
+                          handleLinkChange(index, 'title', e.target.value);
                         }}
                         className="flex-1 appearance-none rounded-lg relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-[#4F46E5] focus:border-[#4F46E5] focus:z-10 sm:text-sm"
                         placeholder="Link Title"
@@ -379,8 +394,8 @@ const Onboarding = () => {
                           type="button"
                           onClick={() => {
                             const newLinks = formData.links.filter((_, i) => i !== index);
-                            const newTitles = formData.link_titles.filter((_, i) => i !== index);
-                            setFormData(prev => ({ ...prev, links: newLinks, link_titles: newTitles }));
+                            setFormData(prev => ({ ...prev, links: newLinks }));
+                            setLinkInputs(inputs => inputs.filter((_, i) => i !== index));
                           }}
                           className="ml-2 text-red-500 hover:text-red-700"
                         >
@@ -392,7 +407,10 @@ const Onboarding = () => {
                   {formData.links.length < 5 && (
                     <button
                       type="button"
-                      onClick={() => setFormData(prev => ({ ...prev, links: [...prev.links, ''], linkTitles: [...prev.link_titles, ''] }))}
+                      onClick={() => {
+                        setFormData(prev => ({ ...prev, links: [...prev.links, { title: '', url: '' }] }));
+                        setLinkInputs(inputs => [...inputs, { url: '', title: '' }]);
+                      }}
                       className="mt-2 text-[#4F46E5] hover:text-[#4338CA]"
                     >
                       Add another link

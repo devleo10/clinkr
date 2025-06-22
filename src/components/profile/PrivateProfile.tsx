@@ -46,6 +46,8 @@ const PrivateProfile = () => {
   });
   const [editedBio, setEditedBio] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     fetchProfile();
@@ -280,6 +282,44 @@ const PrivateProfile = () => {
     }
   }; // Updated URL construction
 
+  // Delete profile handler
+  const handleDeleteProfile = async () => {
+    setDeleting(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('No user found');
+
+      // Delete profile picture from storage if exists
+      if (profile?.profile_picture) {
+        try {
+          const previousFilePath = new URL(profile.profile_picture).pathname.replace(/^\/storage\/v1\/object\/public\/user-data\//, '');
+          await supabase.storage.from('user-data').remove([previousFilePath]);
+        } catch (e) {
+          // Ignore storage errors
+        }
+      }
+
+      // Delete all related analytics/views if needed (optional, add more as needed)
+      await supabase.from('profile_views').delete().eq('profile_id', user.id);
+      await supabase.from('link_analytics').delete().eq('profile_id', user.id);
+
+      // Delete the profile itself
+      const { error } = await supabase.from('profiles').delete().eq('id', user.id);
+      if (error) throw error;
+
+      // Optionally, sign out the user
+      await supabase.auth.signOut();
+
+      // Redirect to signup or homepage
+      navigate('/signup');
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setDeleting(false);
+      setDeleteDialogOpen(false);
+    }
+  };
+
   // Ensure rendering logic correctly uses profile state
   return (
       <div className="max-w-4xl mx-auto px-4 py-8">
@@ -477,6 +517,38 @@ const PrivateProfile = () => {
               </CardContent>
             </Card>
           ))}
+        </div>
+
+        {/* Delete Profile Button */}
+        <div className="flex justify-center mt-8">
+          <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+            <AlertDialogTrigger asChild>
+              <button
+                className="bg-red-600 text-white font-bold px-6 py-2 rounded-lg shadow hover:bg-red-700 transition-all duration-300"
+                type="button"
+              >
+                Delete Profile
+              </button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action cannot be undone. This will permanently delete your profile and all associated data.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel disabled={deleting}>Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                  className="bg-red-600 text-white hover:bg-red-700"
+                  onClick={handleDeleteProfile}
+                  disabled={deleting}
+                >
+                  {deleting ? "Deleting..." : "Delete Profile"}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
       </div>
     );

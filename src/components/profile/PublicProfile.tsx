@@ -8,6 +8,8 @@ import { FaUser } from 'react-icons/fa';
 import { SocialIcon } from 'react-social-icons';
 import { motion, AnimatePresence } from 'framer-motion';
 import LinkWithIcon from "../ui/linkwithicon";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
+import { MoreHorizontal } from "lucide-react";
 
 interface UserProfile {
   username: string;
@@ -332,19 +334,20 @@ const PublicProfile = () => {
   return (
     <div className="max-w-4xl mx-auto px-4 py-8 relative overflow-hidden">
       {/* Animated background elements */}
+      <div className="fixed inset-0 -z-10 bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-gray-900 dark:to-black" />
       <motion.div 
-        className="absolute top-0 left-0 w-64 h-64 rounded-full bg-gradient-to-r from-purple-200 to-blue-200 opacity-30 blur-3xl -z-10"
+        className="absolute top-0 left-0 w-64 h-64 rounded-full bg-gradient-to-r from-purple-100 to-blue-100 opacity-30 blur-3xl -z-10"
         variants={floatingOrbVariants}
         animate="animate"
       />
       <motion.div 
-        className="absolute bottom-20 right-0 w-80 h-80 rounded-full bg-gradient-to-r from-blue-200 to-indigo-200 opacity-30 blur-3xl -z-10"
+        className="absolute bottom-20 right-0 w-80 h-80 rounded-full bg-gradient-to-r from-blue-100 to-indigo-100 opacity-30 blur-3xl -z-10"
         variants={floatingOrbVariants}
         animate="animate"
         transition={{ delay: 0.5 }}
       />
       <motion.div 
-        className="absolute top-1/2 left-1/4 w-40 h-40 rounded-full bg-gradient-to-r from-pink-200 to-purple-200 opacity-20 blur-3xl -z-10"
+        className="absolute top-1/2 left-1/4 w-40 h-40 rounded-full bg-gradient-to-r from-pink-100 to-purple-100 opacity-20 blur-3xl -z-10"
         variants={floatingOrbVariants}
         animate="animate"
         transition={{ delay: 1 }}
@@ -357,7 +360,7 @@ const PublicProfile = () => {
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.5 }}
       >
-        <Link to="/homepage" className="flex items-center gap-1 sm:gap-2">
+        <Link to="/homepage" className="flex items-center gap-1 sm:gap-2 mt-8">
               <img 
                 src={logo} 
                 alt="Clinkr Logo" 
@@ -365,7 +368,7 @@ const PublicProfile = () => {
               />
               <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold relative group">
                 <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 hover:from-blue-500 hover:via-indigo-600 hover:to-purple-600 transition-all duration-300">
-                  Clinkr
+                  CLinkr
                 </span>
                 <div className="absolute bottom-0 left-0 w-0 h-[2px] bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 group-hover:w-full transition-all duration-300"></div>
               </h1>
@@ -434,21 +437,10 @@ const PublicProfile = () => {
           </motion.h1>
         </motion.div>
   
-        <motion.div 
-          className="flex items-center justify-center gap-2 mb-2"
-          variants={itemVariants}
-        >
-          <motion.p 
-            className="text-[#4F46E5]"
-            whileHover={{ scale: 1.05 }}
-          >
-            @{loading ? 'Loading...' : profile?.username || 'Profile not found'}
-          </motion.p>
-        </motion.div>
   
         <motion.div className="text-center" variants={itemVariants}>
           <motion.p 
-            className="text-gray-600 mt-2"
+            className="text-gray-700 mt-2"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}
@@ -477,7 +469,7 @@ const PublicProfile = () => {
               >
                 <Card className="hover:shadow-md transition-shadow">
                   <CardContent className="flex items-center justify-between p-4">
-                    <div className="flex items-center gap-3 min-w-0 flex-1">
+                    <div className="flex items-center gap-3 flex-grow justify-center">
                       <motion.span 
                         className="flex-shrink-0"
                         whileHover={{ rotate: [0, -10, 10, -5, 5, 0], scale: 1.1 }}
@@ -489,7 +481,7 @@ const PublicProfile = () => {
                         href={link.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-gray-800 hover:text-[#4F46E5] transition-colors truncate"
+                        className="text-gray-800 hover:text-indigo-600 transition-colors truncate"
                         onClick={(e) => handleLinkClick(link.url, index, e)}
                         whileHover={{ x: 3 }}
                         transition={{ type: 'spring', stiffness: 400 }}
@@ -497,16 +489,69 @@ const PublicProfile = () => {
                         {link.title}
                       </motion.a>
                     </div>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <motion.button
+                             className="p-2 rounded-full hover:bg-gray-100 transition-colors focus:outline-none"
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.9 }}
+                        >
+                          <MoreHorizontal className="h-5 w-5 text-gray-500" />
+                        </motion.button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem onClick={(e) => handleLinkClick(link.url, index, e)}>
+                          Visit this link
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => navigator.clipboard.writeText(link.url)}>
+                          Copy to clipboard
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </CardContent>
                 </Card>
               </motion.div>
             ))}
           </AnimatePresence>
         </motion.div>
-      
+  
+        {/* Call to Action / Footer Links */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.8, duration: 0.5 }}
+        >
+
+        </motion.div>
+
       </motion.div>
-    </div>
-  );
+
+      {/* Footer Section */}
+      <motion.footer
+        className="mt-24 py-8 text-center text-gray-600 text-sm flex flex-col items-center"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 1, duration: 0.5 }}
+      >
+        <div className="mt-20 flex flex-col sm:flex-row justify-center sm:gap-5 items-center w-full max-w-2xl mx-auto">
+  <a
+    href="/homepage"
+    className="hover:text-blue-600 hovr:underline underline-offset-4 transition-colors"
+  >
+    Visit Clinkr
+  </a>
+  <a
+    href="/getstarted"
+    className="hover:text-blue-600 hover:underline underline-offset-4 transition-colors"
+  >
+    Get Started Now
+  </a>
+</div>
+
+        <p className="mt-8">&copy; {new Date().getFullYear()} Clinkr. All rights reserved.</p>
+    
+      </motion.footer>
+    </div>  );
 };
 
 export default PublicProfile;
