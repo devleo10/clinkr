@@ -6,6 +6,7 @@ import Features from './Features';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../auth/AuthProvider';
 import img from '../../assets/div.png';
+import Footer from './Footer';
 
 const HomePage = () => {
   const { session } = useAuth(); // Access the session from the AuthProvider
@@ -109,6 +110,7 @@ const HomePage = () => {
           <FAQ />
         </div>
       </div>
+      <Footer />
     </div>
   );
 };
