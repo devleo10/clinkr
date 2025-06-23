@@ -22,8 +22,8 @@ const PremiumCard = () => {
               <p className="text-sm">✅ Unlimited links</p>
           </div>
         </div>
-        <div className="w-full rounded-[10px] bg-[#4F46E5] hover:bg-[#3d35b8] transition-colors duration-300 mt-5">
-            <button className="text-md text-white py-2 px-4 w-full rounded-[10px]">
+        <div className="w-full bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 text-white font-bold px-6 py-2 rounded-lg shadow hover:from-blue-500 hover:via-indigo-600 hover:to-purple-600 transition-all duration-300 mt-5 flex justify-center items-center">
+            <button>
                 Upgrade to premium
             </button>
         </div>

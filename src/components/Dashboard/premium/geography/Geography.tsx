@@ -391,7 +391,7 @@ const Geography = () => {
           <p className="text-sm text-gray-600">
             {deviceFilter === "mobile" ? "Showing only mobile traffic" : 
              deviceFilter === "desktop" ? "Mobile data filtered out" : 
-             "Mobile users represent a significant portion of your audience"}
+             "Showing data for all devices"}
           </p>
         </div>
         

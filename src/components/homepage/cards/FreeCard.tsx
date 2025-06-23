@@ -22,7 +22,7 @@ const FreeCard = () => {
         </div>
         <div className="w-full rounded-[10px] mb-20 mt-5 bg-[#E5E7EB]">
             <Link to="/signup" className="block">
-                <button className="text-md py-2 px-4 w-full transition-all duration-300 hover:bg-gray-300 rounded-[10px]">
+                <button className="text-md  py-2 px-4 w-full transition-all duration-300 hover:bg-gray-300 rounded-[10px]">
                     Get Started
                 </button>
             </Link>

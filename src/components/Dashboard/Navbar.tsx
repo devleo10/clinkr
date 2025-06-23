@@ -29,12 +29,15 @@ const Navbar = () => {
           </span>
 
           {/* Right Section */}
-          <div className="flex items-center space-x-4 w-1/4 justify-end">
+          <div className="flex items-center space-x-2 sm:space-x-4 w-1/4 justify-end">
             <Link to="/privateprofile">
-              <button className="bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 text-white font-bold px-6 py-2 rounded-lg shadow hover:from-blue-500 hover:via-indigo-600 hover:to-purple-600 transition-all duration-300">
+              <button
+                className="bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 text-white font-bold px-3 py-1 sm:px-6 sm:py-2 rounded-lg shadow hover:from-blue-500 hover:via-indigo-600 hover:to-purple-600 transition-all duration-300 text-xs sm:text-base"
+              >
                 Visit Profile
               </button>
             </Link>
+            
           </div>
         </div>
       </div>

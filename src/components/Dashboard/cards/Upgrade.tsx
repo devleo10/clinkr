@@ -11,7 +11,7 @@ const Upgrade = () => {
       <div className="bg-gradient-to-r from-purple-500 to-blue-500 text-white p-6 rounded-lg flex justify-between items-center relative overflow-hidden">
         <div>
           <h2 className="text-2xl font-bold">Unlock Advanced Analytics</h2>
-          <p className="mt-2">Get detailed insights, custom domains, and more with Premium</p>
+          <p className="mt-2">Unlock deeper analytics, exclusive features, and priority support with Premium.</p>
         </div>
         <button className="bg-white text-blue-500 font-semibold py-2 px-4 rounded hover:bg-gray-100 transition-colors duration-300">
           Upgrade Now

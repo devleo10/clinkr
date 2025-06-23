@@ -338,15 +338,26 @@ const PrivateProfile = () => {
                 <div className="absolute bottom-0 left-0 w-0 h-[2px] bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 group-hover:w-full transition-all duration-300"></div>
               </h1>
             </Link>
-          <div className="bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 text-white font-bold px-6 py-2 rounded-lg shadow hover:from-blue-500 hover:via-indigo-600 hover:to-purple-600 transition-all duration-300">
-            <Link to='/dashboard'>
-              Visit Dashboard
-            </Link>
+          <div className="flex items-center gap-2">
+            <div className="bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 text-white font-bold px-6 py-2 rounded-lg shadow hover:from-blue-500 hover:via-indigo-600 hover:to-purple-600 transition-all duration-300">
+              <Link to='/dashboard'>
+                Visit Dashboard
+              </Link>
+            </div>
+            {/* Bin icon for delete profile */}
+            <button
+              className="p-2 rounded-full hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-red-400"
+              aria-label="Delete profile"
+              onClick={() => setDeleteDialogOpen(true)}
+            >
+              <FaTrash className="text-red-500" size={18} />
+            </button>
           </div>
         </div>
     
         {/* Profile Content */}
         <div className="text-center relative">
+          {/* Removed three-dot menu from here */}
           {/* Profile Picture Section */}
           <div className="w-24 h-24 mx-auto rounded-full bg-gray-200 flex items-center justify-center overflow-hidden mb-4 relative group">
             {loading ? (
@@ -433,7 +444,7 @@ const PrivateProfile = () => {
                 className="inline-flex items-center gap-1 px-2 py-1 text-sm text-[#4F46E5] hover:text-[#4338CA] bg-[#EEF2FF] hover:bg-[#E0E7FF] rounded-md transition-colors"
               >
                 <FaShare size={14} />
-                Share Your Profile
+                Get Your Link-in-Bio link
               </button>
             </div>
           </div>
@@ -520,36 +531,27 @@ const PrivateProfile = () => {
         </div>
 
         {/* Delete Profile Button */}
-        <div className="flex justify-center mt-8">
-          <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-            <AlertDialogTrigger asChild>
-              <button
-                className="bg-red-600 text-white font-bold px-6 py-2 rounded-lg shadow hover:bg-red-700 transition-all duration-300"
-                type="button"
+        {/* Removed the old button, keep only the AlertDialog trigger in the menu */}
+        <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This action cannot be undone. This will permanently delete your profile and all associated data.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel disabled={deleting}>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                className="bg-red-600 text-white hover:bg-red-700"
+                onClick={handleDeleteProfile}
+                disabled={deleting}
               >
-                Delete Profile
-              </button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  This action cannot be undone. This will permanently delete your profile and all associated data.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel disabled={deleting}>Cancel</AlertDialogCancel>
-                <AlertDialogAction
-                  className="bg-red-600 text-white hover:bg-red-700"
-                  onClick={handleDeleteProfile}
-                  disabled={deleting}
-                >
-                  {deleting ? "Deleting..." : "Delete Profile"}
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-        </div>
+                {deleting ? "Deleting..." : "Delete Profile"}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     );
 };
