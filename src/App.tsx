@@ -9,7 +9,9 @@ import PublicProfile from "./components/profile/PublicProfile";
 import GetStarted from "./components/auth/GetStarted";
 import Onboarding from "./components/auth/Onboarding";
 import { AuthProvider } from "./components/auth/AuthProvider";
-import PasswordReset from "./components/auth/PasswordReset";
+import PrivacyPolicy from "./components/legal/PrivacyPolicy";
+import TermsOfService from "./components/legal/TermsOfService";
+import CookiePolicy from "./components/legal/CookiePolicy";
 
 function App() {
   const router = createBrowserRouter([
@@ -62,10 +64,18 @@ function App() {
       path: "/:username",
       element: <PublicProfile />,
     },
-    // Auth routes
+
     {
-      path: "/password-reset",
-      element: <PasswordReset />,
+      path: "/privacypolicy",
+      element: <PrivacyPolicy />,
+    },
+    {
+      path: "/termsofservice",
+      element: <TermsOfService />,
+    },
+    {
+      path: "/cookiepolicy",
+      element: <CookiePolicy />,
     },
     {
       path: "/*",
