@@ -7,7 +7,6 @@ import { supabase } from '../../lib/supabaseClient';
 import { FaUser,FaShare, FaTrash } from 'react-icons/fa';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "../ui/alert-dialog";
 import { useAuth } from '../auth/AuthProvider';
-import LinkWithIcon from "../ui/linkwithicon";
 import LinkValidator from "../../lib/link-validator";
 import Cropper from 'react-easy-crop';
 import Modal from 'react-modal';
