@@ -12,8 +12,10 @@ import { AuthProvider } from "./components/auth/AuthProvider";
 import PrivacyPolicy from "./components/legal/PrivacyPolicy";
 import TermsOfService from "./components/legal/TermsOfService";
 import CookiePolicy from "./components/legal/CookiePolicy";
+import { Analytics } from "@vercel/analytics/react"
 
 function App() {
+  <Analytics/>
   const router = createBrowserRouter([
     {
       path: "/",

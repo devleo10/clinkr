@@ -348,7 +348,6 @@ const PrivateProfile = () => {
     
         {/* Profile Content */}
         <div className="text-center relative">
-          {/* Removed three-dot menu from here */}
           {/* Profile Picture Section */}
           <div className="w-28 h-28 mx-auto rounded-full bg-gradient-to-tr from-indigo-100 via-purple-100 to-blue-100 flex items-center justify-center overflow-hidden mb-4 relative group shadow-lg border-4 border-white">
             {loading && (
@@ -554,7 +553,7 @@ const PrivateProfile = () => {
                 />
                 <button
                   onClick={handleBioUpdate}
-                  className="mt-2 px-4 py-2 bg-[#4F46E5] text-white rounded-md hover:bg-[#4338CA] transition-colors"
+                  className="mt-2 px-4 py-2 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 text-white rounded-md font-bold shadow hover:from-blue-500 hover:via-indigo-600 hover:to-purple-600 transition-all duration-300"
                 >
                   Save Bio
                 </button>
