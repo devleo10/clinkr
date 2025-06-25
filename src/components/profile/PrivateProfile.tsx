@@ -11,6 +11,8 @@ import LinkWithIcon from "../ui/linkwithicon";
 import LinkValidator from "../../lib/link-validator";
 import Cropper from 'react-easy-crop';
 import Modal from 'react-modal';
+import { Globe } from 'lucide-react';
+import { SocialIcon } from 'react-social-icons';
 
 interface UserProfile {
   username: string;
@@ -290,6 +292,25 @@ const PrivateProfile = () => {
       image.src = url;
     });
   }
+
+  // Helper for link icon (generic globe, clinkr logo, or social icon)
+  const getSocialIcon = (url: string) => {
+    if (typeof url !== 'string') return <Globe size={20} className="text-gray-400" />;
+    try {
+      const domain = new URL(url).hostname.replace(/^www\./, '');
+      if (domain.endsWith('clinkr.live')) {
+        return <img src={logo} alt="Clinkr" className="w-5 h-5 rounded-full bg-white border border-indigo-200" />;
+      }
+      // Use react-social-icons for known domains
+      if (/^(facebook|twitter|linkedin|github|instagram|youtube|tiktok|pinterest|snapchat|reddit|whatsapp|telegram|discord|medium|dribbble|behance|codepen|dev\.to|stackoverflow|twitch|slack|spotify|soundcloud|apple|google|amazon|paypal|patreon|buymeacoffee|substack|wordpress|blogspot|tumblr|flickr|vimeo|bandcamp|goodreads|kofi|strava|mastodon|kickstarter|producthunt|quora|rss|rss2|rss3|rss4|rss5)\./i.test(domain)) {
+        return <SocialIcon url={url} style={{ width: 20, height: 20 }} />;
+      }
+      // Otherwise, generic globe
+      return <Globe size={20} className="text-gray-400" />;
+    } catch {
+      return <Globe size={20} className="text-gray-400" />;
+    }
+  };
 
   // Ensure rendering logic correctly uses profile state
   return (
@@ -574,7 +595,7 @@ const PrivateProfile = () => {
                 <CardContent className="flex items-center justify-between p-4 group">
                   <div className="flex items-center gap-3 min-w-0 flex-1">
                     {/* Use LinkWithIcon here */}
-                    <LinkWithIcon url={link.url} />
+                    {getSocialIcon(link.url)}
                     <a 
                       href={typeof link.url === 'string' ? link.url : ''} 
                       target="_blank" 

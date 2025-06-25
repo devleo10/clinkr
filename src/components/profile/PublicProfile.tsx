@@ -10,6 +10,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import LinkWithIcon from "../ui/linkwithicon";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
+import { Globe } from 'lucide-react';
 
 interface UserProfile {
   username: string;
@@ -316,8 +317,21 @@ const PublicProfile = () => {
 
   // Replace the getSocialIcon function with this new version
   const getSocialIcon = (url: string) => {
-    if (typeof url !== 'string') return <SocialIcon url="https://example.com" style={{ width: 25, height: 25 }} />;
-    return <SocialIcon url={url} style={{ width: 25, height: 25 }} />;
+    if (typeof url !== 'string') return <Globe size={25} className="text-gray-400" />;
+    try {
+      const domain = new URL(url).hostname.replace(/^www\./, '');
+      if (domain.endsWith('clinkr.live')) {
+        return <img src={logo} alt="Clinkr" className="w-6 h-6 rounded-full bg-white border border-indigo-200" />;
+      }
+      // Use react-social-icons for known domains
+      if (/^(facebook|twitter|linkedin|github|instagram|youtube|tiktok|pinterest|snapchat|reddit|whatsapp|telegram|discord|medium|dribbble|behance|codepen|dev\.to|stackoverflow|twitch|slack|spotify|soundcloud|apple|google|amazon|paypal|patreon|buymeacoffee|substack|wordpress|blogspot|tumblr|flickr|vimeo|bandcamp|goodreads|kofi|strava|mastodon|kickstarter|producthunt|quora|rss|rss2|rss3|rss4|rss5)\./i.test(domain)) {
+        return <SocialIcon url={url} style={{ width: 25, height: 25 }} />;
+      }
+      // Otherwise, generic globe
+      return <Globe size={25} className="text-gray-400" />;
+    } catch {
+      return <Globe size={25} className="text-gray-400" />;
+    }
   };
 
   const links = Array.isArray(profile?.links) ? profile.links.map((url, index) => {
