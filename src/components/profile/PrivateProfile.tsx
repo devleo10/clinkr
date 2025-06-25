@@ -9,6 +9,8 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { useAuth } from '../auth/AuthProvider';
 import LinkWithIcon from "../ui/linkwithicon";
 import LinkValidator from "../../lib/link-validator";
+import Cropper from 'react-easy-crop';
+import Modal from 'react-modal';
 
 interface UserProfile {
   username: string;
@@ -48,6 +50,11 @@ const PrivateProfile = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [cropModalOpen, setCropModalOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState<any>(null);
 
   useEffect(() => {
     fetchProfile();
@@ -87,84 +94,7 @@ const PrivateProfile = () => {
     }
   };
 
-  // Handle image loading error
-  const handleImageError = () => {
-    setError('Failed to load profile picture');
-    // Reset profile picture to default avatar
-    if (profile) {
-      setProfile({
-        ...profile,
-        profile_picture: null
-      });
-    }
-  };
 
-  const handleProfilePictureChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-  
-    // File validation
-    if (file.size > 5 * 1024 * 1024) { // 5MB limit
-      setError('File size too large. Please choose an image under 5MB.');
-      return;
-    }
-    if (!file.type.startsWith('image/')) {
-      setError('Please upload an image file.');
-      return;
-    }
-  
-    setLoading(true);
-    setError(null);
-  
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('No user found');
-  
-      if (profile?.profile_picture) {
-        // Extract full relative path (assuming profile_picture is a valid path)
-        const previousFilePath = new URL(profile.profile_picture).pathname.replace(/^\/storage\/v1\/object\/public\/user-data\//, '');
-      
-        const { error: deleteError } = await supabase.storage
-          .from('user-data')
-          .remove([previousFilePath]);
-      
-        if (deleteError) throw deleteError;
-      }
-      
-  
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${user.id}-${Date.now()}.${fileExt}`;
-  
-      // Upload new image
-      const { error: uploadError } = await supabase.storage
-        .from('user-data')
-        .upload(fileName, file, {
-          cacheControl: '3600',
-          upsert: true
-        });
-  
-      if (uploadError) throw uploadError;
-  
-      // Get public URL
-      const { data: { publicUrl } } = supabase.storage
-        .from('user-data')
-        .getPublicUrl(fileName);
-  
-      const { error: updateError } = await supabase
-        .from('profiles')
-        .update({ profile_picture: publicUrl })
-        .eq('id', user.id);
-  
-      if (updateError) throw updateError;
-  
-      setProfile(prev => prev ? { ...prev, profile_picture: publicUrl } : null);
-      setEditState(prev => ({ ...prev, profilePicture: false }));
-    } catch (err: any) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleBioUpdate = async () => {
     try {
@@ -292,8 +222,13 @@ const PrivateProfile = () => {
       // Delete profile picture from storage if exists
       if (profile?.profile_picture) {
         try {
-          const previousFilePath = new URL(profile.profile_picture).pathname.replace(/^\/storage\/v1\/object\/public\/user-data\//, '');
-          await supabase.storage.from('user-data').remove([previousFilePath]);
+          if (profile.profile_picture) {
+            let previousFilePath = '';
+            if (profile.profile_picture) {
+              previousFilePath = new URL(profile.profile_picture).pathname.replace(/^\/storage\/v1\/object\/public\/user-data\//, '');
+              await supabase.storage.from('user-data').remove([previousFilePath]);
+            }
+          }
         } catch (e) {
           // Ignore storage errors
         }
@@ -319,6 +254,42 @@ const PrivateProfile = () => {
       setDeleteDialogOpen(false);
     }
   };
+
+  // Helper to get cropped image blob
+  async function getCroppedImg(imageSrc: string, crop: any) {
+    const image = await createImage(imageSrc);
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    if (!ctx) throw new Error('No 2d context');
+    canvas.width = crop.width;
+    canvas.height = crop.height;
+    ctx.drawImage(
+      image,
+      crop.x,
+      crop.y,
+      crop.width,
+      crop.height,
+      0,
+      0,
+      crop.width,
+      crop.height
+    );
+    return new Promise<Blob>((resolve, reject) => {
+      canvas.toBlob((blob) => {
+        if (blob) resolve(blob);
+        else reject(new Error('Canvas is empty'));
+      }, 'image/png');
+    });
+  }
+  function createImage(url: string): Promise<HTMLImageElement> {
+    return new Promise((resolve, reject) => {
+      const image = new window.Image();
+      image.addEventListener('load', () => resolve(image));
+      image.addEventListener('error', error => reject(error));
+      image.setAttribute('crossOrigin', 'anonymous');
+      image.src = url;
+    });
+  }
 
   // Ensure rendering logic correctly uses profile state
   return (
@@ -359,51 +330,196 @@ const PrivateProfile = () => {
         <div className="text-center relative">
           {/* Removed three-dot menu from here */}
           {/* Profile Picture Section */}
-          <div className="w-24 h-24 mx-auto rounded-full bg-gray-200 flex items-center justify-center overflow-hidden mb-4 relative group">
-            {loading ? (
-              <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+          <div className="w-28 h-28 mx-auto rounded-full bg-gradient-to-tr from-indigo-100 via-purple-100 to-blue-100 flex items-center justify-center overflow-hidden mb-4 relative group shadow-lg border-4 border-white">
+            {loading && (
+              <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 z-20">
+                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-500"></div>
               </div>
-            ) : profile?.profile_picture ? (
+            )}
+            {profile?.profile_picture ? (
               <img
                 src={profile.profile_picture}
                 alt={profile.username}
-                className="w-full h-full object-cover"
-                onError={handleImageError}
+                className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105"
+                style={{ filter: loading ? 'blur(2px)' : 'none' }}
               />
             ) : (
-              <FaUser size={40} />
+              <FaUser size={56} className="text-indigo-200" />
             )}
-            {!loading && (
+            {/* Overlay with update/delete on hover */}
+            <div className="absolute inset-0 flex flex-col items-center justify-end opacity-0 group-hover:opacity-100 transition-opacity bg-gradient-to-t from-white/80 via-white/40 to-transparent z-10">
               <button
-                onClick={() => setEditState(prev => ({ ...prev, profilePicture: true }))}
-                className="absolute top-1 right-1 bg-white p-1 rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-opacity"
-                aria-label="Edit profile picture"
+                type="button"
+                onClick={() => {
+                  if (fileInputRef.current) {
+                    fileInputRef.current.value = '';
+                    fileInputRef.current.click();
+                  }
+                }}
+                className="mb-2 flex items-center gap-1 bg-indigo-600 text-white px-3 py-1 rounded-full shadow hover:bg-indigo-700 text-xs font-medium border border-indigo-200"
+                aria-label="Update profile picture"
+                disabled={loading}
               >
-                <Edit size={12} />
+                <Edit size={14} />
+                Update
               </button>
-            )}
-            {editState.profilePicture && !loading && (
-              <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 transition-opacity cursor-pointer"
-                 onClick={() => fileInputRef.current?.click()}>
-                <Edit className="text-white" size={20} />
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  className="hidden"
-                  accept="image/*"
-                  onChange={handleProfilePictureChange}
-                />
+              {profile?.profile_picture && !loading && (
+                <button
+                  type="button"
+                  onClick={async () => {
+                    setLoading(true);
+                    setError(null);
+                    try {
+                      const { data: userData, error: userError } = await supabase.auth.getUser();
+                      if (userError || !userData?.user) throw new Error('No user found');
+                      const previousFilePath = new URL(profile.profile_picture as string).pathname.replace(/^\/storage\/v1\/object\/public\/user-data\//, '');
+                      await supabase.storage.from('user-data').remove([previousFilePath]);
+                      const { error: updateError } = await supabase.from('profiles').update({ profile_picture: null }).eq('id', userData.user.id);
+                      if (updateError) throw updateError;
+                      setProfile(prev => prev ? { ...prev, profile_picture: null } : null);
+                    } catch (err) {
+                      if (err instanceof Error) {
+                        setError(err.message || 'Failed to delete profile picture.');
+                      } else {
+                        setError('Failed to delete profile picture.');
+                      }
+                    } finally {
+                      setLoading(false);
+                    }
+                  }}
+                  className="mb-3 flex items-center gap-1 bg-red-100 text-red-600 px-3 py-1 rounded-full shadow hover:bg-red-200 text-xs font-medium border border-red-200"
+                  aria-label="Delete profile picture"
+                  disabled={loading}
+                >
+                  <FaTrash size={13} />
+                  Delete
+                </button>
+              )}
+            </div>
+            <input
+              type="file"
+              ref={fileInputRef}
+              className="hidden"
+              accept="image/*"
+              onChange={async (e) => {
+                const file = e.target.files?.[0];
+                if (!file) return;
+                if (file.size > 5 * 1024 * 1024) {
+                  setError('File size too large. Please choose an image under 5MB.');
+                  e.target.value = '';
+                  return;
+                }
+                if (!file.type.startsWith('image/')) {
+                  setError('Please upload an image file.');
+                  e.target.value = '';
+                  return;
+                }
+                setSelectedImage(file);
+                setCropModalOpen(true);
+                e.target.value = '';
+              }}
+            />
+            {/* Crop Modal */}
+            <Modal
+              isOpen={cropModalOpen}
+              onRequestClose={() => setCropModalOpen(false)}
+              ariaHideApp={false}
+              style={{ overlay: { zIndex: 1000 } }}
+            >
+              <div className="flex flex-col items-center p-4">
+                <h2 className="mb-2 font-bold">Crop your profile picture</h2>
+                {selectedImage && (
+                  <div className="relative w-64 h-64 bg-gray-100">
+                    <Cropper
+                      image={URL.createObjectURL(selectedImage)}
+                      crop={crop}
+                      zoom={zoom}
+                      aspect={1}
+                      onCropChange={setCrop}
+                      onZoomChange={setZoom}
+                      onCropComplete={(_: any, croppedAreaPixels: any) => setCroppedAreaPixels(croppedAreaPixels)}
+                    />
+                  </div>
+                )}
+                <div className="flex gap-2 mt-4">
+                  <button className="px-4 py-2 bg-gray-200 rounded" onClick={() => setCropModalOpen(false)} disabled={loading}>Cancel</button>
+                  <button
+                    className={
+                      'px-4 py-2 rounded text-white font-bold bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 shadow ' +
+                      (loading ? 'opacity-70 cursor-not-allowed' : 'hover:from-blue-500 hover:via-indigo-600 hover:to-purple-600 transition-all duration-300')
+                    }
+                    onClick={async () => {
+                      if (!selectedImage || !croppedAreaPixels) return;
+                      setLoading(true);
+                      setError(null);
+                      try {
+                        const imageSrc = URL.createObjectURL(selectedImage);
+                        const croppedBlob = await getCroppedImg(imageSrc, croppedAreaPixels);
+                        const { data: userData, error: userError } = await supabase.auth.getUser();
+                        if (userError || !userData?.user) throw new Error('No user found');
+                        if (profile?.profile_picture) {
+                          try {
+                            const previousFilePath = new URL(profile.profile_picture).pathname.replace(/^\/storage\/v1\/object\/public\/user-data\//, '');
+                            await supabase.storage.from('user-data').remove([previousFilePath]);
+                          } catch (e) { /* ignore */ }
+                        }
+                        const filePath = `avatars/${userData.user.id}-${Date.now()}.png`;
+                        const { data, error } = await supabase.storage.from('user-data').upload(filePath, croppedBlob, { cacheControl: '3600', upsert: true });
+                        if (error) {
+                          setError('Upload failed: ' + error.message);
+                          setLoading(false);
+                          return;
+                        }
+                        let publicUrl = '';
+                        if (data && data.path) {
+                          const { data: urlData } = supabase.storage.from('user-data').getPublicUrl(data.path);
+                          publicUrl = urlData.publicUrl;
+                        } else {
+                          const { data: urlData } = supabase.storage.from('user-data').getPublicUrl(filePath);
+                          publicUrl = urlData.publicUrl;
+                        }
+                        if (!publicUrl) {
+                          setError('Failed to get public URL for uploaded image.');
+                          setLoading(false);
+                          return;
+                        }
+                        const { error: updateError } = await supabase.from('profiles').update({ profile_picture: publicUrl }).eq('id', userData.user.id);
+                        if (updateError) {
+                          setError('Failed to update profile: ' + updateError.message);
+                          setLoading(false);
+                          return;
+                        }
+                        setProfile(prev => prev ? { ...prev, profile_picture: publicUrl } : null);
+                        setCropModalOpen(false);
+                        setSelectedImage(null);
+                      } catch (err) {
+                        if (err instanceof Error) {
+                          setError(err.message || 'Failed to update profile picture.');
+                        } else {
+                          setError('Failed to update profile picture.');
+                        }
+                      } finally {
+                        setLoading(false);
+                      }
+                    }}
+                    disabled={loading}
+                  >
+                    {loading ? (
+                      <span className="flex items-center gap-2"><svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path></svg>Uploading...</span>
+                    ) : (
+                      'Crop & Upload'
+                    )}
+                  </button>
+                </div>
               </div>
-            )}
+            </Modal>
             {error && (
-              <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-red-100 text-red-600 text-xs py-1 px-2 rounded-md whitespace-nowrap">
+              <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-red-100 text-red-600 text-xs py-1 px-2 rounded-md whitespace-nowrap z-30">
                 {error}
               </div>
             )}
           </div>
-    
-         
+          
           <p className="text-[#4F46E5] mb-2">@{profile?.username}</p>
     
           <div className="relative inline-block">
@@ -452,7 +568,49 @@ const PrivateProfile = () => {
     
         {/* Links Section */}
         <div className="mt-8 border-b pb-4">
-          <div className="flex flex-col gap-2 max-w-md mx-auto">
+          <div className="mt-6 space-y-4 max-w-md mx-auto">
+            {links.map((link, index) => (
+              <Card key={index} className="hover:shadow-md transition-shadow">
+                <CardContent className="flex items-center justify-between p-4 group">
+                  <div className="flex items-center gap-3 min-w-0 flex-1">
+                    {/* Use LinkWithIcon here */}
+                    <LinkWithIcon url={link.url} />
+                    <a 
+                      href={typeof link.url === 'string' ? link.url : ''} 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="text-gray-800 hover:text-[#4F46E5] transition-colors truncate"
+                    >
+                      {typeof link.title === 'string' ? link.title : String(link.title)}
+                    </a>
+                  </div>
+                  <div className="flex items-center gap-2 ml-2 flex-shrink-0">
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <FaTrash
+                          className="text-[#4F46E5] cursor-pointer transition-colors duration-200 hover:text-red-600"
+                          onClick={() => setLinkToDeleteIndex(index)}
+                        />
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            This action cannot be undone. This will permanently delete your link.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel className="bg-gray-200 text-gray-800 hover:bg-gray-300" onClick={() => setLinkToDeleteIndex(null)}>Cancel</AlertDialogCancel>
+                          <AlertDialogAction className="bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 text-white font-bold px-6 py-2 rounded-lg shadow hover:from-blue-500 hover:via-indigo-600 hover:to-purple-600 transition-all duration-300" onClick={handleDeleteLink}>Continue</AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+          <div className="flex flex-col gap-2 max-w-md mx-auto mt-8">
             <LinkValidator url={newLink.url}>
               {(isValid, message) => (
                 <>
@@ -486,50 +644,6 @@ const PrivateProfile = () => {
           </div>
         </div>
     
-        <div className="mt-6 space-y-4 max-w-md mx-auto">
-          {links.map((link, index) => (
-            <Card key={index} className="hover:shadow-md transition-shadow">
-              <CardContent className="flex items-center justify-between p-4 group">
-                <div className="flex items-center gap-3 min-w-0 flex-1">
-                  {/* Use LinkWithIcon here */}
-                  <LinkWithIcon url={link.url} />
-                  <a 
-                    href={typeof link.url === 'string' ? link.url : ''} 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
-                    className="text-gray-800 hover:text-[#4F46E5] transition-colors truncate"
-                  >
-                    {typeof link.title === 'string' ? link.title : String(link.title)}
-                  </a>
-                </div>
-                <div className="flex items-center gap-2 ml-2 flex-shrink-0">
-                 
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <FaTrash
-      className="text-[#4F46E5] cursor-pointer transition-colors duration-200 hover:text-red-600"
-      onClick={() => setLinkToDeleteIndex(index)}
-    />
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                        <AlertDialogDescription>
-                          This action cannot be undone. This will permanently delete your link.
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel className="bg-gray-200 text-gray-800 hover:bg-gray-300" onClick={() => setLinkToDeleteIndex(null)}>Cancel</AlertDialogCancel>
-                        <AlertDialogAction className="bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 text-white font-bold px-6 py-2 rounded-lg shadow hover:from-blue-500 hover:via-indigo-600 hover:to-purple-600 transition-all duration-300" onClick={handleDeleteLink}>Continue</AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
         {/* Delete Profile Button */}
         {/* Removed the old button, keep only the AlertDialog trigger in the menu */}
         <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
