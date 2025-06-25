@@ -297,8 +297,8 @@ const PrivateProfile = () => {
     if (typeof url !== 'string') return <Globe size={20} className="text-gray-400" />;
     try {
       const domain = new URL(url).hostname.replace(/^www\./, '');
-      if (domain.endsWith('clinkr.live')) {
-        return <img src={logo} alt="Clinkr" className="w-5 h-5 rounded-full bg-white border border-indigo-200" />;
+      if (domain.includes('clinkr.live')) {
+        return <img src={logo} alt="Clinkr" className="w-5 h-5 rounded-full bg-white border border-indigo-200" style={{objectFit:'contain', background:'#fff'}} />;
       }
       // Use react-social-icons for known domains
       if (/^(facebook|twitter|linkedin|github|instagram|youtube|tiktok|pinterest|snapchat|reddit|whatsapp|telegram|discord|medium|dribbble|behance|codepen|dev\.to|stackoverflow|twitch|slack|spotify|soundcloud|apple|google|amazon|paypal|patreon|buymeacoffee|substack|wordpress|blogspot|tumblr|flickr|vimeo|bandcamp|goodreads|kofi|strava|mastodon|kickstarter|producthunt|quora|rss|rss2|rss3|rss4|rss5)\./i.test(domain)) {
