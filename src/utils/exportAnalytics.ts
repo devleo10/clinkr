@@ -1,6 +1,13 @@
 import { supabase } from '../lib/supabaseClient';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
+import { UserOptions } from 'jspdf-autotable';
+
+declare module 'jspdf' {
+  interface jsPDF {
+    autoTable: (options: UserOptions) => jsPDF;
+  }
+}
 
 interface AnalyticsData {
   link_url: string;
@@ -47,7 +54,7 @@ export const exportAnalyticsData = async (userId: string, options: { format: 'cs
     } else if (options.format === 'pdf') {
       const doc = new jsPDF();
       doc.text('Analytics Data', 14, 16);
-      (doc as any).autoTable({
+      doc.autoTable({
         head: [headers],
         body: rows,
       });
