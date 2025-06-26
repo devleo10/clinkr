@@ -18,6 +18,7 @@ interface AnalyticsItem {
   lat: number | null;
   lng: number | null;
   created_at: string;
+  link_url?: string; // Added property to fix compile error
 }
 
 interface ProfileView {
@@ -224,25 +225,33 @@ const Trends = () => {
       }
     });
     
-    // Calculate peak time
+    // Calculate peak time (12-hour format)
     const viewsByHour = profileViews.reduce((acc: {[key: string]: number}, item) => {
-      const hour = new Date(item.viewed_at).getHours(); // Ensure using the correct column name
+      const hour = new Date(item.viewed_at).getHours();
       acc[hour] = (acc[hour] || 0) + 1;
       return acc;
     }, {});
-    
+
     let peakHour = 0;
     let maxViewsPerHour = 0;
-    
+
     Object.entries(viewsByHour).forEach(([hour, count]) => {
       if (count > maxViewsPerHour) {
         maxViewsPerHour = count;
         peakHour = parseInt(hour);
       }
     });
-    
-    // Ensure peakHour is valid before calculating peakTimeRange
-    const peakTimeRange = peakHour !== undefined ? `${peakHour}-${peakHour + 2} ${peakHour >= 12 ? 'PM' : 'AM'}` : "N/A";
+
+    // Format peak time in 12-hour format
+    function formatHour12(hour: number) {
+      const period = hour >= 12 ? 'PM' : 'AM';
+      let h = hour % 12;
+      if (h === 0) h = 12;
+      return `${h} ${period}`;
+    }
+    const peakTimeRange = peakHour !== undefined
+      ? `${formatHour12(peakHour)} - ${formatHour12((peakHour + 2) % 24)}`
+      : "N/A";
     
     // Update view trends
     setViewTrends({
@@ -255,29 +264,55 @@ const Trends = () => {
     
     // Calculate engagement metrics
     
-    // 1. Average time on link (if we had timestamp data, this would be more accurate)
-    // For now, we'll use a placeholder calculation
-    const avgTimeValue = totalClicks > 0 ? `${Math.round(totalViews / totalClicks * 60)}s` : "0s";
-    const timeChangePercent = 8; // Placeholder
+    // 1. Average time on link (using created_at timestamps)
+    let avgTimeValue = "0s";
+    let timeChangePercent = 0;
+    if (clicks.length > 1) {
+      // Group clicks by user_id and link_url
+      const grouped: { [key: string]: AnalyticsItem[] } = {};
+      clicks.forEach(item => {
+        const key = `${item.user_id || ''}|${item.link_url || ''}`;
+        if (!grouped[key]) grouped[key] = [];
+        grouped[key].push(item);
+      });
+      // Collect all time differences
+      let totalDuration = 0;
+      let count = 0;
+      Object.values(grouped).forEach(events => {
+        // Sort by created_at
+        const sorted = events.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
+        for (let i = 1; i < sorted.length; i++) {
+          const diff = (new Date(sorted[i].created_at).getTime() - new Date(sorted[i - 1].created_at).getTime()) / 1000;
+          // Only count reasonable durations (e.g., less than 1 hour)
+          if (diff > 0 && diff < 3600) {
+            totalDuration += diff;
+            count++;
+          }
+        }
+      });
+      const avgSeconds = count > 0 ? Math.round(totalDuration / count) : 0;
+      avgTimeValue = avgSeconds > 60 ? `${Math.floor(avgSeconds / 60)}m ${avgSeconds % 60}s` : `${avgSeconds}s`;
+      // timeChangePercent: not enough data for previous period, so keep as 0
+    }
     
-    // 2. Bounce rate (single page visits)
-    // We'll define bounce as users who only viewed once
-    const viewerCounts = profileViews.reduce((acc: {[key: string]: number}, item) => {
-      acc[item.viewer_hash] = (acc[item.viewer_hash] || 0) + 1;
+    // 2. Bounce rate (single page visits, dynamic)
+    // We'll define bounce as users who only clicked once in the period
+    const clickViewerCounts = clicks.reduce((acc: {[key: string]: number}, item) => {
+      acc[item.user_id] = (acc[item.user_id] || 0) + 1;
       return acc;
     }, {});
+    const singleClickers = Object.values(clickViewerCounts).filter(count => count === 1).length;
+    const totalClickViewers = Object.keys(clickViewerCounts).length || 1;
+    const bounceRate = Math.round((singleClickers / totalClickViewers) * 100);
     
-    const singleViewers = Object.values(viewerCounts).filter(count => count === 1).length;
-    const totalViewers = Object.keys(viewerCounts).length || 1;
-    const bounceRate = Math.round((singleViewers / totalViewers) * 100);
-    const bounceChangePercent = -5; // Placeholder, negative is good
+    // 3. Return visits (dynamic)
+    const returningClickers = Object.values(clickViewerCounts).filter(count => count > 1).length;
+    const returnRate = Math.round((returningClickers / totalClickViewers) * 100);
     
-    // 3. Return visits
-    const returningViewers = Object.values(viewerCounts).filter(count => count > 1).length;
-    const returnRate = Math.round((returningViewers / totalViewers) * 100);
-    const returnChangePercent = 12; // Placeholder
-    
-    // Update engagement data
+    // Set change as 0 for now (needs previous period for real change)
+    const bounceChangePercent = 0;
+    const returnChangePercent = 0;
+
     setEngagementData([
       { metric: "Avg. Time on Link", value: avgTimeValue, trend: "up", change: timeChangePercent },
       { metric: "Bounce Rate", value: `${bounceRate}%`, trend: "down", change: Math.abs(bounceChangePercent) },
