@@ -136,7 +136,6 @@ const Geography = () => {
         .order('created_at', { ascending: false });
 
       if (error) {
-        console.error('Error fetching data:', error);
         setError('Failed to fetch analytics data');
         return;
       }
@@ -148,7 +147,6 @@ const Geography = () => {
       processData(data || []);
       
     } catch (err) {
-      console.error('Error in fetchData:', err);
       setError('Failed to process location data');
     } finally {
       setIsLoading(false);
@@ -261,8 +259,6 @@ const Geography = () => {
     
     setRegionClusters(clusters);
     
-    // Log success message
-    console.log(`Successfully loaded ${validPoints.length} location points for heatmap and ${clusters.length} region clusters`);
   };
 
   // Effect hook to fetch data
@@ -277,45 +273,39 @@ const Geography = () => {
 
   return (
     <div className="w-full h-full">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold">Geographical Insights</h2>
-        
-        <div className="flex gap-4">
-          {/* Time Period Filter */}
-          <div>
-            <Tabs defaultValue={timeFrame} onValueChange={(value) => setTimeFrame(value as "7days" | "30days" | "90days")}>
-              <TabsList>
-                <TabsTrigger value="7days">7 Days</TabsTrigger>
-                <TabsTrigger value="30days">30 Days</TabsTrigger>
-                <TabsTrigger value="90days">90 Days</TabsTrigger>
-              </TabsList>
-            </Tabs>
-          </div>
-          
-          {/* Device Filter */}
-          <div className="flex items-center gap-2">
-            <Filter size={16} />
-            <Select value={deviceFilter} onValueChange={(value) => setDeviceFilter(value as "all" | "mobile" | "desktop")}>
-              <SelectTrigger className="w-[150px]">
-                <SelectValue placeholder="Device Type" />
-              </SelectTrigger>
-              <SelectContent className='z-[9999]'>
-                <SelectItem value="all">All Devices</SelectItem>
-                <SelectItem value="mobile">Mobile Only</SelectItem>
-                <SelectItem value="desktop">Desktop Only</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          
-          {/* View Mode Toggle */}
-          <div>
-            <Tabs defaultValue={viewMode} onValueChange={(value) => setViewMode(value as "heatmap" | "clusters")}>
-              <TabsList>
-                <TabsTrigger value="heatmap">Heatmap</TabsTrigger>
-                <TabsTrigger value="clusters">Regions</TabsTrigger>
-              </TabsList>
-            </Tabs>
-          </div>
+      <div className="flex flex-col md:flex-row md:gap-4 gap-2 w-full mb-4">        
+        {/* Time Period Filter */}
+        <div className="w-full md:w-auto">
+          <Tabs defaultValue={timeFrame} onValueChange={(value) => setTimeFrame(value as "7days" | "30days" | "90days")}> 
+            <TabsList className="w-full md:w-auto">
+              <TabsTrigger value="7days">7 Days</TabsTrigger>
+              <TabsTrigger value="30days">30 Days</TabsTrigger>
+              <TabsTrigger value="90days">90 Days</TabsTrigger>
+            </TabsList>
+          </Tabs>
+        </div>
+        {/* Device Filter */}
+        <div className="flex items-center gap-2 w-full md:w-auto">
+          <Filter size={16} />
+          <Select value={deviceFilter} onValueChange={(value) => setDeviceFilter(value as "all" | "mobile" | "desktop")}> 
+            <SelectTrigger className="w-full md:w-[150px]">
+              <SelectValue placeholder="Device Type" />
+            </SelectTrigger>
+            <SelectContent className='z-[9999]'>
+              <SelectItem value="all">All Devices</SelectItem>
+              <SelectItem value="mobile">Mobile Only</SelectItem>
+              <SelectItem value="desktop">Desktop Only</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        {/* View Mode Toggle */}
+        <div className="w-full md:w-auto">
+          <Tabs defaultValue={viewMode} onValueChange={(value) => setViewMode(value as "heatmap" | "clusters")}> 
+            <TabsList className="w-full md:w-auto">
+              <TabsTrigger value="heatmap">Heatmap</TabsTrigger>
+              <TabsTrigger value="clusters">Regions</TabsTrigger>
+            </TabsList>
+          </Tabs>
         </div>
       </div>
       
