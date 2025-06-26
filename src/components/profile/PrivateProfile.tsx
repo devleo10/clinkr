@@ -12,6 +12,7 @@ import Cropper from 'react-easy-crop';
 import Modal from 'react-modal';
 import { Globe } from 'lucide-react';
 import { SocialIcon } from 'react-social-icons';
+import { MoreVertical } from "lucide-react";
 
 interface UserProfile {
   username: string;
@@ -88,7 +89,6 @@ const PrivateProfile = () => {
   
       setProfile(profileData);
     } catch (err: any) {
-      console.error('Profile fetch error:', err);
       setError(err.message);
     } finally {
       setLoading(false);
@@ -308,6 +308,46 @@ const PrivateProfile = () => {
       return <Globe size={20} className="text-gray-400" />;
     } catch {
       return <Globe size={20} className="text-gray-400" />;
+    }
+  };
+
+  const [editLinkIndex, setEditLinkIndex] = useState<number | null>(null);
+  const [editLinkData, setEditLinkData] = useState({ url: '', title: '' });
+  const [editLinkError, setEditLinkError] = useState<string | null>(null);
+
+  const handleEditLink = (index: number) => {
+    setEditLinkIndex(index);
+    setEditLinkData({
+      url: typeof links[index].url === 'string' ? links[index].url : '',
+      title: typeof links[index].title === 'string' ? links[index].title : '',
+    });
+    setEditLinkError(null);
+  };
+
+  const handleEditLinkSave = async () => {
+    if (!editLinkData.url || !editLinkData.title) {
+      setEditLinkError('Please enter both URL and title.');
+      return;
+    }
+    if (profile && editLinkIndex !== null) {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) throw new Error('No user found');
+        const updatedLinks = [...profile.links];
+        const updatedLinkTitles = [...profile.link_title];
+        updatedLinks[editLinkIndex] = editLinkData.url;
+        updatedLinkTitles[editLinkIndex] = editLinkData.title;
+        const { error: updateError } = await supabase
+          .from('profiles')
+          .update({ links: updatedLinks, link_title: updatedLinkTitles })
+          .eq('id', user.id);
+        if (updateError) throw updateError;
+        setProfile(prev => prev ? { ...prev, links: updatedLinks, link_title: updatedLinkTitles } : null);
+        setEditLinkIndex(null);
+        setEditLinkData({ url: '', title: '' });
+      } catch (err: any) {
+        setEditLinkError(err.message);
+      }
     }
   };
 
@@ -547,7 +587,7 @@ const PrivateProfile = () => {
                 <textarea
                   value={editedBio}
                   onChange={(e) => setEditedBio(e.target.value)}
-                  className="w-full p-2 border rounded-md focus:ring-2 focus:ring-[#4F46E5] focus:border-transparent"
+                  className="w-full p-2 border rounded-md  focus:ring-[#4F46E5] focus:border-transparent"
                   placeholder="Write your bio..."
                   rows={3}
                 />
@@ -604,6 +644,14 @@ const PrivateProfile = () => {
                     </a>
                   </div>
                   <div className="flex items-center gap-2 ml-2 flex-shrink-0">
+                    {/* Three dot menu for edit - vertical, opens form directly */}
+                    <button
+                      className="p-2 rounded-full hover:bg-gradient-to-r hover:from-purple-100 hover:via-indigo-100 hover:to-blue-100 focus:outline-none transition-colors"
+                      aria-label="Edit link"
+                      onClick={() => handleEditLink(index)}
+                    >
+                      <MoreVertical className="h-5 w-5 text-gray-500" />
+                    </button>
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
                         <FaTrash
@@ -685,6 +733,44 @@ const PrivateProfile = () => {
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
+
+        {/* Edit Link Modal */}
+        {editLinkIndex !== null && (
+          <Modal
+            isOpen={editLinkIndex !== null}
+            onRequestClose={() => setEditLinkIndex(null)}
+            ariaHideApp={false}
+            style={{ overlay: { zIndex: 1000 } }}
+          >
+            <div className="flex flex-col items-center p-4">
+              <h2 className="mb-2 font-bold">Edit Link</h2>
+              <input
+                type="text"
+                value={editLinkData.url}
+                onChange={e => setEditLinkData(prev => ({ ...prev, url: e.target.value }))}
+                placeholder="Edit link URL"
+                className="border rounded-md p-2 w-full mb-2 focus:ring-[#4F46E5] focus:border-[#4F46E5] hover:border-[#4F46E5]"
+              />
+              <input
+                type="text"
+                value={editLinkData.title}
+                onChange={e => setEditLinkData(prev => ({ ...prev, title: e.target.value }))}
+                placeholder="Edit link title"
+                className="border rounded-md p-2 w-full mb-2 focus:ring-[#4F46E5] focus:border-[#4F46E5] hover:border-[#4F46E5]"
+              />
+              {editLinkError && <span className="text-xs text-red-500 mb-2">{editLinkError}</span>}
+              <div className="flex gap-2 mt-2">
+                <button className="px-4 py-2 bg-gray-200 rounded" onClick={() => setEditLinkIndex(null)}>Cancel</button>
+                <button
+                  className="px-4 py-2 rounded text-white font-bold bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 shadow hover:from-blue-500 hover:via-indigo-600 hover:to-purple-600 transition-all duration-300"
+                  onClick={handleEditLinkSave}
+                >
+                  Save
+                </button>
+              </div>
+            </div>
+          </Modal>
+        )}
       </div>
     );
 };

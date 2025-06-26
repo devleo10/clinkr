@@ -9,8 +9,8 @@ const FAQ = () => {
       category: "General Questions",
       items: [
         {
-          question: "How is ClipMetrics different from other alternatives?",
-          answer: "ClipMetrics gives you real-time click analytics for free—no upgrades needed to see which links perform best."
+          question: "How is Clinkr different from other alternatives?",
+          answer: "Clinkr gives you real-time click analytics for free—no upgrades needed to see which links perform best."
         },
         {
           question: "Is there really a free plan?",
@@ -23,7 +23,7 @@ const FAQ = () => {
       items: [
         {
           question: "How do I add links to my bio?",
-          answer: "Sign up, paste your URL, and we'll generate a custom 'clipmetrics.com/yourname' page. Share that in your bio!"
+          answer: "Sign up, paste your URL, and we'll generate a custom 'Clinkr.com/yourname' page. Share that in your bio!"
         },
         {
           question: "Can I customize how my links look?",
