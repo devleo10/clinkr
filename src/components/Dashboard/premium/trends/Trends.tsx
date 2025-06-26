@@ -249,9 +249,13 @@ const Trends = () => {
       if (h === 0) h = 12;
       return `${h} ${period}`;
     }
-    const peakTimeRange = peakHour !== undefined
-      ? `${formatHour12(peakHour)} - ${formatHour12((peakHour + 2) % 24)}`
-      : "N/A";
+    // Only set peak time if there is data
+    let peakTimeRange = "N/A";
+    if (profileViews.length > 0) {
+      peakTimeRange = peakHour !== undefined
+        ? `${formatHour12(peakHour)} - ${formatHour12((peakHour + 2) % 24)}`
+        : "N/A";
+    }
     
     // Update view trends
     setViewTrends({
@@ -322,46 +326,42 @@ const Trends = () => {
     // Generate insights
     const insights = [];
     
-    // Click-through rate insight
-    if (totalViews > 0) {
+    // Only push insights if there is enough data
+    if (totalClicks > 0 && totalViews > 0) {
+      // Click-through rate insight
       const ctr = Math.round((totalClicks / totalViews) * 100);
       insights.push(`Click-through rate is ${ctr}% ${growthRate > 0 ? 'and growing' : 'but declining'}`); 
-    }
-    
-    // Peak engagement insight
-    insights.push(`Peak engagement occurs on ${peakDay || peakViewDay} during ${peakTimeRange}`);
-    
-    // Device-specific insight
-    const mobileClicks = analytics.filter(item => 
-      item.event_type === "click" && 
-      (item.device_type.toLowerCase().includes("mobile") || item.device_type.toLowerCase().includes("tablet"))
-    ).length;
-    
-    const desktopClicks = analytics.filter(item => 
-      item.event_type === "click" && 
-      (item.device_type.toLowerCase().includes("desktop") || item.device_type.toLowerCase().includes("laptop"))
-    ).length;
-    
-    if (mobileClicks > desktopClicks) {
-      insights.push(`Mobile engagement dominates with ${Math.round((mobileClicks / totalClicks) * 100)}% of clicks`);
-    } else {
-      insights.push(`Desktop users are more engaged with ${Math.round((desktopClicks / totalClicks) * 100)}% of clicks`);
-    }
-    
-    // Browser insight if we have enough data
-    const browserCounts = analytics.reduce((acc: {[key: string]: number}, item) => {
-      if (item.browser) {
-        acc[item.browser] = (acc[item.browser] || 0) + 1;
+
+      // Peak engagement insight
+      insights.push(`Peak engagement occurs on ${peakDay || peakViewDay} during ${peakTimeRange}`);
+
+      // Device-specific insight
+      const mobileClicks = analytics.filter(item => 
+        item.event_type === "click" && 
+        (item.device_type?.toLowerCase().includes("mobile") || item.device_type?.toLowerCase().includes("tablet"))
+      ).length;
+      const desktopClicks = analytics.filter(item => 
+        item.event_type === "click" && 
+        (item.device_type?.toLowerCase().includes("desktop") || item.device_type?.toLowerCase().includes("laptop"))
+      ).length;
+      if (mobileClicks > desktopClicks) {
+        insights.push(`Mobile engagement dominates with ${Math.round((mobileClicks / totalClicks) * 100)}% of clicks`);
+      } else if (desktopClicks > 0) {
+        insights.push(`Desktop users are more engaged with ${Math.round((desktopClicks / totalClicks) * 100)}% of clicks`);
       }
-      return acc;
-    }, {});
-    
-    if (Object.keys(browserCounts).length > 0) {
-      const topBrowser = Object.entries(browserCounts).sort((a, b) => b[1] - a[1])[0];
-      insights.push(`${topBrowser[0]} users show highest engagement at ${Math.round((topBrowser[1] / totalClicks) * 100)}%`);
+
+      // Browser insight if we have enough data
+      const browserCounts = analytics.reduce((acc: {[key: string]: number}, item) => {
+        if (item.browser) {
+          acc[item.browser] = (acc[item.browser] || 0) + 1;
+        }
+        return acc;
+      }, {});
+      if (Object.keys(browserCounts).length > 0) {
+        const topBrowser = Object.entries(browserCounts).sort((a, b) => b[1] - a[1])[0];
+        insights.push(`${topBrowser[0]} users show highest engagement at ${Math.round((topBrowser[1] / totalClicks) * 100)}%`);
+      }
     }
-    
-    // Update insights
     setTrendInsights(insights);
   };
 
