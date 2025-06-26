@@ -397,7 +397,7 @@ const PublicProfile = () => {
       >
         {/* Profile Picture Section */}
         <motion.div 
-          className="w-24 h-24 mx-auto rounded-full bg-gray-200 flex items-center justify-center overflow-hidden mb-4 relative"
+          className="w-24 h-24 mx-auto rounded-full bg-white flex items-center justify-center overflow-hidden mb-4 relative"
           variants={itemVariants}
           whileHover={{ scale: 1.05, boxShadow: '0 0 15px rgba(79, 70, 229, 0.3)' }}
         >

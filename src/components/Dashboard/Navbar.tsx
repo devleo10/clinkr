@@ -3,7 +3,7 @@ import logo from '../../assets/Frame.png';
 
 const Navbar = () => {
   return (
-    <nav className="border-b bg-[#f9faf7f8] mb-8 px-4 sm:px-6 py-3">
+    <nav className="border-b mb-8 px-4 sm:px-6 py-3">
       <div className="max-w-7xl mx-auto flex flex-col items-center">
         <div className="flex items-center justify-between w-full">
           {/* Logo + Brand */}
@@ -24,9 +24,7 @@ const Navbar = () => {
           </div>
 
           {/* Centered Analytics Dashboard text */}
-          <span className="font-bold text-2xl sm:text-3xl text-gray-800 text-center w-1/3">
-            Analytics Dashboard
-          </span>
+          
 
           {/* Right Section */}
           <div className="flex items-center space-x-2 sm:space-x-4 w-1/4 justify-end">

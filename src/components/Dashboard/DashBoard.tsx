@@ -31,11 +31,6 @@ const DashBoard = () => {
     setSearchQuery(e.target.value);
   };
 
-
-
-
- 
-
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -51,6 +46,12 @@ const DashBoard = () => {
           transition={{ duration: 0.3 }}
           className="bg-white rounded-lg shadow-lg p-6 mb-8"
         >
+          {/* Analytics Dashboard Heading */}
+          <div className="flex flex-col items-center mb-6">
+            <h1 className="font-bold text-2xl sm:text-3xl text-gray-800 text-center">
+              Analytics Dashboard
+            </h1>
+          </div>
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="relative w-full sm:max-w-md">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">

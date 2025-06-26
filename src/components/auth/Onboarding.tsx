@@ -135,6 +135,16 @@ const Onboarding = () => {
       const { data: { user }, error: userError } = await supabase.auth.getUser();
       if (userError || !user) throw new Error(userError?.message || 'No user found');
   
+      // Reserved route/usernames to protect
+      const reservedUsernames = [
+        'dashboard', 'premiumdashboard', 'admin', 'login', 'signup', 'profile', 'settings', 'api', 'public', 'privateprofile', 'homepage', 'about', 'contact', 'terms', 'privacy', 'faq', 'features', 'pricing', 'logout', 'user', 'users', 'static', 'assets', 'vercel', 'next', 'app', 'src', 'components', 'lib', 'publicprofile', 'clinkr',
+      ];
+      if (reservedUsernames.includes(formData.username.trim().toLowerCase())) {
+        alert('This username is reserved. Please choose another one.');
+        setIsLoading(false);
+        return;
+      }
+  
       // Check username uniqueness
       const { data: existingUser } = await supabase
         .from('profiles')
@@ -442,7 +452,7 @@ const Onboarding = () => {
               <button
                 onClick={handlePrevStep}
                 disabled={isLoading}
-                className="flex-1 py-2 px-4 border border-gray-300 focus:outline-none rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="flex-1 py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 Back
               </button>

@@ -349,7 +349,7 @@ const PrivateProfile = () => {
         {/* Profile Content */}
         <div className="text-center relative">
           {/* Profile Picture Section */}
-          <div className="w-28 h-28 mx-auto rounded-full bg-gradient-to-tr from-indigo-100 via-purple-100 to-blue-100 flex items-center justify-center overflow-hidden mb-4 relative group shadow-lg border-4 border-white">
+          <div className="w-28 h-28 mx-auto rounded-full bg-white flex items-center justify-center overflow-hidden mb-4 relative group shadow-lg border-4 border-white">
             {loading && (
               <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 z-20">
                 <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-500"></div>
