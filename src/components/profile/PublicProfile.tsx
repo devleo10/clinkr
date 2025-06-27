@@ -7,7 +7,7 @@ import { supabase } from '../../lib/supabaseClient';
 import { FaUser } from 'react-icons/fa';
 import { SocialIcon } from 'react-social-icons';
 import { motion, AnimatePresence } from 'framer-motion';
-import {  MoreVertical } from "lucide-react";
+import { MoreHorizontal } from "lucide-react";
 import { Globe } from 'lucide-react';
 
 interface UserProfile {
@@ -18,53 +18,6 @@ interface UserProfile {
   link_title: string[];
   id: string;
 }
-
-// Animation variants for staggered animations
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.3
-    }
-  }
-};
-
-const itemVariants = {
-  hidden: { y: 20, opacity: 0 },
-  visible: {
-    y: 0,
-    opacity: 1,
-    transition: {
-      type: 'spring',
-      stiffness: 300,
-      damping: 24
-    }
-  }
-};
-
-const floatingOrbVariants = {
-  animate: {
-    y: ['-5%', '5%'],
-    x: ['-2%', '2%'],
-    transition: {
-      y: {
-        duration: 3,
-        repeat: Infinity,
-        repeatType: 'reverse',
-        ease: 'easeInOut'
-      },
-      x: {
-        duration: 4,
-        repeat: Infinity,
-        repeatType: 'reverse',
-        ease: 'easeInOut'
-      }
-    }
-  }
-};
-
 
 const PublicProfile = () => {
   const { username } = useParams();
@@ -311,18 +264,14 @@ const PublicProfile = () => {
       <div className="fixed inset-0 -z-10 bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-gray-900 dark:to-black" />
       <motion.div 
         className="absolute top-0 left-0 w-64 h-64 rounded-full bg-gradient-to-r from-purple-100 to-blue-100 opacity-30 blur-3xl -z-10"
-        variants={floatingOrbVariants}
-        animate="animate"
       />
       <motion.div 
         className="absolute bottom-20 right-0 w-80 h-80 rounded-full bg-gradient-to-r from-blue-100 to-indigo-100 opacity-30 blur-3xl -z-10"
-        variants={floatingOrbVariants}
         animate="animate"
         transition={{ delay: 0.5 }}
       />
       <motion.div 
         className="absolute top-1/2 left-1/4 w-40 h-40 rounded-full bg-gradient-to-r from-pink-100 to-purple-100 opacity-20 blur-3xl -z-10"
-        variants={floatingOrbVariants}
         animate="animate"
         transition={{ delay: 1 }}
       />
@@ -352,55 +301,57 @@ const PublicProfile = () => {
       {/* Profile Content */}
       <motion.div 
         className="text-center relative"
-        variants={containerVariants}
         initial="hidden"
         animate="visible"
       >
         {/* Profile Picture Section */}
         <motion.div 
-          className="w-24 h-24 mx-auto rounded-full bg-white flex items-center justify-center overflow-hidden mb-4 relative"
-          variants={itemVariants}
-          whileHover={{ scale: 1.05, boxShadow: '0 0 15px rgba(79, 70, 229, 0.3)' }}
+          className="w-32 h-32 mx-auto rounded-full bg-gradient-to-tr from-purple-500 via-indigo-500 to-blue-400 p-1 flex items-center justify-center overflow-visible mb-4 relative shadow-lg"
+          whileHover={{ scale: 1.05, boxShadow: '0 0 25px rgba(79, 70, 229, 0.4)' }}
         >
-          {loading ? (
-            <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30">
-              <motion.div 
-                className="rounded-full h-8 w-8 border-b-2 border-white"
-                animate={{ rotate: 360 }}
-                transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+          <div className="w-full h-full rounded-full bg-white flex items-center justify-center overflow-hidden">
+            {loading ? (
+              <div className="absolute inset-0 flex items-center justify-center bg-transparent">
+                <motion.div 
+                  className="rounded-full h-8 w-8 border-b-2 border-white"
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                />
+              </div>
+            ) : profile?.profile_picture ? (
+              <motion.img
+                src={profile.profile_picture}
+                alt={profile.username}
+                className="w-full h-full object-cover rounded-full"
+                initial={{ scale: 1.1, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.3 }}
+                style={{ background: 'transparent' }}
               />
-            </div>
-          ) : profile?.profile_picture ? (
-            <motion.img
-              src={profile.profile_picture}
-              alt={profile.username}
-              className="w-full h-full object-cover"
-              initial={{ scale: 1.1, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 0.3 }}
-            />
-          ) : (
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 0.3 }}
-            >
-              <FaUser size={40} />
-            </motion.div>
-          )}
-          {error && (
-            <motion.div 
-              className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-red-100 text-red-600 text-xs py-1 px-2 rounded-md whitespace-nowrap"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
-            >
-              {error}
-            </motion.div>
-          )}
+            ) : (
+              <motion.div
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.3 }}
+              >
+                <FaUser size={60} />
+              </motion.div>
+            )}
+            {error && (
+              <motion.div 
+                className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-red-100 text-red-600 text-xs py-1 px-2 rounded-md whitespace-nowrap"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+              >
+                {error}
+              </motion.div>
+            )}
+          </div>
         </motion.div>
+    
   
-        <motion.div className="text-center" variants={itemVariants}>
+        <motion.div className="text-center" >
           <motion.h1 
             className="text-2xl font-bold"
             initial={{ opacity: 0 }}
@@ -412,7 +363,7 @@ const PublicProfile = () => {
         </motion.div>
   
   
-        <motion.div className="text-center" variants={itemVariants}>
+        <motion.div className="text-center">
           <motion.p 
             className="text-gray-700 mt-2"
             initial={{ opacity: 0 }}
@@ -425,8 +376,7 @@ const PublicProfile = () => {
   
         {/* Links Section */}
         <motion.div 
-          className="mt-6 space-y-4 max-w-md mx-auto"
-          variants={containerVariants}
+          className="mt-8 space-y-6 max-w-xl mx-auto"
           initial="hidden"
           animate="visible"
         >
@@ -434,36 +384,39 @@ const PublicProfile = () => {
             {links.map((link, index) => (
               <motion.div 
                 key={index}
-                variants={itemVariants}
                 initial="hidden"
                 animate="visible"
-                exit={{ opacity: 0, y: 20 }}
-                whileHover={{ scale: 1.02 }}
-                transition={{ delay: index * 0.05 }}
               >
-                <Card className="hover:shadow-md transition-shadow">
-                  <CardContent className="flex items-center justify-between p-4">
-                    <div className="flex items-center gap-3 flex-grow justify-center">
+                <Card className="hover:shadow-lg transition-shadow rounded-2xl border-2 border-gray-100 bg-white/80 p-2">
+                  <CardContent className="flex flex-col md:flex-row items-center justify-between gap-2 md:gap-4 p-6">
+                    <div className="flex items-center gap-4 flex-grow w-full">
                       <motion.span 
                         className="flex-shrink-0"
                         whileHover={{ rotate: [0, -10, 10, -5, 5, 0], scale: 1.1 }}
                         transition={{ duration: 0.5 }}
                       >
-                        {getSocialIcon(link.url)}
+                        {getSocialIcon(link.url, 36)}
                       </motion.span>
-                      <motion.a
-                        href={link.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-gray-800 hover:text-indigo-600 transition-colors truncate"
-                        onClick={(e) => handleLinkClick(link.url, index, e)}
-                        whileHover={{ x: 3 }}
-                        transition={{ type: 'spring', stiffness: 400 }}
-                      >
-                        {link.title}
-                      </motion.a>
+                      <div className="flex flex-col items-start w-full">
+                        <span className="text-lg font-semibold text-gray-900 truncate">{link.title}</span>
+                        <a
+                          href={link.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-sm text-gray-500 hover:text-indigo-600 transition-colors truncate max-w-[180px] md:max-w-[250px] lg:max-w-[320px] block"
+                          style={{
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap',
+                            display: 'block',
+                            maxWidth: '100%'
+                          }}
+                          onClick={(e) => handleLinkClick(link.url, index, e)}
+                        >
+                          {link.url}
+                        </a>
+                      </div>
                     </div>
-                    {/* Three dot menu for link actions - vertical, matching PrivateProfile */}
                     <button
                       className="p-2 rounded-full hover:bg-gradient-to-r hover:from-purple-100 hover:via-indigo-100 hover:to-blue-100 focus:outline-none transition-colors"
                       aria-label="Link actions"
@@ -472,7 +425,7 @@ const PublicProfile = () => {
                         setOpenDropdownIndex(index);
                       }}
                     >
-                      <MoreVertical className="h-5 w-5 text-gray-500" />
+                      <MoreHorizontal className="h-5 w-5 text-gray-500" />
                     </button>
                     {openDropdownIndex === index && (
                       <div className="absolute right-8 top-10 z-50 bg-white border rounded-md shadow-lg p-2 flex flex-col min-w-[150px]">

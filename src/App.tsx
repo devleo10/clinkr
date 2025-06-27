@@ -12,10 +12,11 @@ import { AuthProvider } from "./components/auth/AuthProvider";
 import PrivacyPolicy from "./components/legal/PrivacyPolicy";
 import TermsOfService from "./components/legal/TermsOfService";
 import CookiePolicy from "./components/legal/CookiePolicy";
-import { Analytics } from "@vercel/analytics/react"
+import { Analytics } from "@vercel/analytics/react";
+import About from "./components/homepage/About";
 
 function App() {
-  <Analytics/>
+  <Analytics />;
   const router = createBrowserRouter([
     {
       path: "/",
@@ -61,7 +62,10 @@ function App() {
         </ProtectedRoute>
       ),
     },
-  
+    {
+      path: "/about",
+      element: <About />,
+    },
     {
       path: "/:username",
       element: <PublicProfile />,

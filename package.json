@@ -31,6 +31,7 @@
     "leaflet.heat": "^0.2.0",
     "lodash": "^4.17.21",
     "lucide-react": "^0.502.0",
+    "motion": "^12.19.1",
     "razorpay": "^2.9.6",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
@@ -43,7 +44,8 @@
     "react-router-dom": "^7.6.2",
     "react-social-icons": "^6.24.0",
     "recharts": "^2.15.3",
-    "tailwind-merge": "^3.2.0",
+    "simplex-noise": "^4.0.3",
+    "tailwind-merge": "^3.3.1",
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {

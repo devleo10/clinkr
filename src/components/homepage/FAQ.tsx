@@ -9,12 +9,20 @@ const FAQ = () => {
       category: "General Questions",
       items: [
         {
+          question: "What is Clinkr?",
+          answer: "Clinkr is a modern link-in-bio and analytics platform that helps you organize all your important links and track audience engagement in real time."
+        },
+        {
           question: "How is Clinkr different from other alternatives?",
           answer: "Clinkr gives you real-time click analytics for free—no upgrades needed to see which links perform best."
         },
         {
           question: "Is there really a free plan?",
           answer: "Yes! Track unlimited links forever. Premium only adds advanced features like geographic data."
+        },
+        {
+          question: "Is my data private and secure?",
+          answer: "Absolutely. We never sell your data, and you control your information. All analytics are anonymized."
         }
       ]
     },
@@ -23,11 +31,19 @@ const FAQ = () => {
       items: [
         {
           question: "How do I add links to my bio?",
-          answer: "Sign up, paste your URL, and we'll generate a custom 'Clinkr.com/yourname' page. Share that in your bio!"
+          answer: "Sign up, paste your URL, and we'll generate a custom 'clinkr.live/yourname' page. Share that in your bio!"
         },
         {
           question: "Can I customize how my links look?",
           answer: "Yes! Edit titles, add thumbnails, and reorder links anytime."
+        },
+        {
+          question: "Can I see which links are most popular?",
+          answer: "Yes, your dashboard shows real-time analytics for every link, including clicks, top countries, and devices."
+        },
+        {
+          question: "How do I reset my password?",
+          answer: "Go to the login page and click 'Forgot Password' to receive a reset link via email."
         }
       ]
     },
@@ -35,12 +51,16 @@ const FAQ = () => {
       category: "Premium Features",
       items: [
         {
-          question: "What's included in the $5/month Premium plan?",
-          answer: "Geo heatmaps, device/browser stats, CSV exports, and custom domains."
+          question: "What's included in the Premium plan?",
+          answer: "Geo heatmaps, device/browser stats, CSV exports, custom domains, and priority support."
         },
         {
           question: "Can I cancel Premium anytime?",
-          answer: "Absolutely. No hidden fees—cancel with one click."
+          answer: "Absolutely. No hidden fees—cancel with one click from your dashboard."
+        },
+        {
+          question: "How do I upgrade to Premium?",
+          answer: "Go to your dashboard and click the 'Upgrade' button. You can pay monthly or annually."
         }
       ]
     }

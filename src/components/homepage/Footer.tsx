@@ -81,6 +81,9 @@ const Footer = () => {
                   FAQ
                 </button>
               </li>
+              <li>
+                <Link to="/about" className="hover:text-white">About</Link>
+              </li>
             </ul>
           </div>
           

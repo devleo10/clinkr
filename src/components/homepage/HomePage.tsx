@@ -3,10 +3,11 @@ import Navbar from './Navbar';
 import Pricing from './Pricing';
 import FAQ from './FAQ';
 import Features from './Features';
-import { Link } from 'react-router-dom';
+import { Link, Route, Routes } from 'react-router-dom';
 import { useAuth } from '../auth/AuthProvider';
 import img from '../../assets/div.png';
 import Footer from './Footer';
+import About from './About';
 
 const HomePage = () => {
   const { session } = useAuth(); // Access the session from the AuthProvider
@@ -14,6 +15,9 @@ const HomePage = () => {
   return (
     <div>
       <Navbar />
+      <Routes>
+        <Route path="/about" element={<About />} />
+      </Routes>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
         <div className="flex flex-col w-full md:flex-row items-center justify-between py-16 gap-8">
           {/* Left Container */}
