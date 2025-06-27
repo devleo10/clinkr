@@ -130,7 +130,7 @@ const PrivateProfile = () => {
       clicks: 0,
       url: typeof url === 'string' ? url : '',
     };
-  }) : [];
+  }) : []; 
   
   const [newLink, setNewLink] = useState({ url: '', title: '' });
   const [linkError, setLinkError] = useState<string | null>(null);
@@ -299,21 +299,21 @@ const PrivateProfile = () => {
   }
 
   // Helper for link icon (generic globe, clinkr logo, or social icon)
-  const getSocialIcon = (url: string) => {
-    if (typeof url !== 'string') return <Globe size={20} className="text-gray-400" />;
+  const getSocialIcon = (url: string, size: number = 25) => {
+    if (typeof url !== 'string') return <Globe size={size} className="text-gray-400" />;
     try {
       const domain = new URL(url).hostname.replace(/^www\./, '');
       if (domain.includes('clinkr.live')) {
-        return <img src={logo} alt="Clinkr" className="w-5 h-5 rounded-full bg-white border border-indigo-200" style={{objectFit:'contain', background:'#fff'}} />;
+        return <img src={logo} alt="Clinkr" className={`w-[${size}px] h-[${size}px] rounded-full bg-white border border-indigo-200`} style={{objectFit:'contain', background:'bg-gradient-to-r from-pink-100 to-purple-100 opacity-20 blur-3xl -z-10', width: size, height: size}} />;
       }
       // Use react-social-icons for known domains
       if (/^(facebook|x|linkedin|github|instagram|youtube|tiktok|pinterest|snapchat|reddit|whatsapp|telegram|discord|medium|dribbble|behance|codepen|dev\.to|stackoverflow|twitch|slack|spotify|soundcloud|apple|google|amazon|paypal|patreon|buymeacoffee|substack|wordpress|blogspot|tumblr|flickr|vimeo|bandcamp|goodreads|kofi|strava|mastodon|kickstarter|producthunt|quora|rss|rss2|rss3|rss4|rss5)\./i.test(domain)) {
-        return <SocialIcon url={url} style={{ width: 20, height: 20 }} />;
+        return <SocialIcon url={url} style={{ width: size, height: size }} />;
       }
       // Otherwise, generic globe
-      return <Globe size={20} className="text-gray-400" />;
+      return <Globe size={size} className="text-gray-400" />;
     } catch {
-      return <Globe size={20} className="text-gray-400" />;
+      return <Globe size={size} className="text-gray-400" />;
     }
   };
 
@@ -648,11 +648,13 @@ const PrivateProfile = () => {
         <div className="mt-8 border-b pb-4">
           <div className="mt-6 space-y-4 max-w-xl mx-auto">
             {links.map((link, index) => (
-              <Card key={index} className="hover:shadow-lg transition-shadow rounded-2xl border-2 border-gray-100 bg-white/80 p-2">
-                <CardContent className="flex flex-col md:flex-row items-center justify-between gap-2 md:gap-4 p-6">
-                  <div className="flex items-center gap-4 flex-grow w-full">
-                    {getSocialIcon(link.url)}
-                    <div className="flex flex-col items-start w-full">
+        <Card className="hover:shadow-lg transition-shadow rounded-2xl border-2 border-gray-100 bg-white/80 p-2">
+                  <CardContent className="flex items-center justify-between gap-2 md:gap-4 p-6">
+                    <div className="flex items-center gap-4 flex-grow min-w-0">
+                      <span className="flex-shrink-0">
+                        {getSocialIcon(link.url, 36)}
+                      </span>
+                   <div className="flex flex-col items-start w-full">
                       <span className="text-lg font-semibold text-gray-900 truncate">{link.title}</span>
                       <a
                         href={typeof link.url === 'string' ? link.url : ''}

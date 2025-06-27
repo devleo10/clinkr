@@ -252,7 +252,7 @@ const PublicProfile = () => {
     return {
       title: profile?.link_title && profile.link_title[index] ? profile.link_title[index] : url,
       clicks: 0,
-      icon: getSocialIcon(url, 32), // Pass larger size
+      icon: getSocialIcon(url, 36), // Pass larger size
       url: url,
     };
   }) : [];
@@ -413,7 +413,6 @@ const PublicProfile = () => {
                           }}
                           onClick={(e) => handleLinkClick(link.url, index, e)}
                         >
-                          {/* Trim more on small screens to avoid overlap with buttons */}
                           <span className="block md:hidden">
                             {link.url.length > 22 ? link.url.slice(0, 19) + '...' : link.url}
                           </span>

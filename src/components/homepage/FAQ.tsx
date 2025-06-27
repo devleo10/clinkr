@@ -13,10 +13,6 @@ const FAQ = () => {
           answer: "Clinkr is a modern link-in-bio and analytics platform that helps you organize all your important links and track audience engagement in real time."
         },
         {
-          question: "How is Clinkr different from other alternatives?",
-          answer: "Clinkr gives you real-time click analytics for free—no upgrades needed to see which links perform best."
-        },
-        {
           question: "Is there really a free plan?",
           answer: "Yes! Track unlimited links forever. Premium only adds advanced features like geographic data."
         },
