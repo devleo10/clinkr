@@ -658,7 +658,7 @@ const PrivateProfile = () => {
                         href={typeof link.url === 'string' ? link.url : ''}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-sm text-gray-500 hover:text-indigo-600 transition-colors truncate max-w-[180px] md:max-w-[250px] lg:max-w-[320px] block"
+                        className="text-sm text-gray-500 hover:text-indigo-600 transition-colors block"
                         style={{
                           overflow: 'hidden',
                           textOverflow: 'ellipsis',
@@ -667,7 +667,7 @@ const PrivateProfile = () => {
                           maxWidth: '100%'
                         }}
                       >
-                        {link.url}
+                        {typeof link.url === 'string' && link.url.length > 38 ? link.url.slice(0, 35) + '...' : link.url}
                       </a>
                     </div>
                   </div>

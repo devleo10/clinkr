@@ -388,8 +388,8 @@ const PublicProfile = () => {
                 animate="visible"
               >
                 <Card className="hover:shadow-lg transition-shadow rounded-2xl border-2 border-gray-100 bg-white/80 p-2">
-                  <CardContent className="flex flex-col md:flex-row items-center justify-between gap-2 md:gap-4 p-6">
-                    <div className="flex items-center gap-4 flex-grow w-full">
+                  <CardContent className="flex items-center justify-between gap-2 md:gap-4 p-6">
+                    <div className="flex items-center gap-4 flex-grow min-w-0">
                       <motion.span 
                         className="flex-shrink-0"
                         whileHover={{ rotate: [0, -10, 10, -5, 5, 0], scale: 1.1 }}
@@ -397,13 +397,13 @@ const PublicProfile = () => {
                       >
                         {getSocialIcon(link.url, 36)}
                       </motion.span>
-                      <div className="flex flex-col items-start w-full">
+                      <div className="flex flex-col items-start flex-grow min-w-0">
                         <span className="text-lg font-semibold text-gray-900 truncate">{link.title}</span>
                         <a
                           href={link.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-sm text-gray-500 hover:text-indigo-600 transition-colors truncate max-w-[180px] md:max-w-[250px] lg:max-w-[320px] block"
+                          className="text-sm text-gray-500 hover:text-indigo-600 transition-colors block"
                           style={{
                             overflow: 'hidden',
                             textOverflow: 'ellipsis',
@@ -413,42 +413,50 @@ const PublicProfile = () => {
                           }}
                           onClick={(e) => handleLinkClick(link.url, index, e)}
                         >
-                          {link.url}
+                          {/* Trim more on small screens to avoid overlap with buttons */}
+                          <span className="block md:hidden">
+                            {link.url.length > 22 ? link.url.slice(0, 19) + '...' : link.url}
+                          </span>
+                          <span className="hidden md:block">
+                            {link.url.length > 38 ? link.url.slice(0, 35) + '...' : link.url}
+                          </span>
                         </a>
                       </div>
                     </div>
-                    <button
-                      className="p-2 rounded-full hover:bg-gradient-to-r hover:from-purple-100 hover:via-indigo-100 hover:to-blue-100 focus:outline-none transition-colors"
-                      aria-label="Link actions"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setOpenDropdownIndex(index);
-                      }}
-                    >
-                      <MoreHorizontal className="h-5 w-5 text-gray-500" />
-                    </button>
-                    {openDropdownIndex === index && (
-                      <div className="absolute right-8 top-10 z-50 bg-white border rounded-md shadow-lg p-2 flex flex-col min-w-[150px]">
-                        <button
-                          className="text-left px-4 py-2 text-sm hover:bg-gray-100 rounded transition-colors"
-                          onClick={(e) => { handleLinkClick(link.url, index, e); setOpenDropdownIndex(null); }}
-                        >
-                          Visit this link
-                        </button>
-                        <button
-                          className="text-left px-4 py-2 text-sm hover:bg-gray-100 rounded transition-colors"
-                          onClick={() => { navigator.clipboard.writeText(link.url); setOpenDropdownIndex(null); }}
-                        >
-                          Copy to clipboard
-                        </button>
-                        <button
-                          className="text-left px-4 py-2 text-sm text-red-500 hover:bg-red-50 rounded transition-colors"
-                          onClick={() => setOpenDropdownIndex(null)}
-                        >
-                          Close
-                        </button>
-                      </div>
-                    )}
+                    <div className="relative flex-shrink-0">
+                      <button
+                        className="p-2 rounded-full hover:bg-gradient-to-r hover:from-purple-100 hover:via-indigo-100 hover:to-blue-100 focus:outline-none transition-colors"
+                        aria-label="Link actions"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setOpenDropdownIndex(index);
+                        }}
+                      >
+                        <MoreHorizontal className="h-5 w-5 text-gray-500" />
+                      </button>
+                      {openDropdownIndex === index && (
+                        <div className="absolute right-0 top-full mt-2 z-50 bg-white border rounded-md shadow-lg p-2 flex flex-col min-w-[150px]">
+                          <button
+                            className="text-left px-4 py-2 text-sm hover:bg-gray-100 rounded transition-colors"
+                            onClick={(e) => { handleLinkClick(link.url, index, e); setOpenDropdownIndex(null); }}
+                          >
+                            Visit this link
+                          </button>
+                          <button
+                            className="text-left px-4 py-2 text-sm hover:bg-gray-100 rounded transition-colors"
+                            onClick={() => { navigator.clipboard.writeText(link.url); setOpenDropdownIndex(null); }}
+                          >
+                            Copy to clipboard
+                          </button>
+                          <button
+                            className="text-left px-4 py-2 text-sm text-red-500 hover:bg-red-50 rounded transition-colors"
+                            onClick={() => setOpenDropdownIndex(null)}
+                          >
+                            Close
+                          </button>
+                        </div>
+                      )}
+                    </div>
                   </CardContent>
                 </Card>
               </motion.div>
