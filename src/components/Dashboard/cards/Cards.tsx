@@ -8,7 +8,6 @@ const animationProps = {
   animate: { y: [0, 2, 0] },
   transition: {
     duration: 1, 
-    ease: 'easeInOut',
     repeat: Infinity,
   },
 };
