@@ -5,7 +5,6 @@ import FAQ from './FAQ';
 import Features from './Features';
 import { Link, Route, Routes } from 'react-router-dom';
 import { useAuth } from '../auth/AuthProvider';
-import img from '../../assets/div.png';
 import Footer from './Footer';
 import About from './About';
 import PhoneAnimation from './cards/PhoneAnimation'
