@@ -630,12 +630,16 @@ const PrivateProfile = () => {
                 </button>
               </div>
             )}
-            <div className="flex items-center justify-center gap-2 mb-2">
+            <div className="flex flex-col items-center justify-center gap-2 mb-2">
+              {/* Highlighted callout with app color palette */}
+              <div className="mb-2 px-4 py-2 rounded-lg bg-gradient-to-r from-purple-100 via-indigo-100 to-blue-100 border border-indigo-200 shadow text-indigo-700 font-semibold text-center animate-pulse">
+                <span role="img" aria-label="star">⭐</span> Share your unique Link-in-Bio with the world!
+              </div>
               <button
                 onClick={handleShareProfile}
-                className="inline-flex items-center gap-1 px-2 py-1 text-sm text-[#4F46E5] hover:text-[#4338CA] bg-[#EEF2FF] hover:bg-[#E0E7FF] rounded-md transition-colors"
+                className="inline-flex items-center gap-1 px-4 py-2 text-base font-bold text-white bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 rounded-lg shadow-lg hover:from-blue-500 hover:via-indigo-600 hover:to-purple-600 transition-all duration-300 border-2 border-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2"
               >
-                <FaShare size={14} />
+                <FaShare size={16} />
                 Get Your Link-in-Bio link
               </button>
               {showToast && (

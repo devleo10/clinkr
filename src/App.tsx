@@ -27,7 +27,7 @@ function App() {
       element: <HomePage />,
     },
     {
-      path: "/signup",
+      path: "/getstarted",
       element: <GetStarted />,
     },
     {

@@ -66,11 +66,15 @@ const LinkDatas: React.FC<LinkDatasProps> = ({ searchQuery }) => {
         
         // Create Link objects from the data
         for (let i = 0; i < links.length; i++) {
-          userLinks.push({
-            title: titles[i] || links[i],
-            url: links[i],
-            clicks: clickCounts.get(links[i]) || 0
-          });
+          const url = links[i];
+          // Only add if url is a string
+          if (typeof url === 'string') {
+            userLinks.push({
+              title: titles[i] || url,
+              url: url,
+              clicks: clickCounts.get(url) || 0
+            });
+          }
         }
       }
       

@@ -211,7 +211,7 @@ const Onboarding = () => {
           username: formData.username,
           bio: formData.bio,
           profile_picture: finalProfilePictureUrl,
-          links: formData.links,
+          links: formData.links.map(input => input.url),
           link_title: link_title,
           updated_at: new Date().toISOString()
         })
