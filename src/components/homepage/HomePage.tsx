@@ -8,6 +8,7 @@ import { useAuth } from '../auth/AuthProvider';
 import img from '../../assets/div.png';
 import Footer from './Footer';
 import About from './About';
+import PhoneAnimation from './cards/PhoneAnimation'
 
 const HomePage = () => {
   const { session } = useAuth(); // Access the session from the AuthProvider
@@ -90,7 +91,7 @@ const HomePage = () => {
             </motion.div>
           </motion.div>
           {/* Right Container */}
-          <motion.div 
+          {/* <motion.div 
             className="flex-1"
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
@@ -103,6 +104,14 @@ const HomePage = () => {
               animate={{ y: [0, -20, 0] }}
               transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
             />
+          </motion.div> */}
+         <motion.div 
+            className="flex-1 relative h-[600px]"
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            <PhoneAnimation />
           </motion.div>
         </div>
         {/* Features Section */}

@@ -11,7 +11,6 @@ import LinkValidator from "../../lib/link-validator";
 import Cropper from 'react-easy-crop';
 import Modal from 'react-modal';
 import { Globe } from 'lucide-react';
-import { SocialIcon } from 'react-social-icons';
 import { MoreVertical } from "lucide-react";
 
 interface UserProfile {
@@ -306,12 +305,17 @@ const PrivateProfile = () => {
       if (domain.includes('clinkr.live')) {
         return <img src={logo} alt="Clinkr" className={`w-[${size}px] h-[${size}px] rounded-full bg-white border border-indigo-200`} style={{objectFit:'contain', background:'bg-gradient-to-r from-pink-100 to-purple-100 opacity-20 blur-3xl -z-10', width: size, height: size}} />;
       }
-      // Use react-social-icons for known domains
-      if (/^(facebook|x|linkedin|github|instagram|youtube|tiktok|pinterest|snapchat|reddit|whatsapp|telegram|discord|medium|dribbble|behance|codepen|dev\.to|stackoverflow|twitch|slack|spotify|soundcloud|apple|google|amazon|paypal|patreon|buymeacoffee|substack|wordpress|blogspot|tumblr|flickr|vimeo|bandcamp|goodreads|kofi|strava|mastodon|kickstarter|producthunt|quora|rss|rss2|rss3|rss4|rss5)\./i.test(domain)) {
-        return <SocialIcon url={url} style={{ width: size, height: size }} />;
-      }
-      // Otherwise, generic globe
-      return <Globe size={size} className="text-gray-400" />;
+      // Try to fetch favicon/logo for all other domains
+      return (
+        <img
+          src={`https://logo.clearbit.com/${domain}`}
+          onError={(e) => {
+            (e.target as HTMLImageElement).src = `https://www.google.com/s2/favicons?sz=64&domain=${domain}`;
+          }}
+          alt={`${domain} icon`}
+          style={{ width: size, height: size, borderRadius: '50%', background: '#fff', objectFit: 'contain', border: '1px solid #e0e7ff' }}
+        />
+      );
     } catch {
       return <Globe size={size} className="text-gray-400" />;
     }
@@ -648,7 +652,7 @@ const PrivateProfile = () => {
         <div className="mt-8 border-b pb-4">
           <div className="mt-6 space-y-4 max-w-xl mx-auto">
             {links.map((link, index) => (
-        <Card className="hover:shadow-lg transition-shadow rounded-2xl border-2 border-gray-100 bg-white/80 p-2">
+        <Card key={link.url + '-' + link.title + '-' + index} className="hover:shadow-lg transition-shadow rounded-2xl border-2 border-gray-100 bg-white/80 p-2">
                   <CardContent className="flex items-center justify-between gap-2 md:gap-4 p-6">
                     <div className="flex items-center gap-4 flex-grow min-w-0">
                       <span className="flex-shrink-0">

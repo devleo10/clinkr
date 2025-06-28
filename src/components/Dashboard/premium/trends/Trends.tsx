@@ -372,7 +372,7 @@ const Trends = () => {
         <div className="flex flex-wrap gap-4 mb-6">
           <div>
             <Tabs defaultValue={timeFrame} onValueChange={(value) => setTimeFrame(value as "7days" | "30days" | "90days")}>
-              <TabsList>
+              <TabsList className="remove-outline">
                 <TabsTrigger value="7days">7 Days</TabsTrigger>
                 <TabsTrigger value="30days">30 Days</TabsTrigger>
                 <TabsTrigger value="90days">90 Days</TabsTrigger>
@@ -383,7 +383,7 @@ const Trends = () => {
           <div className="flex items-center gap-2">
             <Filter size={16} />
             <Select value={deviceFilter} onValueChange={(value) => setDeviceFilter(value as "all" | "mobile" | "desktop")}>
-              <SelectTrigger className="w-[180px]">
+              <SelectTrigger className="w-[180px] remove-outline">
                 <SelectValue placeholder="Device Type" />
               </SelectTrigger>
               <SelectContent>
@@ -503,6 +503,12 @@ const Trends = () => {
         </div>
         
       </TabsContent>
+      <style>{`
+        .remove-outline:focus {
+          outline: none !important;
+          box-shadow: none !important;
+        }
+      `}</style>
     </div>
   );
 };

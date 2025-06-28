@@ -96,6 +96,17 @@ const LinkDatas: React.FC<LinkDatasProps> = ({ searchQuery }) => {
       domain = url;
     }
 
+    // Responsive trim length
+    const getTrimmedUrl = () => {
+      if (typeof window !== 'undefined') {
+        const width = window.innerWidth;
+        if (width < 640) return url.length > 28 ? url.slice(0, 25) + '...' : url; // mobile
+        if (width < 1024) return url.length > 40 ? url.slice(0, 37) + '...' : url; // tablet
+        return url.length > 60 ? url.slice(0, 57) + '...' : url; // desktop
+      }
+      return url;
+    };
+
     return (
       <div className="flex items-center gap-2">
         <img
@@ -106,8 +117,11 @@ const LinkDatas: React.FC<LinkDatasProps> = ({ searchQuery }) => {
           alt={`${domain} icon`}
           className="w-6 h-6 rounded"
         />
-        <a href={url} target="_blank" rel="noopener noreferrer" className="hover:underline text-blue-600">
-          {url}
+        <a href={url} target="_blank" rel="noopener noreferrer"
+          className="hover:underline text-blue-600 truncate max-w-[180px] sm:max-w-[320px] lg:max-w-[480px] inline-block align-middle"
+          style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', verticalAlign: 'middle' }}
+        >
+          {getTrimmedUrl()}
         </a>
       </div>
     );

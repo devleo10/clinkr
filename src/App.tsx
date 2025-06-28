@@ -23,7 +23,7 @@ function App() {
       element: <Navigate to="/homepage" />,
     },
     {
-      path: "/homepage",
+      path: "/homepage/*",
       element: <HomePage />,
     },
     {

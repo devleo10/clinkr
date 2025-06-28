@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import { supabase } from '../../lib/supabaseClient';
 import { FaUser } from 'react-icons/fa';
-import { SocialIcon } from 'react-social-icons';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MoreHorizontal } from "lucide-react";
 import { Globe } from 'lucide-react';
@@ -236,12 +235,17 @@ const PublicProfile = () => {
       if (domain.includes('clinkr.live')) {
         return <img src={logo} alt="Clinkr" className={`w-[${size}px] h-[${size}px] rounded-full bg-white border border-indigo-200`} style={{objectFit:'contain', background:'bg-gradient-to-r from-pink-100 to-purple-100 opacity-20 blur-3xl -z-10', width: size, height: size}} />;
       }
-      // Use react-social-icons for known domains
-      if (/^(facebook|x|linkedin|github|instagram|youtube|tiktok|pinterest|snapchat|reddit|whatsapp|telegram|discord|medium|dribbble|behance|codepen|dev\.to|stackoverflow|twitch|slack|spotify|soundcloud|apple|google|amazon|paypal|patreon|buymeacoffee|substack|wordpress|blogspot|tumblr|flickr|vimeo|bandcamp|goodreads|kofi|strava|mastodon|kickstarter|producthunt|quora|rss|rss2|rss3|rss4|rss5)\./i.test(domain)) {
-        return <SocialIcon url={url} style={{ width: size, height: size }} />;
-      }
-      // Otherwise, generic globe
-      return <Globe size={size} className="text-gray-400" />;
+      // Try to fetch favicon/logo for all other domains
+      return (
+        <img
+          src={`https://logo.clearbit.com/${domain}`}
+          onError={(e) => {
+            (e.target as HTMLImageElement).src = `https://www.google.com/s2/favicons?sz=64&domain=${domain}`;
+          }}
+          alt={`${domain} icon`}
+          style={{ width: size, height: size, borderRadius: '50%', background: '#fff', objectFit: 'contain', border: '1px solid #e0e7ff' }}
+        />
+      );
     } catch {
       return <Globe size={size} className="text-gray-400" />;
     }

@@ -273,11 +273,17 @@ const Geography = () => {
 
   return (
     <div className="w-full h-full">
+      <style>{`
+        .remove-outline:focus {
+          outline: none !important;
+          box-shadow: none !important;
+        }
+      `}</style>
       <div className="flex flex-col md:flex-row md:gap-4 gap-2 w-full mb-4">        
         {/* Time Period Filter */}
         <div className="w-full md:w-auto">
           <Tabs defaultValue={timeFrame} onValueChange={(value) => setTimeFrame(value as "7days" | "30days" | "90days")}> 
-            <TabsList className="w-full md:w-auto">
+            <TabsList className="w-full md:w-auto remove-outline">
               <TabsTrigger value="7days">7 Days</TabsTrigger>
               <TabsTrigger value="30days">30 Days</TabsTrigger>
               <TabsTrigger value="90days">90 Days</TabsTrigger>
@@ -288,7 +294,7 @@ const Geography = () => {
         <div className="flex items-center gap-2 w-full md:w-auto">
           <Filter size={16} />
           <Select value={deviceFilter} onValueChange={(value) => setDeviceFilter(value as "all" | "mobile" | "desktop")}> 
-            <SelectTrigger className="w-full md:w-[150px]">
+            <SelectTrigger className="w-full md:w-[150px] remove-outline">
               <SelectValue placeholder="Device Type" />
             </SelectTrigger>
             <SelectContent className='z-[9999]'>
@@ -301,7 +307,7 @@ const Geography = () => {
         {/* View Mode Toggle */}
         <div className="w-full md:w-auto">
           <Tabs defaultValue={viewMode} onValueChange={(value) => setViewMode(value as "heatmap" | "clusters")}> 
-            <TabsList className="w-full md:w-auto">
+            <TabsList className="w-full md:w-auto remove-outline">
               <TabsTrigger value="heatmap">Heatmap</TabsTrigger>
               <TabsTrigger value="clusters">Regions</TabsTrigger>
             </TabsList>
