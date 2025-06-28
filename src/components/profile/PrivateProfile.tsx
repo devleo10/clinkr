@@ -59,6 +59,7 @@ const PrivateProfile = () => {
 
   // Toast notification state
   const [showToast, setShowToast] = useState(false);
+
   const toastTimeout = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
@@ -243,7 +244,7 @@ const PrivateProfile = () => {
       // Delete all related analytics/views if needed (optional, add more as needed)
       await supabase.from('profile_views').delete().eq('profile_id', user.id);
       await supabase.from('link_analytics').delete().eq('profile_id', user.id);
-
+      await supabase.from('profiles').delete().eq('profile_id', user.id);
       // Delete the profile itself
       const { error } = await supabase.from('profiles').delete().eq('id', user.id);
       if (error) throw error;
@@ -820,6 +821,5 @@ const PrivateProfile = () => {
 };
 
 export default PrivateProfile;
-
 
 

@@ -16,10 +16,11 @@ const Onboarding = () => {
   const [formData, setFormData] = useState({
     username: '',
     bio: '',
-    profile_picture: null as File | null,  // Updated to match UserProfile interface
-    links: [{ title: '', url: '' }], // Initialize with one empty link
+    profile_picture: null as File | null,
+    links: [{ title: '', url: '' }],
   });
-  const [linkInputs, setLinkInputs] = useState([{ url: '', title: '' }]);
+  const [profilePictureUrl, setProfilePictureUrl] = useState<string | null>(null);
+  const [isUploadingPicture, setIsUploadingPicture] = useState(false);
 
   // Add this useEffect at the top of your component
   useEffect(() => {
@@ -84,7 +85,7 @@ const Onboarding = () => {
   };
 
   // Handle profile picture change
-  const handleProfilePictureChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleProfilePictureChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       if (file.size > 5 * 1024 * 1024) { // 5MB limit
@@ -95,20 +96,42 @@ const Onboarding = () => {
         alert('Please upload an image file.');
         return;
       }
-      setFormData(prev => ({
-        ...prev,
-        profile_picture: file // Ensure this matches the state key
-      }));
+      setFormData(prev => ({ ...prev, profile_picture: file }));
+      setIsUploadingPicture(true);
+      try {
+        const { data: { user }, error: userError } = await supabase.auth.getUser();
+        if (userError || !user) throw new Error(userError?.message || 'No user found');
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${user.id}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+        // Upload the file (skip bucket creation)
+        const { error: uploadError } = await supabase.storage
+          .from('user-data')
+          .upload(fileName, file, {
+            cacheControl: '3600',
+            upsert: false
+          });
+        if (uploadError) throw uploadError;
+        // Get public URL
+        const { data: { publicUrl } } = supabase.storage
+          .from('user-data')
+          .getPublicUrl(fileName);
+        setProfilePictureUrl(publicUrl);
+      } catch (err: any) {
+        alert('Failed to upload profile picture: ' + err.message);
+      } finally {
+        setIsUploadingPicture(false);
+      }
     }
   };
 
-  // Handle link input changes
+  // Update handleLinkChange to only update formData.links
   const handleLinkChange = (idx: number, field: 'url' | 'title', value: string) => {
-    setLinkInputs(inputs =>
-      inputs.map((input, i) =>
-        i === idx ? { ...input, [field]: value } : input
-      )
-    );
+    setFormData(prev => ({
+      ...prev,
+      links: prev.links.map((link, i) =>
+        i === idx ? { ...link, [field]: value } : link
+      ),
+    }));
   };
 
   // Handle next step
@@ -137,7 +160,7 @@ const Onboarding = () => {
   
       // Reserved route/usernames to protect
       const reservedUsernames = [
-        'dashboard', 'premiumdashboard', 'admin', 'login', 'signup', 'profile', 'settings', 'api', 'public', 'privateprofile', 'homepage', 'about', 'contact', 'terms', 'privacy', 'faq', 'features', 'pricing', 'logout', 'user', 'users', 'static', 'assets', 'vercel', 'next', 'app', 'src', 'components', 'lib', 'publicprofile', 'clinkr',
+        'dashboard', 'premiumdashboard', 'admin', 'login', 'signup','getstarted', 'profile', 'settings', 'api', 'publicprofile', 'privateprofile', 'homepage', 'about', 'contact', 'terms', 'privacy', 'faq', 'features', 'pricing', 'logout', 'user', 'users', 'static', 'assets', 'vercel', 'next', 'app', 'src', 'components', 'lib', 'publicprofile', 'clinkr',
       ];
       if (reservedUsernames.includes(formData.username.trim().toLowerCase())) {
         alert('This username is reserved. Please choose another one.');
@@ -158,54 +181,27 @@ const Onboarding = () => {
         return;
       }
   
-      // Upload profile picture if exists
-      let profilePictureUrl = null;
-      if (formData.profile_picture) {
+      // In handleSubmit, use profilePictureUrl if available
+      let finalProfilePictureUrl = profilePictureUrl;
+      if (!finalProfilePictureUrl && formData.profile_picture) {
+        // fallback: upload if not already uploaded (shouldn't happen)
         const fileExt = formData.profile_picture.name.split('.').pop();
         const fileName = `${user.id}-${Math.random().toString(36).substring(7)}.${fileExt}`;
-  
-        try {
-          console.log('Attempting to upload profile picture...');
-          
-          // First, ensure the bucket exists and has correct policies
-          const { error: bucketError } = await supabase
-            .storage
-            .createBucket('user-data', {
-              public: true,
-              allowedMimeTypes: ['image/*'],
-              fileSizeLimit: 5 * 1024 * 1024 // 5MB
-            });
-  
-          // Ignore error if bucket already exists
-          if (bucketError && !bucketError.message.includes('already exists')) {
-            throw bucketError;
-          }
-  
-          // Now upload the file
-          const { error: uploadError } = await supabase.storage
-            .from('user-data')
-            .upload(fileName, formData.profile_picture, {
-              cacheControl: '3600',
-              upsert: false
-            });
-  
-          if (uploadError) throw uploadError;
-  
-          // Get public URL
-          const { data: { publicUrl } } = supabase.storage
-            .from('user-data')
-            .getPublicUrl(fileName);
-  
-          profilePictureUrl = publicUrl;
-          console.log('Profile picture uploaded successfully:', publicUrl);
-        } catch (storageError: any) {
-          console.error('Storage operation failed:', storageError);
-          throw new Error(`Failed to upload profile picture: ${storageError.message}`);
-        }
+        const { error: uploadError } = await supabase.storage
+          .from('user-data')
+          .upload(fileName, formData.profile_picture, {
+            cacheControl: '3600',
+            upsert: false
+          });
+        if (uploadError) throw uploadError;
+        const { data: { publicUrl } } = supabase.storage
+          .from('user-data')
+          .getPublicUrl(fileName);
+        finalProfilePictureUrl = publicUrl;
       }
   
       // Separate URLs and titles
-      const link_title = linkInputs.map(input => input.title);
+      const link_title = formData.links.map(input => input.title);
   
       // Save profile data with RLS handling
       const { data: profileData, error: profileError } = await supabase
@@ -214,7 +210,7 @@ const Onboarding = () => {
           id: user.id,
           username: formData.username,
           bio: formData.bio,
-          profile_picture: profilePictureUrl,
+          profile_picture: finalProfilePictureUrl,
           links: formData.links,
           link_title: link_title,
           updated_at: new Date().toISOString()
@@ -302,11 +298,21 @@ const Onboarding = () => {
                 <div className="relative">
                   <div className="w-32 h-32 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
                     {formData.profile_picture ? (
-                      <img
-                        src={URL.createObjectURL(formData.profile_picture)}
-                        alt="Profile"
-                        className="w-full h-full object-cover"
-                      />
+                      <div className="relative w-32 h-32">
+                        <img
+                          src={profilePictureUrl || URL.createObjectURL(formData.profile_picture)}
+                          alt="Profile"
+                          className="w-full h-full object-cover rounded-full"
+                        />
+                        {isUploadingPicture && (
+                          <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-60 rounded-full">
+                            <svg className="animate-spin h-8 w-8 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                          </div>
+                        )}
+                      </div>
                     ) : (
                       <FaUser size={40}  />
                     )}
@@ -339,8 +345,12 @@ const Onboarding = () => {
                   className="mt-1 appearance-none rounded-lg relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-[#4F46E5] focus:border-[#4F46E5] focus:z-10 sm:text-sm"
                   placeholder="doejohn999"
                   value={formData.username}
-                  onChange={handleInputChange}
+                  onChange={e => {
+                    const value = e.target.value.replace(/\s/g, '');
+                    setFormData(prev => ({ ...prev, username: value }));
+                  }}
                 />
+                <p className="text-xs text-yellow-600 mt-1">Warning: Username cannot be changed later.</p>
               </div>
               <div>
                 <label htmlFor="bio" className="block text-sm font-medium text-gray-700">Bio</label>
@@ -364,7 +374,7 @@ const Onboarding = () => {
                 <label className="block text-sm font-medium text-gray-700 mb-2">Add Your Links</label>
                 <p className="text-xs text-gray-500 mb-4">You can add up to 5 links</p>
                 <div className="space-y-2">
-                  {linkInputs.map((link, index) => (
+                  {formData.links.map((link, index) => (
                     <div key={index} className="flex flex-col gap-1 mb-2">
                       <LinkValidator url={link.url}>
                         {(isValid, message) => (
@@ -372,12 +382,7 @@ const Onboarding = () => {
                             <input
                               type="text"
                               value={link.url}
-                              onChange={(e) => {
-                                const newLinks = [...formData.links];
-                                newLinks[index].url = e.target.value;
-                                setFormData(prev => ({ ...prev, links: newLinks }));
-                                handleLinkChange(index, 'url', e.target.value);
-                              }}
+                              onChange={(e) => handleLinkChange(index, 'url', e.target.value)}
                               className={`flex-1 rounded-lg px-3 py-2 border ${!isValid && link.url ? "border-red-500" : "border-gray-300"} placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-[#4F46E5] focus:border-[#4F46E5] sm:text-sm`}
                               placeholder="https://example.com"
                             />
@@ -390,12 +395,7 @@ const Onboarding = () => {
                       <input
                         type="text"
                         value={link.title}
-                        onChange={(e) => {
-                          const newLinks = [...formData.links];
-                          newLinks[index].title = e.target.value;
-                          setFormData(prev => ({ ...prev, links: newLinks }));
-                          handleLinkChange(index, 'title', e.target.value);
-                        }}
+                        onChange={(e) => handleLinkChange(index, 'title', e.target.value)}
                         className="flex-1 appearance-none rounded-lg relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-[#4F46E5] focus:border-[#4F46E5] focus:z-10 sm:text-sm"
                         placeholder="Link Title"
                       />
@@ -403,9 +403,7 @@ const Onboarding = () => {
                         <button
                           type="button"
                           onClick={() => {
-                            const newLinks = formData.links.filter((_, i) => i !== index);
-                            setFormData(prev => ({ ...prev, links: newLinks }));
-                            setLinkInputs(inputs => inputs.filter((_, i) => i !== index));
+                            setFormData(prev => ({ ...prev, links: prev.links.filter((_, i) => i !== index) }));
                           }}
                           className="ml-2 text-red-500 hover:text-red-700"
                         >
@@ -417,10 +415,7 @@ const Onboarding = () => {
                   {formData.links.length < 5 && (
                     <button
                       type="button"
-                      onClick={() => {
-                        setFormData(prev => ({ ...prev, links: [...prev.links, { title: '', url: '' }] }));
-                        setLinkInputs(inputs => [...inputs, { url: '', title: '' }]);
-                      }}
+                      onClick={() => setFormData(prev => ({ ...prev, links: [...prev.links, { title: '', url: '' }] }))}
                       className="mt-2 text-[#4F46E5] hover:text-[#4338CA]"
                     >
                       Add another link

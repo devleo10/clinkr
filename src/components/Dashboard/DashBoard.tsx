@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { FaSearch } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FaChartLine } from 'react-icons/fa';
 import Navbar from './Navbar';
 import Cards from './cards/Cards';
@@ -8,10 +8,14 @@ import LinkDatas from './LinkDatas';
 import { motion } from 'framer-motion';
 import Upgrade from './cards/Upgrade';
 import debounce from 'lodash/debounce';
+import { supabase } from '../../lib/supabaseClient';
+import { useAuth } from '../auth/AuthProvider';
 
 const DashBoard = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
+  const [profileChecked, setProfileChecked] = useState(false);
+  const [profileValid, setProfileValid] = useState(false);
 
   const debouncedSearch = useCallback(
     debounce((query: string) => {
@@ -30,6 +34,41 @@ const DashBoard = () => {
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
   };
+
+  const { session } = useAuth();
+  const navigate = useNavigate();
+  useEffect(() => {
+    const checkProfile = async () => {
+      if (!session?.user?.id) {
+        setProfileChecked(true);
+        setProfileValid(false);
+        return;
+      }
+      const { data: profile, error } = await supabase
+        .from('profiles')
+        .select('username')
+        .eq('id', session.user.id)
+        .single();
+      if (error || !profile?.username) {
+        navigate('/onboarding');
+      } else {
+        setProfileValid(true);
+      }
+      setProfileChecked(true);
+    };
+    checkProfile();
+  }, [session, navigate]);
+
+  if (!profileChecked) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-500"></div>
+      </div>
+    );
+  }
+  if (!profileValid) {
+    return null;
+  }
 
   return (
     <motion.div
