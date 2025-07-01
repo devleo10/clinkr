@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Card, CardContent } from "../ui/card";
 import logo from "../../assets/Frame.png";
 import { Link } from 'react-router-dom';
@@ -24,7 +24,28 @@ const PublicProfile = () => {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [openDropdownIndex, setOpenDropdownIndex] = useState<number | null>(null);
+  const [activeLinkMenu, setActiveLinkMenu] = useState<number | null>(null);
+  const linkMenuRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (activeLinkMenu !== null) {
+        const linkMenuRef = linkMenuRefs.current[activeLinkMenu];
+        if (linkMenuRef && !linkMenuRef.contains(event.target as Node)) {
+          setActiveLinkMenu(null);
+        }
+      }
+    };
+
+    if (activeLinkMenu !== null) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [activeLinkMenu]);
 
   useEffect(() => {
     const loadData = async () => {
@@ -264,7 +285,7 @@ const PublicProfile = () => {
 
   // Ensure rendering logic correctly uses profile state
   return (
-    <div className="min-h-screen relative overflow-hidden">
+    <div className="min-h-screen relative">
       {/* Background */}
       <PublicProfileBackground variant="light" />
       
@@ -304,11 +325,12 @@ const PublicProfile = () => {
   
         {/* Profile Content */}
         <motion.div 
-          className="glass-card bg-white/40 backdrop-blur-lg border border-white/50 p-8 rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 relative overflow-hidden"
+          className="glass-card bg-white/40 backdrop-blur-lg border border-white/50 p-8 rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 relative"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
           whileHover={{ boxShadow: "0 20px 25px -5px rgba(99, 102, 241, 0.15)" }}
+          style={{ overflow: 'visible', position: 'relative' }}
         >
           {/* Subtle gradient background */}
           <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 via-transparent to-purple-500/5 opacity-70" />
@@ -432,6 +454,7 @@ const PublicProfile = () => {
               className="mt-10 space-y-4 max-w-xl mx-auto"
               initial="hidden"
               animate="visible"
+              style={{ overflow: 'visible', position: 'relative' }}
             >
               <AnimatePresence>
                 {links.map((link, index) => (
@@ -441,16 +464,22 @@ const PublicProfile = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.1 * index }}
                     whileHover={{ scale: 1.02 }}
+                    style={{ 
+                      overflow: 'visible', 
+                      zIndex: activeLinkMenu === index ? 1000 : 1,
+                      position: 'relative'
+                    }}
+                    className={activeLinkMenu === index ? 'relative' : ''}
                   >
-                    <Card className="hover:shadow-xl transition-all duration-300 rounded-xl border border-white/40 bg-white/90 backdrop-blur-lg overflow-hidden">
-                      <CardContent className="flex items-center justify-between gap-3 md:gap-4 p-4 relative">
+                    <Card className="hover:shadow-xl transition-all duration-300 rounded-xl border border-white/40 bg-white/90 backdrop-blur-lg" style={{ overflow: 'visible', position: 'relative' }}>
+                      <CardContent className="flex items-center justify-between gap-3 md:gap-4 p-4 relative" style={{ overflow: 'visible' }}>
                         {/* Subtle gradient overlay */}
                         <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/40 via-transparent to-purple-50/40 opacity-70" />
                         
                         {/* Link content */}
                         <div className="flex items-center gap-4 flex-grow min-w-0 relative z-10">
                           <motion.div 
-                            className="flex-shrink-0 w-12 h-12 rounded-full bg-white shadow-sm border border-indigo-100 flex items-center justify-center overflow-hidden"
+                            className="flex-shrink-0 w-12 h-12 rounded-full bg-white shadow-sm border border-indigo-100 flex items-center justify-center overflow-visible"
                             whileHover={{ rotate: [0, -10, 10, -5, 5, 0], scale: 1.1 }}
                             transition={{ duration: 0.5 }}
                           >
@@ -487,7 +516,13 @@ const PublicProfile = () => {
                             </a>
                           </div>
                         </div>
-                        <div className="relative flex-shrink-0 z-20">
+                        <div 
+                          className="relative flex-shrink-0 dropdown-container" 
+                          ref={(el) => {
+                            linkMenuRefs.current[index] = el;
+                          }}
+                          style={{ zIndex: activeLinkMenu === index ? 1001 : 10, position: 'relative' }}
+                        >
                           <motion.button
                             className="p-2 rounded-full hover:bg-gradient-to-r hover:from-purple-100 hover:via-indigo-100 hover:to-blue-100 focus:outline-none transition-colors"
                             aria-label="Link actions"
@@ -495,34 +530,40 @@ const PublicProfile = () => {
                             whileTap={{ scale: 0.95 }}
                             onClick={(e) => {
                               e.preventDefault();
-                              setOpenDropdownIndex(index === openDropdownIndex ? null : index);
+                              e.stopPropagation();
+                              setActiveLinkMenu(activeLinkMenu === index ? null : index);
                             }}
                           >
                             <MoreHorizontal className="h-5 w-5 text-gray-500" />
                           </motion.button>
                           
                           <AnimatePresence>
-                            {openDropdownIndex === index && (
+                            {activeLinkMenu === index && (
                               <motion.div 
-                                className="absolute right-0 top-full mt-2 z-50 bg-white/95 backdrop-blur-md border border-indigo-100/50 rounded-lg shadow-xl p-1 flex flex-col min-w-[180px] overflow-hidden"
+                                className="absolute right-0 top-12 bg-white rounded-lg shadow-xl border border-gray-200 py-2 min-w-40 dropdown-menu"
                                 initial={{ opacity: 0, y: -10, scale: 0.95 }}
                                 animate={{ opacity: 1, y: 0, scale: 1 }}
                                 exit={{ opacity: 0, y: -10, scale: 0.95 }}
                                 transition={{ duration: 0.2 }}
+                                style={{ 
+                                  zIndex: 10000,
+                                  boxShadow: '0 10px 25px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+                                  position: 'absolute'
+                                }}
                               >
                                 <motion.button
-                                  className="text-left px-4 py-3 text-sm hover:bg-indigo-50 rounded-md transition-colors flex items-center gap-2"
-                                  onClick={(e) => { handleLinkClick(link.url, index, e); setOpenDropdownIndex(null); }}
+                                  className="w-full px-4 py-2 text-left hover:bg-indigo-50 flex items-center gap-3 text-sm"
+                                  onClick={(e) => { handleLinkClick(link.url, index, e); setActiveLinkMenu(null); }}
                                   whileHover={{ x: 2 }}
                                 >
                                   <Globe size={14} className="text-indigo-500" />
                                   <span>Visit this link</span>
                                 </motion.button>
                                 <motion.button
-                                  className="text-left px-4 py-3 text-sm hover:bg-indigo-50 rounded-md transition-colors flex items-center gap-2"
+                                  className="w-full px-4 py-2 text-left hover:bg-indigo-50 flex items-center gap-3 text-sm"
                                   onClick={() => { 
                                     navigator.clipboard.writeText(link.url); 
-                                    setOpenDropdownIndex(null);
+                                    setActiveLinkMenu(null);
                                     // Show toast notification here if you want
                                   }}
                                   whileHover={{ x: 2 }}
@@ -534,8 +575,8 @@ const PublicProfile = () => {
                                   <span>Copy to clipboard</span>
                                 </motion.button>
                                 <motion.button
-                                  className="text-left px-4 py-3 text-sm text-red-500 hover:bg-red-50 rounded-md transition-colors flex items-center gap-2 mt-1"
-                                  onClick={() => setOpenDropdownIndex(null)}
+                                  className="w-full px-4 py-2 text-left text-red-500 hover:bg-red-50 flex items-center gap-3 text-sm mt-1"
+                                  onClick={() => setActiveLinkMenu(null)}
                                   whileHover={{ x: 2 }}
                                 >
                                   <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-red-500">
