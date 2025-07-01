@@ -13,7 +13,7 @@ const Navbar = () => {
     if (session) {
       navigate('/dashboard');
     } else {
-      navigate('/signup');
+      navigate('/getstarted');
     }
   };
 

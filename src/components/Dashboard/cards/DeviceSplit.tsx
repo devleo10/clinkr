@@ -3,10 +3,17 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../../../lib/supabaseClient';
 import { motion } from 'framer-motion';
 
+interface DeviceData {
+  mobile: number;
+  desktop: number;
+  tablet: number;
+}
+
 const DeviceSplit = () => {
-  const [deviceData, setDeviceData] = useState({
+  const [deviceData, setDeviceData] = useState<DeviceData>({
     mobile: 0,
-    desktop: 0
+    desktop: 0,
+    tablet: 0
   });
   const [loading, setLoading] = useState(true);
 
@@ -29,16 +36,42 @@ const DeviceSplit = () => {
       // Calculate device percentages
       const total = data.length;
       if (total === 0) {
-        setDeviceData({ mobile: 0, desktop: 0 });
+        setDeviceData({ mobile: 0, desktop: 0, tablet: 0 });
         return;
       }
 
-      const mobileCount = data.filter(d => d.device_type === 'mobile').length;
-      const desktopCount = data.filter(d => d.device_type === 'desktop').length;
+      // Function to identify device type from user agent string
+      const getDeviceType = (deviceType: string) => {
+        if (!deviceType) return 'unknown';
+        deviceType = deviceType.toLowerCase();
+        
+        if (deviceType.includes('tablet') || deviceType.includes('ipad')) {
+          return 'tablet';
+        } else if (deviceType.includes('mobile') || 
+                   deviceType.includes('android') || 
+                   deviceType.includes('iphone')) {
+          return 'mobile';
+        } else {
+          return 'desktop';
+        }
+      };
+
+      // Count devices by type
+      let mobileCount = 0;
+      let desktopCount = 0;
+      let tabletCount = 0;
+
+      data.forEach(d => {
+        const deviceType = getDeviceType(d.device_type);
+        if (deviceType === 'mobile') mobileCount++;
+        else if (deviceType === 'tablet') tabletCount++;
+        else if (deviceType === 'desktop') desktopCount++;
+      });
 
       setDeviceData({
         mobile: Math.round((mobileCount / total) * 100),
-        desktop: Math.round((desktopCount / total) * 100)
+        desktop: Math.round((desktopCount / total) * 100),
+        tablet: Math.round((tabletCount / total) * 100)
       });
     } catch (error) {
       console.error('Error fetching device data:', error);

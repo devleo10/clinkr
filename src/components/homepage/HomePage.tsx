@@ -79,7 +79,7 @@ const HomePage = () => {
                   whileHover={{ scale: 1.05, boxShadow: "0 10px 15px -3px rgba(79, 70, 229, 0.3)" }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  <Link to={session ? '/dashboard' : '/signup'}>
+                  <Link to={session ? '/dashboard' : '/getstarted'}>
                     {session ? 'Visit Dashboard' : 'Get Started Free'}
                   </Link>
                 </motion.button>

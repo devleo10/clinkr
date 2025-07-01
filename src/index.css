@@ -131,7 +131,7 @@
 }
 
 .glass-card {
-  @apply bg-white/20 backdrop-blur-lg border border-white/30 shadow-xl;
+  @apply bg-white/30 backdrop-blur-lg border border-white/50 shadow-xl;
 }
 
 .glass-button {
@@ -139,5 +139,5 @@
 }
 
 .glass-input {
-  @apply bg-white/20 backdrop-blur-lg border border-white/30 focus:border-white/50 focus:ring-2 focus:ring-white/30;
+  @apply bg-white/30 backdrop-blur-lg border border-white/50 focus:border-white/70 focus:ring-2 focus:ring-white/50;
 }

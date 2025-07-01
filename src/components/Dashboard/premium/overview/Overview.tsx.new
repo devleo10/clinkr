@@ -3,6 +3,7 @@ import { TabsContent } from '@radix-ui/react-tabs'
 import { useState, useEffect } from 'react'
 import { supabase } from '../../../../lib/supabaseClient'
 import { motion } from 'framer-motion'
+import { Activity } from 'lucide-react'
 
 interface OverviewData {
   totalClicks: string;
