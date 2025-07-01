@@ -64,20 +64,26 @@ const FAQ = () => {
 
   return (
     <>
-    <div className="w-full flex flex-col justify-center items-center h-auto min-h-20 mb-10 md:mb-20 bg-[#F9FAFB] px-4 py-6 md:py-0 "> 
+    <div className="w-full flex flex-col justify-center items-center h-auto min-h-20 mb-10 md:mb-20 bg-white/50 backdrop-blur-xl rounded-xl px-4 py-8 md:py-10 shadow-lg border border-white/30"> 
         <motion.h1 
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className="text-2xl font-medium text-center mb-1">
-        Frequently Asked Questions
-       </motion.h1>
-        <h2 className="flex flex-col text-sm ">Got Questions? We've Got You Covered.</h2>
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="text-2xl md:text-3xl font-bold text-center mb-2 text-transparent bg-clip-text bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 text-shadow">
+          Frequently Asked Questions
+        </motion.h1>
+        <h2 className="flex flex-col text-sm text-gray-700">Got Questions? We've Got You Covered.</h2>
     </div>
     <div className="max-w-3xl mx-auto py-12 px-4">
      
       <div className="space-y-6">
         {faqData.map((section, sectionIndex) => (
-          <div key={sectionIndex} className="bg-white">
+          <motion.div 
+            key={sectionIndex} 
+            className="bg-white/70 backdrop-blur-md rounded-xl p-6 shadow-md border border-white/40"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: sectionIndex * 0.1 }}
+          >
             <motion.h2 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -88,7 +94,7 @@ const FAQ = () => {
             
             <div className="space-y-2">
               {section.items.map((item, itemIndex) => {
-                const index = sectionIndex * 2 + itemIndex;
+                const index = sectionIndex * 10 + itemIndex;
                 return (
                   <motion.div
                     key={itemIndex}
@@ -100,10 +106,11 @@ const FAQ = () => {
                       className="flex justify-between items-center py-3 cursor-pointer"
                       onClick={() => setOpenIndex(openIndex === index ? null : index)}
                     >
-                      <h3 className="text-sm">{item.question}</h3>
+                      <h3 className="text-sm font-medium">{item.question}</h3>
                       <motion.span
                         animate={{ rotate: openIndex === index ? 180 : 0 }}
                         transition={{ duration: 0.2 }}
+                        className="text-indigo-600 text-lg"
                       >
                         ›
                       </motion.span>
@@ -125,7 +132,7 @@ const FAQ = () => {
                 );
               })}
             </div>
-          </div>
+          </motion.div>
         ))}
       </div>
     </div>

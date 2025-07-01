@@ -6,7 +6,7 @@ import sc3 from '../../../assets/sc3.png';
 import sc4 from '../../../assets/sc4.png';
 import sc5 from '../../../assets/sc5.png';
 
-const HeroSection: React.FC = () => {
+const PhoneAnimation: React.FC = () => {
   const analyticsImages = [sc1, sc2, sc3, sc4, sc5];
 
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -26,7 +26,13 @@ const HeroSection: React.FC = () => {
       animate={{ y: [0, -14, 0] }}
       transition={{ duration: 2.5, repeat: Infinity, repeatType: 'loop', ease: 'easeInOut' }}
     >
-      <div className="bg-gradient-to-r from-pink-50 to-pink-100 rounded-2xl p-2 sm:p-4 md:p-6 shadow-xl flex flex-col items-center h-[340px] w-[95vw] max-w-xs sm:max-w-md md:max-w-[440px] md:h-[460px] lg:h-[480px] lg:w-[300px] lg:max-w-none xl:w-[340px] 2xl:w-[450px] mt-[-30px] sm:mt-[70px]">
+      <motion.div 
+        className="bg-gradient-to-b from-indigo-50 to-blue-100 rounded-[2.5rem] p-2 sm:p-4 md:p-6 shadow-xl flex flex-col items-center h-[340px] w-[95vw] max-w-xs sm:max-w-md md:max-w-[440px] md:h-[460px] lg:h-[480px] lg:w-[300px] lg:max-w-none xl:w-[340px] 2xl:w-[450px] mt-[-30px] sm:mt-[70px]"
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5 }}
+        whileHover={{ scale: 1.02 }}
+      >
         <div
           className="relative mx-auto w-[140px] h-[280px] mt-5 sm:mt-0 sm:w-[180px] sm:h-[370px] md:w-[190px] md:h-[370px] lg:w-[220px] lg:h-[480px] flex items-center justify-center"
           style={{
@@ -63,9 +69,9 @@ const HeroSection: React.FC = () => {
             </div>
           </div>
         </div>
-      </div>
+      </motion.div>
     </motion.div>
   );
 };
 
-export default HeroSection;
+export default PhoneAnimation;

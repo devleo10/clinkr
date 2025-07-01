@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
-import { FaSearch } from 'react-icons/fa';
+import { FaSearch, FaChartLine } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaChartLine } from 'react-icons/fa';
 import Navbar from './Navbar';
 import Cards from './cards/Cards';
 import LinkDatas from './LinkDatas';
@@ -10,6 +9,7 @@ import Upgrade from './cards/Upgrade';
 import debounce from 'lodash/debounce';
 import { supabase } from '../../lib/supabaseClient';
 import { useAuth } from '../auth/AuthProvider';
+import DashboardBackground from './DashboardBackground';
 
 const DashBoard = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -61,8 +61,9 @@ const DashBoard = () => {
 
   if (!profileChecked) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-500"></div>
+      <div className="min-h-screen flex items-center justify-center relative">
+        <DashboardBackground />
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 relative z-10"></div>
       </div>
     );
   }
@@ -75,68 +76,151 @@ const DashBoard = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="min-h-screen bg-gray-50"
+      className="min-h-screen relative"
     >
+      <DashboardBackground />
+      
       <Navbar />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 relative z-10">
         <motion.div
-          initial={{ y: -20 }}
-          animate={{ y: 0 }}
-          transition={{ duration: 0.3 }}
-          className="bg-white rounded-lg shadow-lg p-6 mb-8"
+          initial={{ y: -20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.4 }}
+          className="glass-card bg-white/80 backdrop-blur-lg border border-white/30 p-6 rounded-xl shadow-lg hover:shadow-xl mb-8 relative overflow-hidden"
+          whileHover={{
+            boxShadow: "0 20px 25px -5px rgba(99, 102, 241, 0.2)"
+          }}
         >
+          {/* Subtle gradient background */}
+          <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-blue-50 opacity-70" />
+          
+          {/* Animated accent */}
+          <motion.div 
+            className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500"
+            initial={{ scaleX: 0 }}
+            animate={{ scaleX: 1 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          />
+          
+          {/* Corner decoration */}
+          <motion.div
+            className="absolute top-0 right-0 w-16 h-16"
+            initial={{ opacity: 0, scale: 0 }}
+            animate={{ opacity: 0.1, scale: 1 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+          >
+            <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-purple-500 to-blue-500 rounded-bl-full" />
+          </motion.div>
+          
           {/* Analytics Dashboard Heading */}
-          <div className="flex flex-col items-center mb-6">
-            <h1 className="font-bold text-2xl sm:text-3xl text-gray-800 text-center">
-              Analytics Dashboard
-            </h1>
+          <div className="flex flex-col items-center mb-6 relative z-10">
+            <motion.div
+              className="flex items-center justify-center"
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <motion.div
+                className="mr-3 p-2 rounded-full bg-gradient-to-br from-indigo-100 to-purple-100 shadow-md"
+                whileHover={{ scale: 1.1, rotate: 5 }}
+                transition={{ type: "spring", stiffness: 300 }}
+              >
+                <FaChartLine size={24} className="text-indigo-600" />
+              </motion.div>
+              <motion.h1 
+                className="font-extrabold text-2xl sm:text-3xl bg-clip-text text-transparent bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 text-center"
+                whileHover={{
+                  scale: 1.03,
+                  transition: { duration: 0.2 }
+                }}
+              >
+                Analytics Dashboard
+              </motion.h1>
+            </motion.div>
+            <motion.div 
+              className="h-1 w-24 mt-2 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 rounded-full shadow-sm"
+              initial={{ width: 0 }}
+              animate={{ width: '6rem' }}
+              transition={{ duration: 0.8, delay: 0.5 }}
+            />
+            <motion.p
+              className="text-gray-600 mt-2 max-w-md text-center text-sm"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+            >
+              Track your links' performance and view detailed statistics
+            </motion.p>
           </div>
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="relative w-full sm:max-w-md">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <FaSearch />
+          
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 relative z-10">
+            <div className="relative w-full sm:max-w-md group">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-indigo-600">
+                <FaSearch className="filter drop-shadow-sm" />
               </div>
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={handleSearch}
-                placeholder="Search links..."
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+              <motion.div
+                initial={{ scale: 0.98, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.3 }}
+                className="w-full"
+              >
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={handleSearch}
+                  placeholder="Search links..."
+                  className="w-full pl-10 pr-4 py-3 glass-input bg-white/80 backdrop-blur-lg border border-white/50 rounded-xl shadow-lg focus:outline-none focus:ring-2 focus:ring-indigo-400 text-gray-700 placeholder-gray-400 transition-all"
+                />
+              </motion.div>
+              <motion.div 
+                className="absolute inset-0 rounded-xl pointer-events-none"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                whileHover={{ opacity: 1 }}
+                transition={{ duration: 0.3 }}
+                style={{ boxShadow: '0 0 20px rgba(99, 102, 241, 0.15)' }}
               />
             </div>
-            <div className="flex items-center space-x-4">
-            
-              <div className="flex items-center space-x-4">
-                <Link to="/premiumdashboard">
-                  <button className="flex items-center space-x-2 px-4 py-2 rounded-lg bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 hover:from-blue-500 hover:via-indigo-600 hover:to-purple-600 text-white transition-all duration-300">
-                    <p className='font-bold text-center'>Check Premium Analytics</p>
-                    <FaChartLine size={20} />
-                  </button>
-                </Link>
-              </div>
+            <div className="flex items-center">
+              <Link to="/premiumdashboard">
+                <motion.button
+                  className="flex items-center space-x-2 px-4 py-3 rounded-xl bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 hover:from-blue-500 hover:via-indigo-600 hover:to-purple-600 text-white transition-all duration-300 shadow-lg border border-white/20"
+                  whileHover={{
+                    scale: 1.05,
+                    boxShadow: '0 10px 15px -3px rgba(99, 102, 241, 0.4)',
+                  }}
+                  whileTap={{ scale: 0.95 }}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: 0.2 }}
+                >
+                  <span className="font-bold">Check Premium Analytics</span>
+                  <FaChartLine size={18} className="ml-2" />
+                </motion.button>
+              </Link>
             </div>
           </div>
         </motion.div>
         <motion.div
-          initial={{ scale: 0.95 }}
-          animate={{ scale: 1 }}
-          transition={{ duration: 0.3 }}
+          initial={{ scale: 0.95, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.4, delay: 0.1 }}
           className="mb-8"
         >
           <Cards />
         </motion.div>
         <motion.div
-          initial={{ x: -50 }}
-          animate={{ x: 0 }}
-          transition={{ duration: 0.3 }}
-  className="mb-8"
->
-  <LinkDatas searchQuery={debouncedSearchQuery} />
-</motion.div>
+          initial={{ x: -50, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ duration: 0.4, delay: 0.2 }}
+          className="mb-8"
+        >
+          <LinkDatas searchQuery={debouncedSearchQuery} />
+        </motion.div>
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
         >
           <Upgrade />
         </motion.div>

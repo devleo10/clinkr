@@ -241,34 +241,59 @@ const Onboarding = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   return (
-    <div className="min-h-screen flex flex-col justify-between bg-gray-50">
-      <div className="flex-grow flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 mb-16">
-        <div className="max-w-md w-full space-y-8">
+    <div className="min-h-screen flex flex-col justify-between relative overflow-hidden">
+      <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 bg-gradient-to-br from-indigo-950 via-blue-900 to-purple-900 opacity-90"></div>
+        
+        {/* Animated wave effect */}
+        <div className="absolute inset-0 opacity-20">
+          <svg viewBox="0 0 1200 600" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+            <path 
+              d="M 0 200 C 300 100 600 300 1200 200 L 1200 600 L 0 600 Z" 
+              fill="url(#wave1)" 
+              className="animate-wave-slow"
+            />
+            <defs>
+              <linearGradient id="wave1" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#4F46E5" />
+                <stop offset="100%" stopColor="#7C3AED" />
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        
+        {/* Accent circles */}
+        <div className="absolute top-1/4 left-1/4 w-64 h-64 rounded-full bg-blue-500 mix-blend-multiply filter blur-3xl opacity-20 animate-pulse"></div>
+        <div className="absolute bottom-1/3 right-1/4 w-96 h-96 rounded-full bg-purple-500 mix-blend-multiply filter blur-3xl opacity-20 animate-pulse delay-1000"></div>
+      </div>
+      
+      <div className="flex-grow flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 mb-16 relative z-10">
+        <div className="max-w-md w-full space-y-8 glass-card rounded-xl p-8">
           {/* Updated Header Section */}
           <div className="text-center">
             <div className="flex items-center justify-center gap-2">
               <img 
                 src={logo} 
                 alt="Clinkr Logo" 
-                className="h-8 w-auto sm:h-10" 
+                className="h-8 w-auto sm:h-10 filter drop-shadow" 
               />
               <h1 className="text-3xl sm:text-4xl font-extrabold relative group">
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500">
+                <span className="bg-clip-text text-transparent bg-gradient-to-r from-white to-blue-200">
                   Clinkr
                 </span>
               </h1>
             </div>
-            <h2 className="mt-6 text-2xl font-bold text-gray-900">
+            <h2 className="mt-6 text-2xl font-bold text-white">
               Welcome to Clinkr
             </h2>
-            <p className="mt-2 text-sm text-gray-600">
+            <p className="mt-2 text-sm text-white/80">
               Let's set up your account to get the most out of Clinkr
             </p>
           </div>
 
           {/* Updated Progress Indicator */}
           <div className="relative mb-8">
-            <div className="absolute left-0 right-0 h-0.5 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 top-5 opacity-20"></div>
+            <div className="absolute left-0 right-0 h-0.5 bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400 top-5 opacity-20"></div>
             
             <div className="flex justify-between items-center relative">
               {[1, 2, 3].map((step) => (
@@ -276,13 +301,13 @@ const Onboarding = () => {
                   <div 
                     className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 ${
                       currentStep >= step 
-                        ? 'bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 text-white' 
-                        : 'bg-gray-200 text-gray-500'
+                        ? 'bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 text-white shadow-lg' 
+                        : 'bg-gray-800/50 text-gray-400 border border-gray-700'
                     } relative z-10`}
                   >
-                    {step === 1 ? <FaUser /> : step === 2 ? <FaLink /> : <FaChartLine />}
+                    {step === 1 ? <FaUser className="filter drop-shadow" /> : step === 2 ? <FaLink className="filter drop-shadow" /> : <FaChartLine className="filter drop-shadow" />}
                   </div>
-                  <span className="text-xs mt-2 text-gray-500">
+                  <span className={`text-xs mt-2 ${currentStep >= step ? 'text-white' : 'text-gray-400'}`}>
                     {step === 1 ? 'Profile' : step === 2 ? 'Links' : 'Finish'}
                   </span>
                 </div>
@@ -296,7 +321,7 @@ const Onboarding = () => {
               {/* Profile Picture Upload */}
               <div className="flex flex-col items-center space-y-4">
                 <div className="relative">
-                  <div className="w-32 h-32 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
+                  <div className="w-32 h-32 rounded-full bg-blue-900/30 backdrop-blur-sm border border-white/20 flex items-center justify-center overflow-hidden shadow-lg">
                     {formData.profile_picture ? (
                       <div className="relative w-32 h-32">
                         <img
@@ -305,8 +330,8 @@ const Onboarding = () => {
                           className="w-full h-full object-cover rounded-full"
                         />
                         {isUploadingPicture && (
-                          <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-60 rounded-full">
-                            <svg className="animate-spin h-8 w-8 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <div className="absolute inset-0 flex items-center justify-center bg-blue-900/60 rounded-full backdrop-blur-sm">
+                            <svg className="animate-spin h-8 w-8 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                             </svg>
@@ -314,13 +339,13 @@ const Onboarding = () => {
                         )}
                       </div>
                     ) : (
-                      <FaUser size={40}  />
+                      <FaUser size={40} className="text-white/70" />
                     )}
                   </div>
                   <button
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
-                    className="absolute bottom-0 right-0 bg-[#4F46E5] text-white p-2 rounded-full hover:bg-[#4338CA] transition-colors"
+                    className="absolute bottom-0 right-0 bg-gradient-to-r from-indigo-600 to-blue-500 text-white p-2 rounded-full hover:from-indigo-500 hover:to-blue-400 transition-colors shadow-lg"
                   >
                     <FaCamera size={16} />
                   </button>
@@ -332,17 +357,17 @@ const Onboarding = () => {
                   onChange={handleProfilePictureChange}
                   className="hidden"
                 />
-                <p className="text-sm text-gray-500">Upload a profile picture</p>
+                <p className="text-sm text-white/80">Upload a profile picture</p>
               </div>
             
               <div>
-                <label htmlFor="username" className="block text-sm font-medium text-gray-700">Username</label>
+                <label htmlFor="username" className="block text-sm font-medium text-white/90">Username</label>
                 <input
                   id="username"
                   name="username"
                   type="text"
                   required
-                  className="mt-1 appearance-none rounded-lg relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-[#4F46E5] focus:border-[#4F46E5] focus:z-10 sm:text-sm"
+                  className="mt-1 appearance-none rounded-lg relative block w-full px-3 py-2 glass-input text-white placeholder-white/60 focus:outline-none focus:ring-white/30 focus:border-white/50 sm:text-sm"
                   placeholder="doejohn999"
                   value={formData.username}
                   onChange={e => {
@@ -350,15 +375,15 @@ const Onboarding = () => {
                     setFormData(prev => ({ ...prev, username: value }));
                   }}
                 />
-                <p className="text-xs text-yellow-600 mt-1">Warning: Username cannot be changed later.</p>
+                <p className="text-xs text-yellow-300/80 mt-1">Warning: Username cannot be changed later.</p>
               </div>
               <div>
-                <label htmlFor="bio" className="block text-sm font-medium text-gray-700">Bio</label>
+                <label htmlFor="bio" className="block text-sm font-medium text-white/90">Bio</label>
                 <textarea
                   id="bio"
                   name="bio"
                   rows={3}
-                  className="mt-1 appearance-none rounded-lg relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-[#4F46E5] focus:border-[#4F46E5] focus:z-10 sm:text-sm"
+                  className="mt-1 appearance-none rounded-lg relative block w-full px-3 py-2 glass-input text-white placeholder-white/60 focus:outline-none focus:ring-white/30 focus:border-white/50 sm:text-sm"
                   placeholder="Write a crisp bio within 160 words"
                   value={formData.bio}
                   onChange={handleInputChange}
@@ -371,8 +396,8 @@ const Onboarding = () => {
           {currentStep === 2 && (
             <div className="space-y-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Add Your Links</label>
-                <p className="text-xs text-gray-500 mb-4">You can add up to 5 links</p>
+                <label className="block text-sm font-medium text-white/90 mb-2">Add Your Links</label>
+                <p className="text-xs text-white/70 mb-4">You can add up to 5 links</p>
                 <div className="space-y-2">
                   {formData.links.map((link, index) => (
                     <div key={index} className="flex flex-col gap-1 mb-2">
@@ -383,11 +408,11 @@ const Onboarding = () => {
                               type="text"
                               value={link.url}
                               onChange={(e) => handleLinkChange(index, 'url', e.target.value)}
-                              className={`flex-1 rounded-lg px-3 py-2 border ${!isValid && link.url ? "border-red-500" : "border-gray-300"} placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-[#4F46E5] focus:border-[#4F46E5] sm:text-sm`}
+                              className={`flex-1 rounded-lg px-3 py-2 glass-input ${!isValid && link.url ? "border-red-500" : "border-white/30"} text-white placeholder-white/60 focus:outline-none focus:ring-white/30 focus:border-white/50 sm:text-sm`}
                               placeholder="https://example.com"
                             />
                             {!isValid && link.url && (
-                              <span className="text-xs text-red-500">{message}</span>
+                              <span className="text-xs text-red-300">{message}</span>
                             )}
                           </>
                         )}
@@ -396,7 +421,7 @@ const Onboarding = () => {
                         type="text"
                         value={link.title}
                         onChange={(e) => handleLinkChange(index, 'title', e.target.value)}
-                        className="flex-1 appearance-none rounded-lg relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-[#4F46E5] focus:border-[#4F46E5] focus:z-10 sm:text-sm"
+                        className="flex-1 rounded-lg px-3 py-2 glass-input border-white/30 text-white placeholder-white/60 focus:outline-none focus:ring-white/30 focus:border-white/50 sm:text-sm"
                         placeholder="Link Title"
                       />
                       {formData.links.length > 1 && (
@@ -405,7 +430,7 @@ const Onboarding = () => {
                           onClick={() => {
                             setFormData(prev => ({ ...prev, links: prev.links.filter((_, i) => i !== index) }));
                           }}
-                          className="ml-2 text-red-500 hover:text-red-700"
+                          className="ml-2 text-red-300 hover:text-red-200 transition-colors"
                         >
                           Remove
                         </button>
@@ -416,9 +441,9 @@ const Onboarding = () => {
                     <button
                       type="button"
                       onClick={() => setFormData(prev => ({ ...prev, links: [...prev.links, { title: '', url: '' }] }))}
-                      className="mt-2 text-[#4F46E5] hover:text-[#4338CA]"
+                      className="mt-2 text-white/90 hover:text-blue-200 transition-colors flex items-center gap-1"
                     >
-                      Add another link
+                      <span className="text-lg">+</span> Add another link
                     </button>
                   )}
                 </div>
@@ -429,13 +454,18 @@ const Onboarding = () => {
           {/* Step 3: Final Step */}
           {currentStep === 3 && (
             <div className="space-y-6 text-center">
-              <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                <h3 className="text-lg font-medium text-gray-900 mb-2">You're All Set!</h3>
-                <p className="text-gray-600 mb-4">
+              <div className="glass-card p-6 rounded-lg shadow-lg border border-white/30 backdrop-blur-md">
+                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center">
+                  <FaChartLine size={28} className="text-white filter drop-shadow" />
+                </div>
+                <h3 className="text-xl font-bold text-white mb-2">You're All Set!</h3>
+                <p className="text-white/80 mb-4">
                   Your Clinkr profile is ready to go. Start tracking your link metrics and grow your online presence.
                 </p>
-                <div className="flex justify-center text-indigo-600">
-                  <FaChartLine size={24} className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500"/>
+                <div className="py-3">
+                  <div className="w-full h-2 bg-blue-900/30 rounded-full overflow-hidden">
+                    <div className="h-full w-full bg-gradient-to-r from-blue-400 to-indigo-500 animate-pulse"></div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -447,7 +477,7 @@ const Onboarding = () => {
               <button
                 onClick={handlePrevStep}
                 disabled={isLoading}
-                className="flex-1 py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="flex-1 py-2 px-4 glass-button rounded-md shadow-lg text-sm font-medium text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all transform hover:scale-105 duration-200"
               >
                 Back
               </button>
@@ -455,9 +485,9 @@ const Onboarding = () => {
             <button
               onClick={handleNextStep}
               disabled={isLoading || !isStepValid}
-              className={`flex-1 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 hover:from-blue-500 hover:via-indigo-600 hover:to-purple-600 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${
+              className={`flex-1 py-2 px-4 border border-transparent rounded-md shadow-lg text-sm font-medium text-white bg-gradient-to-r from-indigo-600 to-blue-500 hover:from-indigo-500 hover:to-blue-400 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white/30 ${
                 isLoading ? 'opacity-75' : ''
-              } disabled:opacity-50 disabled:cursor-not-allowed`}
+              } disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105`}
             >
               {isLoading ? (
                 <span className="inline-flex items-center">
@@ -474,7 +504,9 @@ const Onboarding = () => {
           </div>
         </div>
       </div>
-      <Footer />
+      <div className="relative z-10">
+        <Footer />
+      </div>
     </div>
   );
 };

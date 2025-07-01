@@ -1,8 +1,7 @@
 import { FaGlobeAsia } from "react-icons/fa";
 import { useState, useEffect } from 'react';
 import { supabase } from '../../../lib/supabaseClient';
-
-
+import { motion } from 'framer-motion';
 
 const TopCountry = () => {
   const [topCountry, setTopCountry] = useState({
@@ -97,22 +96,59 @@ const TopCountry = () => {
   }, []);
 
   return (
-    <div className="w-full border-2 p-5 rounded-[10px] hover:border-[#4F46E5] flex flex-col justify-between min-h-[150px]">
-      <div className="flex justify-between">
-        <h1>Top Country</h1>
-        <FaGlobeAsia size={30} />
+    <motion.div 
+      className="w-full glass-card bg-white/80 backdrop-blur-lg border border-white/30 p-6 rounded-xl hover:border-indigo-200 flex flex-col justify-between min-h-[180px] shadow-lg hover:shadow-xl transition-all relative overflow-hidden"
+      whileHover={{ 
+        scale: 1.02,
+        boxShadow: "0 10px 25px -5px rgba(99, 102, 241, 0.2)"
+      }}
+    >
+      {/* Subtle gradient background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-blue-50 opacity-70" />
+      
+      {/* Animated accent */}
+      <motion.div 
+        className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500"
+        initial={{ scaleX: 0 }}
+        animate={{ scaleX: 1 }}
+        transition={{ duration: 0.8, delay: 0.2 }}
+      />
+      
+      <div className="flex justify-between items-center relative z-10">
+        <h1 className="font-bold text-gray-800">Top Country</h1>
+        <div className="text-indigo-500">
+          <FaGlobeAsia size={24} />
+        </div>
       </div>
-      <div className="mt-8 flex">
-        <h1 className="text-3xl font-bold">
-          {loading ? '...' : topCountry.name}
+      <div className="mt-8 flex relative z-10">
+        <h1 className="text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500">
+          {loading ? (
+            <motion.span
+              animate={{ opacity: [0.5, 1, 0.5] }}
+              transition={{ duration: 1.5, repeat: Infinity }}
+            >
+              ...
+            </motion.span>
+          ) : (
+            topCountry.name
+          )}
         </h1>
       </div>
-      <div>
-        <p className="text-sm text-gray-500">
-          {loading ? '...' : `${topCountry.clicks.toLocaleString()} Clicks (${topCountry.percentage}%)`}
+      <div className="relative z-10">
+        <p className="text-sm text-gray-500 font-medium">
+          {loading ? (
+            <motion.span
+              animate={{ opacity: [0.5, 1, 0.5] }}
+              transition={{ duration: 1.5, repeat: Infinity }}
+            >
+              ...
+            </motion.span>
+          ) : (
+            `${topCountry.clicks.toLocaleString()} Clicks (${topCountry.percentage}%)`
+          )}
         </p>
       </div>
-    </div>
+    </motion.div>
   );
 }
 

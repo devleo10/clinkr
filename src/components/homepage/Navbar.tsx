@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import logo from '../../assets/Frame.png';
 import { useAuth } from '../auth/AuthProvider';
+import { motion } from 'framer-motion';
 
 const Navbar = () => {
   const [showDropdown, setShowDropdown] = useState(false);
@@ -41,10 +42,13 @@ const Navbar = () => {
     }, 100);
   };
 
-
-
   return (
-    <nav className="border w-full flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4">
+    <motion.nav 
+      initial={{ y: -20, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.5 }}
+      className="w-full flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 bg-white/60 backdrop-blur-md shadow-sm border-b border-white/40 relative z-20"
+    >
       {/* Logo and title section */}
       <div className="flex items-center gap-1 sm:gap-2">
         <Link to="/" className="flex items-center">
@@ -66,50 +70,61 @@ const Navbar = () => {
       <div className="hidden sm:flex sm:items-center sm:space-x-6">
         <button 
           onClick={() => navigateToSection('features')} 
-          className="text-[rgba(75,85,99,1)] hover:text-[rgba(79,70,229,1)]"
+          className="text-gray-700 hover:text-indigo-600 font-medium transition-colors"
         >
           Features
         </button>
         <button 
           onClick={() => navigateToSection('pricing')} 
-          className="text-[rgba(75,85,99,1)] hover:text-[rgba(79,70,229,1)]"
+          className="text-gray-700 hover:text-indigo-600 font-medium transition-colors"
         >
           Pricing
         </button>
         <button 
           onClick={() => navigateToSection('faq')}
-          className="text-[rgba(75,85,99,1)] hover:text-[rgba(79,70,229,1)]"
+          className="text-gray-700 hover:text-indigo-600 font-medium transition-colors"
         >
           FAQ
         </button>
       </div>
+      
       {/* Auth buttons */}
       <div className="space-x-2 flex items-center">
-        <button
-          className="bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 text-white font-bold px-6 py-2 rounded-lg shadow hover:from-blue-500 hover:via-indigo-600 hover:to-purple-600 transition-all duration-300"
+        <motion.button
+          className="bg-gradient-to-r from-indigo-600 to-blue-500 text-white font-bold px-6 py-2 rounded-xl shadow-md hover:from-blue-500 hover:to-indigo-600 transition-all duration-300"
           onClick={handleButtonClick}
           type="button"
+          whileHover={{ 
+            scale: 1.05,
+            boxShadow: "0 10px 15px -3px rgba(79, 70, 229, 0.2)" 
+          }}
+          whileTap={{ scale: 0.95 }}
         >
           {session ? 'Visit Dashboard' : 'Get Started'}
-        </button>
+        </motion.button>
         
         {/* Mobile menu dots */}
         <div className="relative sm:hidden ml-4">
           <div 
-            className="flex flex-col gap-1 cursor-pointer group"
-            onClick={() => setShowDropdown(!showDropdown)} // Toggle dropdown on click instead of hover
+            className="flex flex-col gap-1 cursor-pointer group p-2"
+            onClick={() => setShowDropdown(!showDropdown)}
           >
-            <div className="w-1 h-1 rounded-full bg-black group-hover:bg-[rgba(79,70,229,1)]"></div>
-            <div className="w-1 h-1 rounded-full bg-black group-hover:bg-[rgba(79,70,229,1)]"></div>
-            <div className="w-1 h-1 rounded-full bg-black group-hover:bg-[rgba(79,70,229,1)]"></div>
+            <div className="w-1 h-1 rounded-full bg-indigo-600 group-hover:bg-indigo-800"></div>
+            <div className="w-1 h-1 rounded-full bg-indigo-600 group-hover:bg-indigo-800"></div>
+            <div className="w-1 h-1 rounded-full bg-indigo-600 group-hover:bg-indigo-800"></div>
             {showDropdown && (
-              <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10">
+              <motion.div 
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="absolute right-0 mt-2 w-48 bg-white/90 backdrop-blur-md rounded-xl shadow-lg py-1 z-10 border border-indigo-100"
+              >
                 <button 
                   onClick={() => {
                     setShowDropdown(false);
                     navigateToSection('features');
                   }}
-                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-[rgba(79,70,229,1)] hover:text-white"
+                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-indigo-100 hover:text-indigo-700 transition-colors"
                 >
                   Features
                 </button>
@@ -118,7 +133,7 @@ const Navbar = () => {
                     setShowDropdown(false);
                     navigateToSection('pricing');
                   }}
-                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-[rgba(79,70,229,1)] hover:text-white"
+                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-indigo-100 hover:text-indigo-700 transition-colors"
                 >
                   Pricing
                 </button>
@@ -127,16 +142,16 @@ const Navbar = () => {
                     setShowDropdown(false);
                     navigateToSection('faq');
                   }}
-                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-[rgba(79,70,229,1)] hover:text-white"
+                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-indigo-100 hover:text-indigo-700 transition-colors"
                 >
                   FAQ
                 </button>
-              </div>
+              </motion.div>
             )}
           </div>
         </div>
       </div>
-    </nav>
+    </motion.nav>
   );
 };
 

@@ -6,6 +6,7 @@ import { FcGoogle } from "react-icons/fc";
 import { supabase } from "../../lib/supabaseClient";
 import { getRedirectUrl } from "../../lib/urlUtils";
 import { useAuth } from "../auth/AuthProvider";
+import AuthBackground from "./AuthBackground";
 
 const GetStarted = () => {
   const [loading, setLoading] = useState(false);
@@ -55,27 +56,26 @@ const GetStarted = () => {
     setLoading(false);
   };
 
-
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50 py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-md w-full space-y-8 bg-white rounded-xl shadow-lg p-8">
-          <div className="text-center">
-          <Link to="/homepage">
+    <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+      <AuthBackground />
+      
+      <div className="max-w-md w-full space-y-8 glass-card rounded-xl p-8 relative z-10">
+        <div className="text-center">
+          <Link to="/homepage" className="inline-block transform hover:scale-105 transition-transform duration-200">
             <img src={logo} alt="Clinkr Logo" className="mx-auto h-12 w-auto cursor-pointer" />
           </Link>
-          <h2 className="mt-6 text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500">
+          <h2 className="mt-6 text-3xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-r from-white to-blue-200">
             Welcome to Clinkr
           </h2>
-          </div>
-         
+          <p className="mt-2 text-sm text-white/80">
+            Create your account and start tracking your link metrics
+          </p>
+        </div>
 
-          <div className="mt-8 space-y-6">
-         
-         
-        
-
+        <div className="mt-8 space-y-6">
           {error && (
-            <div className="text-center text-red-600 text-sm">
+            <div className="text-center text-red-300 text-sm bg-red-900/20 p-2 rounded-md border border-red-500/30">
               {error}
             </div>
           )}
@@ -83,38 +83,51 @@ const GetStarted = () => {
           <div className="mt-6">
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-300"></div>
+                <div className="w-full border-t border-white/20"></div>
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-gray-50 text-gray-500">Continue with</span>
+                <span className="px-2 backdrop-blur-sm bg-blue-900/30 text-white/70 rounded-md">Continue with</span>
               </div>
             </div>
+            
             <div className="mt-6 grid grid-cols-2 gap-3">
               <button
-               onClick={handleGoogleSignIn}
-               disabled={loading}
+                onClick={handleGoogleSignIn}
+                disabled={loading}
                 type="button"
-                className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-600 hover:bg-gray-50"
+                className="w-full inline-flex justify-center py-2 px-4 glass-button rounded-md shadow-lg text-sm font-medium text-white disabled:opacity-50 transform hover:scale-105 transition-all duration-200"
               >
-                <FcGoogle size={20}/>
+                <FcGoogle size={20} className="filter drop-shadow"/>
                 <span className="ml-2">Google</span>
               </button>
               <button
-              onClick={handleGitHubSignIn}
-              disabled={loading}
+                onClick={handleGitHubSignIn}
+                disabled={loading}
                 type="button"
-                className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-[#24292E] text-sm font-medium text-white hover:bg-[#1b1f23df]"
+                className="w-full inline-flex justify-center py-2 px-4 rounded-md shadow-lg text-sm font-medium text-white disabled:opacity-50 bg-gradient-to-br from-gray-800 to-gray-900 hover:from-gray-700 hover:to-gray-800 border border-gray-700 transform hover:scale-105 transition-all duration-200"
               >
-                <FaGithub size={20} />
+                <FaGithub size={20} className="filter drop-shadow"/>
                 <span className="ml-2">GitHub</span>
               </button>
             </div>
           </div>
-      
-      </div>
+        
+          <div className="text-center mt-6">
+            <p className="text-sm text-white/60">
+              By signing up, you agree to our{" "}
+              <Link to="/terms" className="text-white hover:text-blue-200 underline">
+                Terms of Service
+              </Link>{" "}
+              and{" "}
+              <Link to="/privacy" className="text-white hover:text-blue-200 underline">
+                Privacy Policy
+              </Link>
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );
 };
 
-export default GetStarted
+export default GetStarted;

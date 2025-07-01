@@ -7,6 +7,7 @@ import 'leaflet.heat';
 import { Tabs, TabsList, TabsTrigger } from "../../../ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../ui/select";
 import { Filter, Smartphone, Laptop, Calendar } from "lucide-react";
+import { motion } from 'framer-motion';
 
 interface HeatmapLayerProps {
   points: Array<[number, number, number]>;
@@ -272,29 +273,48 @@ const Geography = () => {
   }, [heatmapData]);
 
   return (
-    <div className="w-full h-full">
-      <style>{`
-        .remove-outline:focus {
-          outline: none !important;
-          box-shadow: none !important;
-        }
-      `}</style>
-      <div className="flex flex-col md:flex-row md:gap-4 gap-2 w-full mb-4">        
+    <motion.div 
+      className="w-full h-full"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.3 }}
+    >
+      <motion.div 
+        className="flex flex-col md:flex-row md:gap-4 gap-2 w-full mb-4"
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+      >        
         {/* Time Period Filter */}
         <div className="w-full md:w-auto">
           <Tabs defaultValue={timeFrame} onValueChange={(value) => setTimeFrame(value as "7days" | "30days" | "90days")}> 
-            <TabsList className="w-full md:w-auto remove-outline">
-              <TabsTrigger value="7days">7 Days</TabsTrigger>
-              <TabsTrigger value="30days">30 Days</TabsTrigger>
-              <TabsTrigger value="90days">90 Days</TabsTrigger>
+            <TabsList className="w-full md:w-auto bg-white/90 backdrop-blur-sm border border-indigo-50 shadow-sm">
+              <TabsTrigger 
+                value="7days"
+                className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:via-indigo-600 data-[state=active]:to-blue-500 data-[state=active]:text-white"
+              >
+                7 Days
+              </TabsTrigger>
+              <TabsTrigger 
+                value="30days"
+                className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:via-indigo-600 data-[state=active]:to-blue-500 data-[state=active]:text-white"
+              >
+                30 Days
+              </TabsTrigger>
+              <TabsTrigger 
+                value="90days"
+                className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:via-indigo-600 data-[state=active]:to-blue-500 data-[state=active]:text-white"
+              >
+                90 Days
+              </TabsTrigger>
             </TabsList>
           </Tabs>
         </div>
         {/* Device Filter */}
         <div className="flex items-center gap-2 w-full md:w-auto">
-          <Filter size={16} />
+          <Filter size={16} className="text-indigo-600" />
           <Select value={deviceFilter} onValueChange={(value) => setDeviceFilter(value as "all" | "mobile" | "desktop")}> 
-            <SelectTrigger className="w-full md:w-[150px] remove-outline">
+            <SelectTrigger className="w-full md:w-[150px] bg-white/90 backdrop-blur-sm border border-indigo-50 shadow-sm">
               <SelectValue placeholder="Device Type" />
             </SelectTrigger>
             <SelectContent className='z-[9999]'>
@@ -307,109 +327,235 @@ const Geography = () => {
         {/* View Mode Toggle */}
         <div className="w-full md:w-auto">
           <Tabs defaultValue={viewMode} onValueChange={(value) => setViewMode(value as "heatmap" | "clusters")}> 
-            <TabsList className="w-full md:w-auto remove-outline">
-              <TabsTrigger value="heatmap">Heatmap</TabsTrigger>
-              <TabsTrigger value="clusters">Regions</TabsTrigger>
+            <TabsList className="w-full md:w-auto bg-white/90 backdrop-blur-sm border border-indigo-50 shadow-sm">
+              <TabsTrigger 
+                value="heatmap"
+                className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:via-indigo-600 data-[state=active]:to-blue-500 data-[state=active]:text-white"
+              >
+                Heatmap
+              </TabsTrigger>
+              <TabsTrigger 
+                value="clusters"
+                className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:via-indigo-600 data-[state=active]:to-blue-500 data-[state=active]:text-white"
+              >
+                Regions
+              </TabsTrigger>
             </TabsList>
           </Tabs>
         </div>
-      </div>
+      </motion.div>
       
       {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-          {error}
-        </div>
+        <motion.div 
+          className="glass-card bg-white/80 backdrop-blur-lg border border-red-300 px-4 py-3 rounded-xl mb-4 text-red-700 shadow-sm relative overflow-hidden"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-br from-red-50 via-white to-red-50 opacity-70" />
+          <div className="relative z-10">{error}</div>
+        </motion.div>
       )}
       
       {isLoading ? (
-        <div className="flex justify-center items-center h-96">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
-        </div>
+        <motion.div 
+          className="glass-card bg-white/80 backdrop-blur-lg border border-white/30 p-6 rounded-xl flex justify-center items-center h-96 relative overflow-hidden"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.3 }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-blue-50 opacity-70" />
+          
+          <motion.div 
+            className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500"
+            initial={{ scaleX: 0 }}
+            animate={{ scaleX: 1 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          />
+          
+          <div className="relative z-10 flex flex-col items-center">
+            <div className="w-12 h-12 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mb-3"></div>
+            <p className="text-indigo-600 font-medium">Loading geography data...</p>
+          </div>
+        </motion.div>
       ) : (
-        <div className="h-96 w-full border rounded">
-          <MapContainer center={mapOptions.center} zoom={mapOptions.zoom} style={mapOptions.style}>
-            <TileLayer
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-            />
-            
-            {viewMode === "heatmap" && heatmapData.length > 0 && (
-              <HeatmapComponent
-                points={heatmapPoints as [number, number, number][]}
-                radius={heatmapOptions.radius}
-                blur={heatmapOptions.blur}
-                max={heatmapOptions.max}
-                minOpacity={heatmapOptions.minOpacity}
+        <motion.div 
+          className="glass-card bg-white/80 backdrop-blur-lg border border-white/30 rounded-xl shadow-md overflow-hidden h-96 w-full relative"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+          whileHover={{ 
+            boxShadow: "0 10px 25px -5px rgba(99, 102, 241, 0.2)"
+          }}
+        >
+          {/* Subtle gradient background */}
+          <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-blue-50 opacity-70 z-0" />
+          
+          {/* Animated accent */}
+          <motion.div 
+            className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 z-10"
+            initial={{ scaleX: 0 }}
+            animate={{ scaleX: 1 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          />
+          
+          <div className="relative z-10 h-full">
+            <MapContainer center={mapOptions.center} zoom={mapOptions.zoom} style={mapOptions.style}>
+              <TileLayer
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
               />
-            )}
-            
-            {viewMode === "clusters" && regionClusters.map((cluster, index) => (
-              <CircleMarker 
-                key={`${cluster.country}-${cluster.region}-${index}`}
-                center={[cluster.lat, cluster.lng]}
-                radius={Math.min(20, Math.max(5, Math.log(cluster.count) * 5))}
-                pathOptions={{
-                  fillColor: '#3b82f6',
-                  fillOpacity: 0.6,
-                  color: '#1d4ed8',
-                  weight: 1
-                }}
-              >
-                <Popup>
-                  <div className="p-2">
-                    <h3 className="font-semibold">{cluster.region}, {cluster.country}</h3>
-                    <p className="text-sm">{cluster.count} {cluster.count === 1 ? 'interaction' : 'interactions'}</p>
-                  </div>
-                </Popup>
-              </CircleMarker>
-            ))}
-          </MapContainer>
-        </div>
+              
+              {viewMode === "heatmap" && heatmapData.length > 0 && (
+                <HeatmapComponent
+                  points={heatmapPoints as [number, number, number][]}
+                  radius={heatmapOptions.radius}
+                  blur={heatmapOptions.blur}
+                  max={heatmapOptions.max}
+                  minOpacity={heatmapOptions.minOpacity}
+                />
+              )}
+              
+              {viewMode === "clusters" && regionClusters.map((cluster, index) => (
+                <CircleMarker 
+                  key={`${cluster.country}-${cluster.region}-${index}`}
+                  center={[cluster.lat, cluster.lng]}
+                  radius={Math.min(20, Math.max(5, Math.log(cluster.count) * 5))}
+                  pathOptions={{
+                    fillColor: '#3b82f6',
+                    fillOpacity: 0.6,
+                    color: '#1d4ed8',
+                    weight: 1
+                  }}
+                >
+                  <Popup>
+                    <div className="p-2">
+                      <h3 className="font-semibold">{cluster.region}, {cluster.country}</h3>
+                      <p className="text-sm">{cluster.count} {cluster.count === 1 ? 'interaction' : 'interactions'}</p>
+                    </div>
+                  </Popup>
+                </CircleMarker>
+              ))}
+            </MapContainer>
+          </div>
+        </motion.div>
       )}
       
       <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-white rounded-lg shadow p-4">
-          <div className="flex items-center gap-2 mb-2">
-            <Calendar size={16} className="text-blue-600" />
-            <h3 className="font-medium">Time Insights</h3>
+        <motion.div 
+          className="glass-card bg-white/80 backdrop-blur-lg border border-white/30 p-4 rounded-xl shadow-md relative overflow-hidden"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.1 }}
+          whileHover={{ 
+            scale: 1.02,
+            boxShadow: "0 10px 25px -5px rgba(99, 102, 241, 0.2)"
+          }}
+        >
+          {/* Subtle gradient background */}
+          <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-blue-50 opacity-70" />
+          
+          {/* Animated accent */}
+          <motion.div 
+            className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500"
+            initial={{ scaleX: 0 }}
+            animate={{ scaleX: 1 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          />
+          
+          <div className="relative z-10">
+            <div className="flex items-center gap-2 mb-2">
+              <Calendar size={16} className="text-indigo-600" />
+              <h3 className="font-medium">Time Insights</h3>
+            </div>
+            <p className="text-sm text-gray-600">
+              {timeFrame === "7days" ? "Last week" : timeFrame === "30days" ? "Last month" : "Last quarter"} shows 
+              {heatmapData.length > 0 ? ` activity across ${regionClusters.length} regions` : " no significant activity"}
+            </p>
           </div>
-          <p className="text-sm text-gray-600">
-            {timeFrame === "7days" ? "Last week" : timeFrame === "30days" ? "Last month" : "Last quarter"} shows 
-            {heatmapData.length > 0 ? ` activity across ${regionClusters.length} regions` : " no significant activity"}
-          </p>
-        </div>
+        </motion.div>
         
-        <div className="bg-white rounded-lg shadow p-4">
-          <div className="flex items-center gap-2 mb-2">
-            <Smartphone size={16} className="text-blue-600" />
-            <h3 className="font-medium">Mobile Engagement</h3>
+        <motion.div 
+          className="glass-card bg-white/80 backdrop-blur-lg border border-white/30 p-4 rounded-xl shadow-md relative overflow-hidden"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.2 }}
+          whileHover={{ 
+            scale: 1.02,
+            boxShadow: "0 10px 25px -5px rgba(99, 102, 241, 0.2)"
+          }}
+        >
+          {/* Subtle gradient background */}
+          <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-blue-50 opacity-70" />
+          
+          {/* Animated accent */}
+          <motion.div 
+            className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500"
+            initial={{ scaleX: 0 }}
+            animate={{ scaleX: 1 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+          />
+          
+          <div className="relative z-10">
+            <div className="flex items-center gap-2 mb-2">
+              <Smartphone size={16} className="text-indigo-600" />
+              <h3 className="font-medium">Mobile Engagement</h3>
+            </div>
+            <p className="text-sm text-gray-600">
+              {deviceFilter === "mobile" ? "Showing only mobile traffic" : 
+               deviceFilter === "desktop" ? "Mobile data filtered out" : 
+               "Showing data for all devices"}
+            </p>
           </div>
-          <p className="text-sm text-gray-600">
-            {deviceFilter === "mobile" ? "Showing only mobile traffic" : 
-             deviceFilter === "desktop" ? "Mobile data filtered out" : 
-             "Showing data for all devices"}
-          </p>
-        </div>
+        </motion.div>
         
-        <div className="bg-white rounded-lg shadow p-4">
-          <div className="flex items-center gap-2 mb-2">
-            <Laptop size={16} className="text-blue-600" />
-            <h3 className="font-medium">Top Regions</h3>
+        <motion.div 
+          className="glass-card bg-white/80 backdrop-blur-lg border border-white/30 p-4 rounded-xl shadow-md relative overflow-hidden"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.3 }}
+          whileHover={{ 
+            scale: 1.02,
+            boxShadow: "0 10px 25px -5px rgba(99, 102, 241, 0.2)"
+          }}
+        >
+          {/* Subtle gradient background */}
+          <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-blue-50 opacity-70" />
+          
+          {/* Animated accent */}
+          <motion.div 
+            className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500"
+            initial={{ scaleX: 0 }}
+            animate={{ scaleX: 1 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+          />
+          
+          <div className="relative z-10">
+            <div className="flex items-center gap-2 mb-2">
+              <Laptop size={16} className="text-indigo-600" />
+              <h3 className="font-medium">Top Regions</h3>
+            </div>
+            <p className="text-sm text-gray-600">
+              {regionClusters.length > 0 
+                ? `Top region: ${regionClusters[0]?.region}, ${regionClusters[0]?.country} with ${regionClusters[0]?.count} interactions` 
+                : "No regional data available"}
+            </p>
           </div>
-          <p className="text-sm text-gray-600">
-            {regionClusters.length > 0 
-              ? `Top region: ${regionClusters[0]?.region}, ${regionClusters[0]?.country} with ${regionClusters[0]?.count} interactions` 
-              : "No regional data available"}
-          </p>
-        </div>
+        </motion.div>
       </div>
       
-      <div className="mt-2 text-sm text-gray-500">
+      <motion.div 
+        className="mt-2 text-sm text-gray-500 text-center"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 0.8 }}
+        transition={{ duration: 0.4, delay: 0.5 }}
+      >
         {viewMode === "heatmap" 
           ? `Showing heatmap data from ${heatmapData.length} location points` 
           : `Displaying ${regionClusters.length} region clusters`}
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
+    
   );
 };
 

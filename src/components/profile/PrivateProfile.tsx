@@ -4,7 +4,7 @@ import { Edit } from "lucide-react";
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import logo from "../../assets/Frame.png";
 import { supabase } from '../../lib/supabaseClient';
-import { FaUser,FaShare, FaTrash } from 'react-icons/fa';
+import { FaUser, FaShare, FaTrash } from 'react-icons/fa';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "../ui/alert-dialog";
 import { useAuth } from '../auth/AuthProvider';
 import LinkValidator from "../../lib/link-validator";
@@ -12,6 +12,7 @@ import Cropper from 'react-easy-crop';
 import Modal from 'react-modal';
 import { Globe } from 'lucide-react';
 import { MoreVertical } from "lucide-react";
+import ProfileBackground from './ProfileBackground';
 
 interface UserProfile {
   username: string;
@@ -364,300 +365,297 @@ const PrivateProfile = () => {
 
   // Ensure rendering logic correctly uses profile state
   return (
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        {/* Header Section */}
-        <div className="flex justify-between items-center mb-8">
-        <Link to="/homepage" className="flex items-center gap-1 sm:gap-2">
-              <img 
-                src={logo} 
-                alt="Clinkr Logo" 
-                className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 lg:w-10 lg:h-10"
-              />
-              <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold relative group">
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 hover:from-blue-500 hover:via-indigo-600 hover:to-purple-600 transition-all duration-300">
-                  Clinkr
-                </span>
-                <div className="absolute bottom-0 left-0 w-0 h-[2px] bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 group-hover:w-full transition-all duration-300"></div>
-              </h1>
+    <div className="min-h-screen py-8 px-4 sm:px-6 relative overflow-hidden">
+      <ProfileBackground />
+      
+      <div className="max-w-4xl mx-auto relative z-10">
+        {/* Header with logo */}
+        <div className="flex items-center justify-between mb-8">
+          <Link to="/dashboard" className="flex items-center space-x-2 transform hover:scale-105 transition-all duration-200">
+            <img src={logo} alt="Logo" className="h-8 w-auto" />
+            <span className="text-xl font-bold text-white">Clinkr</span>
+          </Link>
+          <div className="flex space-x-4">
+            <Link to="/dashboard" className="text-white hover:text-blue-200 transition-colors">
+              Dashboard
             </Link>
-          <div className="flex items-center gap-2">
-            <div className="bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 text-white font-bold px-6 py-2 rounded-lg shadow hover:from-blue-500 hover:via-indigo-600 hover:to-purple-600 transition-all duration-300">
-              <Link to='/dashboard'>
-                Visit Dashboard
-              </Link>
-            </div>
-            {/* Bin icon for delete profile */}
-            <button
-              className="p-2 rounded-full hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-red-400"
-              aria-label="Delete profile"
-              onClick={() => setDeleteDialogOpen(true)}
-            >
-              <FaTrash className="text-red-500" size={18} />
-            </button>
           </div>
         </div>
-    
-        {/* Profile Content */}
-        <div className="text-center relative">
-          {/* Profile Picture Section */}
-          <div className="w-32 h-32 mx-auto rounded-full bg-gradient-to-tr from-purple-500 via-indigo-500 to-blue-400 p-1 flex items-center justify-center overflow-visible mb-4 relative shadow-lg group">
-            <div className="w-full h-full rounded-full bg-white flex items-center justify-center overflow-hidden">
-              {loading && (
-                <div className="absolute inset-0 flex items-center justify-center bg-transparent z-20">
-                  <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-500"></div>
-                </div>
-              )}
-              {profile?.profile_picture ? (
-                <img
-                  src={profile.profile_picture}
-                  alt={profile.username}
-                  className="w-full h-full object-cover rounded-full transition-transform duration-200 group-hover:scale-105"
-                  style={{ filter: loading ? 'blur(2px)' : 'none', background: 'transparent' }}
-                />
-              ) : (
-                <FaUser size={60} className="text-indigo-200" />
-              )}
-            </div>
-            {/* Overlay with update/delete on hover */}
-            <div className="absolute inset-0 flex flex-col items-center justify-end opacity-0 group-hover:opacity-100 transition-opacity bg-gradient-to-t from-white/80 via-white/40 to-transparent z-10">
-              <button
-                type="button"
-                onClick={() => {
-                  if (fileInputRef.current) {
-                    fileInputRef.current.value = '';
-                    fileInputRef.current.click();
-                  }
-                }}
-                className="mb-2 flex items-center gap-1 bg-indigo-600 text-white px-3 py-1 rounded-full shadow hover:bg-indigo-700 text-xs font-medium border border-indigo-200"
-                aria-label="Update profile picture"
-                disabled={loading}
-              >
-                <Edit size={14} />
-                Update
-              </button>
-              {profile?.profile_picture && !loading && (
-                <button
-                  type="button"
-                  onClick={async () => {
-                    setLoading(true);
-                    setError(null);
-                    try {
-                      const { data: userData, error: userError } = await supabase.auth.getUser();
-                      if (userError || !userData?.user) throw new Error('No user found');
-                      const previousFilePath = new URL(profile.profile_picture as string).pathname.replace(/^\/storage\/v1\/object\/public\/user-data\//, '');
-                      await supabase.storage.from('user-data').remove([previousFilePath]);
-                      const { error: updateError } = await supabase.from('profiles').update({ profile_picture: null }).eq('id', userData.user.id);
-                      if (updateError) throw updateError;
-                      setProfile(prev => prev ? { ...prev, profile_picture: null } : null);
-                    } catch (err) {
-                      if (err instanceof Error) {
-                        setError(err.message || 'Failed to delete profile picture.');
-                      } else {
-                        setError('Failed to delete profile picture.');
-                      }
-                    } finally {
-                      setLoading(false);
-                    }
-                  }}
-                  className="mb-3 flex items-center gap-1 bg-red-100 text-red-600 px-3 py-1 rounded-full shadow hover:bg-red-200 text-xs font-medium border border-red-200"
-                  aria-label="Delete profile picture"
-                  disabled={loading}
-                >
-                  <FaTrash size={13} />
-                  Delete
-                </button>
-              )}
-            </div>
-            <input
-              type="file"
-              ref={fileInputRef}
-              className="hidden"
-              accept="image/*"
-              onChange={async (e) => {
-                const file = e.target.files?.[0];
-                if (!file) return;
-                if (file.size > 5 * 1024 * 1024) {
-                  setError('File size too large. Please choose an image under 5MB.');
-                  e.target.value = '';
-                  return;
-                }
-                if (!file.type.startsWith('image/')) {
-                  setError('Please upload an image file.');
-                  e.target.value = '';
-                  return;
-                }
-                setSelectedImage(file);
-                setCropModalOpen(true);
-                e.target.value = '';
-              }}
-            />
-            {/* Crop Modal */}
-            <Modal
-              isOpen={cropModalOpen}
-              onRequestClose={() => setCropModalOpen(false)}
-              ariaHideApp={false}
-              style={{ overlay: { zIndex: 1000 } }}
-            >
-              <div className="flex flex-col items-center p-4">
-                <h2 className="mb-2 font-bold">Crop your profile picture</h2>
-                {selectedImage && (
-                  <div className="relative w-64 h-64 bg-gray-100">
-                    <Cropper
-                      image={URL.createObjectURL(selectedImage)}
-                      crop={crop}
-                      zoom={zoom}
-                      aspect={1}
-                      onCropChange={setCrop}
-                      onZoomChange={setZoom}
-                      onCropComplete={(_: any, croppedAreaPixels: any) => setCroppedAreaPixels(croppedAreaPixels)}
+
+        {loading ? (
+          <div className="flex justify-center items-center h-64">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-white"></div>
+          </div>
+        ) : error ? (
+          <div className="text-center py-12">
+            <div className="text-red-300 mb-4">{error}</div>
+            <Link to="/dashboard" className="text-blue-300 hover:underline">
+              Return to Dashboard
+            </Link>
+          </div>
+        ) : profile ? (
+          <>
+            {/* Profile Content */}
+            <div className="text-center relative">
+              {/* Profile Picture Section */}
+              <div className="w-32 h-32 mx-auto rounded-full bg-gradient-to-tr from-blue-500 via-indigo-500 to-purple-500 p-1 flex items-center justify-center overflow-visible mb-4 relative shadow-xl group">
+                <div className="w-full h-full rounded-full glass-card flex items-center justify-center overflow-hidden">
+                  {loading && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-transparent z-20">
+                      <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-white"></div>
+                    </div>
+                  )}
+                  {profile?.profile_picture ? (
+                    <img
+                      src={profile.profile_picture}
+                      alt={profile.username}
+                      className="w-full h-full object-cover rounded-full transition-transform duration-200 group-hover:scale-105"
+                      style={{ filter: loading ? 'blur(2px)' : 'none', background: 'transparent' }}
                     />
-                  </div>
-                )}
-                <div className="flex gap-2 mt-4">
-                  <button className="px-4 py-2 bg-gray-200 rounded" onClick={() => setCropModalOpen(false)} disabled={loading}>Cancel</button>
+                  ) : (
+                    <FaUser size={60} className="text-white/70" />
+                  )}
+                </div>
+                {/* Overlay with update/delete on hover */}
+                <div className="absolute inset-0 flex flex-col items-center justify-end opacity-0 group-hover:opacity-100 transition-opacity bg-gradient-to-t from-black/60 via-black/30 to-transparent z-10 rounded-full">
                   <button
-                    className={
-                      'px-4 py-2 rounded text-white font-bold bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 shadow ' +
-                      (loading ? 'opacity-70 cursor-not-allowed' : 'hover:from-blue-500 hover:via-indigo-600 hover:to-purple-600 transition-all duration-300')
-                    }
-                    onClick={async () => {
-                      if (!selectedImage || !croppedAreaPixels) return;
-                      setLoading(true);
-                      setError(null);
-                      try {
-                        const imageSrc = URL.createObjectURL(selectedImage);
-                        const croppedBlob = await getCroppedImg(imageSrc, croppedAreaPixels);
-                        const { data: userData, error: userError } = await supabase.auth.getUser();
-                        if (userError || !userData?.user) throw new Error('No user found');
-                        if (profile?.profile_picture) {
-                          try {
-                            const previousFilePath = new URL(profile.profile_picture).pathname.replace(/^\/storage\/v1\/object\/public\/user-data\//, '');
-                            await supabase.storage.from('user-data').remove([previousFilePath]);
-                          } catch (e) { /* ignore */ }
-                        }
-                        const filePath = `avatars/${userData.user.id}-${Date.now()}.png`;
-                        const { data, error } = await supabase.storage.from('user-data').upload(filePath, croppedBlob, { cacheControl: '3600', upsert: true });
-                        if (error) {
-                          setError('Upload failed: ' + error.message);
-                          setLoading(false);
-                          return;
-                        }
-                        let publicUrl = '';
-                        if (data && data.path) {
-                          const { data: urlData } = supabase.storage.from('user-data').getPublicUrl(data.path);
-                          publicUrl = urlData.publicUrl;
-                        } else {
-                          const { data: urlData } = supabase.storage.from('user-data').getPublicUrl(filePath);
-                          publicUrl = urlData.publicUrl;
-                        }
-                        if (!publicUrl) {
-                          setError('Failed to get public URL for uploaded image.');
-                          setLoading(false);
-                          return;
-                        }
-                        const { error: updateError } = await supabase.from('profiles').update({ profile_picture: publicUrl }).eq('id', userData.user.id);
-                        if (updateError) {
-                          setError('Failed to update profile: ' + updateError.message);
-                          setLoading(false);
-                          return;
-                        }
-                        setProfile(prev => prev ? { ...prev, profile_picture: publicUrl } : null);
-                        setCropModalOpen(false);
-                        setSelectedImage(null);
-                      } catch (err) {
-                        if (err instanceof Error) {
-                          setError(err.message || 'Failed to update profile picture.');
-                        } else {
-                          setError('Failed to update profile picture.');
-                        }
-                      } finally {
-                        setLoading(false);
+                    type="button"
+                    onClick={() => {
+                      if (fileInputRef.current) {
+                        fileInputRef.current.value = '';
+                        fileInputRef.current.click();
                       }
                     }}
+                    className="mb-2 flex items-center gap-1 bg-gradient-to-r from-indigo-600 to-blue-500 text-white px-3 py-1 rounded-full shadow-lg hover:from-indigo-500 hover:to-blue-400 text-xs font-medium border border-white/20 transition-all transform hover:scale-105"
+                    aria-label="Update profile picture"
                     disabled={loading}
                   >
-                    {loading ? (
-                      <span className="flex items-center gap-2"><svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 008-8v4a4 4 0 00-4 4H4z"></path></svg>Uploading...</span>
-                    ) : (
-                      'Crop & Upload'
-                    )}
+                    <Edit size={14} className="filter drop-shadow" />
+                    Update
                   </button>
+                  {profile?.profile_picture && !loading && (
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        setLoading(true);
+                        setError(null);
+                        try {
+                          const { data: userData, error: userError } = await supabase.auth.getUser();
+                          if (userError || !userData?.user) throw new Error('No user found');
+                          const previousFilePath = new URL(profile.profile_picture as string).pathname.replace(/^\/storage\/v1\/object\/public\/user-data\//, '');
+                          await supabase.storage.from('user-data').remove([previousFilePath]);
+                          const { error: updateError } = await supabase.from('profiles').update({ profile_picture: null }).eq('id', userData.user.id);
+                          if (updateError) throw updateError;
+                          setProfile(prev => prev ? { ...prev, profile_picture: null } : null);
+                        } catch (err) {
+                          if (err instanceof Error) {
+                            setError(err.message || 'Failed to delete profile picture.');
+                          } else {
+                            setError('Failed to delete profile picture.');
+                          }
+                        } finally {
+                          setLoading(false);
+                        }
+                      }}
+                      className="mb-3 flex items-center gap-1 bg-red-100 text-red-600 px-3 py-1 rounded-full shadow hover:bg-red-200 text-xs font-medium border border-red-200"
+                      aria-label="Delete profile picture"
+                      disabled={loading}
+                    >
+                      <FaTrash size={13} />
+                      Delete
+                    </button>
+                  )}
                 </div>
-              </div>
-            </Modal>
-            {error && (
-              <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-red-100 text-red-600 text-xs py-1 px-2 rounded-md whitespace-nowrap z-30">
-                {error}
-              </div>
-            )}
-          </div>
-          
-          <p className="text-[#4F46E5] mb-2">@{profile?.username}</p>
-    
-          <div className="relative inline-block">
-            {editState.bio ? (
-              <div className="mt-2">
-                <textarea
-                  value={editedBio}
-                  onChange={(e) => {
-                    if (e.target.value.length <= 160) setEditedBio(e.target.value);
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  className="hidden"
+                  accept="image/*"
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    if (file.size > 5 * 1024 * 1024) {
+                      setError('File size too large. Please choose an image under 5MB.');
+                      e.target.value = '';
+                      return;
+                    }
+                    if (!file.type.startsWith('image/')) {
+                      setError('Please upload an image file.');
+                      e.target.value = '';
+                      return;
+                    }
+                    setSelectedImage(file);
+                    setCropModalOpen(true);
+                    e.target.value = '';
                   }}
-                  className="w-full p-2 border rounded-md  focus:ring-[#4F46E5] focus:border-transparent"
-                  placeholder="Write your bio..."
-                  rows={3}
-                  maxLength={160}
                 />
-                <div className="text-xs text-gray-500 text-right mt-1">{editedBio.length}/160</div>
-                <button
-                  onClick={handleBioUpdate}
-                  className="mt-2 px-4 py-2 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 text-white rounded-md font-bold shadow hover:from-blue-500 hover:via-indigo-600 hover:to-purple-600 transition-all duration-300"
+                {/* Crop Modal */}
+                <Modal
+                  isOpen={cropModalOpen}
+                  onRequestClose={() => setCropModalOpen(false)}
+                  ariaHideApp={false}
+                  style={{ overlay: { zIndex: 1000 } }}
                 >
-                  Save Bio
-                </button>
-              </div>
-            ) : (
-              <div className="group relative inline-block">
-                <p className="text-gray-600 mt-2">{profile?.bio}</p>
-                <button
-                  onClick={() => {
-                    setEditedBio(profile?.bio || '');
-                    setEditState(prev => ({ ...prev, bio: true }));
-                  }}
-                  className="absolute -right-6 top-1/2 -translate-y-1/2 p-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                  aria-label="Edit bio"
-                >
-                  <Edit size={12} />
-                </button>
-              </div>
-            )}
-            <div className="flex flex-col items-center justify-center gap-2 mb-2">
-              {/* Highlighted callout with app color palette */}
-              <div className="mb-2 px-4 py-2 rounded-lg bg-gradient-to-r from-purple-100 via-indigo-100 to-blue-100 border border-indigo-200 shadow text-indigo-700 font-semibold text-center animate-pulse">
-                <span role="img" aria-label="star">⭐</span> Share your unique Link-in-Bio with the world!
-              </div>
-              <button
-                onClick={handleShareProfile}
-                className="inline-flex items-center gap-1 px-4 py-2 text-base font-bold text-white bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 rounded-lg shadow-lg hover:from-blue-500 hover:via-indigo-600 hover:to-purple-600 transition-all duration-300 border-2 border-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2"
-              >
-                <FaShare size={16} />
-                Get Your Link-in-Bio link
-              </button>
-              {showToast && (
-                <div className="fixed left-1/2 bottom-4 -translate-x-1/2 flex justify-center items-center w-full pointer-events-none z-50">
-                  <div className="bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 text-white px-6 py-3 rounded-lg shadow-lg animate-fade-in-out pointer-events-auto">
-                    Link copied to clipboard!
+                  <div className="flex flex-col items-center p-4">
+                    <h2 className="mb-2 font-bold">Crop your profile picture</h2>
+                    {selectedImage && (
+                      <div className="relative w-64 h-64 bg-gray-100">
+                        <Cropper
+                          image={URL.createObjectURL(selectedImage)}
+                          crop={crop}
+                          zoom={zoom}
+                          aspect={1}
+                          onCropChange={setCrop}
+                          onZoomChange={setZoom}
+                          onCropComplete={(_: any, croppedAreaPixels: any) => setCroppedAreaPixels(croppedAreaPixels)}
+                        />
+                      </div>
+                    )}
+                    <div className="flex gap-2 mt-4">
+                      <button className="px-4 py-2 bg-gray-200 rounded" onClick={() => setCropModalOpen(false)} disabled={loading}>Cancel</button>
+                      <button
+                        className={
+                          'px-4 py-2 rounded text-white font-bold bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 shadow ' +
+                          (loading ? 'opacity-70 cursor-not-allowed' : 'hover:from-blue-500 hover:via-indigo-600 hover:to-purple-600 transition-all duration-300')
+                        }
+                        onClick={async () => {
+                          if (!selectedImage || !croppedAreaPixels) return;
+                          setLoading(true);
+                          setError(null);
+                          try {
+                            const imageSrc = URL.createObjectURL(selectedImage);
+                            const croppedBlob = await getCroppedImg(imageSrc, croppedAreaPixels);
+                            const { data: userData, error: userError } = await supabase.auth.getUser();
+                            if (userError || !userData?.user) throw new Error('No user found');
+                            if (profile?.profile_picture) {
+                              try {
+                                const previousFilePath = new URL(profile.profile_picture).pathname.replace(/^\/storage\/v1\/object\/public\/user-data\//, '');
+                                await supabase.storage.from('user-data').remove([previousFilePath]);
+                              } catch (e) { /* ignore */ }
+                            }
+                            const filePath = `avatars/${userData.user.id}-${Date.now()}.png`;
+                            const { data, error } = await supabase.storage.from('user-data').upload(filePath, croppedBlob, { cacheControl: '3600', upsert: true });
+                            if (error) {
+                              setError('Upload failed: ' + error.message);
+                              setLoading(false);
+                              return;
+                            }
+                            let publicUrl = '';
+                            if (data && data.path) {
+                              const { data: urlData } = supabase.storage.from('user-data').getPublicUrl(data.path);
+                              publicUrl = urlData.publicUrl;
+                            } else {
+                              const { data: urlData } = supabase.storage.from('user-data').getPublicUrl(filePath);
+                              publicUrl = urlData.publicUrl;
+                            }
+                            if (!publicUrl) {
+                              setError('Failed to get public URL for uploaded image.');
+                              setLoading(false);
+                              return;
+                            }
+                            const { error: updateError } = await supabase.from('profiles').update({ profile_picture: publicUrl }).eq('id', userData.user.id);
+                            if (updateError) {
+                              setError('Failed to update profile: ' + updateError.message);
+                              setLoading(false);
+                              return;
+                            }
+                            setProfile(prev => prev ? { ...prev, profile_picture: publicUrl } : null);
+                            setCropModalOpen(false);
+                            setSelectedImage(null);
+                          } catch (err) {
+                            if (err instanceof Error) {
+                              setError(err.message || 'Failed to update profile picture.');
+                            } else {
+                              setError('Failed to update profile picture.');
+                            }
+                          } finally {
+                            setLoading(false);
+                          }
+                        }}
+                        disabled={loading}
+                      >
+                        {loading ? (
+                          <span className="flex items-center gap-2"><svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 008-8v4a4 4 0 00-4 4H4z"></path></svg>Uploading...</span>
+                        ) : (
+                          'Crop & Upload'
+                        )}
+                      </button>
+                    </div>
                   </div>
+                </Modal>
+                {error && (
+                  <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-red-100 text-red-600 text-xs py-1 px-2 rounded-md whitespace-nowrap z-30">
+                    {error}
+                  </div>
+                )}
+              </div>
+              
+              <p className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-300 mb-2 font-bold text-lg">@{profile?.username}</p>
+        
+              <div className="relative inline-block">
+                {editState.bio ? (
+                  <div className="mt-2">
+                    <textarea
+                      value={editedBio}
+                      onChange={(e) => {
+                        if (e.target.value.length <= 160) setEditedBio(e.target.value);
+                      }}
+                      className="w-full p-2 glass-input rounded-md focus:ring-white/30 focus:border-white/50"
+                      placeholder="Write your bio..."
+                      rows={3}
+                      maxLength={160}
+                    />
+                    <div className="text-xs text-white/70 text-right mt-1">{editedBio.length}/160</div>
+                    <button
+                      onClick={handleBioUpdate}
+                      className="mt-2 px-4 py-2 bg-gradient-to-r from-indigo-600 to-blue-500 text-white rounded-md font-bold shadow-lg hover:from-indigo-500 hover:to-blue-400 transition-all duration-300 transform hover:scale-105"
+                    >
+                      Save Bio
+                    </button>
+                  </div>
+                ) : (
+                  <div className="group relative inline-block">
+                    <p className="text-white/90 mt-2">{profile?.bio}</p>
+                    <button
+                      onClick={() => {
+                        setEditedBio(profile?.bio || '');
+                        setEditState(prev => ({ ...prev, bio: true }));
+                      }}
+                      className="absolute -right-6 top-1/2 -translate-y-1/2 p-1 opacity-0 group-hover:opacity-100 transition-opacity text-white/70 hover:text-white"
+                      aria-label="Edit bio"
+                    >
+                      <Edit size={12} className="filter drop-shadow" />
+                    </button>
+                  </div>
+                )}
+                <div className="flex flex-col items-center justify-center gap-2 mb-2">
+                  {/* Highlighted callout with app color palette */}
+                  <div className="mb-2 px-4 py-2 rounded-lg glass-card backdrop-blur-md border border-white/30 shadow-lg text-white font-semibold text-center">
+                    <span role="img" aria-label="star">⭐</span> Share your unique Link-in-Bio with the world!
+                  </div>
+                  <button
+                    onClick={handleShareProfile}
+                    className="inline-flex items-center gap-1 px-4 py-2 text-base font-bold text-white bg-gradient-to-r from-indigo-600 to-blue-500 rounded-lg shadow-xl hover:from-indigo-500 hover:to-blue-400 transition-all duration-300 border border-white/20 focus:outline-none focus:ring-2 focus:ring-white/30 transform hover:scale-105"
+                  >
+                    <FaShare size={16} className="filter drop-shadow" />
+                    Get Your Link-in-Bio link
+                  </button>
+                  {showToast && (
+                    <div className="fixed left-1/2 bottom-4 -translate-x-1/2 flex justify-center items-center w-full pointer-events-none z-50">
+                      <div className="bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 text-white px-6 py-3 rounded-lg shadow-lg animate-fade-in-out pointer-events-auto">
+                        Link copied to clipboard!
+                      </div>
+                    </div>
+                  )}
                 </div>
-              )}
+              </div>
             </div>
-          </div>
-        </div>
-    
-        {/* Links Section */}
-        <div className="mt-8 border-b pb-4">
-          <div className="mt-6 space-y-4 max-w-xl mx-auto">
-            {links.map((link, index) => (
-        <Card key={link.url + '-' + link.title + '-' + index} className="hover:shadow-lg transition-shadow rounded-2xl border-2 border-gray-100 bg-white/80 p-2">
+        
+            {/* Links Section */}
+            <div className="mt-8 border-b pb-4">
+              <div className="mt-6 space-y-4 max-w-xl mx-auto">
+                {links.map((link, index) => (
+            <Card key={link.url + '-' + link.title + '-' + index} className="hover:shadow-lg transition-shadow rounded-2xl border-2 border-gray-100 bg-white/80 p-2">
                   <CardContent className="flex items-center justify-between gap-2 md:gap-4 p-6">
                     <div className="flex items-center gap-4 flex-grow min-w-0">
                       <span className="flex-shrink-0">
@@ -714,102 +712,102 @@ const PrivateProfile = () => {
                 </CardContent>
               </Card>
             ))}
-          </div>
-          <div className="flex flex-col gap-2 max-w-md mx-auto mt-8">
-            <LinkValidator url={newLink.url}>
-              {(isValid, message) => (
-                <>
-                  <input
-                    type="text"
-                    value={newLink.url}
-                    onChange={(e) => setNewLink(prev => ({ ...prev, url: e.target.value }))}
-                    placeholder="Enter new link URL"
-                    className={`border rounded-md p-2 w-full focus:ring-[#4F46E5] focus:border-[#4F46E5] hover:border-[#4F46E5] ${!isValid && newLink.url ? "border-red-500" : ""}`}
-                  />
-                  {!isValid && newLink.url && (
-                    <span className="text-xs text-red-500">{message}</span>
+              </div>
+              <div className="flex flex-col gap-2 max-w-md mx-auto mt-8">
+                <LinkValidator url={newLink.url}>
+                  {(isValid, message) => (
+                    <>
+                      <input
+                        type="text"
+                        value={newLink.url}
+                        onChange={(e) => setNewLink(prev => ({ ...prev, url: e.target.value }))}
+                        placeholder="Enter new link URL"
+                        className={`border rounded-md p-2 w-full focus:ring-[#4F46E5] focus:border-[#4F46E5] hover:border-[#4F46E5] ${!isValid && newLink.url ? "border-red-500" : ""}`}
+                      />
+                      {!isValid && newLink.url && (
+                        <span className="text-xs text-red-500">{message}</span>
+                      )}
+                    </>
                   )}
-                </>
-              )}
-            </LinkValidator>
-            <input
-              type="text"
-              value={newLink.title}
-              onChange={(e) => setNewLink(prev => ({ ...prev, title: e.target.value }))}
-              placeholder="Enter link title"
-              className="border rounded-md p-2 w-full focus:ring-[#4F46E5] focus:border-[#4F46E5] hover:border-[#4F46E5]"
-            />
-            <button
-              onClick={handleAddLink}
-              className="bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 text-white font-bold px-6 py-2 rounded-lg shadow hover:from-blue-500 hover:via-indigo-600 hover:to-purple-600 transition-all duration-300"
-            >
-              Add More Link
-            </button>
-            {linkError && <p className="text-red-500 text-sm text-center">{linkError}</p>}
-          </div>
-        </div>
-    
-        {/* Delete Profile Button */}
-        {/* Removed the old button, keep only the AlertDialog trigger in the menu */}
-        <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-              <AlertDialogDescription>
-                This action cannot be undone. This will permanently delete your profile and all associated data.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel disabled={deleting}>Cancel</AlertDialogCancel>
-              <AlertDialogAction
-                className="bg-red-600 text-white hover:bg-red-700"
-                onClick={handleDeleteProfile}
-                disabled={deleting}
-              >
-                {deleting ? "Deleting..." : "Delete Profile"}
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-
-        {/* Edit Link Modal */}
-        {editLinkIndex !== null && (
-          <Modal
-            isOpen={editLinkIndex !== null}
-            onRequestClose={() => setEditLinkIndex(null)}
-            ariaHideApp={false}
-            style={{ overlay: { zIndex: 1000 } }}
-          >
-            <div className="flex flex-col items-center p-4">
-              <h2 className="mb-2 font-bold">Edit Link</h2>
-              <input
-                type="text"
-                value={editLinkData.url}
-                onChange={e => setEditLinkData(prev => ({ ...prev, url: e.target.value }))}
-                placeholder="Edit link URL"
-                className="border rounded-md p-2 w-full mb-2 focus:ring-[#4F46E5] focus:border-[#4F46E5] hover:border-[#4F46E5]"
-              />
-              <input
-                type="text"
-                value={editLinkData.title}
-                onChange={e => setEditLinkData(prev => ({ ...prev, title: e.target.value }))}
-                placeholder="Edit link title"
-                className="border rounded-md p-2 w-full mb-2 focus:ring-[#4F46E5] focus:border-[#4F46E5] hover:border-[#4F46E5]"
-              />
-              {editLinkError && <span className="text-xs text-red-500 mb-2">{editLinkError}</span>}
-              <div className="flex gap-2 mt-2">
-                <button className="px-4 py-2 bg-gray-200 rounded" onClick={() => setEditLinkIndex(null)}>Cancel</button>
+                </LinkValidator>
+                <input
+                  type="text"
+                  value={newLink.title}
+                  onChange={(e) => setNewLink(prev => ({ ...prev, title: e.target.value }))}
+                  placeholder="Enter link title"
+                  className="border rounded-md p-2 w-full focus:ring-[#4F46E5] focus:border-[#4F46E5] hover:border-[#4F46E5]"
+                />
                 <button
-                  className="px-4 py-2 rounded text-white font-bold bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 shadow hover:from-blue-500 hover:via-indigo-600 hover:to-purple-600 transition-all duration-300"
-                  onClick={handleEditLinkSave}
+                  onClick={handleAddLink}
+                  className="bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 text-white font-bold px-6 py-2 rounded-lg shadow hover:from-blue-500 hover:via-indigo-600 hover:to-purple-600 transition-all duration-300"
                 >
-                  Save
+                  Add More Link
                 </button>
+                {linkError && <p className="text-red-500 text-sm text-center">{linkError}</p>}
               </div>
             </div>
-          </Modal>
-        )}
-        <style>{`
+        
+            {/* Delete Profile Button */}
+            {/* Removed the old button, keep only the AlertDialog trigger in the menu */}
+            <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This action cannot be undone. This will permanently delete your profile and all associated data.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel disabled={deleting}>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    className="bg-red-600 text-white hover:bg-red-700"
+                    onClick={handleDeleteProfile}
+                    disabled={deleting}
+                  >
+                    {deleting ? "Deleting..." : "Delete Profile"}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+
+            {/* Edit Link Modal */}
+            {editLinkIndex !== null && (
+              <Modal
+                isOpen={editLinkIndex !== null}
+                onRequestClose={() => setEditLinkIndex(null)}
+                ariaHideApp={false}
+                style={{ overlay: { zIndex: 1000 } }}
+              >
+                <div className="flex flex-col items-center p-4">
+                  <h2 className="mb-2 font-bold">Edit Link</h2>
+                  <input
+                    type="text"
+                    value={editLinkData.url}
+                    onChange={e => setEditLinkData(prev => ({ ...prev, url: e.target.value }))}
+                    placeholder="Edit link URL"
+                    className="border rounded-md p-2 w-full mb-2 focus:ring-[#4F46E5] focus:border-[#4F46E5] hover:border-[#4F46E5]"
+                  />
+                  <input
+                    type="text"
+                    value={editLinkData.title}
+                    onChange={e => setEditLinkData(prev => ({ ...prev, title: e.target.value }))}
+                    placeholder="Edit link title"
+                    className="border rounded-md p-2 w-full mb-2 focus:ring-[#4F46E5] focus:border-[#4F46E5] hover:border-[#4F46E5]"
+                  />
+                  {editLinkError && <span className="text-xs text-red-500 mb-2">{editLinkError}</span>}
+                  <div className="flex gap-2 mt-2">
+                    <button className="px-4 py-2 bg-gray-200 rounded" onClick={() => setEditLinkIndex(null)}>Cancel</button>
+                    <button
+                      className="px-4 py-2 rounded text-white font-bold bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 shadow hover:from-blue-500 hover:via-indigo-600 hover:to-purple-600 transition-all duration-300"
+                      onClick={handleEditLinkSave}
+                    >
+                      Save
+                    </button>
+                  </div>
+                </div>
+              </Modal>
+            )}
+            <style>{`
 @keyframes fade-in-out {
   0% { opacity: 0; transform: translateY(20px) scale(0.95); }
   10% { opacity: 1; transform: translateY(0) scale(1); }
@@ -820,8 +818,11 @@ const PrivateProfile = () => {
   animation: fade-in-out 2s;
 }
 `}</style>
+          </>
+        ) : null}
       </div>
-    );
+    </div>
+  );
 };
 
 export default PrivateProfile;

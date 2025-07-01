@@ -2,11 +2,11 @@ import { motion } from "framer-motion"
 const Features = () => {
   return (
     <div id="features"> 
-      <div className="py-24 mt-10 mx-auto bg-gray-50 w-full">
+      <div className="py-24 mt-10 mx-auto bg-white/40 backdrop-blur-lg w-full rounded-xl shadow-lg border border-white/20">
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div className="text-center mb-20">
         <motion.h2 
-          className="text-3xl md:text-4xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500"
+          className="text-3xl md:text-4xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 text-shadow"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
@@ -14,7 +14,7 @@ const Features = () => {
           Powerful Features for Your Bio Links
         </motion.h2>
         <motion.p 
-          className="text-xl text-gray-600 max-w-2xl mx-auto"
+          className="text-xl text-gray-700 max-w-2xl mx-auto"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
@@ -26,7 +26,7 @@ const Features = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {/* Analytics Feature */}
         <motion.div 
-          className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow"
+          className="bg-white/80 backdrop-blur-md p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all hover:scale-[1.02] border border-white/50"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
@@ -42,7 +42,7 @@ const Features = () => {
 
         {/* Geography Feature */}
         <motion.div 
-          className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow"
+          className="bg-white/80 backdrop-blur-md p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all hover:scale-[1.02] border border-white/50"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
@@ -58,7 +58,7 @@ const Features = () => {
 
         {/* Device Analytics Feature */}
         <motion.div 
-          className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow"
+          className="bg-white/80 backdrop-blur-md p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all hover:scale-[1.02] border border-white/50"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.4 }}
@@ -74,7 +74,7 @@ const Features = () => {
 
         {/* Trend Analysis Feature */}
         <motion.div 
-          className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow"
+          className="bg-white/80 backdrop-blur-md p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all hover:scale-[1.02] border border-white/50"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.6 }}
@@ -90,7 +90,7 @@ const Features = () => {
 
         {/* Browser Analytics Feature */}
         <motion.div 
-          className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow"
+          className="bg-white/80 backdrop-blur-md p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all hover:scale-[1.02] border border-white/50"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.8 }}
@@ -106,7 +106,7 @@ const Features = () => {
 
         {/* Smart Insights Feature */}
         <motion.div 
-          className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow"
+          className="bg-white/80 backdrop-blur-md p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all hover:scale-[1.02] border border-white/50"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 1.0 }}

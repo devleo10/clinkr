@@ -4,6 +4,7 @@ import { BrowserStatRow } from "../BrowserStatRow";
 import { Laptop, Smartphone, Tablet } from "lucide-react";
 import { useState, useEffect } from "react";
 import { supabase } from "../../../../lib/supabaseClient";
+import { motion } from "framer-motion";
 
 const Devices = () => {
   const [deviceData, setDeviceData] = useState([
@@ -249,9 +250,20 @@ const Devices = () => {
     <div>
       <TabsContent value="devices" className="pt-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="col-span-2 bg-white rounded-2xl shadow p-4">
-            <h2 className="text-md font-semibold text-gray-800 mb-4">Device Distribution</h2>
-            <div className="space-y-6">
+          <div className="col-span-2 glass-card bg-white/80 backdrop-blur-lg border border-white/30 rounded-xl shadow-md p-6 relative overflow-hidden">
+            {/* Subtle gradient background */}
+            <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-blue-50 opacity-70" />
+            
+            {/* Animated accent line */}
+            <motion.div 
+              className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500"
+              initial={{ scaleX: 0 }}
+              animate={{ scaleX: 1 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+            />
+            
+            <h2 className="text-md font-semibold text-gray-800 mb-4 relative z-10">Device Distribution</h2>
+            <div className="space-y-3 relative z-10">
               {deviceData.map((device, index) => (
                 <DeviceStatRow
                   key={index}
@@ -264,56 +276,123 @@ const Devices = () => {
           </div>
 
           <div className="flex flex-col gap-6">
-            <div className="bg-white rounded-2xl shadow p-4">
-              <div className="flex justify-between items-center mb-2">
+            <motion.div 
+              className="glass-card bg-white/80 backdrop-blur-lg border border-white/30 rounded-xl shadow-md p-6 relative overflow-hidden"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4 }}
+              whileHover={{ y: -5, boxShadow: "0 10px 25px -5px rgba(99, 102, 241, 0.2)" }}
+            >
+              {/* Subtle gradient background */}
+              <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-blue-50 opacity-70" />
+              
+              {/* Animated accent line */}
+              <motion.div 
+                className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500"
+                initial={{ scaleX: 0 }}
+                animate={{ scaleX: 1 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+              />
+              
+              <div className="flex justify-between items-center mb-2 relative z-10">
                 <div>
-                  <p className="text-sm text-gray-600">Total Devices</p>
-                  <h3 className="text-xl font-semibold">{totalDevices.count.toLocaleString()}</h3>
-                  <p className="text-xs text-green-500">⬆ {totalDevices.growth}% vs last month</p>
+                  <p className="text-sm text-gray-600 font-medium">Total Devices</p>
+                  <h3 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-700 to-blue-600">{totalDevices.count.toLocaleString()}</h3>
+                  <p className="text-xs font-semibold text-green-600 flex items-center">
+                    <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+                    </svg>
+                    {totalDevices.growth}% vs last month
+                  </p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Top Device</p>
-                  <h3 className="text-xl font-semibold">{totalDevices.topDevice}</h3>
-                  <p className="text-xs text-gray-400">{totalDevices.topDevicePercentage}% of total traffic</p>
+                  <p className="text-sm text-gray-600 font-medium">Top Device</p>
+                  <h3 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-700 to-blue-600">{totalDevices.topDevice}</h3>
+                  <p className="text-xs font-medium text-indigo-600">{totalDevices.topDevicePercentage}% of total traffic</p>
                 </div>
               </div>
-            </div>
+            </motion.div>
 
-            <div className="bg-white rounded-2xl shadow p-4">
-              <h4 className="text-sm font-semibold text-gray-800 mb-2">Device Trends</h4>
-              <div className="text-sm text-gray-700 space-y-2">
+            <motion.div 
+              className="glass-card bg-white/80 backdrop-blur-lg border border-white/30 rounded-xl shadow-md p-6 relative overflow-hidden"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.3 }}
+              whileHover={{ y: -5, boxShadow: "0 10px 25px -5px rgba(99, 102, 241, 0.2)" }}
+            >
+              {/* Subtle gradient background */}
+              <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-blue-50 opacity-70" />
+              
+              {/* Animated accent line */}
+              <motion.div 
+                className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500"
+                initial={{ scaleX: 0 }}
+                animate={{ scaleX: 1 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+              />
+              
+              <h4 className="text-sm font-semibold text-gray-800 mb-3 relative z-10">Device Trends</h4>
+              <div className="text-sm text-gray-700 space-y-3 relative z-10">
                 {deviceTrends.map((trend, index) => (
-                  <div key={index} className="flex justify-between items-center">
-                    <span className="font-medium flex items-center gap-2">
-                      {trend.icon} {trend.name}
+                  <div key={index} className="flex justify-between items-center p-2 rounded-lg hover:bg-white/50 transition-colors">
+                    <span className="font-medium flex items-center gap-2 text-indigo-700">
+                      <span className="text-indigo-600">{trend.icon}</span> {trend.name}
                     </span>
                     <span>
-                      {trend.users.toLocaleString()} users{" "}
-                      <span className={trend.trend === "up" ? "text-green-500" : "text-red-500"}>
+                      <span className="font-medium text-gray-700">{trend.users.toLocaleString()} users </span>
+                      <span className={trend.trend === "up" ? "text-green-600 font-semibold" : "text-red-600 font-semibold"}>
                         {trend.trend === "up" ? "⬆" : "⬇"} {trend.change}%
                       </span>
                     </span>
                   </div>
                 ))}
               </div>
-            </div>
+            </motion.div>
 
-            <div className="bg-white rounded-2xl shadow p-4">
-              <h4 className="text-sm font-semibold text-gray-800 mb-2">Smart Insights</h4>
-              <ul className="text-sm text-gray-600 list-disc ml-4 space-y-1">
+            <motion.div 
+              className="glass-card bg-white/80 backdrop-blur-lg border border-white/30 rounded-xl shadow-md p-6 relative overflow-hidden"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.4 }}
+              whileHover={{ y: -5, boxShadow: "0 10px 25px -5px rgba(99, 102, 241, 0.2)" }}
+            >
+              {/* Subtle gradient background */}
+              <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-blue-50 opacity-70" />
+              
+              {/* Animated accent line */}
+              <motion.div 
+                className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500"
+                initial={{ scaleX: 0 }}
+                animate={{ scaleX: 1 }}
+                transition={{ duration: 0.6, delay: 0.4 }}
+              />
+              
+              <h4 className="text-sm font-semibold text-gray-800 mb-3 relative z-10">Smart Insights</h4>
+              <ul className="text-sm text-gray-700 list-disc ml-4 space-y-2 relative z-10">
                 {smartInsights.length > 0 ? smartInsights.map((insight, index) => (
-                  <li key={index}>{insight}</li>
-                )) : <li>No insights available yet.</li>}
+                  <li key={index} className="font-medium">{insight}</li>
+                )) : <li className="font-medium">No insights available yet.</li>}
               </ul>
-            </div>
+            </motion.div>
           </div>
         </div>
 
         {/* Browser Distribution Section */}
         <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="col-span-2 bg-white rounded-2xl shadow p-4">
-            <h2 className="text-md font-semibold text-gray-800 mb-4">Browser Distribution</h2>
-            <div className="space-y-6">
+          <div className="col-span-2 glass-card bg-white/80 backdrop-blur-lg border border-white/30 rounded-xl shadow-md p-6 relative overflow-hidden">
+            {/* Subtle gradient background */}
+            <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-blue-50 opacity-70" />
+            
+            {/* Animated accent line */}
+            <motion.div 
+              className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500"
+              initial={{ scaleX: 0 }}
+              animate={{ scaleX: 1 }}
+              transition={{ duration: 0.6, delay: 0.5 }}
+            />
+            
+            <h2 className="text-md font-semibold text-gray-800 mb-4 relative z-10">Browser Distribution</h2>
+            <div className="space-y-3 relative z-10">
               {browserData.map((browser, index) => (
                 <BrowserStatRow
                   key={index}
@@ -327,30 +406,68 @@ const Devices = () => {
           </div>
 
           <div className="flex flex-col gap-6">
-            <div className="bg-white rounded-2xl shadow p-4">
-              <div className="flex justify-between items-center mb-2">
+            <motion.div 
+              className="glass-card bg-white/80 backdrop-blur-lg border border-white/30 rounded-xl shadow-md p-6 relative overflow-hidden"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.6 }}
+              whileHover={{ y: -5, boxShadow: "0 10px 25px -5px rgba(99, 102, 241, 0.2)" }}
+            >
+              {/* Subtle gradient background */}
+              <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-blue-50 opacity-70" />
+              
+              {/* Animated accent line */}
+              <motion.div 
+                className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500"
+                initial={{ scaleX: 0 }}
+                animate={{ scaleX: 1 }}
+                transition={{ duration: 0.6, delay: 0.7 }}
+              />
+              
+              <div className="flex justify-between items-center mb-2 relative z-10">
                 <div>
-                  <p className="text-sm text-gray-600">Total Browser Sessions</p>
-                  <h3 className="text-xl font-semibold">{browserStats.totalSessions.toLocaleString()}</h3>
-                  <p className="text-xs text-green-500">⬆ {browserStats.growth}% vs last month</p>
+                  <p className="text-sm text-gray-600 font-medium">Total Browser Sessions</p>
+                  <h3 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-700 to-blue-600">{browserStats.totalSessions.toLocaleString()}</h3>
+                  <p className="text-xs font-semibold text-green-600 flex items-center">
+                    <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+                    </svg>
+                    {browserStats.growth}% vs last month
+                  </p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Top Browser</p>
-                  <h3 className="text-xl font-semibold">{browserStats.topBrowser}</h3>
-                  <p className="text-xs text-gray-400">{browserStats.topBrowserPercentage}% of total traffic</p>
+                  <p className="text-sm text-gray-600 font-medium">Top Browser</p>
+                  <h3 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-700 to-blue-600">{browserStats.topBrowser}</h3>
+                  <p className="text-xs font-medium text-indigo-600">{browserStats.topBrowserPercentage}% of total traffic</p>
                 </div>
               </div>
-            </div>
+            </motion.div>
 
-            <div className="bg-white rounded-2xl shadow p-4">
-              <h4 className="text-sm font-semibold text-gray-800 mb-2">Browser Insights</h4>
+            <motion.div 
+              className="glass-card bg-white/80 backdrop-blur-lg border border-white/30 rounded-xl shadow-md p-6 relative overflow-hidden"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.7 }}
+              whileHover={{ y: -5, boxShadow: "0 10px 25px -5px rgba(99, 102, 241, 0.2)" }}
+            >
+              {/* Subtle gradient background */}
+              <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-blue-50 opacity-70" />
               
-              <ul className="text-sm text-gray-600 list-disc ml-4 space-y-1">
+              {/* Animated accent line */}
+              <motion.div 
+                className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500"
+                initial={{ scaleX: 0 }}
+                animate={{ scaleX: 1 }}
+                transition={{ duration: 0.6, delay: 0.8 }}
+              />
+              
+              <h4 className="text-sm font-semibold text-gray-800 mb-3 relative z-10">Browser Insights</h4>
+              <ul className="text-sm text-gray-700 list-disc ml-4 space-y-2 relative z-10">
                 {browserInsights.length > 0 ? browserInsights.map((insight, index) => (
-                  <li key={index}>{insight}</li>
-                )) : <li>No insights available yet.</li>}
+                  <li key={index} className="font-medium">{insight}</li>
+                )) : <li className="font-medium">No insights available yet.</li>}
               </ul>
-            </div>
+            </motion.div>
           </div>
         </div>
       </TabsContent>

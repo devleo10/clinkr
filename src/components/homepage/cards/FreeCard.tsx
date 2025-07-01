@@ -1,8 +1,18 @@
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 
 const FreeCard = () => {
   return (
-    <div className="w-full border-2 p-5 rounded-[10px] hover:border-black flex flex-col justify-between min-h-[200px] sm:[w-full border-2 p-5 rounded-[10px] hover:border-black flex flex-col justify-between min-h-[200px]]">
+    <motion.div 
+      className="w-full bg-white/70 backdrop-blur-md border border-white/40 p-6 rounded-xl hover:border-indigo-200 flex flex-col justify-between shadow-lg hover:shadow-xl"
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      whileHover={{ 
+        scale: 1.03,
+        boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)"
+      }}
+    >
         <div>
           <div className="flex flex-row justify-between">
               <div>
@@ -20,14 +30,18 @@ const FreeCard = () => {
               <p className="text-sm">✅ Up to 5 links</p>
           </div>
         </div>
-        <div className="w-full rounded-[10px] mb-20 mt-5 bg-[#E5E7EB]">
+        <div className="w-full mb-8 mt-5">
             <Link to="/signup" className="block">
-                <button className="text-md  py-2 px-4 w-full transition-all duration-300 hover:bg-gray-300 rounded-[10px]">
+                <motion.button 
+                  className="text-md py-2.5 px-4 w-full transition-all duration-300 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
                     Get Started
-                </button>
+                </motion.button>
             </Link>
         </div>
-    </div>
+    </motion.div>
   )
 }
 

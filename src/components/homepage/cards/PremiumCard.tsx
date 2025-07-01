@@ -1,8 +1,17 @@
-
+import { motion } from 'framer-motion';
 
 const PremiumCard = () => {
   return (
-    <div className="w-full border-2 p-5 rounded-[10px] hover:border-[#4F46E5] flex flex-col justify-between min-h-[300px]">
+    <motion.div 
+      className="w-full bg-white/70 backdrop-blur-md border border-indigo-100 p-6 rounded-xl hover:border-indigo-300 flex flex-col justify-between shadow-lg hover:shadow-xl"
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: 0.2 }}
+      whileHover={{ 
+        scale: 1.03,
+        boxShadow: "0 20px 25px -5px rgba(79, 70, 229, 0.15), 0 10px 10px -5px rgba(79, 70, 229, 0.1)"
+      }}
+    >
         <div>
           <div className="flex flex-row justify-between">
               <div>
@@ -22,14 +31,20 @@ const PremiumCard = () => {
               <p className="text-sm">✅ Unlimited links</p>
           </div>
         </div>
-        <div className="w-full bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 text-white font-bold px-6 py-2 rounded-lg shadow hover:from-blue-500 hover:via-indigo-600 hover:to-purple-600 transition-all duration-300 mt-5 flex justify-center items-center">
+        <motion.div 
+          className="w-full bg-gradient-to-r from-indigo-600 to-blue-500 text-white font-bold px-6 py-2.5 rounded-lg shadow-md hover:from-blue-500 hover:to-indigo-600 transition-all duration-300 mt-6 flex justify-center items-center"
+          whileHover={{ 
+            scale: 1.02,
+            boxShadow: "0 10px 15px -3px rgba(79, 70, 229, 0.3), 0 4px 6px -2px rgba(79, 70, 229, 0.2)"
+          }}
+          whileTap={{ scale: 0.98 }}
+        >
             <button>
                 Upgrade to premium
             </button>
-        </div>
-    </div>
+        </motion.div>
+    </motion.div>
   )
 }
-
 
 export default PremiumCard
