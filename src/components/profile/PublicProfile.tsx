@@ -8,7 +8,7 @@ import { FaUser } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MoreHorizontal } from "lucide-react";
 import { Globe } from 'lucide-react';
-import PublicProfileBackground from './PublicProfileBackground';
+import BoltBackground from '../homepage/BoltBackground';
 
 interface UserProfile {
   username: string;
@@ -287,26 +287,26 @@ const PublicProfile = () => {
   return (
     <div className="min-h-screen relative">
       {/* Background */}
-      <PublicProfileBackground variant="light" />
+      <BoltBackground/>
       
-      <div className="max-w-4xl mx-auto px-4 py-8 relative z-10">
+      <div className="max-w-4xl mx-auto px-4 py-4 relative z-10"> {/* Reduced py-8 to py-4 */}
         {/* Header Section */}
         <motion.div 
-          className="flex justify-center items-center mb-8"
+          className="flex justify-center items-center mb-6" /* Reduced mb-8 to mb-6 */
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.5 }}
         >
-          <Link to="/homepage" className="flex items-center gap-1 sm:gap-2 mt-8">
+          <Link to="/homepage" className="flex items-center gap-2 sm:gap-3 mt-2"> {/* Reduced mt-8 to mt-2 */}
             <motion.img 
               src={logo} 
               alt="Clinkr Logo" 
-              className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 lg:w-10 lg:h-10"
+              className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 lg:w-10 lg:h-10"
               whileHover={{ rotate: 10, scale: 1.1 }}
               transition={{ type: "spring", stiffness: 400, damping: 10 }}
             />
             <motion.h1 
-              className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold relative group"
+              className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-extrabold relative group"
               whileHover={{ scale: 1.02 }}
               transition={{ type: "spring", stiffness: 400, damping: 10 }}
             >
@@ -314,7 +314,7 @@ const PublicProfile = () => {
                 Clinkr
               </span>
               <motion.div 
-                className="absolute bottom-0 left-0 h-[2px] bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500" 
+                className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500" 
                 initial={{ width: 0 }}
                 animate={{ width: "100%" }}
                 transition={{ duration: 0.5, delay: 0.2 }}
@@ -451,7 +451,7 @@ const PublicProfile = () => {
       
             {/* Links Section */}
             <motion.div 
-              className="mt-10 space-y-4 max-w-xl mx-auto"
+              className="mt-10 space-y-3 max-w-2xl mx-auto"
               initial="hidden"
               animate="visible"
               style={{ overflow: 'visible', position: 'relative' }}
@@ -472,26 +472,26 @@ const PublicProfile = () => {
                     className={activeLinkMenu === index ? 'relative' : ''}
                   >
                     <Card className="hover:shadow-xl transition-all duration-300 rounded-xl border border-white/40 bg-white/90 backdrop-blur-lg" style={{ overflow: 'visible', position: 'relative' }}>
-                      <CardContent className="flex items-center justify-between gap-3 md:gap-4 p-4 relative" style={{ overflow: 'visible' }}>
+                      <CardContent className="flex items-center justify-between gap-3 md:gap-4 p-3 py-2.5 relative" style={{ overflow: 'visible' }}>
                         {/* Subtle gradient overlay */}
                         <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/40 via-transparent to-purple-50/40 opacity-70" />
                         
                         {/* Link content */}
-                        <div className="flex items-center gap-4 flex-grow min-w-0 relative z-10">
+                        <div className="flex items-center gap-3 flex-grow min-w-0 relative z-10">
                           <motion.div 
-                            className="flex-shrink-0 w-12 h-12 rounded-full bg-white shadow-sm border border-indigo-100 flex items-center justify-center overflow-visible"
+                            className="flex-shrink-0 w-9 h-9 rounded-full bg-white shadow-sm border border-indigo-100 flex items-center justify-center overflow-visible"
                             whileHover={{ rotate: [0, -10, 10, -5, 5, 0], scale: 1.1 }}
                             transition={{ duration: 0.5 }}
                           >
-                            {getSocialIcon(link.url, 36)}
+                            {getSocialIcon(link.url, 28)}
                           </motion.div>
                           <div className="flex flex-col items-start flex-grow min-w-0">
-                            <span className="text-lg font-semibold text-gray-800 truncate group-hover:text-indigo-600 transition-colors">{link.title}</span>
+                            <span className="text-base font-medium bg-gradient-to-r from-purple-700 via-indigo-700 to-blue-700 bg-clip-text text-transparent truncate group-hover:from-purple-600 group-hover:via-indigo-600 group-hover:to-blue-600 transition-all duration-300 leading-tight">{link.title}</span>
                             <a
                               href={link.url}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="text-sm text-gray-500 hover:text-indigo-600 transition-colors block"
+                              className="text-xs text-gray-500 hover:text-indigo-600 transition-colors block leading-tight"
                               style={{
                                 overflow: 'hidden',
                                 textOverflow: 'ellipsis',
@@ -507,10 +507,10 @@ const PublicProfile = () => {
                                 transition={{ type: "spring", stiffness: 400, damping: 10 }}
                               >
                                 <span className="block md:hidden">
-                                  {link.url.length > 22 ? link.url.slice(0, 19) + '...' : link.url}
+                                  {link.url.length > 25 ? link.url.slice(0, 22) + '...' : link.url}
                                 </span>
                                 <span className="hidden md:block">
-                                  {link.url.length > 38 ? link.url.slice(0, 35) + '...' : link.url}
+                                  {link.url.length > 45 ? link.url.slice(0, 42) + '...' : link.url}
                                 </span>
                               </motion.span>
                             </a>
@@ -524,7 +524,7 @@ const PublicProfile = () => {
                           style={{ zIndex: activeLinkMenu === index ? 1001 : 10, position: 'relative' }}
                         >
                           <motion.button
-                            className="p-2 rounded-full hover:bg-gradient-to-r hover:from-purple-100 hover:via-indigo-100 hover:to-blue-100 focus:outline-none transition-colors"
+                            className="p-1.5 rounded-full hover:bg-gradient-to-r hover:from-purple-100 hover:via-indigo-100 hover:to-blue-100 focus:outline-none transition-colors"
                             aria-label="Link actions"
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.95 }}
@@ -534,7 +534,7 @@ const PublicProfile = () => {
                               setActiveLinkMenu(activeLinkMenu === index ? null : index);
                             }}
                           >
-                            <MoreHorizontal className="h-5 w-5 text-gray-500" />
+                            <MoreHorizontal className="h-4 w-4 text-gray-500" />
                           </motion.button>
                           
                           <AnimatePresence>
@@ -608,27 +608,27 @@ const PublicProfile = () => {
 
         {/* Footer Section */}
         <motion.footer
-          className="mt-24 py-8 text-center text-white/70 text-sm flex flex-col items-center"
+          className="mt-8 py-8 text-center text-gray-800 text-sm flex flex-col items-center"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1, duration: 0.5 }}
         >
-          <div className="mt-20 flex flex-col sm:flex-row justify-center sm:gap-5 items-center w-full max-w-2xl mx-auto">
+          <div className="mt-4 flex flex-col sm:flex-row justify-center sm:gap-5 items-center w-full max-w-2xl mx-auto">
             <a
               href="/homepage"
-              className="hover:text-blue-400 hover:underline underline-offset-4 transition-colors"
+              className="text-gray-700 hover:text-blue-600 hover:underline underline-offset-4 transition-colors font-medium"
             >
               Visit Clinkr
             </a>
             <a
               href="/getstarted"
-              className="hover:text-blue-400 hover:underline underline-offset-4 transition-colors"
+              className="text-gray-700 hover:text-blue-600 hover:underline underline-offset-4 transition-colors font-medium"
             >
               Get Started Now
             </a>
           </div>
 
-          <p className="mt-8">&copy; {new Date().getFullYear()} Clinkr. All rights reserved.</p>
+          <p className="mt-6 text-gray-600">&copy; {new Date().getFullYear()} Clinkr. All rights reserved.</p>
         </motion.footer>
       </div>
     </div>

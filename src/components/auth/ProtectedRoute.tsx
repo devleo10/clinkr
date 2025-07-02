@@ -65,7 +65,7 @@ const ProtectedRoute = ({ children, requireAuth, requireProfile = false }: Prote
 
   // If auth is required and there's no session, redirect to signup
   if (requireAuth && !session) {
-    return <Navigate to="/signup" state={{ from: location }} replace />;
+    return <Navigate to="/getstarted" state={{ from: location }} replace />;
   }
 
   // If profile is required and user doesn't have one, redirect to onboarding

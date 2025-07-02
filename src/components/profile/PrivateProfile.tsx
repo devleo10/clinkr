@@ -4,7 +4,7 @@ import { Edit } from "lucide-react";
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import logo from "../../assets/Frame.png";
 import { supabase } from '../../lib/supabaseClient';
-import { FaUser, FaShare, FaTrash, FaEye,FaCopy, FaQrcode, FaGripVertical, FaChartBar, FaExternalLinkAlt } from 'react-icons/fa';
+import { FaUser, FaShare, FaTrash, FaEye,FaCopy, FaGripVertical, FaChartBar } from 'react-icons/fa';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "../ui/alert-dialog";
 import { useAuth } from '../auth/AuthProvider';
 import LinkValidator from "../../lib/link-validator";
@@ -62,12 +62,9 @@ const PrivateProfile = () => {
   // Toast notification state
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
-  const [showQRModal, setShowQRModal] = useState(false);
   const [linkReorderMode, setLinkReorderMode] = useState(false);
 
-  // New feature states
-  const [linkPreview, setLinkPreview] = useState<{url: string, title: string, description: string, image: string} | null>(null);
-  const [showLinkPreview, setShowLinkPreview] = useState(false);
+  // Feature states
   const [showActionsMenu, setShowActionsMenu] = useState(false);
   const [activeLinkMenu, setActiveLinkMenu] = useState<number | null>(null);
 
@@ -265,11 +262,6 @@ const PrivateProfile = () => {
     }
   };
 
-  // New function to generate QR code
-  const handleShowQR = () => {
-    setShowQRModal(true);
-  };
-
  
     
 
@@ -281,33 +273,6 @@ const PrivateProfile = () => {
       if (toastTimeout.current) clearTimeout(toastTimeout.current);
       toastTimeout.current = setTimeout(() => setShowToast(false), 2000);
     });
-  };
-
-  // New function to fetch link preview
-  const fetchLinkPreview = async (url: string) => {
-    try {
-      // Extract domain and basic info from URL
-      const urlObj = new URL(url);
-      const domain = urlObj.hostname.replace(/^www\./, '');
-      
-      // Create a basic preview without external API
-      setLinkPreview({
-        url: url,
-        title: `Link Preview - ${domain}`,
-        description: ` Click to visit the link.`,
-        image: `https://logo.clearbit.com/${domain}?size=200`
-      });
-      setShowLinkPreview(true);
-    } catch (error) {
-      // Fallback preview for invalid URLs
-      setLinkPreview({
-        url: url,
-        title: 'Link Preview',
-        description: 'Preview not available - please check the URL format',
-        image: ''
-      });
-      setShowLinkPreview(true);
-    }
   };
 
   // New function to handle link reordering
@@ -539,17 +504,6 @@ const PrivateProfile = () => {
                     >
                       <FaEye className="text-blue-500" size={14} />
                       Preview Public Profile
-                    </button>
-                 
-                    <button
-                      className="w-full px-4 py-2 text-left hover:bg-purple-50 flex items-center gap-3 text-sm"
-                      onClick={() => {
-                        handleShowQR();
-                        setShowActionsMenu(false);
-                      }}
-                    >
-                      <FaQrcode className="text-purple-500" size={14} />
-                      Generate QR Code
                     </button>
                     
                     <button
@@ -886,17 +840,18 @@ const PrivateProfile = () => {
                     value={link}
                     className="cursor-move"
                   >
-                    <Card className="hover:shadow-lg transition-all duration-300 rounded-2xl border-2 border-gray-100 bg-white/80 p-2">
-                      <CardContent className="flex items-center justify-between gap-2 md:gap-4 p-6">
-                        <div className="flex items-center gap-4 flex-grow min-w-0">
-                          <GripVertical className="text-gray-400 cursor-move" size={20} />
+                    <Card className="hover:shadow-lg transition-all duration-300 rounded-2xl border-2 border-gray-100 bg-white/80 p-1 sm:p-2">
+                      <CardContent className="flex items-center justify-between gap-2 md:gap-4 p-3 sm:p-4 md:p-6">
+                        <div className="flex items-center gap-2 sm:gap-3 md:gap-4 flex-grow min-w-0">
+                          <GripVertical className="text-gray-400 cursor-move" size={16} />
                           <span className="flex-shrink-0">
-                            {getSocialIcon(link.url, 36)}
+                            {getSocialIcon(link.url, window.innerWidth < 640 ? 24 : 36)}
                           </span>
-                          <div className="flex flex-col items-start w-full">
-                            <span className="text-lg font-semibold text-gray-900 truncate">{link.title}</span>
-                            <span className="text-sm text-gray-500 truncate block max-w-full">
-                              {typeof link.url === 'string' && link.url.length > 38 ? link.url.slice(0, 35) + '...' : link.url}
+                          <div className="flex flex-col items-start w-full min-w-0">
+                            <span className="text-sm sm:text-base md:text-lg font-semibold text-gray-900 truncate w-full">{link.title}</span>
+                            <span className="text-xs sm:text-sm text-gray-500 truncate block w-full">
+                              {typeof link.url === 'string' && link.url.length > (window.innerWidth < 640 ? 20 : 38) ? 
+                                link.url.slice(0, window.innerWidth < 640 ? 17 : 35) + '...' : link.url}
                             </span>
                           </div>
                         </div>
@@ -913,21 +868,22 @@ const PrivateProfile = () => {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.3, delay: (index * 0.1) + 0.4 }}
                 >
-                  <Card className="hover:shadow-lg transition-all duration-300 rounded-2xl border-2 border-gray-100 bg-white/80 p-2">
-                    <CardContent className="flex items-center justify-between gap-4 p-6">
-                      <div className="flex items-center gap-4 flex-grow min-w-0">
+                  <Card className="hover:shadow-lg transition-all duration-300 rounded-2xl border-2 border-gray-100 bg-white/80 p-1 sm:p-2">
+                    <CardContent className="flex items-center justify-between gap-2 sm:gap-3 md:gap-4 p-3 sm:p-4 md:p-6">
+                      <div className="flex items-center gap-2 sm:gap-3 md:gap-4 flex-grow min-w-0">
                         <span className="flex-shrink-0">
-                          {getSocialIcon(link.url, 36)}
+                          {getSocialIcon(link.url, window.innerWidth < 640 ? 24 : 36)}
                         </span>
-                        <div className="flex flex-col items-start w-full">
-                          <span className="text-lg font-semibold text-gray-900 truncate">{link.title}</span>
+                        <div className="flex flex-col items-start w-full min-w-0">
+                          <span className="text-sm sm:text-base md:text-lg font-semibold text-gray-900 truncate w-full">{link.title}</span>
                           <a
                             href={typeof link.url === 'string' ? link.url : ''}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-sm text-gray-500 hover:text-indigo-600 transition-colors block truncate max-w-full"
+                            className="text-xs sm:text-sm text-gray-500 hover:text-indigo-600 transition-colors block truncate w-full"
                           >
-                            {typeof link.url === 'string' && link.url.length > 38 ? link.url.slice(0, 35) + '...' : link.url}
+                            {typeof link.url === 'string' && link.url.length > (window.innerWidth < 640 ? 20 : 38) ? 
+                              link.url.slice(0, window.innerWidth < 640 ? 17 : 35) + '...' : link.url}
                           </a>
                         </div>
                       </div>
@@ -940,7 +896,7 @@ const PrivateProfile = () => {
                         }}
                       >
                         <button
-                          className="p-2 rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition-all duration-200"
+                          className="p-1 sm:p-2 rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition-all duration-200"
                           aria-label="Link options"
                           onClick={() => setActiveLinkMenu(activeLinkMenu === index ? null : index)}
                         >
@@ -950,17 +906,6 @@ const PrivateProfile = () => {
                         {/* Dropdown menu */}
                         {activeLinkMenu === index && (
                           <div className="absolute right-0 top-12 bg-white rounded-lg shadow-lg border border-gray-200 py-2 min-w-40 z-50">
-                            <button
-                              className="w-full px-4 py-2 text-left hover:bg-green-50 flex items-center gap-3 text-sm"
-                              onClick={() => {
-                                fetchLinkPreview(link.url);
-                                setActiveLinkMenu(null);
-                              }}
-                            >
-                              <FaExternalLinkAlt className="text-green-500" size={14} />
-                              Preview Link
-                            </button>
-                            
                             <button
                               className="w-full px-4 py-2 text-left hover:bg-blue-50 flex items-center gap-3 text-sm"
                               onClick={() => {
@@ -1021,16 +966,6 @@ const PrivateProfile = () => {
                     placeholder="Enter new link URL"
                     className={`border rounded-md p-2 w-full focus:ring-[#4F46E5] focus:border-[#4F46E5] hover:border-[#4F46E5] ${!isValid && newLink.url ? "border-red-500" : ""}`}
                   />
-                  {newLink.url && (
-                    <button
-                      type="button"
-                      onClick={() => fetchLinkPreview(newLink.url)}
-                      className="absolute right-2 top-2 p-1 rounded hover:bg-gray-100"
-                      title="Preview link"
-                    >
-                      <FaExternalLinkAlt className="text-gray-500 h-3 w-3" />
-                    </button>
-                  )}
                   {!isValid && newLink.url && (
                     <span className="text-xs text-red-500">{message}</span>
                   )}
@@ -1094,76 +1029,6 @@ const PrivateProfile = () => {
           </AlertDialogContent>
         </AlertDialog>
 
-        {/* Link Preview Modal */}
-        <Modal
-          isOpen={showLinkPreview}
-          onRequestClose={() => setShowLinkPreview(false)}
-          ariaHideApp={false}
-          style={{ overlay: { zIndex: 1000 } }}
-          className="flex items-center justify-center min-h-screen p-4"
-        >
-          <div className="bg-white rounded-lg p-6 max-w-md w-full shadow-xl">
-            <h2 className="text-lg font-bold text-gray-900 mb-4">Link Preview</h2>
-            {linkPreview && (
-              <div className="space-y-3">
-                {linkPreview.image && (
-                  <img 
-                    src={linkPreview.image} 
-                    alt="Link preview" 
-                    className="w-full h-32 object-cover rounded"
-                    onError={(e) => (e.target as HTMLImageElement).style.display = 'none'}
-                  />
-                )}
-                <h3 className="font-semibold text-gray-900">{linkPreview.title}</h3>
-                <p className="text-sm text-gray-600">{linkPreview.description}</p>
-                <a 
-                  href={linkPreview.url} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-indigo-600 hover:text-indigo-800 text-sm break-all"
-                >
-                  {linkPreview.url}
-                </a>
-              </div>
-            )}
-            <button 
-              onClick={() => setShowLinkPreview(false)}
-              className="mt-4 w-full px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
-            >
-              Close
-            </button>
-          </div>
-        </Modal>
-
-        {/* QR Code Modal */}
-        <Modal
-          isOpen={showQRModal}
-          onRequestClose={() => setShowQRModal(false)}
-          ariaHideApp={false}
-          style={{ overlay: { zIndex: 1000 } }}
-          className="flex items-center justify-center min-h-screen p-4"
-        >
-          <div className="bg-white rounded-lg p-6 max-w-sm w-full shadow-xl text-center">
-            <h2 className="text-lg font-bold text-gray-900 mb-4">QR Code</h2>
-            <div className="bg-gray-100 w-48 h-48 mx-auto mb-4 rounded-lg flex items-center justify-center">
-              <div className="text-center">
-                <FaQrcode size={64} className="text-gray-400 mx-auto mb-2" />
-                <p className="text-sm text-gray-500">QR Code will be generated here</p>
-                <p className="text-xs text-gray-400 mt-1">Feature coming soon!</p>
-              </div>
-            </div>
-            <p className="text-sm text-gray-600 mb-4">
-              Share your profile: {profile?.username ? `/${profile.username}` : ''}
-            </p>
-            <button 
-              onClick={() => setShowQRModal(false)}
-              className="w-full px-4 py-2 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 text-white rounded hover:from-blue-500 hover:via-indigo-600 hover:to-purple-600"
-            >
-              Close
-            </button>
-          </div>
-        </Modal>
-
         {/* Edit Link Modal */}
         {editLinkIndex !== null && (
           <Modal
@@ -1218,5 +1083,3 @@ const PrivateProfile = () => {
 };
 
 export default PrivateProfile;
-
-

@@ -45,12 +45,26 @@ const PhoneAnimation: React.FC = () => {
             <div className="w-full h-full rounded-[1.2rem] sm:rounded-[2.4rem] p-0.5 sm:p-1 bg-gradient-to-br from-slate-200 via-slate-300 to-slate-700">
               <div className="w-full h-full rounded-[1.2rem] sm:rounded-[2.2rem] p-0.5 sm:p-0.5 bg-gradient-to-br from-gray-500 to-gray-900">
                 <div className="w-full h-full bg-gray-50 rounded-[1rem] sm:rounded-[2.2rem] overflow-hidden relative">
+                  
+                  {/* Camera Notch */}
+                  <div className="absolute top-0 left-1/2 transform -translate-x-1/2 z-20">
+                    <div className="bg-black rounded-b-lg w-10 h-4 sm:w-12 sm:h-5 relative shadow-sm">
+                      {/* Camera Lens */}
+                      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                        <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-gray-800 rounded-full border border-gray-600">
+                          {/* Lens Center */}
+                          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-0.5 h-0.5 bg-gray-900 rounded-full"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
                   {/* Screen Carousel */}
-                  <div>
+                  <div className="pt-5 sm:pt-6">
                     {analyticsImages.map((image, index) => (
                       <div
                         key={index}
-                        className={`absolute inset-0 transition-all duration-1000  ${
+                        className={`absolute inset-0 pt-5 sm:pt-6 transition-all duration-1000  ${
                           index === currentIndex
                             ? "opacity-100 transform scale-100"
                             : "opacity-0 transform scale-105"

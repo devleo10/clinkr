@@ -1,5 +1,4 @@
 import { Navigate, RouterProvider, createBrowserRouter } from "react-router-dom";
-import AuthPages from "./components/auth/AuthPages";
 import DashBoard from "./components/Dashboard/DashBoard";
 import HomePage from "./components/homepage/HomePage";
 import PremiumDashBoard from "./components/Dashboard/premium/PremiumDashBoard";
@@ -14,6 +13,7 @@ import TermsOfService from "./components/legal/TermsOfService";
 import CookiePolicy from "./components/legal/CookiePolicy";
 import { Analytics } from "@vercel/analytics/react";
 import About from "./components/homepage/About";
+import AuthPages from "./components/auth/AuthPages";
 
 function App() {
   <Analytics />;
