@@ -49,51 +49,51 @@ const PublicProfile = () => {
 
   useEffect(() => {
     const loadData = async () => {
-      await fetchProfile();
+        await fetchProfile();
+        if (profile?.id) {
+            recordView();
+        }
     };
     loadData();
   }, [username]);
 
-  useEffect(() => {
-    if (profile?.id) {
-      recordView();
-    }
-  }, [profile?.id]);
-
   const recordView = async () => {
     try {
-      let visitorId = localStorage.getItem('visitorId');
-      if (!visitorId) {
-        visitorId = btoa(Math.random().toString()).slice(0, 10);
-        localStorage.setItem('visitorId', visitorId);
-      }
+        console.log('recordView function called'); // Debugging function call
+        let visitorId = localStorage.getItem('visitorId');
+        if (!visitorId) {
+            visitorId = btoa(Math.random().toString()).slice(0, 10);
+            localStorage.setItem('visitorId', visitorId);
+        }
 
-      const { data: existingRecord } = await supabase
-        .from('profile_views')
-        .select('id')
-        .eq('viewer_hash', visitorId)
-        .eq('profile_id', profile?.id)
-        .single();
+        console.log('Visitor ID:', visitorId); // Debugging visitor ID
 
-      if (existingRecord) {
-        return;
-      }
+        const referrer = document.referrer || 'direct';
 
-      const { error: insertError } = await supabase
-        .from('profile_views')
-        .insert({
-          viewer_hash: visitorId,
-          profile_id: profile?.id,
-          viewed_at: new Date().toISOString()
+        console.log('Recording view data:', {
+            viewer_hash: visitorId,
+            profile_id: profile?.id,
+            viewed_at: new Date().toISOString(),
+            referrer: referrer
         });
 
-      if (insertError) {
-        // Optionally handle error
-      }
+        const { error: insertError } = await supabase
+            .from('profile_views')
+            .insert({
+                viewer_hash: visitorId,
+                profile_id: profile?.id,
+                viewed_at: new Date().toISOString(),
+                referrer: referrer
+            });
+
+        if (insertError) {
+            console.error('Error inserting view:', insertError);
+        }
+
     } catch (err) {
-      // Optionally handle error
+        console.error(err); // Debugging catch block
     }
-  };
+};
 
   const fetchProfile = async () => {
     try {

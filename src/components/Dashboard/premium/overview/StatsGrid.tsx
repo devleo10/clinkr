@@ -1,6 +1,6 @@
 import React from 'react';
 import { StatsCard } from './StatsCard';
-import { BarChart, TrendingUp, Users, Clock, Activity } from "lucide-react";
+import { BarChart, TrendingUp, Users, Activity } from "lucide-react";
 import { motion } from 'framer-motion';
 
 // Animation variants for staggered animation
@@ -18,7 +18,6 @@ interface StatsGridProps {
   totalClicks: string;
   uniqueVisitors: string;
   conversionRate: string;
-  avgTime: string;
   totalViews: string;
   changes: {
     clicks: string;
@@ -33,7 +32,6 @@ export const StatsGrid: React.FC<StatsGridProps> = ({
   totalClicks,
   uniqueVisitors,
   conversionRate,
-  avgTime,
   totalViews,
   changes
 }) => {
@@ -41,7 +39,6 @@ export const StatsGrid: React.FC<StatsGridProps> = ({
   const isClicksNegative = changes.clicks.startsWith('-');
   const isVisitorsNegative = changes.visitors.startsWith('-');
   const isConversionNegative = changes.conversion.startsWith('-');
-  const isTimeNegative = changes.time.startsWith('-');
   const isViewsNegative = changes.views.startsWith('-');
 
   return (
@@ -71,13 +68,6 @@ export const StatsGrid: React.FC<StatsGridProps> = ({
         change={changes.conversion}
         isNegative={isConversionNegative}
         icon={<TrendingUp size={18} />}
-      />
-      <StatsCard
-        title="Avg. Time"
-        value={avgTime}
-        change={changes.time}
-        isNegative={isTimeNegative}
-        icon={<Clock size={18} />}
       />
       <StatsCard
         title="Total Views"

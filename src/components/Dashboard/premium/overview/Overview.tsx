@@ -203,7 +203,6 @@ const Overview = () => {
               totalClicks={overviewData.totalClicks}
               uniqueVisitors={overviewData.uniqueVisitors}
               conversionRate={overviewData.conversionRate}
-              avgTime={overviewData.avgTime}
               totalViews={overviewData.totalViews}
               changes={overviewData.changes}
             />
@@ -223,8 +222,8 @@ const Overview = () => {
                 <h3 className="text-lg font-semibold text-indigo-700 mb-2">Key Insights</h3>
                 <p className="text-gray-800 font-medium">
                   {parseFloat(overviewData.changes.visitors.replace(/[+%]/g, '')) > 0 
-                    ? `Your profile traffic has increased by ${overviewData.changes.visitors} compared to last month.` 
-                    : `Your profile traffic has decreased by ${overviewData.changes.visitors.replace('+', '')} compared to last month.`}
+                    ? `Your profile traffic has increased by ${overviewData.changes.visitors} compared to last week.` 
+                    : `Your profile traffic has decreased by ${overviewData.changes.visitors.replace('+', '')} compared to last week.`}
                   {' '}
                   {parseInt(overviewData.conversionRate) > 0 
                     ? `Your conversion rate is ${overviewData.conversionRate}.` 

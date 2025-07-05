@@ -310,30 +310,30 @@ const PremiumDashBoard = () => {
           
           <div className="relative z-10">
             <Tabs defaultValue="overview" className="w-full">
-              <TabsList className='flex justify-between items-center bg-inherit'>
+                <TabsList className='flex justify-between items-center bg-inherit px-0 w-full max-w-full'>
                 {tabs.map(tab => (
                   <TabsTrigger 
-                    key={tab.value}
-                    value={tab.value} 
-                    className="relative group data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:via-indigo-600 data-[state=active]:to-blue-500 data-[state=active]:text-white rounded-lg transition-all duration-300 shadow-sm hover:shadow-md data-[state=active]:shadow-lg py-3"
+                  key={tab.value}
+                  value={tab.value} 
+                  className="relative group data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:via-indigo-600 data-[state=active]:to-blue-500 data-[state=active]:text-white rounded-lg transition-all duration-300 shadow-sm hover:shadow-md data-[state=active]:shadow-lg py-2.5 px-3 flex-shrink-0 text-xs sm:text-sm md:text-base min-w-0 flex-1"
                   >
-                    <motion.div
-                      className="absolute inset-0 bg-gradient-to-r from-purple-50 to-blue-50 opacity-0 group-hover:opacity-100 group-data-[state=active]:opacity-0 rounded-lg transition-opacity"
-                      initial={false}
-                    />
-                    <motion.span
-                      whileTap={{ scale: 0.95 }}
-                      whileHover={{ y: -1 }}
-                      className="flex items-center gap-2 relative z-10"
-                    >
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={tab.icon} />
-                      </svg>
-                      <span className="font-medium">{tab.label}</span>
-                    </motion.span>
+                  <motion.div
+                    className="absolute inset-0 bg-gradient-to-r from-purple-50 to-blue-50 opacity-0 group-hover:opacity-100 group-data-[state=active]:opacity-0 rounded-lg transition-opacity"
+                    initial={false}
+                  />
+                  <motion.span
+                    whileTap={{ scale: 0.95 }}
+                    whileHover={{ y: -1 }}
+                    className="flex items-center gap-1.5 sm:gap-1.5 relative z-10 justify-center flex-col sm:flex-row"
+                  >
+                    <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={tab.icon} />
+                    </svg>
+                    <span className="font-medium truncate text-center">{tab.label}</span>
+                  </motion.span>
                   </TabsTrigger>
                 ))}
-              </TabsList>
+                </TabsList>
 
               <AnimatePresence mode="wait">
                 <TabsContent value="overview" className="relative z-10">

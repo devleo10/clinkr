@@ -77,7 +77,14 @@ const Devices = () => {
 
       // Calculate device counts for current and previous periods
       // Helper functions with types
-      const countDevices = (dataArr: { device_type: string }[], type: string) => dataArr.filter((d) => d.device_type === type).length;
+      const countDevices = (dataArr: { device_type: string }[], type: string) => {
+        const validTypes = ['desktop', 'mobile', 'tablet'];
+        if (!validTypes.includes(type)) {
+          console.warn(`Invalid device type detected: ${type}`);
+          return 0;
+        }
+        return dataArr.filter((d) => d.device_type === type).length;
+      };
       const total = currentData.length;
       const prevTotal = previousData.length;
       const desktopCount = countDevices(currentData, 'desktop');
@@ -196,7 +203,14 @@ const Devices = () => {
 
       // Calculate browser stats for current and previous periods
       // Helper functions with types
-      const countBrowsers = (dataArr: { browser: string }[], name: string) => dataArr.filter((d) => d.browser === name).length;
+      const countBrowsers = (dataArr: { browser: string }[], name: string) => {
+        const validBrowsers = ['Chrome', 'Firefox', 'Safari', 'Edge', 'Opera', 'Brave', 'Unknown'];
+        if (!validBrowsers.includes(name)) {
+          console.warn(`Invalid browser name detected: ${name}`);
+          return 0;
+        }
+        return dataArr.filter((d) => d.browser === name).length;
+      };
       const getBrowserNames = (arr: { browser: string }[]) => Array.from(new Set(arr.map((d) => d.browser || 'Unknown')));
       const total = currentData.length;
       const prevTotal = previousData.length;
