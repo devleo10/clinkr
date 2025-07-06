@@ -1,8 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Card, CardContent } from "../ui/card";
 import logo from "../../assets/Frame.png";
-import { Link } from 'react-router-dom';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { supabase } from '../../lib/supabaseClient';
 import { FaUser } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -49,17 +48,30 @@ const PublicProfile = () => {
 
   useEffect(() => {
     const loadData = async () => {
-        await fetchProfile();
-        if (profile?.id) {
-            recordView();
-        }
+      await fetchProfile();
     };
     loadData();
   }, [username]);
 
+  useEffect(() => {
+    console.log('Profile ID:', profile?.id); // Debugging profile ID
+    if (profile?.id) {
+      recordView();
+    }
+  }, [profile?.id]);
+
+  useEffect(() => {
+    console.log('Profile page accessed'); // Debugging profile page access
+    console.log('Referrer:', document.referrer || 'No referrer'); // Debugging referrer source
+    if (profile?.id) {
+      recordView();
+    }
+  }, [profile?.id]);
+
   const recordView = async () => {
     try {
         console.log('recordView function called'); // Debugging function call
+
         let visitorId = localStorage.getItem('visitorId');
         if (!visitorId) {
             visitorId = btoa(Math.random().toString()).slice(0, 10);
@@ -68,11 +80,22 @@ const PublicProfile = () => {
 
         console.log('Visitor ID:', visitorId); // Debugging visitor ID
 
-        const referrer = document.referrer || 'direct';
+        if (!profile?.id) {
+            console.error('Profile ID is missing. Cannot record view.');
+            return;
+        }
+
+        let referrer = document.referrer || 'direct';
+        try {
+            const referrerUrl = new URL(referrer);
+            referrer = referrerUrl.hostname.replace(/^www\./, '');
+        } catch (error) {
+            console.error('Error parsing referrer URL:', error);
+        }
 
         console.log('Recording view data:', {
             viewer_hash: visitorId,
-            profile_id: profile?.id,
+            profile_id: profile.id,
             viewed_at: new Date().toISOString(),
             referrer: referrer
         });
@@ -81,17 +104,19 @@ const PublicProfile = () => {
             .from('profile_views')
             .insert({
                 viewer_hash: visitorId,
-                profile_id: profile?.id,
+                profile_id: profile.id,
                 viewed_at: new Date().toISOString(),
                 referrer: referrer
             });
 
         if (insertError) {
             console.error('Error inserting view:', insertError);
+        } else {
+            console.log('View successfully recorded'); // Debugging successful view recording
         }
 
     } catch (err) {
-        console.error(err); // Debugging catch block
+        console.error('Error in recordView function:', err);
     }
 };
 
@@ -131,34 +156,25 @@ const PublicProfile = () => {
     }
   };
 
-  // Simplified and more reliable device detection function
   const detectDeviceType = (): string => {
-    // First, check if navigator.userAgentData is available (modern browsers)
     if ('userAgentData' in navigator && (navigator as any).userAgentData?.mobile) {
       return 'mobile';
     }
     const userAgent = navigator.userAgent;
-    // Simple and reliable mobile detection
     if (/Mobi|Android.*Mobile|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent)) {
       return 'mobile';
     }
-    // Tablet detection
     if (/iPad|Android(?!.*Mobile)|Tablet|PlayBook|Silk/i.test(userAgent)) {
       return 'tablet';
     }
-    // Use a very simple screen width threshold as a fallback
-    // Most mobile devices have screen width less than 768px
     if (window.innerWidth <= 768 && /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent)) {
       return 'mobile';
     }
-    // Default to desktop - if we haven't detected mobile or tablet by now
     return 'desktop';
   };
 
-  // Completely rewritten browser detection that always returns a value
   const detectBrowser = (): string => {
     const userAgent = navigator.userAgent;
-    // Most reliable pattern matching, in order from most to least specific
     if (userAgent.indexOf("Firefox") !== -1) {
       return "Firefox";
     }
@@ -183,69 +199,61 @@ const PublicProfile = () => {
     if (userAgent.indexOf("UCBrowser") !== -1) {
       return "UC Browser";
     }
-    // Fallback - should rarely happen with modern browsers
     return "Unknown";
   };
 
   const handleLinkClick = async (url: string, index: number, e: React.MouseEvent) => {
     try {
-      // Prevent the default navigation temporarily
-      e.preventDefault();
-      
-      if (!profile || !profile.id) {
+        e.preventDefault();
+
+        if (!profile || !profile.id) {
+            window.open(url, '_blank', 'noopener,noreferrer');
+            return;
+        }
+
+        const deviceType = detectDeviceType();
+        const browser = detectBrowser();
+
+        let lat: number | null = null;
+        let lng: number | null = null;
+        let countryCode: string | null = null;
+        let region: string | null = null;
+
+        try {
+            const response = await fetch('https://ipapi.co/json/');
+            const data = await response.json();
+            lat = data.latitude;
+            lng = data.longitude;
+            countryCode = data.country_code;
+            region = data.region;
+        } catch (geoError) {
+            console.error('Geolocation fetch error:', geoError);
+        }
+
+        const { error } = await supabase
+            .from('link_analytics')
+            .insert({
+                profile_id: profile.id,
+                user_id: profile.id,
+                link_url: url,
+                link_index: index,
+                device_type: deviceType,
+                browser: browser,
+                event_type: 'click',
+                lat: lat,
+                lng: lng,
+                country_code: countryCode,
+                region: region
+            });
+
+        if (error) {
+            console.error('Error recording click:', error);
+        }
+
         window.open(url, '_blank', 'noopener,noreferrer');
-        return;
-      }
-    
-      // Get visitor information with improved detection
-      const deviceType = detectDeviceType();
-      const browser = detectBrowser();
-      
-      // Get geolocation data
-      let lat = null;
-      let lng = null;
-      let countryCode = null;
-      let region = null;
-      
-      try {
-        const response = await fetch('https://ipapi.co/json/');
-        const data = await response.json();
-        lat = data.latitude;
-        lng = data.longitude;
-        countryCode = data.country_code;
-        region = data.region;
-      } catch (geoError) {
-        // Optionally handle geolocation fetch error
-      }
-    
-      // Record the click in the link_analytics table
-      const { error } = await supabase
-        .from('link_analytics')
-        .insert({
-          profile_id: profile.id,
-          user_id: profile.id,
-          link_url: url,
-          link_index: index,
-          device_type: deviceType,
-          browser: browser,
-          event_type: 'click',
-          referrer: document.referrer || 'direct',
-          lat: lat,
-          lng: lng,
-          country_code: countryCode,
-          region: region,
-        });
-    
-      if (error) {
-        console.error('Error recording click:', error);
-      }
-      
-      // Now navigate to the URL
-      window.open(url, '_blank', 'noopener,noreferrer');
     } catch (err) {
-      console.error('Failed to record click:', err);
-      // Ensure navigation happens even if tracking fails
-      window.open(url, '_blank', 'noopener,noreferrer');
+        console.error('Failed to record click:', err);
+        window.open(url, '_blank', 'noopener,noreferrer');
     }
   };
 
