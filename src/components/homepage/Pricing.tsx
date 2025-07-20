@@ -19,8 +19,8 @@ const Pricing = () => {
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <h1 className="text-2xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 text-shadow mb-4">Choose Your Perfect Plan</h1>
-        <p className="text-gray-700 text-lg font-medium">Start Free, Upgrade when you need more</p>
+        <h1 className="text-2xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 drop-shadow-sm tracking-tight mb-4">Choose Your Perfect Plan</h1>
+        <p className="text-gray-800 text-lg font-semibold">Start Free, Upgrade when you need more</p>
       </motion.div>
       
       {/* Cards container - column on small screens, row on md and up */}
