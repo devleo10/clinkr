@@ -1,4 +1,4 @@
-import { motion } from "framer-motion"
+
 const Features = () => {
   return (
     <div id="features"> 
@@ -6,66 +6,43 @@ const Features = () => {
         {/* Background gradient */}
         <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-blue-50 opacity-90" />
         
-        {/* Animated top accent */}
-        <motion.div 
-          className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500"
-          initial={{ scaleX: 0 }}
-          animate={{ scaleX: 1 }}
-          transition={{ duration: 1.2, delay: 0.2 }}
-        />
+      {/* Top accent (static) */}
+      <div 
+        className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500"
+      />
         
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
       <div className="text-center mb-20">
-        <motion.h2 
+        <h2 
           className="text-3xl md:text-4xl font-extrabold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 drop-shadow-sm tracking-tight"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
         >
           Powerful Features for Your Bio Links
-        </motion.h2>
-        <motion.p 
+        </h2>
+        <p 
           className="text-xl text-gray-800 font-medium max-w-2xl mx-auto"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
         >
           Everything you need to track, analyze, and optimize your link performance
-        </motion.p>
+        </p>
       </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {/* Analytics Feature */}
-        <motion.div 
+        <div 
           className="glass-card bg-white/90 backdrop-blur-lg border border-white/50 p-8 rounded-xl shadow-xl hover:shadow-2xl transition-all relative overflow-hidden"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          whileHover={{ 
-            y: -5,
-            boxShadow: "0 25px 50px -12px rgba(99, 102, 241, 0.25)"
-          }}
         >
           {/* Subtle gradient background */}
           <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-blue-50 opacity-90" />
           
-          {/* Animated accent line */}
-          <motion.div 
+          {/* Accent line (static) */}
+          <div 
             className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500"
-            initial={{ scaleX: 0 }}
-            animate={{ scaleX: 1 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
           />
-          
-          {/* Animated corner decoration */}
-          <motion.div
+          {/* Corner decoration (static) */}
+          <div
             className="absolute bottom-0 right-0 w-16 h-16 opacity-15"
-            initial={{ scale: 0, opacity: 0 }}
-            animate={{ scale: 1, opacity: 0.15 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
           >
             <div className="absolute inset-0 rounded-tl-full bg-gradient-to-br from-purple-500 to-indigo-500" />
-          </motion.div>
+          </div>
           
           <div className="relative z-10">
             <div className="flex items-center justify-center w-16 h-16 rounded-xl bg-gradient-to-r from-purple-100 to-blue-100 mb-6 shadow-lg">
@@ -76,39 +53,25 @@ const Features = () => {
             <h3 className="text-xl font-bold mb-4 text-gray-900">Real-time Analytics</h3>
             <p className="text-gray-700 font-medium leading-relaxed">Track clicks, views, and engagement metrics in real-time. Understand your audience's behavior with detailed insights.</p>
           </div>
-        </motion.div>
+        </div>
 
         {/* Geography Feature */}
-        <motion.div 
+        <div 
           className="glass-card bg-white/90 backdrop-blur-lg border border-white/50 p-8 rounded-xl shadow-xl hover:shadow-2xl transition-all relative overflow-hidden"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-          whileHover={{ 
-            y: -5,
-            boxShadow: "0 25px 50px -12px rgba(99, 102, 241, 0.25)"
-          }}
         >
           {/* Subtle gradient background */}
           <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-blue-50 opacity-90" />
           
-          {/* Animated accent line */}
-          <motion.div 
+          {/* Accent line (static) */}
+          <div 
             className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500"
-            initial={{ scaleX: 0 }}
-            animate={{ scaleX: 1 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
           />
-          
-          {/* Animated corner decoration */}
-          <motion.div
+          {/* Corner decoration (static) */}
+          <div
             className="absolute bottom-0 right-0 w-16 h-16 opacity-15"
-            initial={{ scale: 0, opacity: 0 }}
-            animate={{ scale: 1, opacity: 0.15 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
           >
             <div className="absolute inset-0 rounded-tl-full bg-gradient-to-br from-purple-500 to-indigo-500" />
-          </motion.div>
+          </div>
           
           <div className="relative z-10">
             <div className="flex items-center justify-center w-16 h-16 rounded-xl bg-gradient-to-r from-purple-100 to-blue-100 mb-6 shadow-lg">
@@ -119,39 +82,25 @@ const Features = () => {
             <h3 className="text-xl font-bold mb-4 text-gray-900">Geographic Insights</h3>
             <p className="text-gray-700 font-medium leading-relaxed">Know where your visitors come from with detailed geographic data. Target your content to your audience's location.</p>
           </div>
-        </motion.div>
+        </div>
 
         {/* Device Analytics Feature */}
-        <motion.div 
+        <div 
           className="glass-card bg-white/90 backdrop-blur-lg border border-white/50 p-8 rounded-xl shadow-xl hover:shadow-2xl transition-all relative overflow-hidden"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          whileHover={{ 
-            y: -5,
-            boxShadow: "0 25px 50px -12px rgba(99, 102, 241, 0.25)"
-          }}
         >
           {/* Subtle gradient background */}
           <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-blue-50 opacity-90" />
           
-          {/* Animated accent line */}
-          <motion.div 
+          {/* Accent line (static) */}
+          <div 
             className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500"
-            initial={{ scaleX: 0 }}
-            animate={{ scaleX: 1 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
           />
-          
-          {/* Animated corner decoration */}
-          <motion.div
+          {/* Corner decoration (static) */}
+          <div
             className="absolute bottom-0 right-0 w-16 h-16 opacity-15"
-            initial={{ scale: 0, opacity: 0 }}
-            animate={{ scale: 1, opacity: 0.15 }}
-            transition={{ duration: 0.8, delay: 0.5 }}
           >
             <div className="absolute inset-0 rounded-tl-full bg-gradient-to-br from-purple-500 to-indigo-500" />
-          </motion.div>
+          </div>
           
           <div className="relative z-10">
             <div className="flex items-center justify-center w-16 h-16 rounded-xl bg-gradient-to-r from-purple-100 to-blue-100 mb-6 shadow-lg">
@@ -162,39 +111,25 @@ const Features = () => {
             <h3 className="text-xl font-bold mb-4 text-gray-900">Device Analytics</h3>
             <p className="text-gray-700 font-medium leading-relaxed">Understand how users access your links across different devices and browsers. Optimize for the best user experience.</p>
           </div>
-        </motion.div>
+        </div>
 
         {/* Trend Analysis Feature */}
-        <motion.div 
+        <div 
           className="glass-card bg-white/90 backdrop-blur-lg border border-white/50 p-8 rounded-xl shadow-xl hover:shadow-2xl transition-all relative overflow-hidden"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-          whileHover={{ 
-            y: -5,
-            boxShadow: "0 25px 50px -12px rgba(99, 102, 241, 0.25)"
-          }}
         >
           {/* Subtle gradient background */}
           <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-blue-50 opacity-90" />
           
-          {/* Animated accent line */}
-          <motion.div 
+          {/* Accent line (static) */}
+          <div 
             className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500"
-            initial={{ scaleX: 0 }}
-            animate={{ scaleX: 1 }}
-            transition={{ duration: 0.8, delay: 0.5 }}
           />
-          
-          {/* Animated corner decoration */}
-          <motion.div
+          {/* Corner decoration (static) */}
+          <div
             className="absolute bottom-0 right-0 w-16 h-16 opacity-15"
-            initial={{ scale: 0, opacity: 0 }}
-            animate={{ scale: 1, opacity: 0.15 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
           >
             <div className="absolute inset-0 rounded-tl-full bg-gradient-to-br from-purple-500 to-indigo-500" />
-          </motion.div>
+          </div>
           
           <div className="relative z-10">
             <div className="flex items-center justify-center w-16 h-16 rounded-xl bg-gradient-to-r from-purple-100 to-blue-100 mb-6 shadow-lg">
@@ -205,39 +140,25 @@ const Features = () => {
             <h3 className="text-xl font-bold mb-4 text-gray-900">Trend Analysis</h3>
             <p className="text-gray-700 font-medium leading-relaxed">Track growth patterns, peak engagement times, and audience behavior trends. Make data-driven decisions to improve your content strategy.</p>
           </div>
-        </motion.div>
+        </div>
 
         {/* Browser Analytics Feature */}
-        <motion.div 
+        <div 
           className="glass-card bg-white/90 backdrop-blur-lg border border-white/50 p-8 rounded-xl shadow-xl hover:shadow-2xl transition-all relative overflow-hidden"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
-          whileHover={{ 
-            y: -5,
-            boxShadow: "0 25px 50px -12px rgba(99, 102, 241, 0.25)"
-          }}
         >
           {/* Subtle gradient background */}
           <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-blue-50 opacity-90" />
           
-          {/* Animated accent line */}
-          <motion.div 
+          {/* Accent line (static) */}
+          <div 
             className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500"
-            initial={{ scaleX: 0 }}
-            animate={{ scaleX: 1 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
           />
-          
-          {/* Animated corner decoration */}
-          <motion.div
+          {/* Corner decoration (static) */}
+          <div
             className="absolute bottom-0 right-0 w-16 h-16 opacity-15"
-            initial={{ scale: 0, opacity: 0 }}
-            animate={{ scale: 1, opacity: 0.15 }}
-            transition={{ duration: 0.8, delay: 0.7 }}
           >
             <div className="absolute inset-0 rounded-tl-full bg-gradient-to-br from-purple-500 to-indigo-500" />
-          </motion.div>
+          </div>
           
           <div className="relative z-10">
             <div className="flex items-center justify-center w-16 h-16 rounded-xl bg-gradient-to-r from-purple-100 to-blue-100 mb-6 shadow-lg">
@@ -248,39 +169,25 @@ const Features = () => {
             <h3 className="text-xl font-bold mb-4 text-gray-900">Browser Analytics</h3>
             <p className="text-gray-700 font-medium leading-relaxed">Monitor browser usage patterns and optimize your links for different web browsers. Ensure consistent performance across all platforms.</p>
           </div>
-        </motion.div>
+        </div>
 
         {/* Smart Insights Feature */}
-        <motion.div 
+        <div 
           className="glass-card bg-white/90 backdrop-blur-lg border border-white/50 p-8 rounded-xl shadow-xl hover:shadow-2xl transition-all relative overflow-hidden"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.5 }}
-          whileHover={{ 
-            y: -5,
-            boxShadow: "0 25px 50px -12px rgba(99, 102, 241, 0.25)"
-          }}
         >
           {/* Subtle gradient background */}
           <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-blue-50 opacity-90" />
           
-          {/* Animated accent line */}
-          <motion.div 
+          {/* Accent line (static) */}
+          <div 
             className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500"
-            initial={{ scaleX: 0 }}
-            animate={{ scaleX: 1 }}
-            transition={{ duration: 0.8, delay: 0.7 }}
           />
-          
-          {/* Animated corner decoration */}
-          <motion.div
+          {/* Corner decoration (static) */}
+          <div
             className="absolute bottom-0 right-0 w-16 h-16 opacity-15"
-            initial={{ scale: 0, opacity: 0 }}
-            animate={{ scale: 1, opacity: 0.15 }}
-            transition={{ duration: 0.8, delay: 0.8 }}
           >
             <div className="absolute inset-0 rounded-tl-full bg-gradient-to-br from-purple-500 to-indigo-500" />
-          </motion.div>
+          </div>
           
           <div className="relative z-10">
             <div className="flex items-center justify-center w-16 h-16 rounded-xl bg-gradient-to-r from-purple-100 to-blue-100 mb-6 shadow-lg">
@@ -291,7 +198,7 @@ const Features = () => {
             <h3 className="text-xl font-bold mb-4 text-gray-900">Smart Insights</h3>
             <p className="text-gray-700 font-medium leading-relaxed">Get AI-powered recommendations and insights about your audience behavior. Discover peak engagement times and optimize your content strategy.</p>
           </div>
-        </motion.div>
+        </div>
       </div>
     </div>
   </div></div>
