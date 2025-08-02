@@ -1,5 +1,5 @@
 import { useState } from 'react';
-
+import { motion, AnimatePresence } from 'framer-motion';
 
 const FAQ = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
@@ -64,75 +64,126 @@ const FAQ = () => {
 
   return (
     <>
-    <div className="w-full flex flex-col justify-center items-center h-auto min-h-20 mb-10 md:mb-20 bg-white/90 backdrop-blur-xl rounded-xl px-4 py-8 md:py-10 shadow-xl border border-white/50 relative overflow-hidden"> 
-        {/* Background gradient */}
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-blue-50 opacity-90" />
+      {/* Hero Header */}
+      <motion.div 
+        className="w-full flex flex-col justify-center items-center h-auto min-h-16 mb-12 bg-white/95 backdrop-blur-xl rounded-2xl px-6 py-8 shadow-xl border border-white/60 relative overflow-hidden"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      > 
+        {/* Enhanced background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/80 via-purple-50/60 to-blue-50/80" />
         
-        {/* Accent line (static) */}
+        {/* Floating elements */}
+        <div className="absolute top-4 left-4 w-16 h-16 bg-gradient-to-br from-purple-300/20 to-indigo-300/20 rounded-full blur-xl animate-pulse"></div>
+        <div className="absolute bottom-4 right-4 w-20 h-20 bg-gradient-to-br from-blue-300/20 to-purple-300/20 rounded-full blur-xl animate-pulse delay-1000"></div>
+        
+        {/* Enhanced accent line */}
         <div 
-          className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500"
+          className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 rounded-t-2xl"
         />
-        <h1 
-          className="text-2xl md:text-3xl font-extrabold text-center mb-2 text-transparent bg-clip-text bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 drop-shadow-sm tracking-tight relative z-10">
-          Frequently Asked Questions
-        </h1>
-        <h2 className="flex flex-col text-sm text-gray-800 font-semibold relative z-10">Got Questions? We've Got You Covered.</h2>
-    </div>
-    <div className="max-w-3xl mx-auto py-12 px-4">
-     
-      <div className="space-y-6">
-        {faqData.map((section, sectionIndex) => (
-          <div 
-            key={sectionIndex} 
-            className="bg-white/90 backdrop-blur-lg rounded-xl p-6 shadow-xl border border-white/50 relative overflow-hidden hover:shadow-2xl transition-all"
+        
+        <div className="relative z-10 text-center">
+          <motion.h1 
+            className="text-3xl md:text-4xl font-black text-center mb-3 text-transparent bg-clip-text bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 drop-shadow-sm tracking-tight"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
           >
-            {/* Subtle gradient background */}
-            <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-blue-50 opacity-90" />
-            
-            {/* Accent line (static) */}
-            <div 
-              className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500"
-            />
-            <h2 
-              className="text-lg font-bold mb-4 text-gray-900 relative z-10"
+            Frequently Asked Questions
+          </motion.h1>
+          <motion.p 
+            className="text-base text-gray-700 font-semibold max-w-2xl mx-auto"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+          >
+            Got Questions? We've Got You Covered with Detailed Answers.
+          </motion.p>
+        </div>
+      </motion.div>
+
+      {/* FAQ Content */}
+      <div className="max-w-4xl mx-auto py-6 px-4">
+        <div className="space-y-6">
+          {faqData.map((section, sectionIndex) => (
+            <motion.div
+              key={sectionIndex}
+              className="bg-white/95 backdrop-blur-xl rounded-xl p-6 shadow-xl border border-white/60 relative overflow-hidden hover:shadow-2xl transition-all duration-500"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 * sectionIndex + 0.3 }}
             >
-              {section.category}
-            </h2>
-            
-            <div className="space-y-2 relative z-10">
-              {section.items.map((item, itemIndex) => {
-                const index = sectionIndex * 10 + itemIndex;
-                return (
-                  <div
-                    key={itemIndex}
-                    className="border-b border-gray-200 last:border-b-0"
-                  >
-                    <div
-                      className="flex justify-between items-center py-4 cursor-pointer hover:bg-white/50 rounded-lg px-2 transition-colors"
-                      onClick={() => setOpenIndex(openIndex === index ? null : index)}
-                    >
-                      <h3 className="text-sm font-semibold text-gray-900 flex-1 pr-4">{item.question}</h3>
-                      <div
-                        className={`flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-purple-100 to-blue-100 text-indigo-700 font-bold text-sm shadow-sm transition-transform duration-300 ${openIndex === index ? 'rotate-180' : ''}`}
+              {/* Enhanced background */}
+              <div className="absolute inset-0 bg-gradient-to-br from-gray-50/80 via-white to-indigo-50/60" />
+              
+              {/* Category accent */}
+              <div 
+                className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500 rounded-t-xl"
+              />
+              
+              <div className="relative z-10">
+                <motion.h2 
+                  className="text-xl font-black mb-6 text-gray-900 flex items-center gap-3"
+                  whileHover={{ x: 5 }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                >
+                  <div className="w-3 h-3 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full"></div>
+                  {section.category}
+                </motion.h2>                <div className="space-y-3">
+                  {section.items.map((item, itemIndex) => {
+                    const index = sectionIndex * 10 + itemIndex;
+                    const isOpen = openIndex === index;
+                    
+                    return (
+                      <motion.div
+                        key={itemIndex}
+                        className="border border-gray-200/80 rounded-lg overflow-hidden bg-white/60 backdrop-blur-sm hover:border-indigo-200 transition-all duration-300"
+                        whileHover={{ scale: 1.01 }}
                       >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
-                        </svg>
-                      </div>
-                    </div>
-                    <div
-                      className={`overflow-hidden transition-all duration-500 ${openIndex === index ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'}`}
-                    >
-                      <p className="pb-4 px-2 text-sm text-gray-700 font-medium leading-relaxed">{item.answer}</p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        ))}
+                        <motion.div
+                          className="flex justify-between items-center p-4 cursor-pointer hover:bg-indigo-50/50 transition-colors duration-300"
+                          onClick={() => setOpenIndex(isOpen ? null : index)}
+                          whileHover={{ x: 5 }}
+                        >
+                          <h3 className="text-base font-bold text-gray-900 flex-1 pr-4">
+                            {item.question}
+                          </h3>
+                          <motion.div
+                            className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-indigo-100 to-purple-100 text-indigo-700 shadow-md"
+                            animate={{ rotate: isOpen ? 180 : 0 }}
+                            transition={{ duration: 0.3 }}
+                          >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
+                            </svg>
+                          </motion.div>
+                        </motion.div>
+                        
+                        <AnimatePresence>
+                          {isOpen && (
+                            <motion.div
+                              initial={{ height: 0, opacity: 0 }}
+                              animate={{ height: "auto", opacity: 1 }}
+                              exit={{ height: 0, opacity: 0 }}
+                              transition={{ duration: 0.3 }}
+                              className="overflow-hidden"
+                            >
+                              <div className="p-4 pt-0 text-gray-600 font-medium leading-relaxed text-sm">
+                                {item.answer}
+                              </div>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
       </div>
-    </div>
     </>
   );
 };

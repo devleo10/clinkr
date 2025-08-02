@@ -1,207 +1,216 @@
 
+import { motion } from 'framer-motion';
+
 const Features = () => {
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.08,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 30, scale: 0.95 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: {
+        duration: 0.6,
+        ease: "easeOut" as const,
+      },
+    },
+  };
+
+  const features = [
+    {
+      title: "Real-time Analytics",
+      description: "Track clicks, views, and engagement metrics in real-time with detailed insights.",
+      icon: "M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z",
+      gradient: "from-indigo-500 to-purple-600",
+      bgGradient: "from-indigo-50/50 via-purple-50/30 to-blue-50/50",
+      hoverColor: "indigo-200"
+    },
+    {
+      title: "Geographic Insights",
+      description: "Know where your visitors come from with detailed geographic data and heat maps.",
+      icon: "M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z",
+      gradient: "from-green-500 to-emerald-600",
+      bgGradient: "from-green-50/50 via-emerald-50/30 to-teal-50/50",
+      hoverColor: "green-200"
+    },
+    {
+      title: "Device Analytics",
+      description: "Track user devices and browsers to optimize experiences across platforms.",
+      icon: "M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z",
+      gradient: "from-orange-500 to-amber-600",
+      bgGradient: "from-orange-50/50 via-amber-50/30 to-yellow-50/50",
+      hoverColor: "orange-200"
+    },
+    {
+      title: "Browser Insights",
+      description: "Monitor browser usage patterns and optimize for different platforms.",
+      icon: "M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9",
+      gradient: "from-purple-500 to-pink-600",
+      bgGradient: "from-purple-50/50 via-pink-50/30 to-rose-50/50",
+      hoverColor: "purple-200"
+    },
+    {
+      title: "Link Performance",
+      description: "Comprehensive metrics with conversion tracking and user journey analysis.",
+      icon: "M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1",
+      gradient: "from-cyan-500 to-blue-600",
+      bgGradient: "from-cyan-50/50 via-blue-50/30 to-indigo-50/50",
+      hoverColor: "cyan-200"
+    },
+    {
+      title: "Smart Insights",
+      description: "AI-powered recommendations to optimize your link strategy for maximum impact.",
+      icon: "M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z",
+      gradient: "from-emerald-500 to-teal-600",
+      bgGradient: "from-emerald-50/50 via-teal-50/30 to-blue-50/50",
+      hoverColor: "emerald-200"
+    }
+  ];
+
   return (
     <div id="features"> 
-      <div className="py-24 mt-10 mx-auto glass-card bg-white/90 backdrop-blur-lg w-full rounded-xl shadow-xl border border-white/50 relative overflow-hidden">
-        {/* Background gradient */}
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-blue-50 opacity-90" />
+      <div className="py-12 mt-8 mx-auto glass-card bg-white/95 backdrop-blur-xl w-full rounded-2xl shadow-xl border border-white/60 relative overflow-hidden">
+        {/* Enhanced background with multiple layers */}
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-50/80 via-white to-blue-50/80 opacity-95" />
         
-      {/* Top accent (static) */}
-      <div 
-        className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500"
-      />
+        {/* Floating background elements with improved animations */}
+        <motion.div 
+          className="absolute top-10 left-10 w-32 h-32 bg-gradient-to-r from-purple-400/15 to-blue-400/15 rounded-full blur-2xl"
+          animate={{ 
+            scale: [1, 1.2, 1],
+            opacity: [0.3, 0.5, 0.3]
+          }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div 
+          className="absolute bottom-10 right-10 w-40 h-40 bg-gradient-to-r from-indigo-400/15 to-purple-400/15 rounded-full blur-2xl"
+          animate={{ 
+            scale: [1, 1.3, 1],
+            opacity: [0.4, 0.6, 0.4]
+          }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+        />
         
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-      <div className="text-center mb-20">
-        <h2 
-          className="text-3xl md:text-4xl font-extrabold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 drop-shadow-sm tracking-tight"
-        >
-          Powerful Features for Your Bio Links
-        </h2>
-        <p 
-          className="text-xl text-gray-800 font-medium max-w-2xl mx-auto"
-        >
-          Everything you need to track, analyze, and optimize your link performance
-        </p>
-      </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {/* Analytics Feature */}
-        <div 
-          className="glass-card bg-white/90 backdrop-blur-lg border border-white/50 p-8 rounded-xl shadow-xl hover:shadow-2xl transition-all relative overflow-hidden"
-        >
-          {/* Subtle gradient background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-blue-50 opacity-90" />
-          
-          {/* Accent line (static) */}
-          <div 
-            className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500"
-          />
-          {/* Corner decoration (static) */}
-          <div
-            className="absolute bottom-0 right-0 w-16 h-16 opacity-15"
+        {/* Top accent */}
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 rounded-t-2xl" />
+        
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <motion.div 
+            className="text-center mb-12"
+            initial={{ opacity: 0, y: -30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
           >
-            <div className="absolute inset-0 rounded-tl-full bg-gradient-to-br from-purple-500 to-indigo-500" />
-          </div>
-          
-          <div className="relative z-10">
-            <div className="flex items-center justify-center w-16 h-16 rounded-xl bg-gradient-to-r from-purple-100 to-blue-100 mb-6 shadow-lg">
-              <svg className="h-8 w-8 text-indigo-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-              </svg>
-            </div>
-            <h3 className="text-xl font-bold mb-4 text-gray-900">Real-time Analytics</h3>
-            <p className="text-gray-700 font-medium leading-relaxed">Track clicks, views, and engagement metrics in real-time. Understand your audience's behavior with detailed insights.</p>
-          </div>
-        </div>
+            <motion.h2 
+              className="text-3xl md:text-4xl font-black mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 drop-shadow-sm tracking-tight"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+            >
+              Powerful Features for Your Bio Links
+            </motion.h2>
+            <motion.p 
+              className="text-lg text-gray-700 font-medium max-w-3xl mx-auto leading-relaxed"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+            >
+              Everything you need to track, analyze, and optimize your link performance
+            </motion.p>
+          </motion.div>
 
-        {/* Geography Feature */}
-        <div 
-          className="glass-card bg-white/90 backdrop-blur-lg border border-white/50 p-8 rounded-xl shadow-xl hover:shadow-2xl transition-all relative overflow-hidden"
-        >
-          {/* Subtle gradient background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-blue-50 opacity-90" />
-          
-          {/* Accent line (static) */}
-          <div 
-            className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500"
-          />
-          {/* Corner decoration (static) */}
-          <div
-            className="absolute bottom-0 right-0 w-16 h-16 opacity-15"
+          {/* Uniform Grid Layout */}
+          <motion.div 
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
           >
-            <div className="absolute inset-0 rounded-tl-full bg-gradient-to-br from-purple-500 to-indigo-500" />
-          </div>
-          
-          <div className="relative z-10">
-            <div className="flex items-center justify-center w-16 h-16 rounded-xl bg-gradient-to-r from-purple-100 to-blue-100 mb-6 shadow-lg">
-              <svg className="h-8 w-8 text-indigo-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-            <h3 className="text-xl font-bold mb-4 text-gray-900">Geographic Insights</h3>
-            <p className="text-gray-700 font-medium leading-relaxed">Know where your visitors come from with detailed geographic data. Target your content to your audience's location.</p>
-          </div>
-        </div>
-
-        {/* Device Analytics Feature */}
-        <div 
-          className="glass-card bg-white/90 backdrop-blur-lg border border-white/50 p-8 rounded-xl shadow-xl hover:shadow-2xl transition-all relative overflow-hidden"
-        >
-          {/* Subtle gradient background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-blue-50 opacity-90" />
-          
-          {/* Accent line (static) */}
-          <div 
-            className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500"
-          />
-          {/* Corner decoration (static) */}
-          <div
-            className="absolute bottom-0 right-0 w-16 h-16 opacity-15"
-          >
-            <div className="absolute inset-0 rounded-tl-full bg-gradient-to-br from-purple-500 to-indigo-500" />
-          </div>
-          
-          <div className="relative z-10">
-            <div className="flex items-center justify-center w-16 h-16 rounded-xl bg-gradient-to-r from-purple-100 to-blue-100 mb-6 shadow-lg">
-              <svg className="h-8 w-8 text-indigo-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-              </svg>
-            </div>
-            <h3 className="text-xl font-bold mb-4 text-gray-900">Device Analytics</h3>
-            <p className="text-gray-700 font-medium leading-relaxed">Understand how users access your links across different devices and browsers. Optimize for the best user experience.</p>
-          </div>
-        </div>
-
-        {/* Trend Analysis Feature */}
-        <div 
-          className="glass-card bg-white/90 backdrop-blur-lg border border-white/50 p-8 rounded-xl shadow-xl hover:shadow-2xl transition-all relative overflow-hidden"
-        >
-          {/* Subtle gradient background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-blue-50 opacity-90" />
-          
-          {/* Accent line (static) */}
-          <div 
-            className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500"
-          />
-          {/* Corner decoration (static) */}
-          <div
-            className="absolute bottom-0 right-0 w-16 h-16 opacity-15"
-          >
-            <div className="absolute inset-0 rounded-tl-full bg-gradient-to-br from-purple-500 to-indigo-500" />
-          </div>
-          
-          <div className="relative z-10">
-            <div className="flex items-center justify-center w-16 h-16 rounded-xl bg-gradient-to-r from-purple-100 to-blue-100 mb-6 shadow-lg">
-              <svg className="h-8 w-8 text-indigo-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-              </svg>
-            </div>
-            <h3 className="text-xl font-bold mb-4 text-gray-900">Trend Analysis</h3>
-            <p className="text-gray-700 font-medium leading-relaxed">Track growth patterns, peak engagement times, and audience behavior trends. Make data-driven decisions to improve your content strategy.</p>
-          </div>
-        </div>
-
-        {/* Browser Analytics Feature */}
-        <div 
-          className="glass-card bg-white/90 backdrop-blur-lg border border-white/50 p-8 rounded-xl shadow-xl hover:shadow-2xl transition-all relative overflow-hidden"
-        >
-          {/* Subtle gradient background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-blue-50 opacity-90" />
-          
-          {/* Accent line (static) */}
-          <div 
-            className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500"
-          />
-          {/* Corner decoration (static) */}
-          <div
-            className="absolute bottom-0 right-0 w-16 h-16 opacity-15"
-          >
-            <div className="absolute inset-0 rounded-tl-full bg-gradient-to-br from-purple-500 to-indigo-500" />
-          </div>
-          
-          <div className="relative z-10">
-            <div className="flex items-center justify-center w-16 h-16 rounded-xl bg-gradient-to-r from-purple-100 to-blue-100 mb-6 shadow-lg">
-              <svg className="h-8 w-8 text-indigo-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
-              </svg>
-            </div>
-            <h3 className="text-xl font-bold mb-4 text-gray-900">Browser Analytics</h3>
-            <p className="text-gray-700 font-medium leading-relaxed">Monitor browser usage patterns and optimize your links for different web browsers. Ensure consistent performance across all platforms.</p>
-          </div>
-        </div>
-
-        {/* Smart Insights Feature */}
-        <div 
-          className="glass-card bg-white/90 backdrop-blur-lg border border-white/50 p-8 rounded-xl shadow-xl hover:shadow-2xl transition-all relative overflow-hidden"
-        >
-          {/* Subtle gradient background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-blue-50 opacity-90" />
-          
-          {/* Accent line (static) */}
-          <div 
-            className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500"
-          />
-          {/* Corner decoration (static) */}
-          <div
-            className="absolute bottom-0 right-0 w-16 h-16 opacity-15"
-          >
-            <div className="absolute inset-0 rounded-tl-full bg-gradient-to-br from-purple-500 to-indigo-500" />
-          </div>
-          
-          <div className="relative z-10">
-            <div className="flex items-center justify-center w-16 h-16 rounded-xl bg-gradient-to-r from-purple-100 to-blue-100 mb-6 shadow-lg">
-              <svg className="h-8 w-8 text-indigo-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-              </svg>
-            </div>
-            <h3 className="text-xl font-bold mb-4 text-gray-900">Smart Insights</h3>
-            <p className="text-gray-700 font-medium leading-relaxed">Get AI-powered recommendations and insights about your audience behavior. Discover peak engagement times and optimize your content strategy.</p>
-          </div>
+            {features.map((feature, index) => (
+              <motion.div 
+                key={index}
+                className="group relative bg-white/85 backdrop-blur-md border border-gray-200/70 rounded-xl p-6 hover:shadow-xl hover:border-indigo-200 transition-all duration-500 overflow-hidden h-64"
+                variants={itemVariants}
+                whileHover={{ y: -5, scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                {/* Dynamic gradient background */}
+                <div className={`absolute inset-0 bg-gradient-to-br ${feature.bgGradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
+                
+                {/* Floating orb effect */}
+                <motion.div 
+                  className={`absolute -top-10 -right-10 w-20 h-20 bg-gradient-to-br ${feature.gradient.replace('to-', 'to-').replace('from-', 'from-')}/20 rounded-full blur-xl group-hover:scale-150 transition-transform duration-500`}
+                  animate={{
+                    scale: [1, 1.1, 1],
+                    opacity: [0.3, 0.5, 0.3]
+                  }}
+                  transition={{
+                    duration: 4 + index * 0.5,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay: index * 0.3
+                  }}
+                />
+                
+                <div className="relative z-10 h-full flex flex-col">
+                  <div className="flex items-center gap-4 mb-4">
+                    <motion.div 
+                      className={`flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br ${feature.gradient} shadow-lg group-hover:scale-110 transition-all duration-300`}
+                      whileHover={{ rotate: [0, -5, 5, 0] }}
+                      transition={{ duration: 0.5 }}
+                    >
+                      <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d={feature.icon} />
+                      </svg>
+                    </motion.div>
+                    
+                    <motion.h3 
+                      className="text-lg font-bold text-gray-900 group-hover:text-indigo-700 transition-colors duration-300 flex-1"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.3 + index * 0.1 }}
+                    >
+                      {feature.title}
+                    </motion.h3>
+                  </div>
+                  
+                  <motion.p 
+                    className="text-gray-600 font-medium leading-relaxed text-sm flex-1"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.4 + index * 0.1 }}
+                  >
+                    {feature.description}
+                  </motion.p>
+                  
+                  {/* Interactive hover element */}
+                  <motion.div
+                    className="absolute bottom-4 right-4 w-4 h-4 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                    animate={{
+                      scale: [1, 1.2, 1],
+                    }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: "easeInOut"
+                    }}
+                  />
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
         </div>
       </div>
     </div>
-  </div></div>
   )
 }
 
