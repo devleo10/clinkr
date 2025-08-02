@@ -107,39 +107,41 @@ const HomePage = () => {
               </div>
               
               <motion.div 
-                className="flex flex-col sm:flex-row gap-4 pt-6 justify-center md:justify-start"
+                      className="flex flex-col md:flex-row gap-4 pt-6 justify-center md:justify-start w-full md:max-w-lg md:mx-0 items-stretch md:items-center"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 1.2 }}
               >
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="relative group"
-                >
-                  <div className="absolute -inset-1 bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 rounded-2xl blur opacity-25 group-hover:opacity-75 transition duration-1000 group-hover:duration-200"></div>
-                  <button className="relative bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 text-white font-bold px-8 py-4 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 flex items-center gap-3">
-                    <Link to={session ? '/dashboard' : '/getstarted'} className="flex items-center gap-3">
-                      <span>{session ? 'Visit Dashboard' : 'Start Tracking Free'}</span>
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                      </svg>
-                    </Link>
-                  </button>
-                </motion.div>
                 
-                <motion.button 
-                  className="flex border-2 border-gray-200 bg-white/90 backdrop-blur-sm items-center gap-3 px-8 py-4 rounded-xl font-semibold shadow-lg text-gray-700 hover:border-indigo-200 hover:text-indigo-700 transition-all duration-300 group"
-                  whileHover={{ scale: 1.05, y: -2 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <span>Watch Demo</span>
-                  <div className="flex justify-center items-center bg-gradient-to-r from-indigo-100 to-purple-100 w-8 h-8 rounded-full text-indigo-600 group-hover:from-indigo-200 group-hover:to-purple-200 transition-all duration-300">
-                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M8 5v14l11-7z"/>
-                    </svg>
-                  </div>
-                </motion.button>
+                      <motion.div
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="relative group w-full md:w-1/2 flex items-center"
+                      >
+                        <div className="absolute -inset-1 bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 rounded-2xl blur opacity-25 group-hover:opacity-75 transition duration-1000 group-hover:duration-200"></div>
+                        <button className="relative w-full md:w-full bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 text-white font-semibold px-7 py-[15px] rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 flex items-center justify-center gap-2 text-xl min-h-[52px] align-middle">
+                          <Link to={session ? '/dashboard' : '/getstarted'} className="flex items-center gap-2 w-full justify-center align-middle">
+                            <span className="align-middle">{session ? 'Visit Dashboard' : 'Start Tracking Free'}</span>
+                            <svg className="w-5 h-5 align-middle" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                            </svg>
+                          </Link>
+                        </button>
+                      </motion.div>
+                      <motion.div
+                        whileHover={{ scale: 1.05, y: -2 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="w-full md:w-1/2 flex items-center"
+                      >
+                        <button className="w-full md:w-full flex border-2 border-gray-200 bg-white/90 backdrop-blur-sm items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold shadow-lg text-gray-700 hover:border-indigo-200 hover:text-indigo-700 transition-all duration-300 text-lg min-h-[48px] align-middle">
+                          <span className="align-middle">Watch Demo</span>
+                          <div className="flex justify-center items-center bg-gradient-to-r from-indigo-100 to-purple-100 w-8 h-8 rounded-full text-indigo-600 group-hover:from-indigo-200 group-hover:to-purple-200 transition-all duration-300 align-middle">
+                            <svg className="w-4 h-4 align-middle" fill="currentColor" viewBox="0 0 24 24">
+                              <path d="M8 5v14l11-7z"/>
+                            </svg>
+                          </div>
+                        </button>
+                      </motion.div>
               </motion.div>
             </motion.div>
             {/* Right Container */}
