@@ -10,8 +10,8 @@ const BoltBackground = () => {
         className="absolute h-screen w-full opacity-60"
         style={{
           backgroundImage: `
-            linear-gradient(to right, rgba(79, 70, 229, 0.08) 1px, transparent 1px),
-            linear-gradient(to bottom, rgba(79, 70, 229, 0.08) 1px, transparent 1px)
+            linear-gradient(to right, rgba(79, 70, 229, 0.08) 2px, transparent 1px),
+            linear-gradient(to bottom, rgba(79, 70, 229, 0.08) 2px, transparent 1px)
           `,
           backgroundSize: '80px 80px',
           animation: 'gridMove 20s linear infinite',
