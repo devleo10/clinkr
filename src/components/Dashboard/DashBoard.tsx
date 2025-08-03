@@ -9,7 +9,7 @@ import Upgrade from './cards/Upgrade';
 import debounce from 'lodash/debounce';
 import { supabase } from '../../lib/supabaseClient';
 import { useAuth } from '../auth/AuthProvider';
-import DashboardBackground from './DashboardBackground';
+import BoltBackground from '../homepage/BoltBackground';
 
 const DashBoard = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -62,7 +62,7 @@ const DashBoard = () => {
   if (!profileChecked) {
     return (
       <div className="min-h-screen flex items-center justify-center relative">
-        <DashboardBackground />
+        <BoltBackground />
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 relative z-10"></div>
       </div>
     );
@@ -78,7 +78,7 @@ const DashBoard = () => {
       transition={{ duration: 0.5 }}
       className="min-h-screen relative"
     >
-      <DashboardBackground />
+      <BoltBackground />
       
       <Navbar />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 relative z-10">

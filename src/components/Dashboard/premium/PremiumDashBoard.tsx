@@ -15,8 +15,8 @@ import {
 import { supabase } from '../../../lib/supabaseClient';
 import Navbar from '../Navbar';
 import { motion, AnimatePresence } from 'framer-motion';
-import DashboardBackground from '../DashboardBackground';
 import { Toaster, toast } from 'react-hot-toast';
+import BoltBackground from '../../homepage/BoltBackground';
 
 interface TabConfig {
   value: string;
@@ -144,7 +144,7 @@ const PremiumDashBoard = () => {
       className="min-h-screen relative"
     >
       <Toaster position="top-center" />
-      <DashboardBackground />
+      <BoltBackground />
       <Navbar />
       
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 relative z-10">
