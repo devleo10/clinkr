@@ -25,7 +25,7 @@ const HomePage = () => {
           <div className="flex flex-col w-full md:flex-row items-center justify-between py-20 gap-12">
             {/* Left Container */}
             <motion.div 
-              className="flex-1 space-y-8 text-center md:text-left max-w-2xl"
+              className="flex-1 space-y-8 mb-10 text-center md:text-left max-w-2xl"
               initial={{ opacity: 0, x: -50 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5 }}
