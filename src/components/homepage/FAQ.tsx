@@ -72,20 +72,20 @@ const FAQ = () => {
         transition={{ duration: 0.6 }}
       > 
         {/* Enhanced background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/80 via-purple-50/60 to-blue-50/80" />
+        <div className="absolute inset-0 bg-gradient-to-br from-orange-50/75 via-amber-50/60 to-white/85" />
         
         {/* Floating elements */}
-        <div className="absolute top-4 left-4 w-16 h-16 bg-gradient-to-br from-purple-300/20 to-indigo-300/20 rounded-full blur-xl animate-pulse"></div>
-        <div className="absolute bottom-4 right-4 w-20 h-20 bg-gradient-to-br from-blue-300/20 to-purple-300/20 rounded-full blur-xl animate-pulse delay-1000"></div>
+        <div className="absolute top-4 left-4 w-16 h-16 bg-gradient-to-br from-orange-300/22 to-amber-300/20 rounded-full blur-xl animate-pulse"></div>
+        <div className="absolute bottom-4 right-4 w-20 h-20 bg-gradient-to-br from-amber-300/20 to-orange-300/22 rounded-full blur-xl animate-pulse delay-1000"></div>
         
         {/* Enhanced accent line */}
         <div 
-          className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 rounded-t-2xl"
+          className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-600 via-amber-600 to-orange-500 rounded-t-2xl"
         />
         
         <div className="relative z-10 text-center">
           <motion.h1 
-            className="text-3xl md:text-4xl font-black text-center mb-3 text-transparent bg-clip-text bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 drop-shadow-sm tracking-tight"
+            className="text-3xl md:text-4xl font-black text-center mb-3 text-transparent bg-clip-text bg-gradient-to-r from-orange-600 via-amber-600 to-orange-500 drop-shadow-sm tracking-tight"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
@@ -109,17 +109,17 @@ const FAQ = () => {
           {faqData.map((section, sectionIndex) => (
             <motion.div
               key={sectionIndex}
-              className="bg-white/95 backdrop-blur-xl rounded-xl p-6 shadow-xl border border-white/60 relative overflow-hidden hover:shadow-2xl transition-all duration-500"
+              className="bg-white/97 backdrop-blur-xl rounded-xl p-6 shadow-xl border border-orange-100/50 relative overflow-hidden hover:shadow-2xl transition-all duration-500"
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 * sectionIndex + 0.3 }}
             >
               {/* Enhanced background */}
-              <div className="absolute inset-0 bg-gradient-to-br from-gray-50/80 via-white to-indigo-50/60" />
+              <div className="absolute inset-0 bg-gradient-to-br from-orange-50/70 via-white to-amber-50/50" />
               
               {/* Category accent */}
               <div 
-                className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500 rounded-t-xl"
+                className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-500 via-amber-500 to-orange-500 rounded-t-xl"
               />
               
               <div className="relative z-10">
@@ -128,7 +128,7 @@ const FAQ = () => {
                   whileHover={{ x: 5 }}
                   transition={{ type: "spring", stiffness: 300 }}
                 >
-                  <div className="w-3 h-3 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full"></div>
+                  <div className="w-3 h-3 bg-gradient-to-r from-orange-500 to-amber-500 rounded-full"></div>
                   {section.category}
                 </motion.h2>                <div className="space-y-3">
                   {section.items.map((item, itemIndex) => {
@@ -138,11 +138,11 @@ const FAQ = () => {
                     return (
                       <motion.div
                         key={itemIndex}
-                        className="border border-gray-200/80 rounded-lg overflow-hidden bg-white/60 backdrop-blur-sm hover:border-indigo-200 transition-all duration-300"
+                        className="border border-orange-200/60 rounded-lg overflow-hidden bg-white/70 backdrop-blur-sm hover:border-orange-300 transition-all duration-300"
                         whileHover={{ scale: 1.01 }}
                       >
                         <motion.div
-                          className="flex justify-between items-center p-4 cursor-pointer hover:bg-indigo-50/50 transition-colors duration-300"
+                          className="flex justify-between items-center p-4 cursor-pointer hover:bg-orange-50/50 transition-colors duration-300"
                           onClick={() => setOpenIndex(isOpen ? null : index)}
                           whileHover={{ x: 5 }}
                         >
@@ -150,7 +150,7 @@ const FAQ = () => {
                             {item.question}
                           </h3>
                           <motion.div
-                            className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-indigo-100 to-purple-100 text-indigo-700 shadow-md"
+                            className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-orange-100 to-amber-100 text-orange-700 shadow-md"
                             animate={{ rotate: isOpen ? 180 : 0 }}
                             transition={{ duration: 0.3 }}
                           >

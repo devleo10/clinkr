@@ -35,7 +35,7 @@ const Footer = () => {
       transition={{ duration: 0.5 }}
       viewport={{ once: true }}
     >
-      <div className="bg-gradient-to-b from-gray-900 to-indigo-900 text-white py-16 px-6 md:px-20">
+      <div className="bg-gradient-to-b from-gray-900 to-orange-900 text-white py-16 px-6 md:px-20">
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 w-full">
           {/* ClipMetrics Column */}
           <motion.div 
@@ -54,14 +54,14 @@ const Footer = () => {
                 />
               </Link>
               <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold relative group">
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-500 via-indigo-400 to-blue-300 hover:from-blue-300 hover:via-indigo-400 hover:to-purple-500 transition-all duration-300">
+                <span className="bg-clip-text text-transparent bg-gradient-to-r from-orange-400 via-amber-300 to-orange-300 hover:from-orange-300 hover:via-amber-300 hover:to-orange-400 transition-all duration-300">
                   Clinkr
                 </span>
-                <div className="absolute bottom-0 left-0 w-0 h-[2px] bg-gradient-to-r from-purple-500 via-indigo-400 to-blue-300 group-hover:w-full transition-all duration-300"></div>
+                <div className="absolute bottom-0 left-0 w-0 h-[2px] bg-gradient-to-r from-orange-400 via-amber-300 to-orange-300 group-hover:w-full transition-all duration-300"></div>
               </h1>
             </div>
 
-            <p className="text-sm text-indigo-200 mt-4">
+            <p className="text-sm text-orange-200 mt-4">
               Track, analyze, and optimize your bio links for maximum engagement.
             </p>
           </motion.div>
@@ -75,7 +75,7 @@ const Footer = () => {
             viewport={{ once: true }}
           >
             <h3 className="font-semibold mb-4 text-white">Product</h3>
-            <ul className="space-y-3 text-sm text-indigo-200">
+            <ul className="space-y-3 text-sm text-orange-200">
               <li>
                 <button 
                   onClick={() => handleNavigation('features')} 
@@ -115,7 +115,7 @@ const Footer = () => {
             viewport={{ once: true }}
           >
             <h3 className="font-semibold mb-4 text-white">Legal</h3>
-            <ul className="space-y-3 text-sm text-indigo-200">
+            <ul className="space-y-3 text-sm text-orange-200">
               <li><Link to="/privacypolicy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
               <li><Link to="/termsofservice" className="hover:text-white transition-colors">Terms of Service</Link></li>
               <li><Link to="/cookiepolicy" className="hover:text-white transition-colors">Cookie Policy</Link></li>
@@ -134,21 +134,21 @@ const Footer = () => {
             <div className="flex space-x-4">
               <motion.a 
                 href="#" 
-                className="text-indigo-200 hover:text-white transition-colors"
+                className="text-orange-200 hover:text-white transition-colors"
                 whileHover={{ scale: 1.1 }}
               >
                 <FaTwitter size={20} />
               </motion.a>
               <motion.a 
                 href="#" 
-                className="text-indigo-200 hover:text-white transition-colors"
+                className="text-orange-200 hover:text-white transition-colors"
                 whileHover={{ scale: 1.1 }}
               >
                 <FaInstagram size={20} />
               </motion.a>
               <motion.a 
                 href="#" 
-                className="text-indigo-200 hover:text-white transition-colors"
+                className="text-orange-200 hover:text-white transition-colors"
                 whileHover={{ scale: 1.1 }}
               >
                 <FaLinkedin size={20} />
@@ -157,7 +157,7 @@ const Footer = () => {
           </motion.div>
         </div>
         
-        <div className="mt-16 text-center text-sm text-indigo-200">
+        <div className="mt-16 text-center text-sm text-orange-200">
           © 2025 ClipMetrics. All rights reserved.
         </div>
       </div>

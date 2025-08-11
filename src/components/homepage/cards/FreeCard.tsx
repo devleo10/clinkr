@@ -4,24 +4,24 @@ import { motion } from 'framer-motion';
 const FreeCard = () => {
   return (
     <motion.div 
-      className="w-full relative bg-white/95 backdrop-blur-xl border-2 border-gray-200/80 p-8 rounded-3xl hover:border-gray-300 flex flex-col justify-between shadow-2xl hover:shadow-3xl group transition-all duration-500 overflow-hidden"
+      className="w-full relative bg-white/95 backdrop-blur-xl border-2 border-orange-200/70 p-8 rounded-3xl hover:border-orange-300 flex flex-col justify-between shadow-2xl hover:shadow-3xl group transition-all duration-500 overflow-hidden"
       whileHover={{ y: -8, scale: 1.02 }}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
       {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-gray-50 via-white to-gray-50/80 opacity-90 group-hover:opacity-100 transition-opacity duration-500" />
+      <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-white to-amber-50/80 opacity-90 group-hover:opacity-100 transition-opacity duration-500" />
       
       {/* Floating elements */}
-      <div className="absolute top-4 right-4 w-20 h-20 bg-gradient-to-br from-gray-300/20 to-gray-500/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
+      <div className="absolute top-4 right-4 w-20 h-20 bg-gradient-to-br from-orange-200/20 to-amber-300/15 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
       
       {/* Top accent */}
-      <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-gray-400 via-gray-600 to-gray-800 rounded-t-3xl" />
+      <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-orange-400 via-amber-500 to-orange-600 rounded-t-3xl" />
       
       {/* Corner decoration */}
-      <div className="absolute bottom-0 right-0 w-24 h-24 opacity-5 group-hover:opacity-10 transition-opacity duration-500">
-        <div className="absolute inset-0 rounded-tl-full bg-gradient-to-br from-gray-500 to-gray-800" />
+      <div className="absolute bottom-0 right-0 w-24 h-24 opacity-8 group-hover:opacity-15 transition-opacity duration-500">
+        <div className="absolute inset-0 rounded-tl-full bg-gradient-to-br from-orange-400 to-amber-500" />
       </div>
       
       <div className="relative z-10">
@@ -32,7 +32,7 @@ const FreeCard = () => {
                   <p className="text-gray-600 text-sm font-semibold">Perfect to get started</p>
               </div>
               <div className="text-right">
-                  <div className="text-4xl md:text-5xl font-black bg-gradient-to-r from-gray-700 to-gray-900 bg-clip-text text-transparent">$0</div>
+                  <div className="text-4xl md:text-5xl font-black bg-gradient-to-r from-orange-600 to-amber-700 bg-clip-text text-transparent">$0</div>
                   <p className="text-gray-600 text-sm font-semibold">Forever free</p>
               </div>
           </div>
@@ -65,7 +65,7 @@ const FreeCard = () => {
         <div className="w-full mt-10">
             <Link to="/signup" className="block">
                 <motion.button 
-                  className="text-lg py-4 px-6 w-full transition-all duration-300 bg-gradient-to-r from-gray-100 to-gray-200 hover:from-gray-200 hover:to-gray-300 text-gray-800 rounded-2xl font-bold shadow-xl hover:shadow-2xl border-2 border-gray-200 hover:border-gray-300 group/button"
+                  className="text-lg py-4 px-6 w-full transition-all duration-300 bg-gradient-to-r from-orange-100 to-amber-200 hover:from-amber-200 hover:to-orange-300 text-orange-800 rounded-2xl font-bold shadow-xl hover:shadow-2xl border-2 border-orange-200 hover:border-orange-300 group/button"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                 >

@@ -30,61 +30,61 @@ const Features = () => {
       title: "Real-time Analytics",
       description: "Track clicks, views, and engagement metrics in real-time with detailed insights.",
       icon: "M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z",
-      gradient: "from-indigo-500 to-purple-600",
-      bgGradient: "from-indigo-50/50 via-purple-50/30 to-blue-50/50",
-      hoverColor: "indigo-200"
+      gradient: "from-orange-500 to-amber-600",
+      bgGradient: "from-orange-50/60 via-amber-50/40 to-orange-50/50",
+      hoverColor: "orange-200"
     },
     {
       title: "Geographic Insights",
       description: "Know where your visitors come from with detailed geographic data and heat maps.",
       icon: "M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z",
-      gradient: "from-green-500 to-emerald-600",
-      bgGradient: "from-green-50/50 via-emerald-50/30 to-teal-50/50",
-      hoverColor: "green-200"
+      gradient: "from-amber-500 to-yellow-600",
+      bgGradient: "from-amber-50/60 via-yellow-50/40 to-amber-50/50",
+      hoverColor: "amber-200"
     },
     {
       title: "Device Analytics",
       description: "Track user devices and browsers to optimize experiences across platforms.",
       icon: "M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z",
-      gradient: "from-orange-500 to-amber-600",
-      bgGradient: "from-orange-50/50 via-amber-50/30 to-yellow-50/50",
-      hoverColor: "orange-200"
+      gradient: "from-orange-600 to-red-500",
+      bgGradient: "from-orange-50/60 via-red-50/40 to-orange-50/50",
+      hoverColor: "orange-300"
     },
     {
       title: "Browser Insights",
       description: "Monitor browser usage patterns and optimize for different platforms.",
       icon: "M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9",
-      gradient: "from-purple-500 to-pink-600",
-      bgGradient: "from-purple-50/50 via-pink-50/30 to-rose-50/50",
-      hoverColor: "purple-200"
+      gradient: "from-yellow-500 to-orange-500",
+      bgGradient: "from-yellow-50/60 via-orange-50/40 to-yellow-50/50",
+      hoverColor: "yellow-200"
     },
     {
       title: "Link Performance",
       description: "Comprehensive metrics with conversion tracking and user journey analysis.",
       icon: "M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1",
-      gradient: "from-cyan-500 to-blue-600",
-      bgGradient: "from-cyan-50/50 via-blue-50/30 to-indigo-50/50",
-      hoverColor: "cyan-200"
+      gradient: "from-red-500 to-orange-600",
+      bgGradient: "from-red-50/60 via-orange-50/40 to-red-50/50",
+      hoverColor: "red-200"
     },
     {
       title: "Smart Insights",
       description: "AI-powered recommendations to optimize your link strategy for maximum impact.",
       icon: "M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z",
-      gradient: "from-emerald-500 to-teal-600",
-      bgGradient: "from-emerald-50/50 via-teal-50/30 to-blue-50/50",
-      hoverColor: "emerald-200"
+      gradient: "from-amber-600 to-orange-500",
+      bgGradient: "from-amber-50/60 via-orange-50/40 to-amber-50/50",
+      hoverColor: "amber-200"
     }
   ];
 
   return (
     <div id="features"> 
-      <div className="py-12 mt-8 mx-auto glass-card bg-white/95 backdrop-blur-xl w-full rounded-2xl shadow-xl border border-white/60 relative overflow-hidden">
+      <div className="py-12 mt-8 mx-auto glass-card bg-white/97 backdrop-blur-xl w-full rounded-2xl shadow-xl border border-orange-100/40 relative overflow-hidden">
         {/* Enhanced background with multiple layers */}
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-50/80 via-white to-blue-50/80 opacity-95" />
+        <div className="absolute inset-0 bg-gradient-to-br from-orange-50/70 via-white to-amber-50/60 opacity-95" />
         
         {/* Floating background elements with improved animations */}
         <motion.div 
-          className="absolute top-10 left-10 w-32 h-32 bg-gradient-to-r from-purple-400/15 to-blue-400/15 rounded-full blur-2xl"
+          className="absolute top-10 left-10 w-32 h-32 bg-gradient-to-r from-orange-300/20 to-amber-400/18 rounded-full blur-2xl"
           animate={{ 
             scale: [1, 1.2, 1],
             opacity: [0.3, 0.5, 0.3]
@@ -92,7 +92,7 @@ const Features = () => {
           transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
         />
         <motion.div 
-          className="absolute bottom-10 right-10 w-40 h-40 bg-gradient-to-r from-indigo-400/15 to-purple-400/15 rounded-full blur-2xl"
+          className="absolute bottom-10 right-10 w-40 h-40 bg-gradient-to-r from-amber-400/18 to-orange-400/20 rounded-full blur-2xl"
           animate={{ 
             scale: [1, 1.3, 1],
             opacity: [0.4, 0.6, 0.4]
@@ -101,7 +101,7 @@ const Features = () => {
         />
         
         {/* Top accent */}
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 rounded-t-2xl" />
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-600 via-amber-600 to-orange-500 rounded-t-2xl" />
         
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <motion.div 
@@ -111,7 +111,7 @@ const Features = () => {
             transition={{ duration: 0.8 }}
           >
             <motion.h2 
-              className="text-3xl md:text-4xl font-black mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 drop-shadow-sm tracking-tight"
+              className="text-3xl md:text-4xl font-black mb-4 text-transparent bg-clip-text bg-gradient-to-r from-orange-600 via-amber-600 to-orange-500 drop-shadow-sm tracking-tight"
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8, delay: 0.2 }}

@@ -47,7 +47,7 @@ const Navbar = () => {
       initial={{ y: -20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="w-full flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 bg-white/60 backdrop-blur-md shadow-sm border-b border-white/40 relative z-20"
+      className="w-full flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 bg-white/70 backdrop-blur-lg shadow-sm border-b border-orange-100/50 relative z-20"
     >
       {/* Logo and title section */}
       <div className="flex items-center gap-1 sm:gap-2">
@@ -59,10 +59,10 @@ const Navbar = () => {
           />
         </Link>
         <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold relative group">
-          <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 hover:from-blue-500 hover:via-indigo-600 hover:to-purple-600 transition-all duration-300">
+          <span className="bg-clip-text text-transparent bg-gradient-to-r from-orange-600 via-amber-600 to-orange-500 hover:from-orange-500 hover:via-amber-600 hover:to-orange-600 transition-all duration-300">
             Clinkr
           </span>
-          <div className="absolute bottom-0 left-0 w-0 h-[2px] bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 group-hover:w-full transition-all duration-300"></div>
+          <div className="absolute bottom-0 left-0 w-0 h-[2px] bg-gradient-to-r from-orange-600 via-amber-600 to-orange-500 group-hover:w-full transition-all duration-300"></div>
         </h1>
       </div>
 
@@ -70,19 +70,19 @@ const Navbar = () => {
       <div className="hidden sm:flex sm:items-center sm:space-x-6">
         <button 
           onClick={() => navigateToSection('features')} 
-          className="text-gray-700 hover:text-indigo-600 font-medium transition-colors"
+          className="text-gray-700 hover:text-orange-600 font-medium transition-colors"
         >
           Features
         </button>
         <button 
           onClick={() => navigateToSection('pricing')} 
-          className="text-gray-700 hover:text-indigo-600 font-medium transition-colors"
+          className="text-gray-700 hover:text-orange-600 font-medium transition-colors"
         >
           Pricing
         </button>
         <button 
           onClick={() => navigateToSection('faq')}
-          className="text-gray-700 hover:text-indigo-600 font-medium transition-colors"
+          className="text-gray-700 hover:text-orange-600 font-medium transition-colors"
         >
           FAQ
         </button>
@@ -91,12 +91,12 @@ const Navbar = () => {
       {/* Auth buttons */}
       <div className="space-x-2 flex items-center">
         <motion.button
-          className="bg-gradient-to-r from-indigo-600 to-blue-500 text-white font-bold px-6 py-2 rounded-xl shadow-md hover:from-blue-500 hover:to-indigo-600 transition-all duration-300"
+          className="bg-gradient-to-r from-orange-600 to-amber-500 text-white font-bold px-6 py-2 rounded-xl shadow-md hover:from-amber-500 hover:to-orange-600 transition-all duration-300"
           onClick={handleButtonClick}
           type="button"
           whileHover={{ 
             scale: 1.05,
-            boxShadow: "0 10px 15px -3px rgba(79, 70, 229, 0.2)" 
+            boxShadow: "0 10px 15px -3px rgba(251, 146, 60, 0.3)" 
           }}
           whileTap={{ scale: 0.95 }}
         >
