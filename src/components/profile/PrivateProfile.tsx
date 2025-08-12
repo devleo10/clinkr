@@ -386,11 +386,11 @@ const PrivateProfile = () => {
 
   // Helper for link icon (generic globe, clinkr logo, or social icon)
   const getSocialIcon = (url: string, size: number = 25) => {
-    if (typeof url !== 'string') return <Globe size={size} className="text-gray-400" />;
+  if (typeof url !== 'string') return <Globe size={size} className="text-orange-300" />;
     try {
       const domain = new URL(url).hostname.replace(/^www\./, '');
       if (domain.includes('clinkr.live')) {
-        return <img src={logo} alt="Clinkr" className={`w-[${size}px] h-[${size}px] rounded-full bg-white border border-indigo-200`} style={{objectFit:'contain', background:'bg-gradient-to-r from-pink-100 to-purple-100 opacity-20 blur-3xl -z-10', width: size, height: size}} />;
+  return <img src={logo} alt="Clinkr" className={`w-[${size}px] h-[${size}px] rounded-full bg-white border border-orange-200`} style={{objectFit:'contain', background:'bg-gradient-to-r from-orange-100 to-amber-100 opacity-20 blur-3xl -z-10', width: size, height: size}} />;
       }
       // Try to fetch favicon/logo for all other domains
       return (
@@ -404,7 +404,7 @@ const PrivateProfile = () => {
         />
       );
     } catch {
-      return <Globe size={size} className="text-gray-400" />;
+  return <Globe size={size} className="text-orange-300" />;
     }
   };
 
@@ -468,14 +468,14 @@ const PrivateProfile = () => {
                   className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 lg:w-10 lg:h-10"
                 />
                 <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold relative group">
-                  <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 hover:from-blue-500 hover:via-indigo-600 hover:to-purple-600 transition-all duration-300">
+                  <span className="bg-clip-text text-transparent bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400 hover:from-orange-400 hover:via-amber-500 hover:to-orange-600 transition-all duration-300">
                     Clinkr
                   </span>
-                  <div className="absolute bottom-0 left-0 w-0 h-[2px] bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 group-hover:w-full transition-all duration-300"></div>
+                  <div className="absolute bottom-0 left-0 w-0 h-[2px] bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400 group-hover:w-full transition-all duration-300"></div>
                 </h1>
               </Link>
             <div className="flex items-center gap-2">
-              <div className="bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 text-white font-bold px-6 py-2 rounded-lg shadow hover:from-blue-500 hover:via-indigo-600 hover:to-purple-600 transition-all duration-300">
+              <div className="bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400 text-white font-bold px-6 py-2 rounded-lg shadow hover:from-orange-400 hover:via-amber-500 hover:to-orange-600 transition-all duration-300">
                 <Link to='/dashboard'>
                   Visit Dashboard
                 </Link>
@@ -484,25 +484,25 @@ const PrivateProfile = () => {
               {/* Quick Actions Menu */}
               <div className="relative" ref={actionsMenuRef}>
                 <button
-                  className="p-2 rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition-all duration-300"
+                  className="p-2 rounded-full hover:bg-orange-50 focus:outline-none focus:ring-2 focus:ring-orange-400 transition-all duration-300"
                   aria-label="More actions"
                   onClick={() => setShowActionsMenu(!showActionsMenu)}
                   title="More actions"
                 >
-                  <MoreVertical className="text-gray-500 hover:text-gray-600" size={20} />
+                  <MoreVertical className="text-orange-400 hover:text-orange-600" size={20} />
                 </button>
                 
                 {/* Actions Dropdown */}
                 {showActionsMenu && (
-                  <div className="absolute right-0 top-12 bg-white rounded-lg shadow-lg border border-gray-200 py-2 min-w-48 z-50">
+                  <div className="absolute right-0 top-12 bg-white rounded-lg shadow-lg border border-orange-100 py-2 min-w-48 z-50">
                     <button
-                      className="w-full px-4 py-2 text-left hover:bg-blue-50 flex items-center gap-3 text-sm"
+                      className="w-full px-4 py-2 text-left hover:bg-orange-50 flex items-center gap-3 text-sm"
                       onClick={() => {
                         handlePreviewProfile();
                         setShowActionsMenu(false);
                       }}
                     >
-                      <FaEye className="text-blue-500" size={14} />
+                      <FaEye className="text-orange-400" size={14} />
                       Preview Public Profile
                     </button>
                     
@@ -518,17 +518,17 @@ const PrivateProfile = () => {
                     </button>
                     
                     <button
-                      className="w-full px-4 py-2 text-left hover:bg-gray-50 flex items-center gap-3 text-sm"
+                      className="w-full px-4 py-2 text-left hover:bg-orange-50 flex items-center gap-3 text-sm"
                       onClick={() => {
                         setLinkReorderMode(!linkReorderMode);
                         setShowActionsMenu(false);
                       }}
                     >
-                      <FaGripVertical className="text-gray-500" size={14} />
+                      <FaGripVertical className="text-orange-400" size={14} />
                       {linkReorderMode ? 'Exit Reorder Mode' : 'Reorder Links'}
                     </button>
                     
-                    <div className="border-t border-gray-200 my-1"></div>
+                    <div className="border-t border-orange-100 my-1"></div>
                     
                     <button
                       className="w-full px-4 py-2 text-left hover:bg-red-50 flex items-center gap-3 text-sm text-red-600"
@@ -548,17 +548,17 @@ const PrivateProfile = () => {
       
           {/* Profile Content */}
           <motion.div 
-            className="text-center relative bg-white/80 backdrop-blur-sm rounded-2xl p-8 mb-8 border border-indigo-100 shadow-lg"
+            className="text-center relative bg-white/80 backdrop-blur-sm rounded-2xl p-8 mb-8 border border-orange-100 shadow-lg"
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
           {/* Profile Picture Section */}
-          <div className="w-32 h-32 mx-auto rounded-full bg-gradient-to-tr from-purple-500 via-indigo-500 to-blue-400 p-1 flex items-center justify-center overflow-visible mb-4 relative shadow-2xl group">
+          <div className="w-32 h-32 mx-auto rounded-full bg-gradient-to-tr from-orange-400 via-amber-300 to-orange-200 p-1 flex items-center justify-center overflow-visible mb-4 relative shadow-2xl group">
             <div className="w-full h-full rounded-full bg-white flex items-center justify-center overflow-hidden">
               {loading && (
                 <div className="absolute inset-0 flex items-center justify-center bg-transparent z-20">
-                  <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-500"></div>
+                  <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-orange-400"></div>
                 </div>
               )}
               {profile?.profile_picture ? (
@@ -569,7 +569,7 @@ const PrivateProfile = () => {
                   style={{ filter: loading ? 'blur(2px)' : 'none', background: 'transparent' }}
                 />
               ) : (
-                <FaUser size={60} className="text-indigo-200" />
+                <FaUser size={60} className="text-orange-200" />
               )}
             </div>
             {/* Overlay with update/delete on hover */}
@@ -582,7 +582,7 @@ const PrivateProfile = () => {
                     fileInputRef.current.click();
                   }
                 }}
-                className="mb-2 flex items-center gap-1 bg-indigo-600 text-white px-3 py-1 rounded-full shadow hover:bg-indigo-700 text-xs font-medium border border-indigo-200 transition-all duration-300"
+                className="mb-2 flex items-center gap-1 bg-orange-600 text-white px-3 py-1 rounded-full shadow hover:bg-orange-700 text-xs font-medium border border-orange-200 transition-all duration-300"
                 aria-label="Update profile picture"
                 disabled={loading}
               >

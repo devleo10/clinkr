@@ -259,11 +259,11 @@ const PublicProfile = () => {
 
   // Update getSocialIcon to accept a size parameter
   const getSocialIcon = (url: string, size: number = 25) => {
-    if (typeof url !== 'string') return <Globe size={size} className="text-gray-400" />;
+  if (typeof url !== 'string') return <Globe size={size} className="text-orange-300" />;
     try {
       const domain = new URL(url).hostname.replace(/^www\./, '');
       if (domain.includes('clinkr.live')) {
-        return <img src={logo} alt="Clinkr" className={`w-[${size}px] h-[${size}px] rounded-full bg-white border border-indigo-200`} style={{objectFit:'contain', background:'bg-gradient-to-r from-pink-100 to-purple-100 opacity-20 blur-3xl -z-10', width: size, height: size}} />;
+  return <img src={logo} alt="Clinkr" className={`w-[${size}px] h-[${size}px] rounded-full bg-white border border-orange-200`} style={{objectFit:'contain', background:'bg-gradient-to-r from-orange-100 to-amber-100 opacity-20 blur-3xl -z-10', width: size, height: size}} />;
       }
       // Try to fetch favicon/logo for all other domains
       return (
@@ -277,7 +277,7 @@ const PublicProfile = () => {
         />
       );
     } catch {
-      return <Globe size={size} className="text-gray-400" />;
+  return <Globe size={size} className="text-orange-300" />;
     }
   };
 
@@ -318,11 +318,11 @@ const PublicProfile = () => {
               whileHover={{ scale: 1.02 }}
               transition={{ type: "spring", stiffness: 400, damping: 10 }}
             >
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 hover:from-blue-500 hover:via-indigo-600 hover:to-purple-600 transition-all duration-300">
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400 hover:from-orange-400 hover:via-amber-500 hover:to-orange-600 transition-all duration-300">
                 Clinkr
               </span>
               <motion.div 
-                className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500" 
+                className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400" 
                 initial={{ width: 0 }}
                 animate={{ width: "100%" }}
                 transition={{ duration: 0.5, delay: 0.2 }}
@@ -341,11 +341,11 @@ const PublicProfile = () => {
           style={{ overflow: 'visible', position: 'relative' }}
         >
           {/* Subtle gradient background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 via-transparent to-purple-500/5 opacity-70" />
+          <div className="absolute inset-0 bg-gradient-to-br from-orange-100/40 via-transparent to-orange-300/30 opacity-70" />
           
           {/* Animated accent */}
           <motion.div 
-            className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500"
+            className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-500 via-amber-500 to-orange-400"
             initial={{ scaleX: 0 }}
             animate={{ scaleX: 1 }}
             transition={{ duration: 0.8, delay: 0.2 }}
@@ -364,18 +364,18 @@ const PublicProfile = () => {
           <div className="text-center relative z-10">
             {/* Profile Picture Section */}
             <motion.div 
-              className="w-36 h-36 mx-auto rounded-full bg-gradient-to-tr from-purple-500 via-indigo-500 to-blue-400 p-1 flex items-center justify-center overflow-visible mb-6 relative shadow-lg"
+              className="w-36 h-36 mx-auto rounded-full bg-gradient-to-tr from-orange-400 via-amber-300 to-orange-200 p-1 flex items-center justify-center overflow-visible mb-6 relative shadow-lg"
               whileHover={{ scale: 1.05, boxShadow: '0 0 25px rgba(79, 70, 229, 0.4)' }}
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 0.4 }}
             >
-              <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-purple-500 via-indigo-500 to-blue-400 opacity-50 blur-md"></div>
+              <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-orange-400 via-amber-300 to-orange-200 opacity-50 blur-md"></div>
               <div className="w-full h-full rounded-full bg-white flex items-center justify-center overflow-hidden relative z-10">
                 {loading ? (
                   <div className="absolute inset-0 flex items-center justify-center bg-transparent">
                     <motion.div 
-                      className="rounded-full h-10 w-10 border-b-2 border-t-2 border-indigo-600"
+                      className="rounded-full h-10 w-10 border-b-2 border-t-2 border-orange-400"
                       animate={{ rotate: 360 }}
                       transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
                     />
@@ -395,9 +395,9 @@ const PublicProfile = () => {
                     initial={{ scale: 0.8, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ duration: 0.3 }}
-                    className="bg-gradient-to-r from-indigo-100 to-blue-100 w-full h-full flex items-center justify-center"
+                    className="bg-gradient-to-r from-orange-100 to-amber-100 w-full h-full flex items-center justify-center"
                   >
-                    <FaUser size={64} className="text-indigo-600" />
+                    <FaUser size={64} className="text-orange-500" />
                   </motion.div>
                 )}
                 {error && (
@@ -432,7 +432,7 @@ const PublicProfile = () => {
                   <span className="relative">
                     {profile?.username || 'Profile not found'}
                     <motion.div 
-                      className="absolute -bottom-1 left-0 right-0 h-[2px] bg-gradient-to-r from-purple-400 to-blue-400 rounded-full" 
+                      className="absolute -bottom-1 left-0 right-0 h-[2px] bg-gradient-to-r from-orange-300 to-amber-300 rounded-full" 
                       initial={{ width: 0, opacity: 0 }}
                       animate={{ width: "100%", opacity: 0.7 }}
                       transition={{ duration: 0.6, delay: 0.5 }}
@@ -532,7 +532,7 @@ const PublicProfile = () => {
                           style={{ zIndex: activeLinkMenu === index ? 1001 : 10, position: 'relative' }}
                         >
                           <motion.button
-                            className="p-1.5 rounded-full hover:bg-gradient-to-r hover:from-purple-100 hover:via-indigo-100 hover:to-blue-100 focus:outline-none transition-colors"
+                            className="p-1.5 rounded-full hover:bg-gradient-to-r hover:from-orange-100 hover:via-amber-100 hover:to-orange-200 focus:outline-none transition-colors"
                             aria-label="Link actions"
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.95 }}
@@ -542,13 +542,13 @@ const PublicProfile = () => {
                               setActiveLinkMenu(activeLinkMenu === index ? null : index);
                             }}
                           >
-                            <MoreHorizontal className="h-4 w-4 text-gray-500" />
+                            <MoreHorizontal className="h-4 w-4 text-orange-400" />
                           </motion.button>
                           
                           <AnimatePresence>
                             {activeLinkMenu === index && (
                               <motion.div 
-                                className="absolute right-0 top-12 bg-white rounded-lg shadow-xl border border-gray-200 py-2 min-w-40 dropdown-menu"
+                                className="absolute right-0 top-12 bg-white rounded-lg shadow-xl border border-orange-100 py-2 min-w-40 dropdown-menu"
                                 initial={{ opacity: 0, y: -10, scale: 0.95 }}
                                 animate={{ opacity: 1, y: 0, scale: 1 }}
                                 exit={{ opacity: 0, y: -10, scale: 0.95 }}
@@ -560,15 +560,15 @@ const PublicProfile = () => {
                                 }}
                               >
                                 <motion.button
-                                  className="w-full px-4 py-2 text-left hover:bg-indigo-50 flex items-center gap-3 text-sm"
+                                  className="w-full px-4 py-2 text-left hover:bg-orange-50 flex items-center gap-3 text-sm"
                                   onClick={(e) => { handleLinkClick(link.url, index, e); setActiveLinkMenu(null); }}
                                   whileHover={{ x: 2 }}
                                 >
-                                  <Globe size={14} className="text-indigo-500" />
+                                  <Globe size={14} className="text-orange-400" />
                                   <span>Visit this link</span>
                                 </motion.button>
                                 <motion.button
-                                  className="w-full px-4 py-2 text-left hover:bg-indigo-50 flex items-center gap-3 text-sm"
+                                  className="w-full px-4 py-2 text-left hover:bg-orange-50 flex items-center gap-3 text-sm"
                                   onClick={() => { 
                                     navigator.clipboard.writeText(link.url); 
                                     setActiveLinkMenu(null);
@@ -576,7 +576,7 @@ const PublicProfile = () => {
                                   }}
                                   whileHover={{ x: 2 }}
                                 >
-                                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-indigo-500">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-orange-400">
                                     <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                                     <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
                                   </svg>
@@ -616,7 +616,7 @@ const PublicProfile = () => {
 
         {/* Footer Section */}
         <motion.footer
-          className="mt-8 py-8 text-center text-gray-800 text-sm flex flex-col items-center"
+          className="mt-8 py-8 text-center text-orange-900 text-sm flex flex-col items-center"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1, duration: 0.5 }}
@@ -624,19 +624,19 @@ const PublicProfile = () => {
           <div className="mt-4 flex flex-col sm:flex-row justify-center sm:gap-5 items-center w-full max-w-2xl mx-auto">
             <a
               href="/homepage"
-              className="text-gray-700 hover:text-blue-600 hover:underline underline-offset-4 transition-colors font-medium"
+              className="text-orange-700 hover:text-orange-500 hover:underline underline-offset-4 transition-colors font-medium"
             >
               Visit Clinkr
             </a>
             <a
               href="/getstarted"
-              className="text-gray-700 hover:text-blue-600 hover:underline underline-offset-4 transition-colors font-medium"
+              className="text-orange-700 hover:text-orange-500 hover:underline underline-offset-4 transition-colors font-medium"
             >
               Get Started Now
             </a>
           </div>
 
-          <p className="mt-6 text-gray-600">&copy; {new Date().getFullYear()} Clinkr. All rights reserved.</p>
+          <p className="mt-6 text-orange-600">&copy; {new Date().getFullYear()} Clinkr. All rights reserved.</p>
         </motion.footer>
       </div>
     </div>

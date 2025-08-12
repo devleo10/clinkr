@@ -63,7 +63,7 @@ const DashBoard = () => {
     return (
       <div className="min-h-screen flex items-center justify-center relative">
         <BoltBackground />
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 relative z-10"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-400 relative z-10"></div>
       </div>
     );
   }
@@ -139,7 +139,6 @@ const DashBoard = () => {
             </motion.div>
             <motion.div 
               className="h-1 w-24 mt-2 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 rounded-full shadow-sm"
-              initial={{ width: 0 }}
               animate={{ width: '6rem' }}
               transition={{ duration: 0.8, delay: 0.5 }}
             />
@@ -161,7 +160,6 @@ const DashBoard = () => {
               <motion.div
                 initial={{ scale: 0.98, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                transition={{ duration: 0.3 }}
                 className="w-full"
               >
                 <input
@@ -177,7 +175,6 @@ const DashBoard = () => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 whileHover={{ opacity: 1 }}
-                transition={{ duration: 0.3 }}
                 style={{ boxShadow: '0 0 20px rgba(99, 102, 241, 0.15)' }}
               />
             </div>
@@ -190,7 +187,6 @@ const DashBoard = () => {
                     boxShadow: '0 10px 15px -3px rgba(99, 102, 241, 0.4)',
                   }}
                   whileTap={{ scale: 0.95 }}
-                  initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4, delay: 0.2 }}
                 >

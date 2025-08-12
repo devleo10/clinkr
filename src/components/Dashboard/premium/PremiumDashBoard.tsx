@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../ui/tabs";
 import Overview from './overview/Overview';
 import Geography from './geography/Geography';
@@ -15,8 +14,9 @@ import {
 import { supabase } from '../../../lib/supabaseClient';
 import Navbar from '../Navbar';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Toaster, toast } from 'react-hot-toast';
+import { toast } from 'react-hot-toast';
 import BoltBackground from '../../homepage/BoltBackground';
+import { FaChartLine } from 'react-icons/fa';
 
 interface TabConfig {
   value: string;
@@ -143,81 +143,84 @@ const PremiumDashBoard = () => {
       transition={{ duration: 0.5 }}
       className="min-h-screen relative"
     >
-      <Toaster position="top-center" />
       <BoltBackground />
       <Navbar />
-      
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 relative z-10">
-        {/* Heading and Export Section */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 relative z-10">
         <motion.div
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.4 }}
-          className="glass-card bg-white/90 backdrop-blur-lg border border-white/30 p-6 rounded-xl shadow-lg hover:shadow-xl mb-8 relative overflow-hidden"
+          className="glass-card bg-white/80 backdrop-blur-lg border border-orange-100 p-6 rounded-xl shadow-lg hover:shadow-xl mb-8 relative overflow-hidden"
+          whileHover={{
+            boxShadow: "0 20px 25px -5px rgba(251, 146, 60, 0.15)"
+          }}
         >
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-blue-50 opacity-70" />
-          
+          {/* Subtle gradient background */}
+          <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-white to-orange-100 opacity-70"></div>
+          {/* Animated accent */}
           <motion.div 
-            className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500"
+            className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400"
             initial={{ scaleX: 0 }}
             animate={{ scaleX: 1 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           />
-          
+          {/* Corner decoration */}
+          <motion.div
+            className="absolute top-0 right-0 w-16 h-16"
+            initial={{ opacity: 0, scale: 0 }}
+            animate={{ opacity: 0.1, scale: 1 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+          >
+            <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-orange-400 to-amber-300 rounded-bl-full" />
+          </motion.div>
+          {/* Analytics Dashboard Heading */}
           <div className="flex flex-col items-center mb-6 relative z-10">
-            <motion.h1 
-              className="font-extrabold text-3xl sm:text-4xl bg-clip-text text-transparent bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 text-center tracking-tight"
-              whileHover={{
-                scale: 1.03,
-                transition: { duration: 0.2 }
-              }}
-              initial={{ opacity: 0, y: -20 }}
+            <motion.div
+              className="flex items-center justify-center"
+              initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
             >
-              Premium Analytics
-            </motion.h1>
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.3 }}
-              className="text-gray-600 mt-2 text-center"
-            >
-              Detailed insights and advanced analytics for your links
-            </motion.p>
+              <motion.div
+                className="mr-3 p-2 rounded-full bg-gradient-to-br from-amber-100 to-orange-100 shadow-md"
+                whileHover={{ scale: 1.1, rotate: 5 }}
+                transition={{ type: "spring", stiffness: 300 }}
+              >
+                <FaChartLine size={24} className="text-orange-500" />
+              </motion.div>
+              <motion.h1 
+                className="font-extrabold text-2xl sm:text-3xl bg-clip-text text-transparent bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400 text-center"
+                whileHover={{
+                  scale: 1.03,
+                  transition: { duration: 0.2 }
+                }}
+              >
+                Premium Analytics
+              </motion.h1>
+            </motion.div>
             <motion.div 
-              className="h-1 w-32 mt-4 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 rounded-full"
-              initial={{ width: 0 }}
-              animate={{ width: '8rem' }}
+              className="h-1 w-24 mt-2 bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400 rounded-full shadow-sm"
+              animate={{ width: '6rem' }}
               transition={{ duration: 0.8, delay: 0.5 }}
             />
-            
-            <div className="flex justify-center gap-4 mt-6 w-full relative z-10">
-              <Link to="/dashboard">
-                <motion.button
-                  className="flex items-center space-x-3 px-6 py-3 rounded-xl bg-white/90 hover:bg-white text-indigo-600 transition-all duration-300 shadow-lg border border-indigo-100 backdrop-blur-sm"
-                  whileHover={{
-                    scale: 1.05,
-                    boxShadow: '0 10px 15px -3px rgba(99, 102, 241, 0.2)',
-                  }}
-                  whileTap={{ scale: 0.95 }}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.3 }}
-                >
-                  <span className="font-bold">Visit Dashboard</span>
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                  </svg>
-                </motion.button>
-              </Link>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
+            <motion.p
+              className="text-orange-700 mt-2 max-w-md text-center text-sm"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+            >
+              Unlock advanced insights and trends for your links
+            </motion.p>
+          </div>
+          
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 relative z-10">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
                   <motion.button
-                    className="flex items-center space-x-3 px-6 py-3 rounded-xl bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 hover:from-blue-500 hover:via-indigo-600 hover:to-purple-600 text-white transition-all duration-300 shadow-lg border border-white/20"
+                    className="flex items-center space-x-3 px-6 py-3 rounded-xl bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400 hover:from-orange-400 hover:via-amber-500 hover:to-orange-600 text-white transition-all duration-300 shadow-lg border border-white/20"
                     whileHover={{
                       scale: 1.05,
-                      boxShadow: '0 10px 15px -3px rgba(99, 102, 241, 0.4)',
+                      boxShadow: '0 10px 15px -3px rgba(251, 146, 60, 0.4)',
                     }}
                     whileTap={{ scale: 0.95 }}
                     disabled={isExporting}
@@ -243,7 +246,7 @@ const PremiumDashBoard = () => {
                     )}
                   </motion.button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="bg-white/95 backdrop-blur-md border border-indigo-100 shadow-xl rounded-lg p-2 w-48">
+                <DropdownMenuContent className="bg-white/95 backdrop-blur-md border border-orange-100 shadow-xl rounded-lg p-2 w-48">
                   <motion.div 
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -251,9 +254,9 @@ const PremiumDashBoard = () => {
                   >
                     <DropdownMenuItem 
                       onClick={() => handleExport('pdf')}
-                      className="hover:bg-gradient-to-r hover:from-purple-50 hover:to-blue-50 cursor-pointer transition-colors rounded-md p-3 m-1 flex items-center group"
+                      className="hover:bg-gradient-to-r hover:from-orange-50 hover:to-orange-100 cursor-pointer transition-colors rounded-md p-3 m-1 flex items-center group"
                     >
-                      <svg className="w-5 h-5 mr-3 text-indigo-600 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-5 h-5 mr-3 text-orange-600 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                       </svg>
                       <div>
@@ -263,9 +266,9 @@ const PremiumDashBoard = () => {
                     </DropdownMenuItem>
                     <DropdownMenuItem 
                       onClick={() => handleExport('csv')}
-                      className="hover:bg-gradient-to-r hover:from-purple-50 hover:to-blue-50 cursor-pointer transition-colors rounded-md p-3 m-1 flex items-center group"
+                      className="hover:bg-gradient-to-r hover:from-orange-50 hover:to-orange-100 cursor-pointer transition-colors rounded-md p-3 m-1 flex items-center group"
                     >
-                      <svg className="w-5 h-5 mr-3 text-indigo-600 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-5 h-5 mr-3 text-orange-600 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
                       </svg>
                       <div>
@@ -277,7 +280,6 @@ const PremiumDashBoard = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
-          </div>
         </motion.div>
 
         {/* Tabs Section */}
@@ -285,15 +287,15 @@ const PremiumDashBoard = () => {
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="glass-card bg-white/80 backdrop-blur-lg border border-white/30 p-6 rounded-xl shadow-lg hover:shadow-xl relative overflow-hidden"
+          className="glass-card bg-white/80 backdrop-blur-lg border border-orange-100 p-6 rounded-xl shadow-lg hover:shadow-xl relative overflow-hidden"
         >
           {/* Subtle gradient background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-blue-50 opacity-70" />
+          <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-white to-orange-100 opacity-70"></div>
           
           {/* Animated flowing gradient line on top */}
           <div className="absolute top-0 left-0 right-0 h-1 overflow-hidden">
             <motion.div
-              className="absolute inset-0 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500"
+              className="absolute inset-0 bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400"
               animate={{
                 x: ["0%", "100%"],
                 opacity: [0.8, 1, 0.8]
@@ -303,7 +305,7 @@ const PremiumDashBoard = () => {
                 repeat: Infinity,
                 ease: "linear"
               }}
-            />
+            ></motion.div>
           </div>
           
        
@@ -315,10 +317,10 @@ const PremiumDashBoard = () => {
                   <TabsTrigger 
                   key={tab.value}
                   value={tab.value} 
-                  className="relative group data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:via-indigo-600 data-[state=active]:to-blue-500 data-[state=active]:text-white rounded-lg transition-all duration-300 shadow-sm hover:shadow-md data-[state=active]:shadow-lg py-2.5 px-3 flex-shrink-0 text-xs sm:text-sm md:text-base min-w-0 flex-1"
+                  className="relative group data-[state=active]:bg-gradient-to-r data-[state=active]:from-orange-600 data-[state=active]:via-amber-500 data-[state=active]:to-orange-400 data-[state=active]:text-white rounded-lg transition-all duration-300 shadow-sm hover:shadow-md data-[state=active]:shadow-lg py-2.5 px-3 flex-shrink-0 text-xs sm:text-sm md:text-base min-w-0 flex-1"
                   >
                   <motion.div
-                    className="absolute inset-0 bg-gradient-to-r from-purple-50 to-blue-50 opacity-0 group-hover:opacity-100 group-data-[state=active]:opacity-0 rounded-lg transition-opacity"
+                    className="absolute inset-0 bg-gradient-to-r from-orange-50 to-orange-100 opacity-0 group-hover:opacity-100 group-data-[state=active]:opacity-0 rounded-lg transition-opacity"
                     initial={false}
                   />
                   <motion.span

@@ -15,7 +15,7 @@ const Navbar = () => {
     >
       {/* Animated gradient bar at the top */}
       <motion.div 
-        className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 z-10"
+  className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400 z-10"
         animate={{ 
           backgroundPosition: ['0% 50%', '100% 50%', '0% 50%']
         }}
@@ -30,7 +30,7 @@ const Navbar = () => {
       {/* Glassmorphism effect with additional subtle highlights */}
       <nav className="relative border-b border-white/20 px-4 sm:px-6 py-4 backdrop-blur-lg shadow-lg">
         <div className="absolute inset-0 bg-white/60" />
-        <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 via-indigo-500/5 to-blue-500/5 opacity-80" />
+  <div className="absolute inset-0 bg-gradient-to-r from-orange-100/40 via-orange-200/30 to-orange-50/40 opacity-80" />
         <div className="absolute inset-0 backdrop-blur-md" />
         
         <div className="max-w-7xl mx-auto flex flex-row items-center justify-between relative z-10">
@@ -49,14 +49,14 @@ const Navbar = () => {
               />
               <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold relative group">
                 <motion.span 
-                  className="bg-clip-text text-transparent bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 transition-all duration-300"
+                  className="bg-clip-text text-transparent bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400 transition-all duration-300"
                   whileHover={{ 
                     backgroundImage: 'linear-gradient(to right, #3b82f6, #6366f1, #9333ea)'
                   }}
                 >
                   Clinkly
                 </motion.span>
-                <div className="absolute bottom-0 left-0 w-0 h-[2px] bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 group-hover:w-full transition-all duration-300"></div>
+                <div className="absolute bottom-0 left-0 w-0 h-[2px] bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400 group-hover:w-full transition-all duration-300"></div>
               </h1>
             </Link>
           </div>
@@ -72,8 +72,8 @@ const Navbar = () => {
                 whileTap={{ scale: 0.95 }}
                 className={`relative overflow-hidden glass-button ${
                   isProfile 
-                    ? 'bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 text-white'
-                    : 'bg-gradient-to-r from-indigo-600 to-blue-500 text-white font-bold px-6 py-2 rounded-xl shadow-md hover:from-blue-500 hover:to-indigo-600 transition-all duration-300'
+                    ? 'bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400 text-white'
+                    : 'bg-gradient-to-r from-orange-500 to-orange-400 text-white font-bold px-6 py-2 rounded-xl shadow-md hover:from-orange-400 hover:to-orange-500 transition-all duration-300'
 
                 } font-medium px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl shadow-md transition-all duration-300 text-xs sm:text-sm md:text-base flex items-center gap-2`}
               >

@@ -8,7 +8,7 @@ const Upgrade = () => {
       transition={{ duration: 0.5, ease: "easeOut" }}
       className='w-full h-auto min-h-20 mb-10 md:mb-20 px-6 md:px-10 py-6 md:py-0'
     >
-      <div className="bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 text-white p-8 rounded-xl shadow-xl flex flex-col md:flex-row justify-between items-center relative overflow-hidden">
+  <div className="bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400 text-white p-8 rounded-xl shadow-xl flex flex-col md:flex-row justify-between items-center relative overflow-hidden">
         <div className="z-10 text-center md:text-left mb-6 md:mb-0">
           <h2 className="text-2xl font-bold text-white">Unlock Advanced Analytics</h2>
           <p className="mt-2 text-white/90">Get deeper insights, exclusive features, and priority support with Premium.</p>

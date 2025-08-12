@@ -17,20 +17,20 @@ export const BrowserStatRow: React.FC<BrowserStatRowProps> = ({ name, percentage
     whileHover={{ scale: 1.02, boxShadow: "0 4px 12px -2px rgba(99, 102, 241, 0.15)" }}
   >
     {/* Subtle gradient background */}
-    <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-blue-50 opacity-70" />
+  <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-white to-orange-100 opacity-70" />
     
     <div className="flex items-center justify-between py-1 relative z-10">
       <span className="text-sm font-medium text-gray-700">{name}</span>
       <div className="flex items-center">
-        <div className="w-32 h-2.5 bg-gray-100 rounded-full mr-3 overflow-hidden shadow-inner">
+  <div className="w-32 h-2.5 bg-orange-50 rounded-full mr-3 overflow-hidden shadow-inner">
           <motion.div
-            className="h-full bg-gradient-to-r from-purple-500 to-blue-500 rounded-full"
+            className="h-full bg-gradient-to-r from-orange-500 to-amber-400 rounded-full"
             style={{ width: '0%' }}
             animate={{ width: `${percentage}%` }}
             transition={{ duration: 0.8, ease: "easeOut" }}
           />
         </div>
-        <span className="text-sm font-semibold text-indigo-700 drop-shadow-sm">{percentage}%</span>
+  <span className="text-sm font-semibold text-orange-700 drop-shadow-sm">{percentage}%</span>
         <span className={`text-xs ml-2 font-medium flex items-center ${trend === 'up' ? 'text-green-600' : 'text-red-600'} drop-shadow-sm`}>
           {trend === 'up' ? (
             <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
