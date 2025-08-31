@@ -45,8 +45,8 @@ const PhoneAnimation: React.FC = () => {
         >
           {/* Mobile Frame with Silver-Metallic Body */}
           <div className="absolute inset-0 rounded-[1.2rem] sm:rounded-[1.5rem] p-1 ">
-            <div className="w-full h-full rounded-[1.2rem] sm:rounded-[2.4rem] p-0.5 sm:p-1 bg-gradient-to-br from-slate-200 via-slate-300 to-slate-700">
-              <div className="w-full h-full rounded-[1.2rem] sm:rounded-[2.2rem] p-0.5 sm:p-0.5 bg-gradient-to-br from-gray-500 to-gray-900">
+            <div className="w-full h-full rounded-[1.2rem] sm:rounded-[2.4rem] p-0.5 sm:p-1 bg-gradient-to-br from-orange-200 via-orange-300 to-orange-700">
+              <div className="w-full h-full rounded-[1.2rem] sm:rounded-[2.2rem] p-0.5 sm:p-0.5 bg-gradient-to-br from-orange-500 to-orange-900">
                 <div className="w-full h-full bg-gray-50 rounded-[1rem] sm:rounded-[2.2rem] overflow-hidden relative">
                   
                   {/* Camera Notch */}

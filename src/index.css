@@ -93,10 +93,12 @@
 
 @layer base {
   * {
-    @apply border-border;
+    border-color: var(--c-border);
   }
   body {
-    @apply bg-background text-foreground;
+    background: var(--c-bg);
+    color: var(--c-text);
+    font-family: 'Space Grotesk', 'Poppins', sans-serif;
   }
 }
 

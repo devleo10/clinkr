@@ -400,7 +400,7 @@ const PrivateProfile = () => {
             (e.target as HTMLImageElement).src = `https://www.google.com/s2/favicons?sz=64&domain=${domain}`;
           }}
           alt={`${domain} icon`}
-          style={{ width: size, height: size, borderRadius: '50%', background: '#fff', objectFit: 'contain', border: '1px solid #e0e7ff' }}
+          style={{ width: size, height: size, borderRadius: '50%', background: '#fff', objectFit: 'contain', border: '1px solid #ffebe1' }}
         />
       );
     } catch {

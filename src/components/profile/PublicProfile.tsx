@@ -272,7 +272,7 @@ const PublicProfile = () => {
             (e.target as HTMLImageElement).src = `https://www.google.com/s2/favicons?sz=64&domain=${domain}`;
           }}
           alt={`${domain} icon`}
-          style={{ width: size, height: size, borderRadius: '50%', background: '#fff', objectFit: 'contain', border: '1px solid #e0e7ff' }}
+          style={{ width: size, height: size, borderRadius: '50%', background: '#fff', objectFit: 'contain', border: '1px solid #ffebe1' }}
         />
       );
     } catch {
@@ -386,7 +386,7 @@ const PublicProfile = () => {
                 }}
               />
               <motion.div
-                className="absolute -inset-3 bg-gradient-to-r from-pink-400 to-purple-600 rounded-full opacity-30 blur-lg"
+                className="absolute -inset-3 bg-gradient-to-r from-orange-400 to-orange-600 rounded-full opacity-30 blur-lg"
                 animate={{
                   scale: [1, 1.4, 1],
                   opacity: [0.3, 0.6, 0.3],
@@ -402,11 +402,11 @@ const PublicProfile = () => {
               className="text-3xl md:text-5xl font-black relative"
               whileHover={{ scale: 1.05 }}
             >
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-pink-400 via-purple-500 to-cyan-400 drop-shadow-lg">
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600 drop-shadow-lg">
                 Clinkr
               </span>
               <motion.div
-                className="absolute -inset-2 bg-gradient-to-r from-pink-400 via-purple-500 to-cyan-400 rounded-lg opacity-20 blur-xl"
+                className="absolute -inset-2 bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600 rounded-lg opacity-20 blur-xl"
                 animate={{
                   opacity: [0.2, 0.5, 0.2],
                 }}
@@ -447,10 +447,10 @@ const PublicProfile = () => {
             className="relative bg-gradient-to-br from-white/90 via-white/70 to-white/50 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-white/30"
             whileHover={{ 
               scale: 1.02,
-              boxShadow: "0 0 50px rgba(255, 105, 180, 0.3), 0 0 100px rgba(0, 255, 255, 0.2)"
+              boxShadow: "0 0 50px rgba(255, 122, 26, 0.3), 0 0 100px rgba(255, 122, 26, 0.2)"
             }}
             style={{ 
-              boxShadow: "0 0 30px rgba(255, 105, 180, 0.2), 0 0 60px rgba(0, 255, 255, 0.1)"
+              boxShadow: "0 0 30px rgba(255, 122, 26, 0.2), 0 0 60px rgba(255, 122, 26, 0.1)"
             }}
           >
             {/* Animated border glow */}
@@ -495,7 +495,7 @@ const PublicProfile = () => {
             animate={{ opacity: 0.15, scale: 1 }}
             transition={{ duration: 0.5, delay: 0.4 }}
           >
-            <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-purple-500 to-blue-500 rounded-bl-full" />
+            <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-orange-500 to-orange-600 rounded-bl-full" />
           </motion.div>
           
           <div className="text-center relative z-10">

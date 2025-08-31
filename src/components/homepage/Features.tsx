@@ -46,8 +46,8 @@ const Features = () => {
       title: "Device Analytics",
       description: "Track user devices and browsers to optimize experiences across platforms.",
       icon: "M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z",
-      gradient: "from-orange-600 to-red-500",
-      bgGradient: "from-orange-50/60 via-red-50/40 to-orange-50/50",
+      gradient: "from-orange-600 to-orange-700",
+      bgGradient: "from-orange-50/60 via-orange-50/40 to-orange-50/50",
       hoverColor: "orange-300"
     },
     {
@@ -62,8 +62,8 @@ const Features = () => {
       title: "Link Performance",
       description: "Comprehensive metrics with conversion tracking and user journey analysis.",
       icon: "M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1",
-      gradient: "from-red-500 to-orange-600",
-      bgGradient: "from-red-50/60 via-orange-50/40 to-red-50/50",
+      gradient: "from-orange-500 to-orange-600",
+      bgGradient: "from-orange-50/60 via-orange-50/40 to-orange-50/50",
       hoverColor: "red-200"
     },
     {
