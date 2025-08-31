@@ -73,6 +73,23 @@ const DeviceSplit = () => {
         desktop: Math.round((desktopCount / total) * 100),
         tablet: Math.round((tabletCount / total) * 100)
       });
+
+      // Ensure percentages add up to 100% by adjusting the largest category
+      const calculatedData = {
+        mobile: Math.round((mobileCount / total) * 100),
+        desktop: Math.round((desktopCount / total) * 100),
+        tablet: Math.round((tabletCount / total) * 100)
+      };
+
+      const totalPercentage = calculatedData.mobile + calculatedData.desktop + calculatedData.tablet;
+      if (totalPercentage !== 100 && total > 0) {
+        // Find the category with the highest count and adjust it
+        const maxCategory = mobileCount >= desktopCount && mobileCount >= tabletCount ? 'mobile' :
+                           desktopCount >= tabletCount ? 'desktop' : 'tablet';
+        calculatedData[maxCategory] += (100 - totalPercentage);
+      }
+
+      setDeviceData(calculatedData);
     } catch (error) {
       console.error('Error fetching device data:', error);
     } finally {
@@ -82,18 +99,18 @@ const DeviceSplit = () => {
 
   return (
     <motion.div 
-      className="w-full glass-card bg-white/80 backdrop-blur-lg border border-white/30 p-6 rounded-xl hover:border-indigo-200 flex flex-col justify-between min-h-[180px] shadow-lg hover:shadow-xl transition-all relative overflow-hidden"
+      className="w-full glass-card bg-white/80 backdrop-blur-lg border border-white/30 p-6 rounded-xl hover:border-orange-200 flex flex-col justify-between min-h-[180px] shadow-lg hover:shadow-xl transition-all relative overflow-hidden"
       whileHover={{ 
         scale: 1.02,
-        boxShadow: "0 10px 25px -5px rgba(99, 102, 241, 0.2)"
+        boxShadow: "0 10px 25px -5px rgba(255, 122, 26, 0.2)"
       }}
     >
       {/* Subtle gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-blue-50 opacity-70" />
+      <div className="absolute inset-0 bg-gradient-to-br from-orange-50/50 via-white/50 to-orange-100/50 opacity-70" />
       
       {/* Animated accent */}
       <motion.div 
-        className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500"
+        className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400"
         initial={{ scaleX: 0 }}
         animate={{ scaleX: 1 }}
         transition={{ duration: 0.8, delay: 0.2 }}
@@ -101,7 +118,7 @@ const DeviceSplit = () => {
       
       <div className="flex justify-between items-center relative z-10">
         <h1 className="font-bold text-gray-800">Device Split</h1>
-        <div className="flex space-x-2 text-indigo-500">
+        <div className="flex space-x-2 text-orange-500">
           <FaMobileAlt size={18} />
           <FaLaptop size={18} />
         </div>
@@ -109,10 +126,10 @@ const DeviceSplit = () => {
       <div className="flex gap-10 mt-4 relative z-10">
         <div className="text-center flex-1">
           <div className="flex items-center justify-center mb-2">
-            <FaMobileAlt className="text-indigo-600 mr-2" size={16} />
+            <FaMobileAlt className="text-orange-500 mr-2" size={16} />
             <p className="text-gray-700 font-medium">Mobile</p>
           </div>
-          <p className="font-bold text-2xl bg-clip-text text-transparent bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500">
+          <p className="font-bold text-2xl bg-clip-text text-transparent bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400">
             {loading ? (
               <motion.span
                 animate={{ opacity: [0.5, 1, 0.5] }}
@@ -127,10 +144,10 @@ const DeviceSplit = () => {
         </div>
         <div className="text-center flex-1">
           <div className="flex items-center justify-center mb-2">
-            <FaLaptop className="text-indigo-600 mr-2" size={16} />
+            <FaLaptop className="text-orange-500 mr-2" size={16} />
             <p className="text-gray-700 font-medium">Desktop</p>
           </div>
-          <p className="font-bold text-2xl bg-clip-text text-transparent bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500">
+          <p className="font-bold text-2xl bg-clip-text text-transparent bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400">
             {loading ? (
               <motion.span
                 animate={{ opacity: [0.5, 1, 0.5] }}

@@ -76,7 +76,10 @@ const DashBoard = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="min-h-screen relative"
+      className="min-h-screen relative font-inter"
+      style={{
+        background: 'radial-gradient(at 15% 20%, rgba(255, 237, 213, 0.3) 0%, transparent 55%), radial-gradient(at 85% 30%, rgba(255, 245, 235, 0.3) 0%, transparent 60%), radial-gradient(at 70% 80%, rgba(255, 251, 248, 0.3) 0%, transparent 55%), linear-gradient(130deg, var(--c-bg), #FAFAFA)',
+      }}
     >
       <BoltBackground />
       
@@ -88,15 +91,15 @@ const DashBoard = () => {
           transition={{ duration: 0.4 }}
           className="glass-card bg-white/80 backdrop-blur-lg border border-white/30 p-6 rounded-xl shadow-lg hover:shadow-xl mb-8 relative overflow-hidden"
           whileHover={{
-            boxShadow: "0 20px 25px -5px rgba(99, 102, 241, 0.2)"
+            boxShadow: "0 20px 25px -5px rgba(255, 122, 26, 0.15)"
           }}
         >
           {/* Subtle gradient background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-blue-50 opacity-70" />
+          <div className="absolute inset-0 bg-gradient-to-br from-orange-50/50 via-white/50 to-orange-100/50 opacity-70" />
           
           {/* Animated accent */}
           <motion.div 
-            className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500"
+            className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400"
             initial={{ scaleX: 0 }}
             animate={{ scaleX: 1 }}
             transition={{ duration: 0.8, delay: 0.2 }}
@@ -109,7 +112,7 @@ const DashBoard = () => {
             animate={{ opacity: 0.1, scale: 1 }}
             transition={{ duration: 0.5, delay: 0.4 }}
           >
-            <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-purple-500 to-blue-500 rounded-bl-full" />
+            <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-orange-400 to-amber-300 rounded-bl-full" />
           </motion.div>
           
           {/* Analytics Dashboard Heading */}
@@ -121,14 +124,14 @@ const DashBoard = () => {
               transition={{ duration: 0.5 }}
             >
               <motion.div
-                className="mr-3 p-2 rounded-full bg-gradient-to-br from-indigo-100 to-purple-100 shadow-md"
+                className="mr-3 p-2 rounded-full bg-gradient-to-br from-amber-100 to-orange-100 shadow-md"
                 whileHover={{ scale: 1.1, rotate: 5 }}
                 transition={{ type: "spring", stiffness: 300 }}
               >
-                <FaChartLine size={24} className="text-indigo-600" />
+                <FaChartLine size={24} className="text-orange-500" />
               </motion.div>
               <motion.h1 
-                className="font-extrabold text-2xl sm:text-3xl bg-clip-text text-transparent bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 text-center"
+                className="font-extrabold text-2xl sm:text-3xl bg-clip-text text-transparent bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400 text-center"
                 whileHover={{
                   scale: 1.03,
                   transition: { duration: 0.2 }
@@ -138,12 +141,12 @@ const DashBoard = () => {
               </motion.h1>
             </motion.div>
             <motion.div 
-              className="h-1 w-24 mt-2 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 rounded-full shadow-sm"
+              className="h-1 w-24 mt-2 bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400 rounded-full shadow-sm"
               animate={{ width: '6rem' }}
               transition={{ duration: 0.8, delay: 0.5 }}
             />
             <motion.p
-              className="text-gray-600 mt-2 max-w-md text-center text-sm"
+              className="text-orange-700 mt-2 max-w-md text-center text-sm"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5, delay: 0.3 }}
@@ -154,7 +157,7 @@ const DashBoard = () => {
           
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 relative z-10">
             <div className="relative w-full sm:max-w-md group">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-indigo-600">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-orange-500">
                 <FaSearch className="filter drop-shadow-sm" />
               </div>
               <motion.div
@@ -167,7 +170,7 @@ const DashBoard = () => {
                   value={searchQuery}
                   onChange={handleSearch}
                   placeholder="Search links..."
-                  className="w-full pl-10 pr-4 py-3 glass-input bg-white/80 backdrop-blur-lg border border-white/50 rounded-xl shadow-lg focus:outline-none focus:ring-2 focus:ring-indigo-400 text-gray-700 placeholder-gray-400 transition-all"
+                  className="w-full pl-10 pr-4 py-3 glass-input bg-white/80 backdrop-blur-lg border border-white/50 rounded-xl shadow-lg focus:outline-none focus:ring-2 focus:ring-orange-400 text-gray-700 placeholder-gray-400 transition-all"
                 />
               </motion.div>
               <motion.div 
@@ -175,7 +178,7 @@ const DashBoard = () => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 whileHover={{ opacity: 1 }}
-                style={{ boxShadow: '0 0 20px rgba(99, 102, 241, 0.15)' }}
+                style={{ boxShadow: '0 0 20px rgba(255, 122, 26, 0.15)' }}
               />
             </div>
             <div className="flex items-center">

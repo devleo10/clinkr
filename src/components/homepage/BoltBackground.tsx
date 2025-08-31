@@ -1,110 +1,94 @@
 
+import { motion } from 'framer-motion';
+
 const BoltBackground = () => {
   return (
-    <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none bg-gradient-to-br from-white via-orange-50/80 to-orange-200/80">
+    <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
       {/* Modern gradient mesh background */}
-      <div className="absolute inset-0 bg-gradient-to-tr from-white/80 via-transparent to-orange-100/40" />
+      <div className="absolute inset-0 gradient-mesh" />
       
-      {/* Animated grid pattern */}
+      {/* Animated floating elements */}
+      <motion.div 
+        className="absolute w-[600px] h-[600px] rounded-full opacity-30"
+        style={{
+          background: 'radial-gradient(circle, rgba(255, 122, 26, 0.15) 0%, rgba(255, 122, 26, 0.05) 40%, transparent 70%)',
+          left: '10%',
+          top: '10%',
+          filter: 'blur(80px)',
+        }}
+        animate={{
+          x: [0, 30, -20, 0],
+          y: [0, -20, 10, 0],
+          scale: [1, 1.1, 0.9, 1],
+        }}
+        transition={{
+          duration: 20,
+          repeat: Infinity,
+          ease: "easeInOut"
+        }}
+      />
+      
+      <motion.div 
+        className="absolute w-[500px] h-[500px] rounded-full opacity-25"
+        style={{
+          background: 'radial-gradient(circle, rgba(255, 122, 26, 0.08) 0%, rgba(255, 122, 26, 0.02) 40%, transparent 70%)',
+          right: '15%',
+          top: '20%',
+          filter: 'blur(70px)',
+        }}
+        animate={{
+          x: [0, -25, 15, 0],
+          y: [0, 25, -15, 0],
+          scale: [1, 0.8, 1.2, 1],
+        }}
+        transition={{
+          duration: 25,
+          repeat: Infinity,
+          ease: "easeInOut",
+          delay: 5
+        }}
+      />
+      
+      <motion.div 
+        className="absolute w-[400px] h-[400px] rounded-full opacity-20"
+        style={{
+          background: 'radial-gradient(circle, rgba(255, 122, 26, 0.06) 0%, rgba(255, 122, 26, 0.01) 40%, transparent 70%)',
+          left: '60%',
+          bottom: '20%',
+          filter: 'blur(60px)',
+        }}
+        animate={{
+          x: [0, 20, -30, 0],
+          y: [0, -15, 20, 0],
+          scale: [1, 1.3, 0.7, 1],
+        }}
+        transition={{
+          duration: 18,
+          repeat: Infinity,
+          ease: "easeInOut",
+          delay: 10
+        }}
+      />
+      
+      {/* Subtle grid overlay */}
       <div 
-        className="absolute h-screen w-full opacity-50"
+        className="absolute inset-0 opacity-[0.03]"
         style={{
           backgroundImage: `
-            linear-gradient(to right, rgba(251, 146, 60, 0.22) 1px, transparent 1px),
-            linear-gradient(to bottom, rgba(251, 146, 60, 0.22) 1px, transparent 1px)
+            linear-gradient(to right, var(--c-text) 1px, transparent 1px),
+            linear-gradient(to bottom, var(--c-text) 1px, transparent 1px)
           `,
-          backgroundSize: '90px 90px',
-          animation: 'gridMove 25s linear infinite',
+          backgroundSize: '80px 80px',
         }}
       />
       
-      {/* Enhanced floating orbs with different sizes */}
+      {/* Noise texture overlay */}
       <div 
-        className="absolute w-96 h-96 rounded-full bg-gradient-to-r from-white/70 to-orange-200/40 animate-pulse"
-        style={{ 
-          left: '12%', 
-          top: '15%',
-          filter: 'blur(110px)',
-          animationDelay: '0s',
-          animationDuration: '5s',
-        }}
-      />
-      <div 
-        className="absolute w-80 h-80 rounded-full bg-gradient-to-r from-orange-100/60 to-orange-300/30 animate-pulse"
-        style={{ 
-          right: '18%', 
-          top: '25%',
-          filter: 'blur(130px)',
-          animationDelay: '2.5s',
-          animationDuration: '6s',
-        }}
-      />
-      <div 
-        className="absolute w-72 h-72 rounded-full bg-gradient-to-r from-white/60 to-orange-100/40 animate-pulse"
-        style={{ 
-          left: '45%', 
-          top: '65%',
-          transform: 'translateX(-50%)',
-          filter: 'blur(90px)',
-          animationDelay: '1.2s',
-          animationDuration: '7s',
-        }}
-      />
-      
-      {/* Floating particles */}
-      <div className="absolute inset-0">
-        {[...Array(15)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute w-1.5 h-1.5 bg-gradient-to-r from-orange-400/35 to-amber-500/30 rounded-full animate-bounce"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 6}s`,
-              animationDuration: `${4 + Math.random() * 5}s`,
-            }}
-          />
-        ))}
-      </div>
-      
-      {/* Enhanced light rays effect */}
-      <div 
-        className="absolute w-[160vw] h-[130vh]"
+        className="absolute inset-0 opacity-[0.015] mix-blend-mode-multiply"
         style={{
-          top: '-15%',
-          left: '-30%',
-          background: `
-            radial-gradient(ellipse 130% 90% at 50% 0%, rgba(255,255,255,0.18) 0%, transparent 60%),
-            radial-gradient(ellipse 90% 70% at 80% 20%, rgba(251, 146, 60, 0.10) 0%, transparent 55%)
-          `,
-          opacity: 0.9,
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.4'/%3E%3C/svg%3E")`,
         }}
       />
-      
-      {/* Bottom gradient accent */}
-      <div
-        className="absolute w-full h-[55vh] bottom-0 bg-gradient-to-t from-white/80 via-orange-50/40 to-transparent"
-        style={{ opacity: 0.7 }}
-      />
-      
-      {/* Corner accent lights */}
-      <div 
-        className="absolute top-0 left-0 w-48 h-48 bg-gradient-to-br from-white/70 to-orange-100/30 rounded-full blur-3xl"
-      />
-      <div 
-        className="absolute top-0 right-0 w-36 h-36 bg-gradient-to-bl from-white/60 to-orange-100/20 rounded-full blur-2xl"
-      />
-      
-      <style>{`
-        @keyframes gridMove {
-          0% {
-            transform: translate(0, 0);
-          }
-          100% {
-            transform: translate(90px, 90px);
-          }
-        }
-      `}</style>
     </div>
   );
 };

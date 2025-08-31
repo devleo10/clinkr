@@ -30,7 +30,7 @@
 
 /* Gradient text animations */
 .gradient-text-animated {
-  background: linear-gradient(45deg, #6366f1, #8b5cf6, #3b82f6, #6366f1);
+  background: linear-gradient(45deg, #FF7A1A, #FF9A3E, #FFB366, #FF7A1A);
   background-size: 400% 400%;
   background-clip: text;
   -webkit-background-clip: text;
@@ -195,12 +195,12 @@ html {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(45deg, #6366f1, #8b5cf6);
+  background: linear-gradient(45deg, #FF7A1A, #FF9A3E);
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(45deg, #4f46e5, #7c3aed);
+  background: linear-gradient(45deg, #FF6B0A, #FF8A2A);
 }
 
 /* Loading skeleton animations */
@@ -218,8 +218,8 @@ html {
 /* Modern focus states */
 .focus-modern:focus {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.3);
-  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(255, 122, 26, 0.3);
+  border-color: #FF7A1A;
 }
 
 /* Responsive typography scaling */

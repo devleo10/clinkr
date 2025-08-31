@@ -54,7 +54,7 @@ const TopCountry = () => {
         setTopCountry({
           name: getCountryName(country),
           clicks: clicks,
-          percentage: totalClicks > 0 ? Math.round((clicks / totalClicks) * 1000) / 10 : 0
+          percentage: totalClicks > 0 ? Math.round((clicks / totalClicks) * 100 * 10) / 10 : 0
         });
       } else {
         setTopCountry({
@@ -130,18 +130,18 @@ const TopCountry = () => {
 
   return (
     <motion.div 
-      className="w-full glass-card bg-white/80 backdrop-blur-lg border border-white/30 p-6 rounded-xl hover:border-indigo-200 flex flex-col justify-between min-h-[180px] shadow-lg hover:shadow-xl transition-all relative overflow-hidden"
+      className="w-full glass-card bg-white/80 backdrop-blur-lg border border-white/30 p-6 rounded-xl hover:border-orange-200 flex flex-col justify-between min-h-[180px] shadow-lg hover:shadow-xl transition-all relative overflow-hidden"
       whileHover={{ 
         scale: 1.02,
-        boxShadow: "0 10px 25px -5px rgba(99, 102, 241, 0.2)"
+        boxShadow: "0 10px 25px -5px rgba(255, 122, 26, 0.2)"
       }}
     >
       {/* Subtle gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-blue-50 opacity-70" />
+      <div className="absolute inset-0 bg-gradient-to-br from-orange-50/50 via-white/50 to-orange-100/50 opacity-70" />
       
       {/* Animated accent */}
       <motion.div 
-        className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500"
+        className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400"
         initial={{ scaleX: 0 }}
         animate={{ scaleX: 1 }}
         transition={{ duration: 0.8, delay: 0.2 }}
@@ -149,12 +149,12 @@ const TopCountry = () => {
       
       <div className="flex justify-between items-center relative z-10">
         <h1 className="font-bold text-gray-800">Top Country</h1>
-        <div className="text-indigo-500">
+        <div className="text-orange-500">
           <FaGlobeAsia size={24} />
         </div>
       </div>
       <div className="mt-8 flex relative z-10">
-        <h1 className="text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500">
+        <h1 className="text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400">
           {loading ? (
             <motion.span
               animate={{ opacity: [0.5, 1, 0.5] }}
@@ -168,7 +168,7 @@ const TopCountry = () => {
         </h1>
       </div>
       <div className="relative z-10">
-        <p className="text-sm text-gray-500 font-medium">
+        <p className="text-sm text-orange-600 font-medium">
           {loading ? (
             <motion.span
               animate={{ opacity: [0.5, 1, 0.5] }}

@@ -1,13 +1,45 @@
 
 import Navbar from '../homepage/Navbar';
 import Footer from '../homepage/Footer';
+import { motion } from 'framer-motion';
+import BoltBackground from '../homepage/BoltBackground';
 
 const TermsOfService = () => {
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen font-inter relative"
+         style={{
+           background: 'radial-gradient(at 15% 20%, rgba(255, 237, 213, 0.3) 0%, transparent 55%), radial-gradient(at 85% 30%, rgba(255, 245, 235, 0.3) 0%, transparent 60%), radial-gradient(at 70% 80%, rgba(255, 251, 248, 0.3) 0%, transparent 55%), linear-gradient(130deg, var(--c-bg), #FAFAFA)',
+         }}>
+      <BoltBackground />
       <Navbar />
-      <main className="flex-grow container mx-auto p-8 pt-24">
-        <h1 className="text-3xl font-bold mb-6 text-white">Terms of Service for Clinkr</h1>
+      <main className="flex-grow container mx-auto p-8 pt-24 relative z-10">
+        <motion.div 
+          className="glass-card bg-white/80 backdrop-blur-lg border border-white/30 rounded-xl shadow-lg p-8 relative overflow-hidden"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          {/* Subtle gradient background */}
+          <div className="absolute inset-0 bg-gradient-to-br from-orange-50/50 via-white/50 to-orange-100/50 opacity-70" />
+          
+          {/* Animated accent */}
+          <motion.div 
+            className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400"
+            initial={{ scaleX: 0 }}
+            animate={{ scaleX: 1 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          />
+          
+          <div className="relative z-10">
+            <motion.h1 
+              className="text-3xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
+              Terms of Service for Clinkr
+            </motion.h1>
+            </div>
 
         <p className="mb-4">
           Welcome to Clinkr! These terms and conditions outline the rules and regulations for the use of Clinkr's Website, located at clinkr.com.
@@ -175,6 +207,7 @@ const TermsOfService = () => {
         <p className="mb-4">
           As long as the website and the information and services on the website are provided free of charge, we will not be liable for any loss or damage of any nature.
         </p>
+        </motion.div>
       </main>
       <Footer />
     </div>

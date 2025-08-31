@@ -3,11 +3,10 @@ import { Card, CardContent } from "../ui/card";
 import logo from "../../assets/Frame.png";
 import { Link, useParams } from 'react-router-dom';
 import { supabase } from '../../lib/supabaseClient';
-import { FaUser } from 'react-icons/fa';
+import { FaUser, FaRocket, FaHandSparkles } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MoreHorizontal } from "lucide-react";
 import { Globe } from 'lucide-react';
-import BoltBackground from '../homepage/BoltBackground';
 
 interface UserProfile {
   username: string;
@@ -293,57 +292,195 @@ const PublicProfile = () => {
 
   // Ensure rendering logic correctly uses profile state
   return (
-    <div className="min-h-screen relative">
-      {/* Background */}
-      <BoltBackground/>
+    <div className="min-h-screen relative overflow-hidden font-inter"
+         style={{
+           background: 'radial-gradient(circle at 20% 20%, rgba(255, 122, 26, 0.4) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(255, 181, 107, 0.3) 0%, transparent 50%), radial-gradient(circle at 40% 90%, rgba(255, 154, 62, 0.3) 0%, transparent 50%), radial-gradient(circle at 70% 10%, rgba(255, 193, 80, 0.4) 0%, transparent 50%), linear-gradient(135deg, #FFF8F0 0%, #FFFBF5 100%)',
+         }}>
       
-      <div className="max-w-4xl mx-auto px-4 py-4 relative z-10"> {/* Reduced py-8 to py-4 */}
-        {/* Header Section */}
+      {/* Funky Floating Elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {[...Array(15)].map((_, i) => (
+          <motion.div
+            key={i}
+            className={`absolute w-6 h-6 rounded-full opacity-30 ${
+              i % 4 === 0 ? 'bg-orange-400' : 
+              i % 4 === 1 ? 'bg-amber-400' : 
+              i % 4 === 2 ? 'bg-orange-300' : 'bg-amber-300'
+            }`}
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+            }}
+            animate={{
+              y: [0, -40, 0],
+              x: [0, Math.random() * 30 - 15, 0],
+              scale: [1, 1.3, 1],
+              rotate: [0, 360],
+            }}
+            transition={{
+              duration: 4 + Math.random() * 3,
+              repeat: Infinity,
+              delay: Math.random() * 2,
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Animated gradient orbs */}
+      <motion.div
+        className="absolute top-1/4 left-1/4 w-72 h-72 bg-gradient-to-r from-orange-400/20 to-amber-500/20 rounded-full blur-3xl"
+        animate={{
+          scale: [1, 1.3, 1],
+          rotate: [0, 180, 360],
+        }}
+        transition={{
+          duration: 15,
+          repeat: Infinity,
+          ease: "linear"
+        }}
+      />
+      
+      <motion.div
+        className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-gradient-to-r from-amber-400/20 to-orange-500/20 rounded-full blur-3xl"
+        animate={{
+          scale: [1.2, 1, 1.2],
+          rotate: [360, 180, 0],
+        }}
+        transition={{
+          duration: 18,
+          repeat: Infinity,
+          ease: "linear"
+        }}
+      />
+      
+      <div className="max-w-4xl mx-auto px-4 py-4 relative z-10">
+        {/* Funky Header */}
         <motion.div 
-          className="flex justify-center items-center mb-6" /* Reduced mb-8 to mb-6 */
-          initial={{ y: -20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.5 }}
+          className="flex justify-center items-center mb-8"
+          initial={{ scale: 0, rotate: -180 }}
+          animate={{ scale: 1, rotate: 0 }}
+          transition={{ 
+            type: "spring", 
+            stiffness: 200, 
+            damping: 15,
+            duration: 1 
+          }}
         >
-          <Link to="/homepage" className="flex items-center gap-2 sm:gap-3 mt-2"> {/* Reduced mt-8 to mt-2 */}
-            <motion.img 
-              src={logo} 
-              alt="Clinkr Logo" 
-              className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 lg:w-10 lg:h-10"
-              whileHover={{ rotate: 10, scale: 1.1 }}
-              transition={{ type: "spring", stiffness: 400, damping: 10 }}
-            />
-            <motion.h1 
-              className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-extrabold relative group"
-              whileHover={{ scale: 1.02 }}
-              transition={{ type: "spring", stiffness: 400, damping: 10 }}
+          <Link to="/homepage" className="flex items-center gap-4">
+            <motion.div
+              className="relative"
+              whileHover={{ scale: 1.2 }}
+              whileTap={{ scale: 0.9 }}
             >
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400 hover:from-orange-400 hover:via-amber-500 hover:to-orange-600 transition-all duration-300">
+              <motion.img 
+                src={logo} 
+                alt="Clinkr Logo" 
+                className="w-12 h-12 drop-shadow-2xl"
+                animate={{
+                  rotate: [0, 10, -10, 0],
+                }}
+                transition={{
+                  duration: 3,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+              />
+              <motion.div
+                className="absolute -inset-3 bg-gradient-to-r from-pink-400 to-purple-600 rounded-full opacity-30 blur-lg"
+                animate={{
+                  scale: [1, 1.4, 1],
+                  opacity: [0.3, 0.6, 0.3],
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                }}
+              />
+            </motion.div>
+            
+            <motion.h1 
+              className="text-3xl md:text-5xl font-black relative"
+              whileHover={{ scale: 1.05 }}
+            >
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-pink-400 via-purple-500 to-cyan-400 drop-shadow-lg">
                 Clinkr
               </span>
+              <motion.div
+                className="absolute -inset-2 bg-gradient-to-r from-pink-400 via-purple-500 to-cyan-400 rounded-lg opacity-20 blur-xl"
+                animate={{
+                  opacity: [0.2, 0.5, 0.2],
+                }}
+                transition={{
+                  duration: 3,
+                  repeat: Infinity,
+                }}
+              />
+              {/* Sparkle effects */}
+              <motion.div className="absolute -top-2 -right-2">
+                <FaHandSparkles className="text-yellow-400 text-2xl" />
+              </motion.div>
               <motion.div 
-                className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400" 
-                initial={{ width: 0 }}
-                animate={{ width: "100%" }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-              ></motion.div>
+                className="absolute -bottom-2 -left-2"
+                animate={{
+                  rotate: [0, 360],
+                }}
+                transition={{
+                  duration: 4,
+                  repeat: Infinity,
+                }}
+              >
+                <FaRocket className="text-orange-400 text-xl" />
+              </motion.div>
             </motion.h1>
           </Link>
         </motion.div>
   
-        {/* Profile Content */}
+        {/* Funky Profile Content */}
         <motion.div 
-          className="glass-card bg-white/40 backdrop-blur-lg border border-white/50 p-8 rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 relative"
-          initial={{ opacity: 0, y: 20 }}
+          className="relative max-w-2xl mx-auto"
+          initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          whileHover={{ boxShadow: "0 20px 25px -5px rgba(99, 102, 241, 0.15)" }}
-          style={{ overflow: 'visible', position: 'relative' }}
+          transition={{ duration: 0.6, delay: 0.3 }}
         >
-          {/* Subtle gradient background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-orange-100/40 via-transparent to-orange-300/30 opacity-70" />
-          
-          {/* Animated accent */}
+          {/* Main Profile Card with Neon Effect */}
+          <motion.div
+            className="relative bg-gradient-to-br from-white/90 via-white/70 to-white/50 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-white/30"
+            whileHover={{ 
+              scale: 1.02,
+              boxShadow: "0 0 50px rgba(255, 105, 180, 0.3), 0 0 100px rgba(0, 255, 255, 0.2)"
+            }}
+            style={{ 
+              boxShadow: "0 0 30px rgba(255, 105, 180, 0.2), 0 0 60px rgba(0, 255, 255, 0.1)"
+            }}
+          >
+            {/* Animated border glow */}
+            <motion.div
+              className="absolute inset-0 bg-gradient-to-r from-orange-400 via-amber-500 to-orange-400 rounded-3xl opacity-30 blur-sm"
+              animate={{
+                background: [
+                  "linear-gradient(to right, #fb923c, #f59e0b, #fb923c)",
+                  "linear-gradient(to right, #f59e0b, #fb923c, #f59e0b)",
+                  "linear-gradient(to right, #fb923c, #f59e0b, #fb923c)"
+                ]
+              }}
+              transition={{
+                duration: 4,
+                repeat: Infinity,
+                ease: "linear"
+              }}
+            />
+            
+            {/* Corner decorations */}
+            <motion.div className="absolute top-4 right-4 text-3xl"
+              animate={{ rotate: [0, 360] }}
+              transition={{ duration: 8, repeat: Infinity }}>
+              ✨
+            </motion.div>
+            <motion.div className="absolute bottom-4 left-4 text-2xl"
+              animate={{ scale: [1, 1.2, 1] }}
+              transition={{ duration: 2, repeat: Infinity }}>
+              🚀
+            </motion.div>
           <motion.div 
             className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-500 via-amber-500 to-orange-400"
             initial={{ scaleX: 0 }}
@@ -613,6 +750,7 @@ const PublicProfile = () => {
             </motion.div>
           </div>
         </motion.div>
+        </motion.div>
 
         {/* Footer Section */}
         <motion.footer
@@ -642,5 +780,6 @@ const PublicProfile = () => {
     </div>
   );
 };
+
 
 export default PublicProfile;

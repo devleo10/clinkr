@@ -27,7 +27,10 @@ const PhoneAnimation: React.FC = () => {
       transition={{ duration: 2.5, repeat: Infinity, repeatType: 'loop', ease: 'easeInOut' }}
     >
       <motion.div 
-        className="bg-gradient-to-b from-indigo-50 to-blue-100 rounded-[2.5rem] p-2 sm:p-4 md:p-6 shadow-xl flex flex-col items-center h-[340px] w-[95vw] max-w-xs sm:max-w-md md:max-w-[440px] md:h-[460px] lg:h-[480px] lg:w-[300px] lg:max-w-none xl:w-[340px] 2xl:w-[450px] mt-[-30px] sm:mt-[70px]"
+        className="rounded-[2.5rem] p-2 sm:p-4 md:p-6 shadow-xl flex flex-col items-center h-[340px] w-[95vw] max-w-xs sm:max-w-md md:max-w-[440px] md:h-[460px] lg:h-[480px] lg:w-[300px] lg:max-w-none xl:w-[340px] 2xl:w-[450px] mt-[-30px] sm:mt-[70px]"
+        style={{
+          background: 'linear-gradient(to bottom, rgba(255, 255, 255, 0.9), rgba(255, 122, 26, 0.1))'
+        }}
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5 }}

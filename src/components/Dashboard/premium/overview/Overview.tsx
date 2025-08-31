@@ -151,6 +151,13 @@ const Overview = () => {
           ? ((currentAvgTimeSeconds - previousAvgTimeSeconds) / previousAvgTimeSeconds * 100).toFixed(1)
           : '0.0';
 
+      // Calculate view change percentage
+      const currentViews = currentProfileViews.length;
+      const previousViews = previousProfileViews.length;
+      const viewChangePercent = previousViews > 0 
+          ? ((currentViews - previousViews) / previousViews * 100).toFixed(1)
+          : '100.0';
+
       // Set the overview data with real calculations
       setOverviewData({
           totalClicks: currentClicks.toString(),
@@ -163,7 +170,7 @@ const Overview = () => {
               visitors: `${parseFloat(visitorChangePercent) >= 0 ? '+' : ''}${visitorChangePercent}%`,
               conversion: `${parseFloat(conversionChangePercent) >= 0 ? '+' : ''}${conversionChangePercent}%`,
               time: `${parseFloat(avgTimeChangePercent) >= 0 ? '+' : ''}${avgTimeChangePercent}%`,
-              views: `${parseFloat(visitorChangePercent) >= 0 ? '+' : ''}${visitorChangePercent}%`
+              views: `${parseFloat(viewChangePercent) >= 0 ? '+' : ''}${viewChangePercent}%`
           }
       });
     } catch (error) {

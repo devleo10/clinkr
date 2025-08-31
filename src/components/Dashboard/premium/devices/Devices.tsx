@@ -98,21 +98,32 @@ const Devices = () => {
       const mobilePercentage = total ? Math.round((mobileCount / total) * 100) : 0;
       const tabletPercentage = total ? Math.round((tabletCount / total) * 100) : 0;
 
+      // Ensure percentages add up to 100% by adjusting the largest category
+      let adjustedPercentages = { desktop: desktopPercentage, mobile: mobilePercentage, tablet: tabletPercentage };
+      const totalPercentage = desktopPercentage + mobilePercentage + tabletPercentage;
+      
+      if (totalPercentage !== 100 && total > 0) {
+        // Find the category with the highest count and adjust it
+        const maxCategory = desktopCount >= mobileCount && desktopCount >= tabletCount ? 'desktop' :
+                           mobileCount >= tabletCount ? 'mobile' : 'tablet';
+        adjustedPercentages[maxCategory] += (100 - totalPercentage);
+      }
+
       setDeviceData([
-        { icon: <Laptop size={20} />, label: "Desktop", percentage: desktopPercentage },
-        { icon: <Smartphone size={20} />, label: "Mobile", percentage: mobilePercentage },
-        { icon: <Tablet size={20} />, label: "Tablet", percentage: tabletPercentage }
+        { icon: <Laptop size={20} />, label: "Desktop", percentage: adjustedPercentages.desktop },
+        { icon: <Smartphone size={20} />, label: "Mobile", percentage: adjustedPercentages.mobile },
+        { icon: <Tablet size={20} />, label: "Tablet", percentage: adjustedPercentages.tablet }
       ]);
 
       // Find top device
       let topDevice = "Desktop";
-      let topDevicePercentage = desktopPercentage;
-      if (mobilePercentage > desktopPercentage && mobilePercentage > tabletPercentage) {
+      let topDevicePercentage = adjustedPercentages.desktop;
+      if (adjustedPercentages.mobile > adjustedPercentages.desktop && adjustedPercentages.mobile > adjustedPercentages.tablet) {
         topDevice = "Mobile";
-        topDevicePercentage = mobilePercentage;
-      } else if (tabletPercentage > desktopPercentage && tabletPercentage > mobilePercentage) {
+        topDevicePercentage = adjustedPercentages.mobile;
+      } else if (adjustedPercentages.tablet > adjustedPercentages.desktop && adjustedPercentages.tablet > adjustedPercentages.mobile) {
         topDevice = "Tablet";
-        topDevicePercentage = tabletPercentage;
+        topDevicePercentage = adjustedPercentages.tablet;
       }
 
       // Calculate growth
@@ -153,14 +164,14 @@ const Devices = () => {
       ];
       setDeviceTrends(deviceTrendsArr);
 
-      // Dynamic Smart Insights (unchanged)
+      // Dynamic Smart Insights (updated to use adjusted percentages)
       const insights: string[] = [];
       if (mobileCount > desktopCount && mobileCount > tabletCount) {
-        insights.push(`Mobile engagement dominates with ${mobilePercentage}% of clicks.`);
+        insights.push(`Mobile engagement dominates with ${adjustedPercentages.mobile}% of clicks.`);
       } else if (desktopCount > mobileCount && desktopCount > tabletCount) {
-        insights.push(`Desktop users are more engaged with ${desktopPercentage}% of clicks.`);
+        insights.push(`Desktop users are more engaged with ${adjustedPercentages.desktop}% of clicks.`);
       } else if (tabletCount > 0) {
-        insights.push(`Tablet usage is notable at ${tabletPercentage}% of clicks.`);
+        insights.push(`Tablet usage is notable at ${adjustedPercentages.tablet}% of clicks.`);
       }
       if (total > 0) {
         const peakDevice = [
@@ -226,6 +237,12 @@ const Devices = () => {
           change: prevCount === 0 ? 100 : Math.round(((count - prevCount) / prevCount) * 100)
         };
       }).sort((a, b) => b.percentage - a.percentage);
+
+      // Ensure browser percentages add up to 100% by adjusting the top browser
+      const totalBrowserPercentage = browserStatsArr.reduce((sum, browser) => sum + browser.percentage, 0);
+      if (totalBrowserPercentage !== 100 && total > 0 && browserStatsArr.length > 0) {
+        browserStatsArr[0].percentage += (100 - totalBrowserPercentage);
+      }
 
       // Get top browsers (limit to 4)
       const topBrowsers = browserStatsArr.slice(0, 4);

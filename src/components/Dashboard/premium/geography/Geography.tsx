@@ -375,7 +375,7 @@ const Geography = () => {
           
           <div className="relative z-10 flex flex-col items-center">
             <div className="w-12 h-12 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mb-3"></div>
-            <p className="text-indigo-600 font-medium">Loading geography data...</p>
+            <p className="text-orange-600 font-medium">Loading geography data...</p>
           </div>
         </motion.div>
       ) : (

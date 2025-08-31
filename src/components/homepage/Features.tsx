@@ -138,7 +138,7 @@ const Features = () => {
             {features.map((feature, index) => (
               <motion.div 
                 key={index}
-                className="group relative bg-white/85 backdrop-blur-md border border-gray-200/70 rounded-xl p-6 hover:shadow-xl hover:border-indigo-200 transition-all duration-500 overflow-hidden h-64"
+                className="group relative bg-white/85 backdrop-blur-md border border-gray-200/70 rounded-xl p-6 hover:shadow-xl hover:border-orange-200 transition-all duration-500 overflow-hidden h-64"
                 variants={itemVariants}
                 whileHover={{ y: -5, scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
@@ -174,7 +174,7 @@ const Features = () => {
                     </motion.div>
                     
                     <motion.h3 
-                      className="text-lg font-bold text-gray-900 group-hover:text-indigo-700 transition-colors duration-300 flex-1"
+                      className="text-lg font-bold text-gray-900 group-hover:text-orange-700 transition-colors duration-300 flex-1"
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.3 + index * 0.1 }}
@@ -194,7 +194,10 @@ const Features = () => {
                   
                   {/* Interactive hover element */}
                   <motion.div
-                    className="absolute bottom-4 right-4 w-4 h-4 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                    className="absolute bottom-4 right-4 w-4 h-4 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                    style={{
+                      background: 'radial-gradient(circle, var(--c-accent) 0%, rgba(255, 122, 26, 0.3) 100%)'
+                    }}
                     animate={{
                       scale: [1, 1.2, 1],
                     }}
