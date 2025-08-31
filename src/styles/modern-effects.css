@@ -30,7 +30,7 @@
 
 /* Gradient text animations */
 .gradient-text-animated {
-  background: linear-gradient(45deg, #FF7A1A, #FF9A3E, #FFB366, #FF7A1A);
+  background: linear-gradient(45deg, #FF7A1A, #FF6F14, #FF8A2A, #FF7A1A);
   background-size: 400% 400%;
   background-clip: text;
   -webkit-background-clip: text;
@@ -195,12 +195,36 @@ html {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(45deg, #FF7A1A, #FF9A3E);
+  background: #FF7A1A;
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(45deg, #FF6B0A, #FF8A2A);
+  background: #FF6B0A;
+}
+
+/* Force override any other scrollbar styles */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #FF7A1A rgba(255, 255, 255, 0.1);
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: #FF7A1A;
+  border-radius: 10px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: #FF6B0A;
 }
 
 /* Loading skeleton animations */

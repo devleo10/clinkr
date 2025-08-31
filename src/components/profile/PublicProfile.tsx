@@ -417,7 +417,7 @@ const PublicProfile = () => {
               />
               {/* Sparkle effects */}
               <motion.div className="absolute -top-2 -right-2">
-                <FaHandSparkles className="text-yellow-400 text-2xl" />
+                <FaHandSparkles className="text-orange-400 text-2xl" />
               </motion.div>
               <motion.div 
                 className="absolute -bottom-2 -left-2"

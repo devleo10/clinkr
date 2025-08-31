@@ -234,9 +234,9 @@
 /* Modern Gradients */
 .gradient-mesh {
   background:
-    radial-gradient(at 15% 20%, rgba(255, 237, 213, 0.7) 0%, transparent 55%),
-    radial-gradient(at 85% 30%, rgba(255, 245, 235, 0.6) 0%, transparent 60%),
-    radial-gradient(at 70% 80%, rgba(255, 251, 248, 0.7) 0%, transparent 55%),
+    radial-gradient(at 15% 20%, rgba(255, 122, 26, 0.08) 0%, transparent 55%),
+    radial-gradient(at 85% 30%, rgba(255, 255, 255, 0.6) 0%, transparent 60%),
+    radial-gradient(at 70% 80%, rgba(255, 255, 255, 0.7) 0%, transparent 55%),
     linear-gradient(130deg, #FFFFFF, #FAFAFA);
 }
 

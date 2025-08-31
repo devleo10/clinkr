@@ -507,13 +507,13 @@ const PrivateProfile = () => {
                     </button>
                     
                     <button
-                      className="w-full px-4 py-2 text-left hover:bg-yellow-50 flex items-center gap-3 text-sm"
+                      className="w-full px-4 py-2 text-left hover:bg-orange-50 flex items-center gap-3 text-sm"
                       onClick={() => {
                         navigate('/dashboard');
                         setShowActionsMenu(false);
                       }}
                     >
-                      <FaChartBar className="text-yellow-600" size={14} />
+                      <FaChartBar className="text-orange-600" size={14} />
                       View Analytics
                     </button>
                     

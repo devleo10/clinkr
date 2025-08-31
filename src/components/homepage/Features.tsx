@@ -38,9 +38,9 @@ const Features = () => {
       title: "Geographic Insights",
       description: "Know where your visitors come from with detailed geographic data and heat maps.",
       icon: "M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z",
-      gradient: "from-amber-500 to-yellow-600",
-      bgGradient: "from-amber-50/60 via-yellow-50/40 to-amber-50/50",
-      hoverColor: "amber-200"
+      gradient: "from-orange-500 to-orange-600",
+      bgGradient: "from-orange-50/60 via-orange-50/40 to-orange-50/50",
+      hoverColor: "orange-200"
     },
     {
       title: "Device Analytics",
@@ -54,9 +54,9 @@ const Features = () => {
       title: "Browser Insights",
       description: "Monitor browser usage patterns and optimize for different platforms.",
       icon: "M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9",
-      gradient: "from-yellow-500 to-orange-500",
-      bgGradient: "from-yellow-50/60 via-orange-50/40 to-yellow-50/50",
-      hoverColor: "yellow-200"
+      gradient: "from-orange-500 to-orange-600",
+      bgGradient: "from-orange-50/60 via-orange-50/40 to-orange-50/50",
+      hoverColor: "orange-200"
     },
     {
       title: "Link Performance",
