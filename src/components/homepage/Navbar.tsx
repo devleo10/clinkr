@@ -88,32 +88,25 @@ const Navbar = () => {
       <div className="hidden lg:flex items-center space-x-8">
         <motion.button 
           onClick={() => navigateToSection('features')} 
-          className="text-sm font-medium hover:scale-105 transition-all duration-200 focus-ring"
-          style={{ color: 'var(--c-text-dim)' }}
-          whileHover={{ color: 'var(--c-accent)' }}
+          className="text-sm font-medium hover:scale-105 transition-all duration-200 focus-ring text-gray-600 hover:text-orange-600"
         >
           Features
         </motion.button>
         <motion.button 
           onClick={() => navigateToSection('pricing')} 
-          className="text-sm font-medium hover:scale-105 transition-all duration-200 focus-ring"
-          style={{ color: 'var(--c-text-dim)' }}
-          whileHover={{ color: 'var(--c-accent)' }}
+          className="text-sm font-medium hover:scale-105 transition-all duration-200 focus-ring text-gray-600 hover:text-orange-600"
         >
           Pricing
         </motion.button>
         <motion.button 
           onClick={() => navigateToSection('faq')}
-          className="text-sm font-medium hover:scale-105 transition-all duration-200 focus-ring"
-          style={{ color: 'var(--c-text-dim)' }}
-          whileHover={{ color: 'var(--c-accent)' }}
+          className="text-sm font-medium hover:scale-105 transition-all duration-200 focus-ring text-gray-600 hover:text-orange-600"
         >
           FAQ
         </motion.button>
         <Link 
           to="/about"
-          className="text-sm font-medium hover:scale-105 transition-all duration-200 focus-ring"
-          style={{ color: 'var(--c-text-dim)' }}
+          className="text-sm font-medium hover:scale-105 transition-all duration-200 focus-ring text-gray-600 hover:text-orange-600"
         >
           About
         </Link>
@@ -150,7 +143,7 @@ const Navbar = () => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            <svg className="w-5 h-5" style={{ color: 'var(--c-text)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </motion.button>
@@ -167,8 +160,7 @@ const Navbar = () => {
                   setShowDropdown(false);
                   navigateToSection('features');
                 }}
-                className="block w-full text-left px-4 py-2 text-sm font-medium hover:bg-white/20 transition-colors"
-                style={{ color: 'var(--c-text)' }}
+                className="block w-full text-left px-4 py-2 text-sm font-medium hover:bg-white/20 transition-colors text-black"
               >
                 Features
               </button>
@@ -177,8 +169,7 @@ const Navbar = () => {
                   setShowDropdown(false);
                   navigateToSection('pricing');
                 }}
-                className="block w-full text-left px-4 py-2 text-sm font-medium hover:bg-white/20 transition-colors"
-                style={{ color: 'var(--c-text)' }}
+                className="block w-full text-left px-4 py-2 text-sm font-medium hover:bg-white/20 transition-colors text-black"
               >
                 Pricing
               </button>
@@ -187,16 +178,14 @@ const Navbar = () => {
                   setShowDropdown(false);
                   navigateToSection('faq');
                 }}
-                className="block w-full text-left px-4 py-2 text-sm font-medium hover:bg-white/20 transition-colors"
-                style={{ color: 'var(--c-text)' }}
+                className="block w-full text-left px-4 py-2 text-sm font-medium hover:bg-white/20 transition-colors text-black"
               >
                 FAQ
               </button>
               <Link 
                 to="/about"
                 onClick={() => setShowDropdown(false)}
-                className="block w-full text-left px-4 py-2 text-sm font-medium hover:bg-white/20 transition-colors"
-                style={{ color: 'var(--c-text)' }}
+                className="block w-full text-left px-4 py-2 text-sm font-medium hover:bg-white/20 transition-colors text-black"
               >
                 About
               </Link>
