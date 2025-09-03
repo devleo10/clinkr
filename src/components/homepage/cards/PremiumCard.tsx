@@ -1,100 +1,85 @@
 
-
 import { motion } from 'framer-motion';
 
 const PremiumCard = () => {
   return (
     <motion.div 
-      className="w-full relative bg-white/95 backdrop-blur-xl border-2 border-orange-200/80 p-8 rounded-3xl hover:border-orange-300 flex flex-col justify-between shadow-2xl hover:shadow-3xl group transition-all duration-500 overflow-hidden"
+      className="w-full relative bg-white backdrop-blur-xl border-2 border-orange-500 p-8 rounded-3xl hover:border-orange-600 flex flex-col justify-between shadow-2xl hover:shadow-3xl group transition-all duration-500 overflow-hidden"
       whileHover={{ y: -12, scale: 1.05 }}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.2 }}
     >
-      {/* Enhanced gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-amber-50/80 to-orange-50/90 opacity-90 group-hover:opacity-100 transition-opacity duration-500" />
+      {/* Background gradient */}
+      <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-white to-white opacity-95 group-hover:opacity-100 transition-opacity duration-500" />
       
       {/* Floating elements */}
-      <div className="absolute top-4 right-4 w-32 h-32 bg-gradient-to-br from-orange-400/22 to-amber-400/20 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
-      <div className="absolute bottom-10 left-4 w-20 h-20 bg-gradient-to-br from-amber-400/18 to-orange-400/16 rounded-full blur-xl group-hover:scale-125 transition-transform duration-700"></div>
+      <div className="absolute top-4 right-4 w-32 h-32 bg-white rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
+      <div className="absolute bottom-10 left-4 w-20 h-20 bg-white rounded-full blur-xl group-hover:scale-125 transition-transform duration-700"></div>
       
-      {/* Enhanced top accent */}
-      <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-orange-600 via-amber-600 to-orange-500 rounded-t-3xl" />
+      {/* Top accent */}
+      <div className="absolute top-0 left-0 right-0 h-3 bg-gradient-to-r from-orange-500 via-orange-600 to-orange-700 rounded-t-3xl" />
       
       {/* Corner decoration */}
-      <div className="absolute bottom-0 right-0 w-24 h-24 opacity-12 group-hover:opacity-24 transition-opacity duration-500">
-        <div className="absolute inset-0 rounded-tl-full bg-gradient-to-br from-orange-500 to-amber-500" />
+      <div className="absolute bottom-0 right-0 w-32 h-32 opacity-15 group-hover:opacity-25 transition-opacity duration-500">
+        <div className="absolute inset-0 rounded-tl-full bg-white" />
+      </div>
+
+      {/* Animated floating icons */}
+      <div className="absolute top-6 right-6 opacity-25 group-hover:opacity-40 transition-opacity duration-500">
+        <div className="w-8 h-8 rounded-full bg-white animate-bounce shadow-lg" style={{ animationDelay: '0.5s' }} />
       </div>
       
-      {/* Premium badge */}
-      <div className="absolute -top-4 left-6">
-        <div className="bg-gradient-to-r from-orange-600 to-amber-600 text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg">
-          🔥 MOST POPULAR
-        </div>
-      </div>
-      
-      {/* Enhanced shiny effect */}
-      <div className="shiny-effect"></div>
-      
-      <div className="relative z-10">
-        <div>
-          <div className="flex flex-row justify-between items-start mb-8 mt-6">
-              <div>
-                  <h3 className="text-3xl md:text-4xl font-black text-gray-900 mb-2">Premium</h3>
-                  <p className="text-gray-600 text-sm font-semibold">For serious link tracking</p>
-              </div>
-              <div className="text-right">
-                  <div className="text-4xl md:text-5xl font-black bg-gradient-to-r from-orange-600 via-amber-600 to-orange-500 bg-clip-text text-transparent">$2.99</div>
-                  <p className="text-gray-600 text-sm font-semibold">Per Month</p>
-              </div>
+      <div className="absolute top-16 right-10 opacity-15 group-hover:opacity-25 transition-opacity duration-700">
+        <div className="w-4 h-4 rounded-full bg-white animate-bounce" style={{ animationDelay: '1s' }} />
+      </div>      {/* Pricing content */}
+      <div className="relative z-10 space-y-6">
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <h3 className="text-2xl font-bold text-black">Premium</h3>
+            <div className="flex flex-col items-end">
+              <span className="text-sm text-gray-500 line-through">$14.99</span>
+              <span className="text-4xl font-bold text-black">
+                $9.99
+              </span>
+              <span className="text-sm text-black">/ month</span>
+            </div>
           </div>
-          
-          <div className="space-y-5">
-              {[
-                "Everything in Free",
-                "Geo heatmaps", 
-                "Device analytics",
-                "CSV exports",
-                "Unlimited links",
-                "Priority support"
-              ].map((feature, index) => (
-                <motion.div 
-                  key={feature}
-                  className="flex items-center group-hover:translate-x-1 transition-transform duration-300"
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.1 * index + 0.3 }}
-                >
-                  <div className="flex items-center justify-center w-6 h-6 rounded-full mr-4 shadow-lg" style={{
-                    background: 'linear-gradient(to right, var(--c-accent), rgba(255, 122, 26, 0.8))'
-                  }}>
-                    <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                    </svg>
-                  </div>
-                  <span className="text-gray-800 font-semibold">{feature}</span>
-                </motion.div>
-              ))}
-          </div>
+          <p className="text-black text-lg font-medium">For power users who need advanced analytics and unlimited links</p>
         </div>
-        
-        <div className="w-full mt-10">
-          <motion.div
-            className="relative group/button"
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-          >
-            <div className="absolute -inset-1 bg-gradient-to-r from-orange-600 via-amber-600 to-orange-500 rounded-2xl blur opacity-25 group-hover/button:opacity-75 transition duration-1000 group-hover/button:duration-200"></div>
-            <button 
-              className="relative w-full bg-gradient-to-r from-orange-600 via-amber-600 to-orange-500 text-white font-bold px-6 py-4 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 flex justify-center items-center gap-3 text-lg border-2 border-transparent hover:border-white/20"
-            >
-                <span>Upgrade to Premium</span>
-                <svg className="w-5 h-5 group-hover/button:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+
+        {/* Features list */}
+        <div className="space-y-4">
+          {[
+            'Unlimited custom links',
+            'Advanced analytics & insights',
+            'Custom domains',
+            'QR code generation',
+            'Link expiration dates',
+            'Team collaboration',
+            'API access',
+            'Priority support'
+          ].map((feature, index) => (
+            <div key={index} className="flex items-center space-x-3">
+              <div className="w-5 h-5 rounded-full bg-white flex items-center justify-center">
+                <svg className="w-3 h-3 text-black" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                 </svg>
-            </button>
-          </motion.div>
+              </div>
+              <span className="text-black font-medium">{feature}</span>
+            </div>
+          ))}
         </div>
+
+        {/* CTA Button */}
+        <motion.button 
+          className="w-full relative bg-white hover:bg-gray-50 text-black font-bold py-4 px-8 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden group border border-gray-200"
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+        >
+          <div className="shiny-effect"></div>
+          <span className="relative z-10">Get Premium Access</span>
+        </motion.button>
       </div>
       
       <style>{`

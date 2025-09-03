@@ -29,7 +29,7 @@ const PhoneAnimation: React.FC = () => {
       <motion.div 
         className="rounded-[2.5rem] p-2 sm:p-4 md:p-6 shadow-xl flex flex-col items-center h-[340px] w-[95vw] max-w-xs sm:max-w-md md:max-w-[440px] md:h-[460px] lg:h-[480px] lg:w-[300px] lg:max-w-none xl:w-[340px] 2xl:w-[450px] mt-[-30px] sm:mt-[70px]"
         style={{
-          background: 'linear-gradient(to bottom, rgba(255, 255, 255, 0.9), rgba(255, 122, 26, 0.1))'
+          background: 'linear-gradient(to bottom, rgba(255, 255, 255, 0.95), rgba(255, 122, 26, 0.05))'
         }}
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -45,9 +45,9 @@ const PhoneAnimation: React.FC = () => {
         >
           {/* Mobile Frame with Silver-Metallic Body */}
           <div className="absolute inset-0 rounded-[1.2rem] sm:rounded-[1.5rem] p-1 ">
-            <div className="w-full h-full rounded-[1.2rem] sm:rounded-[2.4rem] p-0.5 sm:p-1 bg-gradient-to-br from-orange-200 via-orange-300 to-orange-700">
-              <div className="w-full h-full rounded-[1.2rem] sm:rounded-[2.2rem] p-0.5 sm:p-0.5 bg-gradient-to-br from-orange-500 to-orange-900">
-                <div className="w-full h-full bg-gray-50 rounded-[1rem] sm:rounded-[2.2rem] overflow-hidden relative">
+            <div className="w-full h-full rounded-[1.2rem] sm:rounded-[2.4rem] p-0.5 sm:p-1 bg-gradient-to-br from-orange-200 via-orange-300 to-orange-500">
+              <div className="w-full h-full rounded-[1.2rem] sm:rounded-[2.2rem] p-0.5 sm:p-0.5 bg-gradient-to-br from-orange-400 to-orange-600">
+                <div className="w-full h-full bg-white rounded-[1rem] sm:rounded-[2.2rem] overflow-hidden relative">
                   
                   {/* Camera Notch */}
                   <div className="absolute top-0 left-1/2 transform -translate-x-1/2 z-20">
