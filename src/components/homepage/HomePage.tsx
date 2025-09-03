@@ -29,19 +29,7 @@ const HomePage = () => {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
             >
-              {/* Floating accent */}
-              <motion.div 
-                className="absolute -top-6 -right-8 w-20 h-20 rounded-full opacity-40"
-                style={{
-                  background: 'radial-gradient(circle, var(--c-accent) 0%, transparent 70%)',
-                  filter: 'blur(20px)',
-                }}
-                animate={{ 
-                  scale: [1, 1.3, 1],
-                  opacity: [0.3, 0.6, 0.3]
-                }}
-                transition={{ duration: 5, repeat: Infinity }}
-              />
+              {/* Floating accent - REMOVED */}
               
               <div className="space-y-8">
                 <div className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight tracking-tight">
@@ -52,7 +40,7 @@ const HomePage = () => {
                     transition={{ duration: 0.6 }}
                   >
                     <motion.div 
-                      className="text-gradient font-extrabold"
+                      className="text-black font-extrabold"
                       initial={{ opacity: 0, y: 30 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.2, duration: 0.8 }}
@@ -60,7 +48,7 @@ const HomePage = () => {
                       Smart Link
                     </motion.div>
                     <motion.div 
-                      className="text-gradient font-extrabold"
+                      className="text-black font-extrabold"
                       initial={{ opacity: 0, y: 30 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.4, duration: 0.8 }}
@@ -68,8 +56,7 @@ const HomePage = () => {
                       Analytics
                     </motion.div>
                     <motion.div 
-                      className="font-extrabold"
-                      style={{ color: 'var(--c-accent)' }}
+                      className="font-extrabold text-black"
                       initial={{ opacity: 0, y: 30 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.6, duration: 0.8 }}
@@ -80,8 +67,7 @@ const HomePage = () => {
                 </div>
                 
                 <motion.p 
-                  className="text-lg lg:text-xl leading-relaxed font-medium max-w-lg mx-auto lg:mx-0"
-                  style={{ color: 'var(--c-text-dim)' }}
+                  className="text-lg lg:text-xl leading-relaxed font-medium max-w-lg mx-auto lg:mx-0 text-gray-700"
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.8, duration: 0.8 }}
@@ -128,18 +114,17 @@ const HomePage = () => {
               
               {/* Trust indicators */}
               <motion.div 
-                className="flex items-center gap-6 pt-8 justify-center lg:justify-start text-sm"
-                style={{ color: 'var(--c-text-dim)' }}
+                className="flex items-center gap-6 pt-8 justify-center lg:justify-start text-sm text-gray-600"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 1.2, duration: 0.8 }}
               >
                 <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full" style={{ backgroundColor: 'var(--c-accent)' }}></div>
+                  <div className="w-2 h-2 rounded-full bg-orange-500"></div>
                   <span>Free forever</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full" style={{ backgroundColor: 'var(--c-accent)' }}></div>
+                  <div className="w-2 h-2 rounded-full bg-orange-500"></div>
                   <span>No credit card</span>
                 </div>
                 <div className="flex items-center gap-2">
@@ -167,12 +152,12 @@ const HomePage = () => {
                   {/* Header */}
                   <div className="flex items-center justify-between mb-6">
                     <div>
-                      <h3 className="text-lg font-semibold" style={{ color: 'var(--c-text)' }}>Analytics Dashboard</h3>
-                      <p className="text-sm" style={{ color: 'var(--c-text-dim)' }}>Live preview</p>
+                      <h3 className="text-lg font-semibold text-black">Analytics Dashboard</h3>
+                      <p className="text-sm text-gray-600">Live preview</p>
                     </div>
                     <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 rounded-full animate-glow-pulse" style={{ backgroundColor: 'var(--c-accent)' }}></div>
-                      <span className="text-xs font-medium" style={{ color: 'var(--c-accent)' }}>Live</span>
+                      <div className="w-2 h-2 rounded-full animate-glow-pulse bg-orange-500"></div>
+                      <span className="text-xs font-medium text-orange-600">Live</span>
                     </div>
                   </div>
                   
@@ -184,9 +169,9 @@ const HomePage = () => {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 1.4, duration: 0.6 }}
                     >
-                      <div className="text-2xl font-bold" style={{ color: 'var(--c-text)' }}>2,847</div>
-                      <div className="text-sm" style={{ color: 'var(--c-text-dim)' }}>Total Clicks</div>
-                      <div className="text-xs mt-1" style={{ color: 'var(--c-positive)' }}>+12.5% this week</div>
+                      <div className="text-2xl font-bold text-black">2,847</div>
+                      <div className="text-sm text-gray-600">Total Clicks</div>
+                      <div className="text-xs mt-1 text-green-600">+12.5% this week</div>
                     </motion.div>
                     
                     <motion.div 
@@ -195,9 +180,9 @@ const HomePage = () => {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 1.6, duration: 0.6 }}
                     >
-                      <div className="text-2xl font-bold" style={{ color: 'var(--c-text)' }}>156</div>
-                      <div className="text-sm" style={{ color: 'var(--c-text-dim)' }}>Countries</div>
-                      <div className="text-xs mt-1" style={{ color: 'var(--c-positive)' }}>+8 new</div>
+                      <div className="text-2xl font-bold text-black">156</div>
+                      <div className="text-sm text-gray-600">Countries</div>
+                      <div className="text-xs mt-1 text-green-600">+8 new</div>
                     </motion.div>
                   </div>
                   
@@ -209,8 +194,8 @@ const HomePage = () => {
                     transition={{ delay: 1.8, duration: 0.6 }}
                   >
                     <div className="flex items-center justify-between mb-4">
-                      <h4 className="font-medium" style={{ color: 'var(--c-text)' }}>Click Trends</h4>
-                      <div className="text-xs px-2 py-1 rounded-full" style={{ backgroundColor: 'var(--c-accent)', color: 'white' }}>
+                      <h4 className="font-medium text-black">Click Trends</h4>
+                      <div className="text-xs px-2 py-1 rounded-full bg-orange-500 text-white">
                         Last 7 days
                       </div>
                     </div>

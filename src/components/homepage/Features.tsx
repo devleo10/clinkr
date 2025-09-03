@@ -30,8 +30,8 @@ const Features = () => {
       title: "Real-time Analytics",
       description: "Track clicks, views, and engagement metrics in real-time with detailed insights.",
       icon: "M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z",
-      gradient: "from-orange-500 to-amber-600",
-      bgGradient: "from-orange-50/60 via-amber-50/40 to-orange-50/50",
+      gradient: "from-orange-500 to-orange-600",
+      bgGradient: "from-orange-50/60 via-orange-50/40 to-orange-50/50",
       hoverColor: "orange-200"
     },
     {
@@ -64,15 +64,15 @@ const Features = () => {
       icon: "M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1",
       gradient: "from-orange-500 to-orange-600",
       bgGradient: "from-orange-50/60 via-orange-50/40 to-orange-50/50",
-      hoverColor: "red-200"
+      hoverColor: "orange-200"
     },
     {
       title: "Smart Insights",
       description: "AI-powered recommendations to optimize your link strategy for maximum impact.",
       icon: "M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z",
-      gradient: "from-amber-600 to-orange-500",
-      bgGradient: "from-amber-50/60 via-orange-50/40 to-amber-50/50",
-      hoverColor: "amber-200"
+      gradient: "from-orange-500 to-orange-600",
+      bgGradient: "from-orange-50/60 via-orange-50/40 to-orange-50/50",
+      hoverColor: "orange-200"
     }
   ];
 
@@ -80,19 +80,20 @@ const Features = () => {
     <div id="features"> 
       <div className="py-12 mt-8 mx-auto glass-card bg-white/97 backdrop-blur-xl w-full rounded-2xl shadow-xl border border-orange-100/40 relative overflow-hidden">
         {/* Enhanced background with multiple layers */}
-        <div className="absolute inset-0 bg-gradient-to-br from-orange-50/70 via-white to-amber-50/60 opacity-95" />
+                <div className="absolute inset-0 bg-gradient-to-br from-orange-50/70 via-white to-white opacity-95" />
         
-        {/* Floating background elements with improved animations */}
+        {/* Animated floating orbs */}
         <motion.div 
-          className="absolute top-10 left-10 w-32 h-32 bg-gradient-to-r from-orange-300/20 to-amber-400/18 rounded-full blur-2xl"
+          className="absolute top-10 left-10 w-32 h-32 bg-white rounded-full blur-2xl"
           animate={{ 
             scale: [1, 1.2, 1],
-            opacity: [0.3, 0.5, 0.3]
+            opacity: [0.3, 0.6, 0.3]
           }}
           transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
         />
+        
         <motion.div 
-          className="absolute bottom-10 right-10 w-40 h-40 bg-gradient-to-r from-amber-400/18 to-orange-400/20 rounded-full blur-2xl"
+          className="absolute bottom-10 right-10 w-40 h-40 bg-white rounded-full blur-2xl"
           animate={{ 
             scale: [1, 1.3, 1],
             opacity: [0.4, 0.6, 0.4]
@@ -101,7 +102,7 @@ const Features = () => {
         />
         
         {/* Top accent */}
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-600 via-amber-600 to-orange-500 rounded-t-2xl" />
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-600 via-orange-500 to-orange-400 rounded-t-2xl" />
         
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <motion.div 
@@ -111,7 +112,7 @@ const Features = () => {
             transition={{ duration: 0.8 }}
           >
             <motion.h2 
-              className="text-3xl md:text-4xl font-black mb-4 text-transparent bg-clip-text bg-gradient-to-r from-orange-600 via-amber-600 to-orange-500 drop-shadow-sm tracking-tight"
+              className="text-3xl md:text-4xl font-black mb-4 text-black drop-shadow-sm tracking-tight"
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8, delay: 0.2 }}
@@ -174,7 +175,7 @@ const Features = () => {
                     </motion.div>
                     
                     <motion.h3 
-                      className="text-lg font-bold text-gray-900 group-hover:text-orange-700 transition-colors duration-300 flex-1"
+                      className="text-lg font-bold text-black group-hover:text-black transition-colors duration-300 flex-1"
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.3 + index * 0.1 }}
@@ -184,7 +185,7 @@ const Features = () => {
                   </div>
                   
                   <motion.p 
-                    className="text-gray-600 font-medium leading-relaxed text-sm flex-1"
+                    className="text-gray-700 font-medium leading-relaxed text-sm flex-1"
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.4 + index * 0.1 }}
