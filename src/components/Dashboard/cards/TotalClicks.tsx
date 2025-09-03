@@ -73,24 +73,24 @@ const TotalClicks = () => {
       }}
     >
       {/* Subtle gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-orange-50/50 via-white/50 to-orange-100/50 opacity-70" />
+      <div className="absolute inset-0 bg-gradient-to-br from-orange-50/50 via-white/50 to-white/50 opacity-70" />
       
       {/* Animated accent */}
       <motion.div 
-        className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400"
+        className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-600 via-orange-500 to-orange-400"
         initial={{ scaleX: 0 }}
         animate={{ scaleX: 1 }}
         transition={{ duration: 0.8, delay: 0.2 }}
       />
       
       <div className="flex justify-between relative z-10">
-        <h1 className="font-bold text-gray-800">Total Clicks</h1>
+        <h1 className="font-bold text-black">Total Clicks</h1>
         <p className={`${percentageChange >= 0 ? 'text-green-500' : 'text-red-500'} font-semibold px-2 py-1 rounded-md ${percentageChange >= 0 ? 'bg-green-50' : 'bg-red-50'}`}>
           {percentageChange >= 0 ? '+' : ''}{percentageChange}%
         </p>
       </div>
       <div className="mt-8 flex relative z-10">
-        <h1 className="text-4xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400">
+        <h1 className="text-4xl font-extrabold text-black">
           {loading ? (
             <motion.span
               animate={{ opacity: [0.5, 1, 0.5] }}
@@ -104,7 +104,7 @@ const TotalClicks = () => {
         </h1>
       </div>
       <div className="relative z-10">
-        <p className="text-sm text-orange-600 font-medium">Last 30 Days</p>
+        <p className="text-sm text-black font-medium">Last 30 Days</p>
       </div>
     </motion.div>
   );

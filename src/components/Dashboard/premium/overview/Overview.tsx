@@ -190,18 +190,18 @@ const Overview = () => {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.3 }}
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-blue-50 opacity-70" />
+            <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-white to-white opacity-70" />
             
             <motion.div 
-              className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500"
+              className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-600 via-orange-500 to-orange-400"
               initial={{ scaleX: 0 }}
               animate={{ scaleX: 1 }}
               transition={{ duration: 0.8, delay: 0.2 }}
             />
             
             <div className="relative z-10 flex flex-col items-center">
-              <div className="w-12 h-12 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mb-3"></div>
-              <p className="text-indigo-600 font-medium">Loading overview data...</p>
+              <div className="w-12 h-12 border-4 border-black border-t-transparent rounded-full animate-spin mb-3"></div>
+              <p className="text-black font-medium">Loading overview data...</p>
             </div>
           </motion.div>
         ) : (
@@ -224,9 +224,9 @@ const Overview = () => {
                 boxShadow: "0 10px 25px -5px rgba(99, 102, 241, 0.2)"
               }}
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-blue-50 opacity-70" />
+              <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-white to-white opacity-70" />
               <div className="relative z-10">
-                <h3 className="text-lg font-semibold text-indigo-700 mb-2">Key Insights</h3>
+                <h3 className="text-lg font-semibold text-black mb-2">Key Insights</h3>
                 <p className="text-gray-800 font-medium">
                   {parseFloat(overviewData.changes.visitors.replace(/[+%]/g, '')) > 0 
                     ? `Your profile traffic has increased by ${overviewData.changes.visitors} compared to last week.` 
