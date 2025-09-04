@@ -38,7 +38,7 @@ const LoadingScreen = () => (
       />
       
       {/* Orbiting particles */}
-      {[0, 60, 120, 180, 240, 300].map((angle, index) => (
+      {[0, 60, 120, 180, 240, 300].map((index) => (
         <motion.div
           key={index}
           className="absolute w-2 h-2 bg-orange-400 rounded-full"
