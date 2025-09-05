@@ -5,6 +5,7 @@ import { Link, useParams } from 'react-router-dom';
 import { supabase } from '../../lib/supabaseClient';
 import { FaUser, FaRocket, FaHandSparkles } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
+import LoadingScreen from '../ui/loadingScreen';
 import { MoreHorizontal } from "lucide-react";
 import { Globe } from 'lucide-react';
 
@@ -511,11 +512,7 @@ const PublicProfile = () => {
               <div className="w-full h-full rounded-full bg-white flex items-center justify-center overflow-hidden relative z-10">
                 {loading ? (
                   <div className="absolute inset-0 flex items-center justify-center bg-transparent">
-                    <motion.div 
-                      className="rounded-full h-10 w-10 border-b-2 border-t-2 border-orange-400"
-                      animate={{ rotate: 360 }}
-                      transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-                    />
+                    <LoadingScreen compact />
                   </div>
                 ) : profile?.profile_picture ? (
                   <motion.img

@@ -5,6 +5,7 @@ import { supabase } from "../../../../lib/supabaseClient";
 import { Tabs, TabsList, TabsTrigger } from "../../../ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../ui/select";
 import { motion } from 'framer-motion';
+import LoadingScreen from '../../../ui/loadingScreen';
 // Interface for analytics data
 interface AnalyticsItem {
   id: string;
@@ -419,10 +420,7 @@ const Trends = () => {
         </motion.div>
         
         {isLoading ? (
-          <div className="flex justify-center items-center h-64">
-            <div className="w-12 h-12 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
-            <p className="ml-3 text-indigo-600 font-medium">Loading trends data...</p>
-          </div>
+          <LoadingScreen compact message="Loading trends data..." />
         ) : (
         <motion.div 
           className="grid grid-cols-1 md:grid-cols-3 gap-6"

@@ -2,26 +2,34 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 const FreeCard = () => {
+  const itemVariants = {
+    rest: { y: 0, scale: 1 },
+    hover: { y: -6, scale: 1.02, transition: { duration: 0.18 } }
+  };
+
+
+  const listItemVariants = {
+    rest: { x: 0 },
+    hover: { x: 4, transition: { duration: 0.15 } }
+  };
   return (
     <motion.div 
       className="w-full relative bg-white/95 backdrop-blur-xl border-2 border-orange-200/70 p-8 rounded-3xl hover:border-orange-300 flex flex-col justify-between shadow-2xl hover:shadow-3xl group transition-all duration-500 overflow-hidden"
-      whileHover={{ y: -8, scale: 1.02 }}
+      variants={itemVariants}
+      initial="rest"
+      whileHover="hover"
       whileTap={{ scale: 0.98 }}
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
+      animate="rest"
       transition={{ duration: 0.6 }}
     >
       {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-white to-white opacity-90 group-hover:opacity-100 transition-opacity duration-500" />
-      
-      {/* Floating elements */}
-      <div className="absolute top-4 right-4 w-20 h-20 bg-white rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
+      <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-white to-white opacity-90 transition-opacity duration-500" />
       
       {/* Top accent */}
       <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600 rounded-t-3xl" />
       
       {/* Corner decoration */}
-      <div className="absolute bottom-0 right-0 w-20 h-20 opacity-15 group-hover:opacity-25 transition-opacity duration-500">
+  <div className="absolute bottom-0 right-0 w-20 h-20 opacity-[0.15] group-hover:opacity-[0.25] transition-opacity duration-500">
         <div className="absolute inset-0 rounded-tl-full bg-white" />
       </div>
       
@@ -47,9 +55,11 @@ const FreeCard = () => {
               ].map((feature, index) => (
                 <motion.div 
                   key={feature}
-                  className="flex items-center group-hover:translate-x-1 transition-transform duration-300"
+                  variants={listItemVariants}
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
+                  whileHover="hover"
+                  className="flex items-center transition-transform duration-300"
                   transition={{ delay: 0.1 * index + 0.3 }}
                 >
                   <div className="flex items-center justify-center w-6 h-6 rounded-full mr-4 shadow-lg bg-gradient-to-r from-orange-500 to-orange-600">
@@ -72,7 +82,7 @@ const FreeCard = () => {
                 >
                     <span className="flex items-center justify-center gap-2">
                       Get Started Free
-                      <svg className="w-5 h-5 group-hover/button:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-5 h-5 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                       </svg>
                     </span>

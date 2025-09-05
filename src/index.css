@@ -16,8 +16,8 @@
     --c-border: #E5E3DD;
     --c-text: #0F1115;
     --c-text-dim: #5A5E66;
-    --c-accent: #FF7A1A;
-    --c-accent-rgb: 255 122 26;
+    --c-accent: #FF9051;
+    --c-accent-rgb: 255 144 81;
     --c-positive: #FF9A3E;
     --c-negative: #FF6B3E;
     --c-info: #FF7A1A;
@@ -218,6 +218,23 @@
   background: rgba(255, 255, 255, 0.2);
   transform: translateY(-1px);
   box-shadow: var(--shadow-glow);
+}
+
+/* Shiny CTA effect used by PremiumCard */
+.shiny-effect {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transform: skewX(-30deg);
+  animation: shiny 6s infinite;
+}
+
+@keyframes shiny {
+  0% { left: -100%; }
+  20%, 100% { left: 100%; }
 }
 
 .surface-card {

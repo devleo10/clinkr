@@ -3,6 +3,7 @@ import { TabsContent } from '@radix-ui/react-tabs'
 import { useState, useEffect } from 'react'
 import { supabase } from '../../../../lib/supabaseClient'
 import { motion } from 'framer-motion'
+import LoadingScreen from '../../../ui/loadingScreen'
 
 interface OverviewData {
   totalClicks: string;
@@ -184,26 +185,9 @@ const Overview = () => {
     <div>
       <TabsContent value="overview" className="space-y-6">
         {isLoading ? (
-          <motion.div 
-            className="glass-card bg-white/80 backdrop-blur-lg border border-white/30 p-6 rounded-xl flex justify-center items-center min-h-[200px] relative overflow-hidden"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.3 }}
-          >
-            <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-white to-white opacity-70" />
-            
-            <motion.div 
-              className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-600 via-orange-500 to-orange-400"
-              initial={{ scaleX: 0 }}
-              animate={{ scaleX: 1 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-            />
-            
-            <div className="relative z-10 flex flex-col items-center">
-              <div className="w-12 h-12 border-4 border-black border-t-transparent rounded-full animate-spin mb-3"></div>
-              <p className="text-black font-medium">Loading overview data...</p>
-            </div>
-          </motion.div>
+          <div className="w-full flex items-center justify-center py-8">
+            <LoadingScreen compact message="Loading overview data..." />
+          </div>
         ) : (
           <>
             <StatsGrid

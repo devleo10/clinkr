@@ -60,7 +60,14 @@ const ProtectedRoute = ({ children, requireAuth, requireProfile = false }: Prote
   }, [session, requireProfile]);
 
   if (authLoading || !profileCheckComplete) {
-    return <LoadingScreen />;
+    // Use compact variant here but center it to avoid flash at top-left during route changes.
+    return (
+      <div className="fixed inset-0 flex items-center justify-center z-40 pointer-events-none">
+        <div className="pointer-events-auto">
+          <LoadingScreen compact message="Verifying session..." />
+        </div>
+      </div>
+    );
   }
 
   // If auth is required and there's no session, redirect to signup

@@ -35,7 +35,7 @@ const Footer = () => {
       transition={{ duration: 0.5 }}
       viewport={{ once: true }}
     >
-      <div className="bg-gradient-to-b from-gray-900 to-orange-900 text-white py-16 px-6 md:px-20">
+      <div className="py-16 px-6 md:px-20" style={{ background: 'linear-gradient(to bottom, rgba(var(--background), 0.02), rgba(var(--c-bg), 0.04))' }}>
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 w-full">
           {/* ClipMetrics Column */}
           <motion.div 
@@ -53,7 +53,7 @@ const Footer = () => {
                   className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 lg:w-10 lg:h-10" 
                 />
               </Link>
-              <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold relative group">
+              <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold relative group" style={{ color: 'rgb(var(--foreground))' }}>
                 <span className="bg-clip-text text-transparent bg-gradient-to-r from-orange-400 via-amber-300 to-orange-300 hover:from-orange-300 hover:via-amber-300 hover:to-orange-400 transition-all duration-300">
                   Clinkr
                 </span>
@@ -61,7 +61,7 @@ const Footer = () => {
               </h1>
             </div>
 
-            <p className="text-sm text-orange-200 mt-4">
+            <p className="text-sm mt-4" style={{ color: 'rgba(var(--foreground), 0.65)' }}>
               Track, analyze, and optimize your bio links for maximum engagement.
             </p>
           </motion.div>
@@ -74,12 +74,12 @@ const Footer = () => {
             transition={{ duration: 0.5, delay: 0.2 }}
             viewport={{ once: true }}
           >
-            <h3 className="font-semibold mb-4 text-white">Product</h3>
-            <ul className="space-y-3 text-sm text-orange-200">
+            <h3 className="font-semibold mb-4" style={{ color: 'rgb(var(--foreground))' }}>Product</h3>
+            <ul className="space-y-3 text-sm" style={{ color: 'rgba(var(--foreground), 0.65)' }}>
               <li>
                 <button 
                   onClick={() => handleNavigation('features')} 
-                  className="hover:text-white transition-colors"
+                  className="transition-colors hover:text-[rgb(var(--c-accent-rgb))]"
                 >
                   Features
                 </button>
@@ -87,7 +87,7 @@ const Footer = () => {
               <li>
                 <button 
                   onClick={() => handleNavigation('pricing')} 
-                  className="hover:text-white transition-colors"
+                  className="transition-colors hover:text-[rgb(var(--c-accent-rgb))]"
                 >
                   Pricing
                 </button>
@@ -95,7 +95,7 @@ const Footer = () => {
               <li>
                 <button 
                   onClick={() => handleNavigation('faq')} 
-                  className="hover:text-white transition-colors"
+                  className="transition-colors hover:text-[rgb(var(--c-accent-rgb))]"
                 >
                   FAQ
                 </button>
@@ -114,11 +114,11 @@ const Footer = () => {
             transition={{ duration: 0.5, delay: 0.3 }}
             viewport={{ once: true }}
           >
-            <h3 className="font-semibold mb-4 text-white">Legal</h3>
-            <ul className="space-y-3 text-sm text-orange-200">
-              <li><Link to="/privacypolicy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
-              <li><Link to="/termsofservice" className="hover:text-white transition-colors">Terms of Service</Link></li>
-              <li><Link to="/cookiepolicy" className="hover:text-white transition-colors">Cookie Policy</Link></li>
+            <h3 className="font-semibold mb-4" style={{ color: 'rgb(var(--foreground))' }}>Legal</h3>
+            <ul className="space-y-3 text-sm" style={{ color: 'rgba(var(--foreground), 0.65)' }}>
+              <li><Link to="/privacypolicy" className="transition-colors hover:text-[rgb(var(--c-accent-rgb))]">Privacy Policy</Link></li>
+              <li><Link to="/termsofservice" className="transition-colors hover:text-[rgb(var(--c-accent-rgb))]">Terms of Service</Link></li>
+              <li><Link to="/cookiepolicy" className="transition-colors hover:text-[rgb(var(--c-accent-rgb))]">Cookie Policy</Link></li>
             </ul>
           </motion.div>
           
@@ -130,26 +130,26 @@ const Footer = () => {
             transition={{ duration: 0.5, delay: 0.4 }}
             viewport={{ once: true }}
           >
-            <h3 className="font-semibold mb-4 text-white">Connect</h3>
+            <h3 className="font-semibold mb-4" style={{ color: 'rgb(var(--foreground))' }}>Connect</h3>
             <div className="flex space-x-4">
               <motion.a 
                 href="#" 
-                className="text-orange-200 hover:text-white transition-colors"
-                whileHover={{ scale: 1.1 }}
+                className="transition-colors text-[rgba(var(--foreground),0.65)] hover:text-[rgb(var(--c-accent-rgb))]"
+                whileHover={{ scale: 1.05 }}
               >
                 <FaTwitter size={20} />
               </motion.a>
               <motion.a 
                 href="#" 
-                className="text-orange-200 hover:text-white transition-colors"
-                whileHover={{ scale: 1.1 }}
+                className="transition-colors text-[rgba(var(--foreground),0.65)] hover:text-[rgb(var(--c-accent-rgb))]"
+                whileHover={{ scale: 1.05 }}
               >
                 <FaInstagram size={20} />
               </motion.a>
               <motion.a 
                 href="#" 
-                className="text-orange-200 hover:text-white transition-colors"
-                whileHover={{ scale: 1.1 }}
+                className="transition-colors text-[rgba(var(--foreground),0.65)] hover:text-[rgb(var(--c-accent-rgb))]"
+                whileHover={{ scale: 1.05 }}
               >
                 <FaLinkedin size={20} />
               </motion.a>
@@ -157,8 +157,8 @@ const Footer = () => {
           </motion.div>
         </div>
         
-        <div className="mt-16 text-center text-sm text-orange-200">
-          © 2025 ClipMetrics. All rights reserved.
+        <div className="mt-16 text-center text-sm" style={{ color: 'rgba(var(--foreground), 0.6)' }}>
+          © 2025 Clinkr. All rights reserved.
         </div>
       </div>
     </motion.div>

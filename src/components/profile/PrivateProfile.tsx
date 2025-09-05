@@ -13,6 +13,7 @@ import Modal from 'react-modal';
 import { Globe } from 'lucide-react';
 import { MoreVertical, GripVertical } from "lucide-react";
 import { motion, Reorder } from 'framer-motion';
+import LoadingScreen from '../ui/loadingScreen';
 import BoltBackground from '../homepage/BoltBackground';
 
 interface UserProfile {
@@ -184,7 +185,7 @@ const PrivateProfile = () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('No user found');
-  
+
       // Store only the URL in the links array
       const updatedLinks = [...(profile?.links || []), newLink.url];
       
@@ -198,9 +199,9 @@ const PrivateProfile = () => {
           link_title: updatedLinkTitles 
         })
         .eq('id', user.id);
-  
+
       if (updateError) throw updateError;
-  
+
       setProfile(prev => prev ? { 
         ...prev, 
         links: updatedLinks,
@@ -558,7 +559,7 @@ const PrivateProfile = () => {
             <div className="w-full h-full rounded-full bg-white flex items-center justify-center overflow-hidden">
               {loading && (
                 <div className="absolute inset-0 flex items-center justify-center bg-transparent z-20">
-                  <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-orange-400"></div>
+                  <LoadingScreen compact />
                 </div>
               )}
               {profile?.profile_picture ? (

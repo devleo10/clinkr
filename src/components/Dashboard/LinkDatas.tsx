@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabaseClient';
 import { motion } from 'framer-motion';
+import LoadingScreen from '../ui/loadingScreen';
 
 interface Link {
   title: string;
@@ -135,8 +136,8 @@ const LinkDatas: React.FC<LinkDatasProps> = ({ searchQuery }) => {
   if (loading) {
     return (
       <div className="w-full h-auto min-h-20 mb-10 md:mb-20 glass-card bg-white/80 backdrop-blur-lg border border-white/30 px-10 py-6 md:py-8 flex flex-col justify-center items-center space-y-4 rounded-xl shadow-lg">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-indigo-600"></div>
-        <p className="text-indigo-600 text-lg font-medium">Loading your links, please wait...</p>
+        {/* Use the new standardized compact loader */}
+        <LoadingScreen compact message="Loading your links, please wait" />
       </div>
     );
   }

@@ -8,6 +8,7 @@ import { Tabs, TabsList, TabsTrigger } from "../../../ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../ui/select";
 import { Filter, Smartphone, Laptop, Calendar } from "lucide-react";
 import { motion } from 'framer-motion';
+import LoadingScreen from '../../../ui/loadingScreen';
 
 interface HeatmapLayerProps {
   points: Array<[number, number, number]>;
@@ -358,26 +359,7 @@ const Geography = () => {
       )}
       
       {isLoading ? (
-        <motion.div 
-          className="glass-card bg-white/80 backdrop-blur-lg border border-white/30 p-6 rounded-xl flex justify-center items-center h-96 relative overflow-hidden"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.3 }}
-        >
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-blue-50 opacity-70" />
-          
-          <motion.div 
-            className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500"
-            initial={{ scaleX: 0 }}
-            animate={{ scaleX: 1 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-          />
-          
-          <div className="relative z-10 flex flex-col items-center">
-            <div className="w-12 h-12 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mb-3"></div>
-            <p className="text-orange-600 font-medium">Loading geography data...</p>
-          </div>
-        </motion.div>
+        <LoadingScreen compact message="Loading geography data..." />
       ) : (
         <motion.div 
           className="glass-card bg-white/80 backdrop-blur-lg border border-white/30 rounded-xl shadow-md overflow-hidden h-96 w-full relative"

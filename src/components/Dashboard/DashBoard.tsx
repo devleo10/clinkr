@@ -10,6 +10,7 @@ import debounce from 'lodash/debounce';
 import { supabase } from '../../lib/supabaseClient';
 import { useAuth } from '../auth/AuthProvider';
 import BoltBackground from '../homepage/BoltBackground';
+import LoadingScreen from '../ui/loadingScreen';
 
 const DashBoard = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -63,7 +64,9 @@ const DashBoard = () => {
     return (
       <div className="min-h-screen flex items-center justify-center relative">
         <BoltBackground />
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-400 relative z-10"></div>
+        <div className="relative z-10">
+          <LoadingScreen compact message="Loading dashboard..." />
+        </div>
       </div>
     );
   }

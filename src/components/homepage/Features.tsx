@@ -23,6 +23,34 @@ const Features = () => {
         ease: "easeOut" as const,
       },
     },
+    // interactive hover states (for nested children)
+    rest: { y: 0, scale: 1 },
+    hover: {
+      y: -3,
+      scale: 1.015,
+      transition: { duration: 0.18 }
+    }
+  };
+
+  // Child variants for hover interactions (inherited from parent whileHover)
+  const bgVariants = {
+    rest: { opacity: 0 },
+    hover: { opacity: 1, transition: { duration: 0.25 } }
+  };
+
+  const orbVariants = {
+    rest: { scale: 1, opacity: 0.4 },
+  hover: { scale: 1.12, opacity: 0.6, transition: { duration: 0.22 } }
+  };
+
+  const iconVariants = {
+    rest: { scale: 1 },
+  hover: { scale: 1.08, transition: { duration: 0.18 } }
+  };
+
+  const dotVariants = {
+    rest: { opacity: 0 },
+  hover: { opacity: 1, transition: { duration: 0.18 } }
   };
 
   const features = [
@@ -76,6 +104,14 @@ const Features = () => {
     }
   ];
 
+  // Helper to safely append opacity suffix to the last gradient token
+  const makeFadedGradient = (gradient: string, suffix = '/20') => {
+    const parts = gradient.split(' ').filter(Boolean);
+    if (parts.length === 0) return gradient;
+    parts[parts.length - 1] = `${parts[parts.length - 1]}${suffix}`;
+    return parts.join(' ');
+  };
+
   return (
     <div id="features"> 
       <div className="py-12 mt-8 mx-auto glass-card bg-white/97 backdrop-blur-xl w-full rounded-2xl shadow-xl border border-orange-100/40 relative overflow-hidden">
@@ -98,7 +134,7 @@ const Features = () => {
             scale: [1, 1.3, 1],
             opacity: [0.4, 0.6, 0.4]
           }}
-          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
         />
         
         {/* Top accent */}
@@ -139,17 +175,20 @@ const Features = () => {
             {features.map((feature, index) => (
               <motion.div 
                 key={index}
-                className="group relative bg-white/85 backdrop-blur-md border border-gray-200/70 rounded-xl p-6 hover:shadow-xl hover:border-orange-200 transition-all duration-500 overflow-hidden h-64"
+                className="relative bg-white/85 backdrop-blur-md border border-gray-200/70 rounded-xl p-6 hover:shadow-xl hover:border-orange-200 transition-all duration-500 overflow-hidden h-64"
                 variants={itemVariants}
-                whileHover={{ y: -5, scale: 1.02 }}
+                initial="rest"
+                whileHover="hover"
+                animate="rest"
                 whileTap={{ scale: 0.98 }}
               >
                 {/* Dynamic gradient background */}
-                <div className={`absolute inset-0 bg-gradient-to-br ${feature.bgGradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
+                <motion.div variants={bgVariants} className={`absolute inset-0 bg-gradient-to-br ${feature.bgGradient} opacity-0`} />
                 
-                {/* Floating orb effect */}
+                {/* Floating orb effect (use motion for transforms) */}
                 <motion.div 
-                  className={`absolute -top-10 -right-10 w-20 h-20 bg-gradient-to-br ${feature.gradient.replace('to-', 'to-').replace('from-', 'from-')}/20 rounded-full blur-xl group-hover:scale-150 transition-transform duration-500`}
+                  variants={orbVariants}
+                  className={`absolute -top-10 -right-10 w-20 h-20 bg-gradient-to-br ${makeFadedGradient(feature.gradient)} rounded-full blur-xl`}
                   animate={{
                     scale: [1, 1.1, 1],
                     opacity: [0.3, 0.5, 0.3]
@@ -165,9 +204,9 @@ const Features = () => {
                 <div className="relative z-10 h-full flex flex-col">
                   <div className="flex items-center gap-4 mb-4">
                     <motion.div 
-                      className={`flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br ${feature.gradient} shadow-lg group-hover:scale-110 transition-all duration-300`}
-                      whileHover={{ rotate: [0, -5, 5, 0] }}
-                      transition={{ duration: 0.5 }}
+                      variants={iconVariants}
+                      className={`flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br ${feature.gradient} shadow-lg transition-all duration-200`}
+                      whileHover="hover"
                     >
                       <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                         <path strokeLinecap="round" strokeLinejoin="round" d={feature.icon} />
@@ -195,7 +234,8 @@ const Features = () => {
                   
                   {/* Interactive hover element */}
                   <motion.div
-                    className="absolute bottom-4 right-4 w-4 h-4 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                    variants={dotVariants}
+                    className="absolute bottom-4 right-4 w-4 h-4 rounded-full opacity-0"
                     style={{
                       background: 'radial-gradient(circle, var(--c-accent) 0%, rgba(255, 122, 26, 0.3) 100%)'
                     }}

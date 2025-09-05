@@ -1,5 +1,6 @@
 import FreeCard from "./cards/FreeCard"
 import PremiumCard from "./cards/PremiumCard"
+import { motion } from 'framer-motion';
 
 
 const Pricing = () => {
@@ -16,6 +17,23 @@ const Pricing = () => {
         <p className="text-gray-800 text-base font-semibold">Start Free, Upgrade when you need more</p>
       </div>
       
+      {/* Shared background floating orbs (single source of truth for both cards) */}
+      <motion.div className="absolute inset-0 pointer-events-none z-0" aria-hidden>
+        <motion.div
+          className="absolute w-44 h-44 rounded-full"
+          style={{ left: '6%', top: '8%', filter: 'blur(48px)', background: 'radial-gradient(circle, rgba(255,144,81,0.18) 0%, rgba(255,144,81,0.03) 50%, transparent 70%)' }}
+          animate={{ x: [0, 30, -20, 0], y: [0, -20, 10, 0], scale: [1, 1.12, 0.95, 1] }}
+          transition={{ duration: 22, repeat: Infinity, ease: 'easeInOut' }}
+        />
+
+        <motion.div
+          className="absolute w-56 h-56 rounded-full"
+          style={{ right: '8%', top: '18%', filter: 'blur(60px)', background: 'radial-gradient(circle, rgba(255,144,81,0.12) 0%, rgba(255,144,81,0.02) 40%, transparent 70%)' }}
+          animate={{ x: [0, -25, 15, 0], y: [0, 25, -15, 0], scale: [1, 0.9, 1.08, 1] }}
+          transition={{ duration: 26, repeat: Infinity, ease: 'easeInOut', delay: 4 }}
+        />
+      </motion.div>
+
       {/* Cards container - column on small screens, row on md and up */}
       <div className="flex flex-col md:flex-row gap-6 justify-center items-stretch max-w-4xl w-full relative z-10">
         <FreeCard />
