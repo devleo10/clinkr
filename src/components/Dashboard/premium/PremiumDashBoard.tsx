@@ -317,7 +317,7 @@ const PremiumDashBoard = () => {
                   <TabsTrigger 
                   key={tab.value}
                   value={tab.value} 
-                  className="relative group data-[state=active]:bg-gradient-to-r data-[state=active]:from-orange-600 data-[state=active]:via-amber-500 data-[state=active]:to-orange-400 data-[state=active]:text-white rounded-lg transition-all duration-300 shadow-sm hover:shadow-md data-[state=active]:shadow-lg py-2.5 px-3 flex-shrink-0 text-xs sm:text-sm md:text-base min-w-0 flex-1"
+                  className="relative group text-black data-[state=active]:bg-gradient-to-r data-[state=active]:from-orange-600 data-[state=active]:via-amber-500 data-[state=active]:to-orange-400 data-[state=active]:text-white rounded-lg transition-all duration-300 shadow-sm hover:shadow-md data-[state=active]:shadow-lg py-2.5 px-3 flex-shrink-0 text-xs sm:text-sm md:text-base min-w-0 flex-1"
                   >
                   <motion.div
                     className="absolute inset-0 bg-gradient-to-r from-orange-50 to-orange-100 opacity-0 group-hover:opacity-100 group-data-[state=active]:opacity-0 rounded-lg transition-opacity"

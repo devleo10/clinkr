@@ -124,7 +124,7 @@ const LinkDatas: React.FC<LinkDatasProps> = ({ searchQuery }) => {
           className="w-6 h-6 rounded"
         />
         <a href={url} target="_blank" rel="noopener noreferrer"
-          className="hover:underline text-blue-600 truncate max-w-[180px] sm:max-w-[320px] lg:max-w-[480px] inline-block align-middle"
+          className="hover:underline text-orange-600 truncate max-w-[180px] sm:max-w-[320px] lg:max-w-[480px] inline-block align-middle"
           style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', verticalAlign: 'middle' }}
         >
           {getTrimmedUrl()}
@@ -153,11 +153,11 @@ const LinkDatas: React.FC<LinkDatasProps> = ({ searchQuery }) => {
   return (
     <div className='w-full h-auto min-h-20 mb-10 md:mb-20 glass-card bg-white/80 backdrop-blur-lg border border-white/30 px-4 sm:px-6 lg:px-8 py-6 rounded-xl shadow-lg relative overflow-hidden'>
       {/* Subtle gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-blue-50 opacity-70" />
+  <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-white to-orange-50 opacity-70" />
       
       {/* Animated accent */}
       <motion.div 
-        className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500"
+        className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-600 via-amber-500 to-orange-500"
         initial={{ scaleX: 0 }}
         animate={{ scaleX: 1 }}
         transition={{ duration: 0.8, delay: 0.2 }}
@@ -171,23 +171,23 @@ const LinkDatas: React.FC<LinkDatasProps> = ({ searchQuery }) => {
         <div className="relative z-10">
           {/* Desktop Table */}
           <table className="hidden sm:table w-full bg-white/90 backdrop-blur-sm rounded-lg overflow-hidden shadow-md">
-            <thead className="bg-gradient-to-r from-indigo-50 to-blue-50">
+            <thead className="bg-gradient-to-r from-orange-50 to-orange-50">
               <tr>
-                <th className="py-3 px-4 border-b border-indigo-100 text-left font-medium text-gray-700">Title</th>
-                <th className="py-3 px-4 border-b border-indigo-100 text-left font-medium text-gray-700">URL</th>
-                <th className="py-3 px-4 border-b border-indigo-100 text-center font-medium text-gray-700">Clicks</th>
+                <th className="py-3 px-4 border-b border-orange-100 text-left font-medium text-gray-700">Title</th>
+                <th className="py-3 px-4 border-b border-orange-100 text-left font-medium text-gray-700">URL</th>
+                <th className="py-3 px-4 border-b border-orange-100 text-center font-medium text-gray-700">Clicks</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-indigo-100 border-spacing-y-2">
               {filteredLinks.map((link, index) => (
-                <tr key={index} className="hover:bg-indigo-50/50 transition-colors my-2">
+                <tr key={index} className="hover:bg-orange-50/50 transition-colors my-2">
                   <td className="py-3 px-4">
                     <span className="font-medium text-gray-800">{link.title}</span>
                   </td>
                   <td className="py-3 px-4">
                     <LinkWithIcon url={link.url} />
                   </td>
-                  <td className="py-3 px-4 text-center font-medium text-indigo-600">{link.clicks}</td>
+                  <td className="py-3 px-4 text-center font-medium text-orange-600">{link.clicks}</td>
                 </tr>
               ))}
             </tbody>
@@ -196,12 +196,12 @@ const LinkDatas: React.FC<LinkDatasProps> = ({ searchQuery }) => {
           {/* Mobile Cards */}
           <div className="sm:hidden space-y-4">
             {filteredLinks.map((link, index) => (
-              <div key={index} className="bg-white/90 backdrop-blur-sm rounded-lg shadow-md p-4 flex flex-col space-y-2 border border-indigo-50">
+              <div key={index} className="bg-white/90 backdrop-blur-sm rounded-lg shadow-md p-4 flex flex-col space-y-2 border border-orange-50">
                 <div className="flex items-center space-x-3">
                   <span className="font-semibold text-gray-800 text-lg">{link.title}</span>
                 </div>
                 <LinkWithIcon url={link.url} />
-                <div className="text-right text-indigo-600 text-sm">
+                <div className="text-right text-orange-600 text-sm">
                   Clicks: <span className="font-bold">{link.clicks}</span>
                 </div>
               </div>

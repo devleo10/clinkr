@@ -187,10 +187,10 @@ const DashBoard = () => {
             <div className="flex items-center">
               <Link to="/premiumdashboard">
                 <motion.button
-                  className="flex items-center space-x-2 px-4 py-3 rounded-xl bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 hover:from-blue-500 hover:via-indigo-600 hover:to-purple-600 text-white transition-all duration-300 shadow-lg border border-white/20"
+                  className="flex items-center space-x-2 px-4 py-3 rounded-xl bg-gradient-to-r from-orange-600 via-amber-500 to-orange-500 hover:from-orange-500 hover:via-amber-500 hover:to-orange-600 text-white transition-all duration-300 shadow-lg border border-white/20"
                   whileHover={{
                     scale: 1.05,
-                    boxShadow: '0 10px 15px -3px rgba(99, 102, 241, 0.4)',
+                    boxShadow: '0 10px 15px -3px rgba(255, 160, 80, 0.3)',
                   }}
                   whileTap={{ scale: 0.95 }}
                   animate={{ opacity: 1, y: 0 }}

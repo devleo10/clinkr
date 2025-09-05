@@ -379,22 +379,22 @@ const Trends = () => {
         >
           <div>
             <Tabs defaultValue={timeFrame} onValueChange={(value) => setTimeFrame(value as "7days" | "30days" | "90days")}>
-              <TabsList className="bg-white/90 backdrop-blur-sm border border-indigo-50 shadow-sm">
+              <TabsList className="bg-white/90 backdrop-blur-sm border border-orange-100 shadow-sm">
                 <TabsTrigger 
                   value="7days"
-                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:via-indigo-600 data-[state=active]:to-blue-500 data-[state=active]:text-white"
+                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-orange-600 data-[state=active]:via-amber-500 data-[state=active]:to-orange-400 data-[state=active]:text-white"
                 >
                   7 Days
                 </TabsTrigger>
                 <TabsTrigger 
                   value="30days"
-                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:via-indigo-600 data-[state=active]:to-blue-500 data-[state=active]:text-white"
+                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-orange-600 data-[state=active]:via-amber-500 data-[state=active]:to-orange-400 data-[state=active]:text-white"
                 >
                   30 Days
                 </TabsTrigger>
                 <TabsTrigger 
                   value="90days"
-                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:via-indigo-600 data-[state=active]:to-blue-500 data-[state=active]:text-white"
+                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-orange-600 data-[state=active]:via-amber-500 data-[state=active]:to-orange-400 data-[state=active]:text-white"
                 >
                   90 Days
                 </TabsTrigger>
@@ -403,14 +403,14 @@ const Trends = () => {
           </div>
           
           <div className="flex items-center gap-2">
-            <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-purple-100 to-blue-100 text-indigo-600">
+            <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-orange-100 to-orange-200 text-orange-600">
               <Filter size={16} />
             </div>
             <Select value={deviceFilter} onValueChange={(value) => setDeviceFilter(value as "all" | "mobile" | "desktop")}>
-              <SelectTrigger className="w-[180px] border-indigo-100 hover:border-indigo-300 transition-all">
+              <SelectTrigger className="w-[180px] border-orange-100 hover:border-orange-300 transition-all">
                 <SelectValue placeholder="Device Type" />
               </SelectTrigger>
-              <SelectContent className="bg-white/95 backdrop-blur-sm border border-indigo-100">
+              <SelectContent className="bg-white/95 backdrop-blur-sm border border-orange-100">
                 <SelectItem value="all">All Devices</SelectItem>
                 <SelectItem value="mobile">Mobile Only</SelectItem>
                 <SelectItem value="desktop">Desktop Only</SelectItem>
@@ -437,19 +437,19 @@ const Trends = () => {
             transition={{ duration: 0.3 }}
           >
             {/* Subtle gradient background */}
-            <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-blue-50 opacity-70" />
+              <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-white to-orange-100 opacity-70" />
             
             {/* Animated accent line */}
             <motion.div 
-              className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500"
+              className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400"
               initial={{ scaleX: 0 }}
               animate={{ scaleX: 1 }}
               transition={{ duration: 0.6, delay: 0.2 }}
             />
             
             <div className="relative z-10">
-              <div className="flex items-center gap-2 mb-4">
-                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-r from-purple-100 to-blue-100 text-indigo-600">
+                <div className="flex items-center gap-2 mb-4">
+                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-r from-orange-100 to-amber-100 text-orange-600">
                   <MousePointerClick size={20} />
                 </div>
                 <h2 className="text-lg font-semibold text-gray-800">Click Trends</h2>
@@ -458,7 +458,7 @@ const Trends = () => {
                 <div>
                   <p className="text-sm text-gray-600 font-medium">Total Clicks</p>
                   <div className="flex items-center gap-2">
-                    <h3 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-700 to-blue-600">
+                    <h3 className="text-2xl font-bold text-black">
                       {clickTrends.total.toLocaleString()}
                     </h3>
                     <span className="text-xs text-green-500 flex items-center font-medium bg-green-50 px-2 py-1 rounded-full">
@@ -470,11 +470,11 @@ const Trends = () => {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <p className="text-sm text-gray-600 font-medium">Daily Average</p>
-                    <p className="text-md font-semibold text-indigo-700">{clickTrends.dailyAverage.toLocaleString()}</p>
+                    <p className="text-md font-semibold text-orange-700">{clickTrends.dailyAverage.toLocaleString()}</p>
                   </div>
                   <div>
                     <p className="text-sm text-gray-600 font-medium">Peak Day</p>
-                    <p className="text-md font-semibold text-indigo-700">{clickTrends.peakDay}</p>
+                    <p className="text-md font-semibold text-orange-700">{clickTrends.peakDay}</p>
                   </div>
                 </div>
               </div>
@@ -490,19 +490,19 @@ const Trends = () => {
             transition={{ duration: 0.3, delay: 0.1 }}
           >
             {/* Subtle gradient background */}
-            <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-blue-50 opacity-70" />
+            <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-white to-orange-100 opacity-70" />
             
             {/* Animated accent line */}
             <motion.div 
-              className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500"
+              className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400"
               initial={{ scaleX: 0 }}
               animate={{ scaleX: 1 }}
               transition={{ duration: 0.6, delay: 0.3 }}
             />
             
             <div className="relative z-10">
-              <div className="flex items-center gap-2 mb-4">
-                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-r from-purple-100 to-blue-100 text-indigo-600">
+                <div className="flex items-center gap-2 mb-4">
+                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-r from-orange-100 to-amber-100 text-orange-600">
                   <Eye size={20} />
                 </div>
                 <h2 className="text-lg font-semibold text-gray-800">View Trends</h2>
@@ -511,7 +511,7 @@ const Trends = () => {
                 <div>
                   <p className="text-sm text-gray-600 font-medium">Total Views</p>
                   <div className="flex items-center gap-2">
-                    <h3 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-700 to-blue-600">
+                    <h3 className="text-2xl font-bold text-black">
                       {viewTrends.total.toLocaleString()}
                     </h3>
                     <span className="text-xs text-green-500 flex items-center font-medium bg-green-50 px-2 py-1 rounded-full">
@@ -523,11 +523,11 @@ const Trends = () => {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <p className="text-sm text-gray-600 font-medium">Daily Average</p>
-                    <p className="text-md font-semibold text-indigo-700">{viewTrends.dailyAverage.toLocaleString()}</p>
+                    <p className="text-md font-semibold text-orange-700">{viewTrends.dailyAverage.toLocaleString()}</p>
                   </div>
                   <div>
                     <p className="text-sm text-gray-600 font-medium">Peak Time</p>
-                    <p className="text-md font-semibold text-indigo-700">{viewTrends.peakTime || 'N/A'}</p>
+                    <p className="text-md font-semibold text-orange-700">{viewTrends.peakTime || 'N/A'}</p>
                   </div>
                 </div>
               </div>
@@ -543,29 +543,29 @@ const Trends = () => {
             transition={{ duration: 0.3, delay: 0.2 }}
           >
             {/* Subtle gradient background */}
-            <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-blue-50 opacity-70" />
+            <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-white to-orange-100 opacity-70" />
             
             {/* Animated accent line */}
             <motion.div 
-              className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500"
+              className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400"
               initial={{ scaleX: 0 }}
               animate={{ scaleX: 1 }}
               transition={{ duration: 0.6, delay: 0.4 }}
             />
             
             <div className="relative z-10">
-              <div className="flex items-center gap-2 mb-4">
-                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-r from-purple-100 to-blue-100 text-indigo-600">
+                <div className="flex items-center gap-2 mb-4">
+                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-r from-orange-100 to-amber-100 text-orange-600">
                   <Clock size={20} />
                 </div>
                 <h2 className="text-lg font-semibold text-gray-800">Engagement Metrics</h2>
               </div>
               <div className="space-y-4">
                 {engagementData.map((metric, index) => (
-                  <div key={index} className="flex justify-between items-center py-2 border-b border-indigo-50 last:border-0">
+                  <div key={index} className="flex justify-between items-center py-2 border-b border-orange-50 last:border-0">
                     <span className="text-sm text-gray-600 font-medium">{metric.metric}</span>
                     <div className="flex items-center gap-2">
-                      <span className="text-sm font-semibold text-indigo-700">{metric.value}</span>
+                      <span className="text-sm font-semibold text-orange-700">{metric.value}</span>
                       <span className={`text-xs ${metric.trend === "up" ? "text-green-500" : "text-red-500"} flex items-center font-medium ${metric.trend === "up" ? "bg-green-50" : "bg-red-50"} px-2 py-1 rounded-full`}>
                         {metric.trend === "up" ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}
                         {metric.change}%
@@ -587,24 +587,24 @@ const Trends = () => {
           transition={{ duration: 0.3, delay: 0.4 }}
         >
           {/* Subtle gradient background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-blue-50 opacity-70" />
+          <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-white to-orange-100 opacity-70" />
           
           {/* Animated accent line */}
           <motion.div 
-            className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500"
+            className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400"
             initial={{ scaleX: 0 }}
             animate={{ scaleX: 1 }}
             transition={{ duration: 0.6, delay: 0.5 }}
           />
           
           <div className="relative z-10">
-            <h2 className="text-lg font-semibold bg-clip-text text-transparent bg-gradient-to-r from-purple-700 to-blue-600 mb-4">Trend Insights</h2>
+            <h2 className="text-lg font-semibold text-black mb-4">Trend Insights</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {trendInsights.length > 0 ? (
                 trendInsights.map((insight, index) => (
                   <motion.div 
                     key={index} 
-                    className="p-4 bg-white/70 backdrop-blur-sm rounded-lg border border-indigo-50 shadow-sm hover:shadow transition-all"
+                    className="p-4 bg-white/70 backdrop-blur-sm rounded-lg border border-orange-100 shadow-sm hover:shadow transition-all"
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.3, delay: 0.1 * index }}
@@ -615,7 +615,7 @@ const Trends = () => {
                 ))
               ) : (
                 <motion.div 
-                  className="p-4 bg-white/70 backdrop-blur-sm rounded-lg border border-indigo-50 shadow-sm col-span-3"
+                  className="p-4 bg-white/70 backdrop-blur-sm rounded-lg border border-orange-50 shadow-sm col-span-3"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.3, delay: 0.5 }}

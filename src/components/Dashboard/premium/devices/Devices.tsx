@@ -281,20 +281,9 @@ const Devices = () => {
     <div>
       <TabsContent value="devices" className="pt-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="col-span-2 glass-card bg-white/80 backdrop-blur-lg border border-white/30 rounded-xl shadow-md p-6 relative overflow-hidden">
-            {/* Subtle gradient background */}
-            <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-blue-50 opacity-70" />
-            
-            {/* Animated accent line */}
-            <motion.div 
-              className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500"
-              initial={{ scaleX: 0 }}
-              animate={{ scaleX: 1 }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-            />
-            
-            <h2 className="text-md font-semibold text-gray-800 mb-4 relative z-10">Device Distribution</h2>
-            <div className="space-y-3 relative z-10">
+          <div className="col-span-2 bg-white rounded-xl shadow-sm p-6">
+            <h2 className="text-md font-semibold text-gray-800 mb-4">Device Distribution</h2>
+            <div className="space-y-3">
               {deviceData.map((device, index) => (
                 <DeviceStatRow
                   key={index}
@@ -307,28 +296,11 @@ const Devices = () => {
           </div>
 
           <div className="flex flex-col gap-6">
-            <motion.div 
-              className="glass-card bg-white/80 backdrop-blur-lg border border-white/30 rounded-xl shadow-md p-6 relative overflow-hidden"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4 }}
-              whileHover={{ y: -5, boxShadow: "0 10px 25px -5px rgba(99, 102, 241, 0.2)" }}
-            >
-              {/* Subtle gradient background */}
-              <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-blue-50 opacity-70" />
-              
-              {/* Animated accent line */}
-              <motion.div 
-                className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500"
-                initial={{ scaleX: 0 }}
-                animate={{ scaleX: 1 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-              />
-              
-              <div className="flex justify-between items-center mb-2 relative z-10">
+            <div className="bg-white rounded-xl shadow-sm p-6">
+              <div className="flex justify-between items-center mb-2">
                 <div>
                   <p className="text-sm text-gray-600 font-medium">Total Devices</p>
-                  <h3 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-700 to-blue-600">{totalDevices.count.toLocaleString()}</h3>
+                  <h3 className="text-xl font-bold text-black">{totalDevices.count.toLocaleString()}</h3>
                   <p className="text-xs font-semibold text-green-600 flex items-center">
                     <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
@@ -338,36 +310,24 @@ const Devices = () => {
                 </div>
                 <div>
                   <p className="text-sm text-gray-600 font-medium">Top Device</p>
-                  <h3 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-700 to-blue-600">{totalDevices.topDevice}</h3>
-                  <p className="text-xs font-medium text-indigo-600">{totalDevices.topDevicePercentage}% of total traffic</p>
+                  <h3 className="text-xl font-bold text-black">{totalDevices.topDevice}</h3>
+                  <p className="text-xs font-medium text-orange-700">{totalDevices.topDevicePercentage}% of total traffic</p>
                 </div>
               </div>
-            </motion.div>
+            </div>
 
             <motion.div 
-              className="glass-card bg-white/80 backdrop-blur-lg border border-white/30 rounded-xl shadow-md p-6 relative overflow-hidden"
+              className="bg-white rounded-xl shadow-sm p-6"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.3 }}
-              whileHover={{ y: -5, boxShadow: "0 10px 25px -5px rgba(99, 102, 241, 0.2)" }}
             >
-              {/* Subtle gradient background */}
-              <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-blue-50 opacity-70" />
-              
-              {/* Animated accent line */}
-              <motion.div 
-                className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500"
-                initial={{ scaleX: 0 }}
-                animate={{ scaleX: 1 }}
-                transition={{ duration: 0.6, delay: 0.3 }}
-              />
-              
-              <h4 className="text-sm font-semibold text-gray-800 mb-3 relative z-10">Device Trends</h4>
-              <div className="text-sm text-gray-700 space-y-3 relative z-10">
+              <h4 className="text-sm font-semibold text-gray-800 mb-3">Device Trends</h4>
+              <div className="space-y-3">
                 {deviceTrends.map((trend, index) => (
-                  <div key={index} className="flex justify-between items-center p-2 rounded-lg hover:bg-white/50 transition-colors">
-                    <span className="font-medium flex items-center gap-2 text-indigo-700">
-                      <span className="text-indigo-600">{trend.icon}</span> {trend.name}
+                  <div key={index} className="flex justify-between items-center p-3 rounded-lg bg-gray-50">
+                    <span className="font-medium flex items-center gap-2 text-orange-700">
+                      <span className="text-orange-600">{trend.icon}</span> {trend.name}
                     </span>
                     <span>
                       <span className="font-medium text-gray-700">{trend.users.toLocaleString()} users </span>
@@ -381,25 +341,13 @@ const Devices = () => {
             </motion.div>
 
             <motion.div 
-              className="glass-card bg-white/80 backdrop-blur-lg border border-white/30 rounded-xl shadow-md p-6 relative overflow-hidden"
+              className="bg-white rounded-xl shadow-sm p-6"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.4 }}
-              whileHover={{ y: -5, boxShadow: "0 10px 25px -5px rgba(99, 102, 241, 0.2)" }}
             >
-              {/* Subtle gradient background */}
-              <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-blue-50 opacity-70" />
-              
-              {/* Animated accent line */}
-              <motion.div 
-                className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500"
-                initial={{ scaleX: 0 }}
-                animate={{ scaleX: 1 }}
-                transition={{ duration: 0.6, delay: 0.4 }}
-              />
-              
-              <h4 className="text-sm font-semibold text-gray-800 mb-3 relative z-10">Smart Insights</h4>
-              <ul className="text-sm text-gray-700 list-disc ml-4 space-y-2 relative z-10">
+              <h4 className="text-sm font-semibold text-gray-800 mb-3">Smart Insights</h4>
+              <ul className="text-sm text-gray-700 list-disc ml-4 space-y-2">
                 {smartInsights.length > 0 ? smartInsights.map((insight, index) => (
                   <li key={index} className="font-medium">{insight}</li>
                 )) : <li className="font-medium">No insights available yet.</li>}
@@ -408,22 +356,10 @@ const Devices = () => {
           </div>
         </div>
 
-        {/* Browser Distribution Section */}
         <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="col-span-2 glass-card bg-white/80 backdrop-blur-lg border border-white/30 rounded-xl shadow-md p-6 relative overflow-hidden">
-            {/* Subtle gradient background */}
-            <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-blue-50 opacity-70" />
-            
-            {/* Animated accent line */}
-            <motion.div 
-              className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500"
-              initial={{ scaleX: 0 }}
-              animate={{ scaleX: 1 }}
-              transition={{ duration: 0.6, delay: 0.5 }}
-            />
-            
-            <h2 className="text-md font-semibold text-gray-800 mb-4 relative z-10">Browser Distribution</h2>
-            <div className="space-y-3 relative z-10">
+          <div className="col-span-2 bg-white rounded-xl shadow-sm p-6">
+            <h2 className="text-md font-semibold text-gray-800 mb-4">Browser Distribution</h2>
+            <div className="space-y-3">
               {browserData.map((browser, index) => (
                 <BrowserStatRow
                   key={index}
@@ -437,28 +373,11 @@ const Devices = () => {
           </div>
 
           <div className="flex flex-col gap-6">
-            <motion.div 
-              className="glass-card bg-white/80 backdrop-blur-lg border border-white/30 rounded-xl shadow-md p-6 relative overflow-hidden"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.6 }}
-              whileHover={{ y: -5, boxShadow: "0 10px 25px -5px rgba(99, 102, 241, 0.2)" }}
-            >
-              {/* Subtle gradient background */}
-              <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-blue-50 opacity-70" />
-              
-              {/* Animated accent line */}
-              <motion.div 
-                className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500"
-                initial={{ scaleX: 0 }}
-                animate={{ scaleX: 1 }}
-                transition={{ duration: 0.6, delay: 0.7 }}
-              />
-              
-              <div className="flex justify-between items-center mb-2 relative z-10">
+            <div className="bg-white rounded-xl shadow-sm p-6">
+              <div className="flex justify-between items-center mb-2">
                 <div>
                   <p className="text-sm text-gray-600 font-medium">Total Browser Sessions</p>
-                  <h3 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-700 to-blue-600">{browserStats.totalSessions.toLocaleString()}</h3>
+                  <h3 className="text-xl font-bold text-orange-700">{browserStats.totalSessions.toLocaleString()}</h3>
                   <p className="text-xs font-semibold text-green-600 flex items-center">
                     <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
@@ -468,37 +387,20 @@ const Devices = () => {
                 </div>
                 <div>
                   <p className="text-sm text-gray-600 font-medium">Top Browser</p>
-                  <h3 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-700 to-blue-600">{browserStats.topBrowser}</h3>
-                  <p className="text-xs font-medium text-indigo-600">{browserStats.topBrowserPercentage}% of total traffic</p>
+                  <h3 className="text-xl font-bold text-orange-700">{browserStats.topBrowser}</h3>
+                  <p className="text-xs font-medium text-orange-600">{browserStats.topBrowserPercentage}% of total traffic</p>
                 </div>
               </div>
-            </motion.div>
+            </div>
 
-            <motion.div 
-              className="glass-card bg-white/80 backdrop-blur-lg border border-white/30 rounded-xl shadow-md p-6 relative overflow-hidden"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.7 }}
-              whileHover={{ y: -5, boxShadow: "0 10px 25px -5px rgba(99, 102, 241, 0.2)" }}
-            >
-              {/* Subtle gradient background */}
-              <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-blue-50 opacity-70" />
-              
-              {/* Animated accent line */}
-              <motion.div 
-                className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500"
-                initial={{ scaleX: 0 }}
-                animate={{ scaleX: 1 }}
-                transition={{ duration: 0.6, delay: 0.8 }}
-              />
-              
-              <h4 className="text-sm font-semibold text-gray-800 mb-3 relative z-10">Browser Insights</h4>
-              <ul className="text-sm text-gray-700 list-disc ml-4 space-y-2 relative z-10">
+            <div className="bg-white rounded-xl shadow-sm p-6">
+              <h4 className="text-sm font-semibold text-gray-800 mb-3">Browser Insights</h4>
+              <ul className="text-sm text-gray-700 list-disc ml-4 space-y-2">
                 {browserInsights.length > 0 ? browserInsights.map((insight, index) => (
                   <li key={index} className="font-medium">{insight}</li>
                 )) : <li className="font-medium">No insights available yet.</li>}
               </ul>
-            </motion.div>
+            </div>
           </div>
         </div>
       </TabsContent>

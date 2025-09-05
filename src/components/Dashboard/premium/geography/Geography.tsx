@@ -289,22 +289,22 @@ const Geography = () => {
         {/* Time Period Filter */}
         <div className="w-full md:w-auto">
           <Tabs defaultValue={timeFrame} onValueChange={(value) => setTimeFrame(value as "7days" | "30days" | "90days")}> 
-            <TabsList className="w-full md:w-auto bg-white/90 backdrop-blur-sm border border-indigo-50 shadow-sm">
+            <TabsList className="w-full md:w-auto bg-white/90 backdrop-blur-sm border border-orange-100 shadow-sm">
               <TabsTrigger 
                 value="7days"
-                className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:via-indigo-600 data-[state=active]:to-blue-500 data-[state=active]:text-white"
+                className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-orange-600 data-[state=active]:via-amber-500 data-[state=active]:to-orange-400 data-[state=active]:text-white"
               >
                 7 Days
               </TabsTrigger>
               <TabsTrigger 
                 value="30days"
-                className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:via-indigo-600 data-[state=active]:to-blue-500 data-[state=active]:text-white"
+                className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-orange-600 data-[state=active]:via-amber-500 data-[state=active]:to-orange-400 data-[state=active]:text-white"
               >
                 30 Days
               </TabsTrigger>
               <TabsTrigger 
                 value="90days"
-                className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:via-indigo-600 data-[state=active]:to-blue-500 data-[state=active]:text-white"
+                className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-orange-600 data-[state=active]:via-amber-500 data-[state=active]:to-orange-400 data-[state=active]:text-white"
               >
                 90 Days
               </TabsTrigger>
@@ -313,9 +313,9 @@ const Geography = () => {
         </div>
         {/* Device Filter */}
         <div className="flex items-center gap-2 w-full md:w-auto">
-          <Filter size={16} className="text-indigo-600" />
+          <Filter size={16} className="text-orange-600" />
           <Select value={deviceFilter} onValueChange={(value) => setDeviceFilter(value as "all" | "mobile" | "desktop")}> 
-            <SelectTrigger className="w-full md:w-[150px] bg-white/90 backdrop-blur-sm border border-indigo-50 shadow-sm">
+            <SelectTrigger className="w-full md:w-[150px] bg-white/90 backdrop-blur-sm border border-orange-100 shadow-sm">
               <SelectValue placeholder="Device Type" />
             </SelectTrigger>
             <SelectContent className='z-[9999]'>
@@ -328,16 +328,16 @@ const Geography = () => {
         {/* View Mode Toggle */}
         <div className="w-full md:w-auto">
           <Tabs defaultValue={viewMode} onValueChange={(value) => setViewMode(value as "heatmap" | "clusters")}> 
-            <TabsList className="w-full md:w-auto bg-white/90 backdrop-blur-sm border border-indigo-50 shadow-sm">
+            <TabsList className="w-full md:w-auto bg-white/90 backdrop-blur-sm border border-orange-100 shadow-sm">
               <TabsTrigger 
                 value="heatmap"
-                className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:via-indigo-600 data-[state=active]:to-blue-500 data-[state=active]:text-white"
+                className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-orange-600 data-[state=active]:via-amber-500 data-[state=active]:to-orange-400 data-[state=active]:text-white"
               >
                 Heatmap
               </TabsTrigger>
               <TabsTrigger 
                 value="clusters"
-                className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:via-indigo-600 data-[state=active]:to-blue-500 data-[state=active]:text-white"
+                className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-orange-600 data-[state=active]:via-amber-500 data-[state=active]:to-orange-400 data-[state=active]:text-white"
               >
                 Regions
               </TabsTrigger>
@@ -367,15 +367,15 @@ const Geography = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
           whileHover={{ 
-            boxShadow: "0 10px 25px -5px rgba(99, 102, 241, 0.2)"
+            boxShadow: "0 10px 25px -5px rgba(251, 146, 60, 0.15)"
           }}
         >
           {/* Subtle gradient background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-blue-50 opacity-70 z-0" />
+          <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-white to-orange-100 opacity-70 z-0" />
           
           {/* Animated accent */}
           <motion.div 
-            className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 z-10"
+            className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400 z-10"
             initial={{ scaleX: 0 }}
             animate={{ scaleX: 1 }}
             transition={{ duration: 0.8, delay: 0.2 }}
@@ -404,9 +404,9 @@ const Geography = () => {
                   center={[cluster.lat, cluster.lng]}
                   radius={Math.min(20, Math.max(5, Math.log(cluster.count) * 5))}
                   pathOptions={{
-                    fillColor: '#3b82f6',
+                    fillColor: '#fb923c',
                     fillOpacity: 0.6,
-                    color: '#1d4ed8',
+                    color: '#b45309',
                     weight: 1
                   }}
                 >
@@ -431,15 +431,15 @@ const Geography = () => {
           transition={{ duration: 0.4, delay: 0.1 }}
           whileHover={{ 
             scale: 1.02,
-            boxShadow: "0 10px 25px -5px rgba(99, 102, 241, 0.2)"
+            boxShadow: "0 10px 25px -5px rgba(251, 146, 60, 0.15)"
           }}
         >
           {/* Subtle gradient background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-blue-50 opacity-70" />
+          <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-white to-orange-100 opacity-70" />
           
           {/* Animated accent */}
           <motion.div 
-            className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500"
+            className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400"
             initial={{ scaleX: 0 }}
             animate={{ scaleX: 1 }}
             transition={{ duration: 0.8, delay: 0.2 }}
@@ -447,7 +447,7 @@ const Geography = () => {
           
           <div className="relative z-10">
             <div className="flex items-center gap-2 mb-2">
-              <Calendar size={16} className="text-indigo-600" />
+              <Calendar size={16} className="text-orange-600" />
               <h3 className="font-medium">Time Insights</h3>
             </div>
             <p className="text-sm text-gray-600">
@@ -464,15 +464,15 @@ const Geography = () => {
           transition={{ duration: 0.4, delay: 0.2 }}
           whileHover={{ 
             scale: 1.02,
-            boxShadow: "0 10px 25px -5px rgba(99, 102, 241, 0.2)"
+            boxShadow: "0 10px 25px -5px rgba(251, 146, 60, 0.15)"
           }}
         >
           {/* Subtle gradient background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-blue-50 opacity-70" />
+          <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-white to-orange-100 opacity-70" />
           
           {/* Animated accent */}
           <motion.div 
-            className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500"
+            className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400"
             initial={{ scaleX: 0 }}
             animate={{ scaleX: 1 }}
             transition={{ duration: 0.8, delay: 0.3 }}
@@ -480,7 +480,7 @@ const Geography = () => {
           
           <div className="relative z-10">
             <div className="flex items-center gap-2 mb-2">
-              <Smartphone size={16} className="text-indigo-600" />
+              <Smartphone size={16} className="text-orange-600" />
               <h3 className="font-medium">Mobile Engagement</h3>
             </div>
             <p className="text-sm text-gray-600">
@@ -498,15 +498,15 @@ const Geography = () => {
           transition={{ duration: 0.4, delay: 0.3 }}
           whileHover={{ 
             scale: 1.02,
-            boxShadow: "0 10px 25px -5px rgba(99, 102, 241, 0.2)"
+            boxShadow: "0 10px 25px -5px rgba(251, 146, 60, 0.15)"
           }}
         >
           {/* Subtle gradient background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-blue-50 opacity-70" />
+          <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-white to-orange-100 opacity-70" />
           
           {/* Animated accent */}
           <motion.div 
-            className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500"
+            className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400"
             initial={{ scaleX: 0 }}
             animate={{ scaleX: 1 }}
             transition={{ duration: 0.8, delay: 0.4 }}
@@ -514,7 +514,7 @@ const Geography = () => {
           
           <div className="relative z-10">
             <div className="flex items-center gap-2 mb-2">
-              <Laptop size={16} className="text-indigo-600" />
+              <Laptop size={16} className="text-orange-600" />
               <h3 className="font-medium">Top Regions</h3>
             </div>
             <p className="text-sm text-gray-600">

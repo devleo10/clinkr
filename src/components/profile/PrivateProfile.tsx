@@ -14,6 +14,7 @@ import { Globe } from 'lucide-react';
 import { MoreVertical, GripVertical } from "lucide-react";
 import { motion, Reorder } from 'framer-motion';
 import LoadingScreen from '../ui/loadingScreen';
+import LogoBars from '../ui/LogoBars';
 import BoltBackground from '../homepage/BoltBackground';
 
 interface UserProfile {
@@ -672,8 +673,8 @@ const PrivateProfile = () => {
                   <button className="px-4 py-2 bg-gray-200 rounded" onClick={() => setCropModalOpen(false)} disabled={loading}>Cancel</button>
                   <button
                     className={
-                      'px-4 py-2 rounded text-white font-bold bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 shadow ' +
-                      (loading ? 'opacity-70 cursor-not-allowed' : 'hover:from-blue-500 hover:via-indigo-600 hover:to-purple-600 transition-all duration-300')
+                      'px-4 py-2 rounded text-white font-bold bg-gradient-to-r from-orange-600 via-amber-500 to-orange-500 shadow ' +
+                      (loading ? 'opacity-70 cursor-not-allowed' : 'hover:from-orange-500 hover:via-amber-500 hover:to-orange-600 transition-all duration-300')
                     }
                     onClick={async () => {
                       if (!selectedImage || !croppedAreaPixels) return;
@@ -732,7 +733,7 @@ const PrivateProfile = () => {
                     disabled={loading}
                   >
                     {loading ? (
-                      <span className="flex items-center gap-2"><svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 008-8v4a4 4 0 00-4 4H4z"></path></svg>Uploading...</span>
+                      <span className="flex items-center gap-2"><LogoBars size={20} color="#FB923C" reducedMotion={false} />Uploading...</span>
                     ) : (
                       'Crop & Upload'
                     )}
@@ -747,7 +748,7 @@ const PrivateProfile = () => {
             )}
           </div>
           
-          <p className="text-[#4F46E5] mb-2 font-medium">@{profile?.username}</p>
+          <p className="text-orange-600 mb-2 font-medium">@{profile?.username}</p>
     
           <div className="relative inline-block">
             {editState.bio ? (
@@ -765,7 +766,7 @@ const PrivateProfile = () => {
                 <div className="text-xs text-gray-500 text-right mt-1">{editedBio.length}/160</div>
                 <button
                   onClick={handleBioUpdate}
-                  className="mt-2 px-4 py-2 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 text-white rounded-md font-bold shadow hover:from-blue-500 hover:via-indigo-600 hover:to-purple-600 transition-all duration-300"
+                  className="mt-2 px-4 py-2 bg-gradient-to-r from-orange-600 via-amber-500 to-orange-500 text-white rounded-md font-bold shadow hover:from-orange-500 hover:via-amber-500 hover:to-orange-600 transition-all duration-300"
                 >
                   Save Bio
                 </button>
@@ -796,14 +797,14 @@ const PrivateProfile = () => {
               </motion.div>
               <button
                 onClick={handleShareProfile}
-                className="inline-flex items-center gap-1 px-4 py-2 text-base font-bold text-white bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 rounded-lg shadow-lg hover:from-blue-500 hover:via-indigo-600 hover:to-purple-600 transition-all duration-300 border-2 border-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2"
+                className="inline-flex items-center gap-1 px-4 py-2 text-base font-bold text-white bg-gradient-to-r from-orange-600 via-amber-500 to-orange-500 rounded-lg shadow-lg hover:from-orange-500 hover:via-amber-500 hover:to-orange-600 transition-all duration-300 border-2 border-orange-200 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-2"
               >
                 <FaShare size={16} />
                 Get Your Link-in-Bio link
               </button>
               {showToast && (
                 <div className="fixed left-1/2 bottom-4 -translate-x-1/2 flex justify-center items-center w-full pointer-events-none z-50">
-                  <div className="bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 text-white px-6 py-3 rounded-lg shadow-lg animate-fade-in-out pointer-events-auto">
+                  <div className="bg-gradient-to-r from-orange-600 via-amber-500 to-orange-500 text-white px-6 py-3 rounded-lg shadow-lg animate-fade-in-out pointer-events-auto">
                     {toastMessage || 'Link copied to clipboard!'}
                   </div>
                 </div>
@@ -820,7 +821,7 @@ const PrivateProfile = () => {
                   <span className="text-sm font-medium">Reorder Mode Active - Drag links to reorder them</span>
                   <button
                     onClick={() => setLinkReorderMode(false)}
-                    className="ml-auto text-indigo-600 hover:text-indigo-800 text-sm font-medium"
+                    className="ml-auto text-orange-600 hover:text-orange-800 text-sm font-medium"
                   >
                     Exit
                   </button>
@@ -881,7 +882,7 @@ const PrivateProfile = () => {
                             href={typeof link.url === 'string' ? link.url : ''}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-xs sm:text-sm text-gray-500 hover:text-indigo-600 transition-colors block truncate w-full"
+                            className="text-xs sm:text-sm text-gray-500 hover:text-orange-600 transition-colors block truncate w-full"
                           >
                             {typeof link.url === 'string' && link.url.length > (window.innerWidth < 640 ? 20 : 38) ? 
                               link.url.slice(0, window.innerWidth < 640 ? 17 : 35) + '...' : link.url}
@@ -982,7 +983,7 @@ const PrivateProfile = () => {
             />
             <button
               onClick={handleAddLink}
-              className="bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 text-white font-bold px-6 py-2 rounded-lg shadow hover:from-blue-500 hover:via-indigo-600 hover:to-purple-600 transition-all duration-300"
+              className="bg-gradient-to-r from-orange-600 via-amber-500 to-orange-500 text-white font-bold px-6 py-2 rounded-lg shadow hover:from-orange-500 hover:via-amber-500 hover:to-orange-600 transition-all duration-300"
             >
               Add More Link
             </button>
@@ -1002,7 +1003,7 @@ const PrivateProfile = () => {
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel className="bg-gray-200 text-gray-800 hover:bg-gray-300" onClick={() => setLinkToDeleteIndex(null)}>Cancel</AlertDialogCancel>
-              <AlertDialogAction className="bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 text-white font-bold px-6 py-2 rounded-lg shadow hover:from-blue-500 hover:via-indigo-600 hover:to-purple-600 transition-all duration-300" onClick={handleDeleteLink}>Continue</AlertDialogAction>
+              <AlertDialogAction className="bg-gradient-to-r from-orange-600 via-amber-500 to-orange-500 text-white font-bold px-6 py-2 rounded-lg shadow hover:from-orange-500 hover:via-amber-500 hover:to-orange-600 transition-all duration-300" onClick={handleDeleteLink}>Continue</AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
@@ -1058,7 +1059,7 @@ const PrivateProfile = () => {
               <div className="flex gap-2 mt-2">
                 <button className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300" onClick={() => setEditLinkIndex(null)}>Cancel</button>
                 <button
-                  className="px-4 py-2 rounded text-white font-bold bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 shadow hover:from-blue-500 hover:via-indigo-600 hover:to-purple-600 transition-all duration-300"
+                  className="px-4 py-2 rounded text-white font-bold bg-gradient-to-r from-orange-600 via-amber-500 to-orange-500 shadow hover:from-orange-500 hover:via-amber-500 hover:to-orange-600 transition-all duration-300"
                   onClick={handleEditLinkSave}
                 >
                   Save

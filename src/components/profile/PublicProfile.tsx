@@ -616,7 +616,7 @@ const PublicProfile = () => {
                     <Card className="hover:shadow-xl transition-all duration-300 rounded-xl border border-white/40 bg-white/90 backdrop-blur-lg" style={{ overflow: 'visible', position: 'relative' }}>
                       <CardContent className="flex items-center justify-between gap-3 md:gap-4 p-3 py-2.5 relative" style={{ overflow: 'visible' }}>
                         {/* Subtle gradient overlay */}
-                        <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/40 via-transparent to-purple-50/40 opacity-70" />
+                        <div className="absolute inset-0 bg-gradient-to-br from-orange-50/40 via-transparent to-amber-50/40 opacity-70" />
                         
                         {/* Link content */}
                         <div className="flex items-center gap-3 flex-grow min-w-0 relative z-10">
@@ -628,12 +628,12 @@ const PublicProfile = () => {
                             {getSocialIcon(link.url, 28)}
                           </motion.div>
                           <div className="flex flex-col items-start flex-grow min-w-0">
-                            <span className="text-base font-medium bg-gradient-to-r from-purple-700 via-indigo-700 to-blue-700 bg-clip-text text-transparent truncate group-hover:from-purple-600 group-hover:via-indigo-600 group-hover:to-blue-600 transition-all duration-300 leading-tight">{link.title}</span>
+                            <span className="text-base font-medium bg-gradient-to-r from-orange-700 via-amber-600 to-orange-600 bg-clip-text text-transparent truncate group-hover:from-orange-600 group-hover:via-amber-500 group-hover:to-orange-500 transition-all duration-300 leading-tight">{link.title}</span>
                             <a
                               href={link.url}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="text-xs text-gray-500 hover:text-indigo-600 transition-colors block leading-tight"
+                              className="text-xs text-gray-500 hover:text-orange-600 transition-colors block leading-tight"
                               style={{
                                 overflow: 'hidden',
                                 textOverflow: 'ellipsis',

@@ -1,0 +1,14 @@
+<svg width="120" height="72" viewBox="0 0 120 72" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Clinkr loading logo">
+  <rect x="12" y="12" rx="3" ry="3" width="18" height="48" fill="#FB923C">
+    <animate attributeName="height" values="24;48;24" dur="0.8s" repeatCount="indefinite" />
+    <animate attributeName="y" values="36;12;36" dur="0.8s" repeatCount="indefinite" />
+  </rect>
+  <rect x="51" y="12" rx="3" ry="3" width="18" height="48" fill="#FB923C">
+    <animate attributeName="height" values="24;48;24" dur="0.8s" begin="0.2s" repeatCount="indefinite" />
+    <animate attributeName="y" values="36;12;36" dur="0.8s" begin="0.2s" repeatCount="indefinite" />
+  </rect>
+  <rect x="90" y="12" rx="3" ry="3" width="18" height="48" fill="#FB923C">
+    <animate attributeName="height" values="24;48;24" dur="0.8s" begin="0.4s" repeatCount="indefinite" />
+    <animate attributeName="y" values="36;12;36" dur="0.8s" begin="0.4s" repeatCount="indefinite" />
+  </rect>
+</svg>
