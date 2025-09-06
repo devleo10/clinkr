@@ -79,7 +79,7 @@ const DashBoard = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="min-h-screen relative font-inter"
+      className="min-h-screen relative font-inter text-black"
       style={{
         background: 'radial-gradient(at 15% 20%, rgba(255, 237, 213, 0.3) 0%, transparent 55%), radial-gradient(at 85% 30%, rgba(255, 245, 235, 0.3) 0%, transparent 60%), radial-gradient(at 70% 80%, rgba(255, 251, 248, 0.3) 0%, transparent 55%), linear-gradient(130deg, var(--c-bg), #FAFAFA)',
       }}
@@ -134,10 +134,10 @@ const DashBoard = () => {
                 <FaChartLine size={24} className="text-orange-500" />
               </motion.div>
               <motion.h1 
-                className="font-extrabold text-2xl sm:text-3xl bg-clip-text text-transparent bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400 text-center"
+                className="font-extrabold text-2xl sm:text-3xl text-black text-center"
                 whileHover={{
-                  scale: 1.03,
-                  transition: { duration: 0.2 }
+                  scale: 1.01,
+                  transition: { duration: 0.15 }
                 }}
               >
                 Analytics Dashboard
@@ -149,7 +149,7 @@ const DashBoard = () => {
               transition={{ duration: 0.8, delay: 0.5 }}
             />
             <motion.p
-              className="text-orange-700 mt-2 max-w-md text-center text-sm"
+              className="mt-2 max-w-md text-center text-sm text-black"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5, delay: 0.3 }}
@@ -173,7 +173,7 @@ const DashBoard = () => {
                   value={searchQuery}
                   onChange={handleSearch}
                   placeholder="Search links..."
-                  className="w-full pl-10 pr-4 py-3 glass-input bg-white/80 backdrop-blur-lg border border-white/50 rounded-xl shadow-lg focus:outline-none focus:ring-2 focus:ring-orange-400 text-gray-700 placeholder-gray-400 transition-all"
+                  className="w-full pl-10 pr-4 py-3 glass-input bg-white/80 backdrop-blur-lg border border-white/50 rounded-xl shadow-lg focus:outline-none focus:ring-2 focus:ring-orange-400 text-black placeholder-gray-400 transition-all"
                 />
               </motion.div>
               <motion.div 

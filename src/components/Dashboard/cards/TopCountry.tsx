@@ -148,13 +148,13 @@ const TopCountry = () => {
       />
       
       <div className="flex justify-between items-center relative z-10">
-        <h1 className="font-bold text-gray-800">Top Country</h1>
-        <div className="text-orange-500">
+        <h1 className="font-bold text-black">Top Country</h1>
+        <div className="text-black">
           <FaGlobeAsia size={24} />
         </div>
       </div>
       <div className="mt-8 flex relative z-10">
-        <h1 className="text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400">
+  <h1 className="text-3xl font-extrabold text-black">
           {loading ? (
             <motion.span
               animate={{ opacity: [0.5, 1, 0.5] }}
@@ -168,7 +168,7 @@ const TopCountry = () => {
         </h1>
       </div>
       <div className="relative z-10">
-        <p className="text-sm text-orange-600 font-medium">
+        <p className="text-sm text-black font-medium">
           {loading ? (
             <motion.span
               animate={{ opacity: [0.5, 1, 0.5] }}

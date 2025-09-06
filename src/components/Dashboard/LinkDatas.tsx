@@ -124,7 +124,7 @@ const LinkDatas: React.FC<LinkDatasProps> = ({ searchQuery }) => {
           className="w-6 h-6 rounded"
         />
         <a href={url} target="_blank" rel="noopener noreferrer"
-          className="hover:underline text-orange-600 truncate max-w-[180px] sm:max-w-[320px] lg:max-w-[480px] inline-block align-middle"
+          className="hover:underline text-black truncate max-w-[180px] sm:max-w-[320px] lg:max-w-[480px] inline-block align-middle"
           style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', verticalAlign: 'middle' }}
         >
           {getTrimmedUrl()}
@@ -165,7 +165,7 @@ const LinkDatas: React.FC<LinkDatasProps> = ({ searchQuery }) => {
       
       {filteredLinks.length === 0 ? (
         <div className="text-center py-8 relative z-10">
-          <p className="text-gray-500">No links found. Add your first link to get started!</p>
+          <p className="text-black">No links found. Add your first link to get started!</p>
         </div>
       ) : (
         <div className="relative z-10">
@@ -173,21 +173,21 @@ const LinkDatas: React.FC<LinkDatasProps> = ({ searchQuery }) => {
           <table className="hidden sm:table w-full bg-white/90 backdrop-blur-sm rounded-lg overflow-hidden shadow-md">
             <thead className="bg-gradient-to-r from-orange-50 to-orange-50">
               <tr>
-                <th className="py-3 px-4 border-b border-orange-100 text-left font-medium text-gray-700">Title</th>
-                <th className="py-3 px-4 border-b border-orange-100 text-left font-medium text-gray-700">URL</th>
-                <th className="py-3 px-4 border-b border-orange-100 text-center font-medium text-gray-700">Clicks</th>
+                    <th className="py-3 px-4 border-b border-orange-100 text-left font-medium text-black">Title</th>
+                    <th className="py-3 px-4 border-b border-orange-100 text-left font-medium text-black">URL</th>
+                    <th className="py-3 px-4 border-b border-orange-100 text-center font-medium text-black">Clicks</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-indigo-100 border-spacing-y-2">
               {filteredLinks.map((link, index) => (
                 <tr key={index} className="hover:bg-orange-50/50 transition-colors my-2">
                   <td className="py-3 px-4">
-                    <span className="font-medium text-gray-800">{link.title}</span>
+                        <span className="font-medium text-black">{link.title}</span>
                   </td>
                   <td className="py-3 px-4">
                     <LinkWithIcon url={link.url} />
                   </td>
-                  <td className="py-3 px-4 text-center font-medium text-orange-600">{link.clicks}</td>
+                      <td className="py-3 px-4 text-center font-medium text-black">{link.clicks}</td>
                 </tr>
               ))}
             </tbody>
@@ -198,12 +198,12 @@ const LinkDatas: React.FC<LinkDatasProps> = ({ searchQuery }) => {
             {filteredLinks.map((link, index) => (
               <div key={index} className="bg-white/90 backdrop-blur-sm rounded-lg shadow-md p-4 flex flex-col space-y-2 border border-orange-50">
                 <div className="flex items-center space-x-3">
-                  <span className="font-semibold text-gray-800 text-lg">{link.title}</span>
+                    <span className="font-semibold text-black text-lg">{link.title}</span>
                 </div>
                 <LinkWithIcon url={link.url} />
-                <div className="text-right text-orange-600 text-sm">
-                  Clicks: <span className="font-bold">{link.clicks}</span>
-                </div>
+        <div className="text-right text-black text-sm">
+          Clicks: <span className="font-bold text-black">{link.clicks}</span>
+        </div>
               </div>
             ))}
           </div>
