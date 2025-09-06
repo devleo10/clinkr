@@ -211,7 +211,7 @@ const Overview = () => {
               <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-white to-white opacity-70" />
               <div className="relative z-10">
                 <h3 className="text-lg font-semibold text-black mb-2">Key Insights</h3>
-                <p className="text-gray-800 font-medium">
+                <p className="text-black font-medium">
                   {parseFloat(overviewData.changes.visitors.replace(/[+%]/g, '')) > 0 
                     ? `Your profile traffic has increased by ${overviewData.changes.visitors} compared to last week.` 
                     : `Your profile traffic has decreased by ${overviewData.changes.visitors.replace('+', '')} compared to last week.`}

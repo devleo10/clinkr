@@ -261,7 +261,7 @@ const PremiumDashBoard = () => {
                       </svg>
                       <div>
                         <div className="font-medium">PDF Export</div>
-                        <div className="text-xs text-gray-500">High-quality report</div>
+                        <div className="text-xs text-black">High-quality report</div>
                       </div>
                     </DropdownMenuItem>
                     <DropdownMenuItem 
@@ -273,7 +273,7 @@ const PremiumDashBoard = () => {
                       </svg>
                       <div>
                         <div className="font-medium">CSV Export</div>
-                        <div className="text-xs text-gray-500">Raw data format</div>
+                        <div className="text-xs text-black">Raw data format</div>
                       </div>
                     </DropdownMenuItem>
                   </motion.div>

@@ -450,7 +450,7 @@ const Geography = () => {
               <Calendar size={16} className="text-orange-600" />
               <h3 className="font-medium">Time Insights</h3>
             </div>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-black">
               {timeFrame === "7days" ? "Last week" : timeFrame === "30days" ? "Last month" : "Last quarter"} shows 
               {heatmapData.length > 0 ? ` activity across ${regionClusters.length} regions` : " no significant activity"}
             </p>
@@ -483,7 +483,7 @@ const Geography = () => {
               <Smartphone size={16} className="text-orange-600" />
               <h3 className="font-medium">Mobile Engagement</h3>
             </div>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-black">
               {deviceFilter === "mobile" ? "Showing only mobile traffic" : 
                deviceFilter === "desktop" ? "Mobile data filtered out" : 
                "Showing data for all devices"}
@@ -517,7 +517,7 @@ const Geography = () => {
               <Laptop size={16} className="text-orange-600" />
               <h3 className="font-medium">Top Regions</h3>
             </div>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-black">
               {regionClusters.length > 0 
                 ? `Top region: ${regionClusters[0]?.region}, ${regionClusters[0]?.country} with ${regionClusters[0]?.count} interactions` 
                 : "No regional data available"}
@@ -527,7 +527,7 @@ const Geography = () => {
       </div>
       
       <motion.div 
-        className="mt-2 text-sm text-gray-500 text-center"
+        className="mt-2 text-sm text-black text-center"
         initial={{ opacity: 0 }}
         animate={{ opacity: 0.8 }}
         transition={{ duration: 0.4, delay: 0.5 }}
