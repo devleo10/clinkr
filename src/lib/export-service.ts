@@ -26,7 +26,7 @@ export const exportToPDF = async (data: ExportData) => {
 
   // Title
   doc.setFontSize(20);
-  doc.text('ClipMetrics Analytics Report', 20, yOffset);
+  doc.text('Clinkr Analytics Report', 20, yOffset);
   yOffset += 20;
 
   // Overview Section
@@ -70,7 +70,7 @@ export const exportToPDF = async (data: ExportData) => {
     yOffset += 10;
   });
 
-  doc.save('clipmetrics-report.pdf');
+  doc.save('clinkr-report.pdf');
 };
 
 export const exportToCSV = async (data: ExportData) => {
@@ -105,5 +105,5 @@ export const exportToCSV = async (data: ExportData) => {
   });
 
   const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-  saveAs(blob, 'clipmetrics-report.csv');
+  saveAs(blob, 'clinkr-report.csv');
 };

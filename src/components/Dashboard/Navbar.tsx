@@ -47,17 +47,14 @@ const Navbar = () => {
                   transition: { duration: 0.5 }
                 }}
               />
-              <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold relative group">
-                <motion.span 
-                  className="bg-clip-text text-transparent bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400 transition-all duration-300"
-                  whileHover={{ 
-                    backgroundImage: 'linear-gradient(to right, #3b82f6, #6366f1, #9333ea)'
-                  }}
+              <Link to="/homepage" className="group">
+                <motion.h1
+                  className="text-xl sm:text-2xl font-bold text-gradient group-hover:scale-105 transition-transform duration-200"
+                  whileHover={{ scale: 1.05 }}
                 >
-                  Clinkly
-                </motion.span>
-                <div className="absolute bottom-0 left-0 w-0 h-[2px] bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400 group-hover:w-full transition-all duration-300"></div>
-              </h1>
+                  Clinkr
+                </motion.h1>
+              </Link>
             </Link>
           </div>
 

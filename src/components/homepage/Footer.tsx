@@ -37,7 +37,7 @@ const Footer = () => {
     >
       <div className="py-16 px-6 md:px-20" style={{ background: 'linear-gradient(to bottom, rgba(var(--background), 0.02), rgba(var(--c-bg), 0.04))' }}>
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 w-full">
-          {/* ClipMetrics Column */}
+          {/* Clinkr Column */}
           <motion.div 
             className='w-full'
             initial={{ y: 20, opacity: 0 }}
@@ -53,12 +53,14 @@ const Footer = () => {
                   className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 lg:w-10 lg:h-10" 
                 />
               </Link>
-              <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold relative group" style={{ color: 'rgb(var(--foreground))' }}>
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-orange-400 via-amber-300 to-orange-300 hover:from-orange-300 hover:via-amber-300 hover:to-orange-400 transition-all duration-300">
+              <Link to="/" className="group">
+                <motion.h1 
+                  className="text-xl sm:text-2xl font-bold text-gradient group-hover:scale-105 transition-transform duration-200"
+                  whileHover={{ scale: 1.05 }}
+                >
                   Clinkr
-                </span>
-                <div className="absolute bottom-0 left-0 w-0 h-[2px] bg-gradient-to-r from-orange-400 via-amber-300 to-orange-300 group-hover:w-full transition-all duration-300"></div>
-              </h1>
+                </motion.h1>
+              </Link>
             </div>
 
             <p className="text-sm mt-4" style={{ color: 'rgba(var(--foreground), 0.65)' }}>
