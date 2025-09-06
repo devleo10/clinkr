@@ -282,7 +282,7 @@ const Devices = () => {
       <TabsContent value="devices" className="pt-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="col-span-2 bg-white rounded-xl shadow-sm p-6">
-            <h2 className="text-md font-semibold text-gray-800 mb-4">Device Distribution</h2>
+            <h2 className="text-md font-semibold text-black mb-4">Device Distribution</h2>
             <div className="space-y-3">
               {deviceData.map((device, index) => (
                 <DeviceStatRow
@@ -299,7 +299,7 @@ const Devices = () => {
             <div className="bg-white rounded-xl shadow-sm p-6">
               <div className="flex justify-between items-center mb-2">
                 <div>
-                  <p className="text-sm text-gray-600 font-medium">Total Devices</p>
+                  <p className="text-sm text-black font-medium">Total Devices</p>
                   <h3 className="text-xl font-bold text-black">{totalDevices.count.toLocaleString()}</h3>
                   <p className="text-xs font-semibold text-green-600 flex items-center">
                     <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -309,7 +309,7 @@ const Devices = () => {
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600 font-medium">Top Device</p>
+                  <p className="text-sm text-black font-medium">Top Device</p>
                   <h3 className="text-xl font-bold text-black">{totalDevices.topDevice}</h3>
                   <p className="text-xs font-medium text-orange-700">{totalDevices.topDevicePercentage}% of total traffic</p>
                 </div>
@@ -322,7 +322,7 @@ const Devices = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.3 }}
             >
-              <h4 className="text-sm font-semibold text-gray-800 mb-3">Device Trends</h4>
+              <h4 className="text-sm font-semibold text-black mb-3">Device Trends</h4>
               <div className="space-y-3">
                 {deviceTrends.map((trend, index) => (
                   <div key={index} className="flex justify-between items-center p-3 rounded-lg bg-gray-50">
@@ -330,7 +330,7 @@ const Devices = () => {
                       <span className="text-orange-600">{trend.icon}</span> {trend.name}
                     </span>
                     <span>
-                      <span className="font-medium text-gray-700">{trend.users.toLocaleString()} users </span>
+                      <span className="font-medium text-black">{trend.users.toLocaleString()} users </span>
                       <span className={trend.trend === "up" ? "text-green-600 font-semibold" : "text-red-600 font-semibold"}>
                         {trend.trend === "up" ? "⬆" : "⬇"} {trend.change}%
                       </span>
@@ -346,8 +346,8 @@ const Devices = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.4 }}
             >
-              <h4 className="text-sm font-semibold text-gray-800 mb-3">Smart Insights</h4>
-              <ul className="text-sm text-gray-700 list-disc ml-4 space-y-2">
+              <h4 className="text-sm font-semibold text-black mb-3">Smart Insights</h4>
+              <ul className="text-sm text-black list-disc ml-4 space-y-2">
                 {smartInsights.length > 0 ? smartInsights.map((insight, index) => (
                   <li key={index} className="font-medium">{insight}</li>
                 )) : <li className="font-medium">No insights available yet.</li>}
@@ -358,7 +358,7 @@ const Devices = () => {
 
         <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="col-span-2 bg-white rounded-xl shadow-sm p-6">
-            <h2 className="text-md font-semibold text-gray-800 mb-4">Browser Distribution</h2>
+            <h2 className="text-md font-semibold text-black mb-4">Browser Distribution</h2>
             <div className="space-y-3">
               {browserData.map((browser, index) => (
                 <BrowserStatRow
@@ -376,7 +376,7 @@ const Devices = () => {
             <div className="bg-white rounded-xl shadow-sm p-6">
               <div className="flex justify-between items-center mb-2">
                 <div>
-                  <p className="text-sm text-gray-600 font-medium">Total Browser Sessions</p>
+                  <p className="text-sm text-black font-medium">Total Browser Sessions</p>
                   <h3 className="text-xl font-bold text-orange-700">{browserStats.totalSessions.toLocaleString()}</h3>
                   <p className="text-xs font-semibold text-green-600 flex items-center">
                     <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -386,7 +386,7 @@ const Devices = () => {
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600 font-medium">Top Browser</p>
+                  <p className="text-sm text-black font-medium">Top Browser</p>
                   <h3 className="text-xl font-bold text-orange-700">{browserStats.topBrowser}</h3>
                   <p className="text-xs font-medium text-orange-600">{browserStats.topBrowserPercentage}% of total traffic</p>
                 </div>
@@ -394,8 +394,8 @@ const Devices = () => {
             </div>
 
             <div className="bg-white rounded-xl shadow-sm p-6">
-              <h4 className="text-sm font-semibold text-gray-800 mb-3">Browser Insights</h4>
-              <ul className="text-sm text-gray-700 list-disc ml-4 space-y-2">
+              <h4 className="text-sm font-semibold text-black mb-3">Browser Insights</h4>
+              <ul className="text-sm text-black list-disc ml-4 space-y-2">
                 {browserInsights.length > 0 ? browserInsights.map((insight, index) => (
                   <li key={index} className="font-medium">{insight}</li>
                 )) : <li className="font-medium">No insights available yet.</li>}

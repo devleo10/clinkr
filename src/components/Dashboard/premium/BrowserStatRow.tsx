@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 
 interface BrowserStatRowProps {
   name: string;
@@ -8,28 +9,41 @@ interface BrowserStatRowProps {
 }
 
 export const BrowserStatRow: React.FC<BrowserStatRowProps> = ({ name, percentage, trend, change }) => (
-  <div className="flex items-center justify-between p-3 rounded-lg bg-gray-50">
-    <span className="text-sm font-medium text-gray-700">{name}</span>
-    <div className="flex items-center gap-3">
-      <span className="text-sm font-semibold text-orange-700">{percentage}%</span>
-      <div className="w-16 h-2 bg-gray-200 rounded-full overflow-hidden">
-        <div
-          className="h-full bg-gradient-to-r from-orange-500 to-amber-500 rounded-full transition-all duration-500"
-          style={{ width: `${percentage}%` }}
-        />
+  <motion.div 
+    className="glass-card bg-white/80 backdrop-blur-md border border-white/30 rounded-lg p-3 my-3 relative overflow-hidden"
+    initial={{ opacity: 0, x: -10 }}
+    animate={{ opacity: 1, x: 0 }}
+    transition={{ duration: 0.3 }}
+    whileHover={{ scale: 1.02, boxShadow: "0 4px 12px -2px rgba(99, 102, 241, 0.15)" }}
+  >
+    {/* Subtle gradient background */}
+  <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-white to-orange-100 opacity-70" />
+    
+    <div className="flex items-center justify-between py-1 relative z-10">
+      <span className="text-sm font-medium text-black">{name}</span>
+      <div className="flex items-center">
+  <div className="w-32 h-2.5 bg-orange-50 rounded-full mr-3 overflow-hidden shadow-inner">
+          <motion.div
+            className="h-full bg-gradient-to-r from-orange-500 to-amber-400 rounded-full"
+            style={{ width: '0%' }}
+            animate={{ width: `${percentage}%` }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+          />
+        </div>
+  <span className="text-sm font-semibold text-orange-700 drop-shadow-sm">{percentage}%</span>
+        <span className={`text-xs ml-2 font-medium flex items-center ${trend === 'up' ? 'text-green-600' : 'text-red-600'} drop-shadow-sm`}>
+          {trend === 'up' ? (
+            <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+            </svg>
+          ) : (
+            <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          )}
+          {change}%
+        </span>
       </div>
-      <span className={`text-xs font-medium flex items-center ${trend === 'up' ? 'text-green-600' : 'text-red-600'}`}>
-        {trend === 'up' ? (
-          <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
-          </svg>
-        ) : (
-          <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-          </svg>
-        )}
-        {change}%
-      </span>
     </div>
-  </div>
+  </motion.div>
 );

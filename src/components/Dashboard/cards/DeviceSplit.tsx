@@ -117,7 +117,7 @@ const DeviceSplit = () => {
       />
       
       <div className="flex justify-between items-center relative z-10">
-        <h1 className="font-bold text-gray-800">Device Split</h1>
+        <h1 className="font-bold text-black">Device Split</h1>
         <div className="flex space-x-2 text-orange-500">
           <FaMobileAlt size={18} />
           <FaLaptop size={18} />
@@ -125,9 +125,9 @@ const DeviceSplit = () => {
       </div>
       <div className="flex gap-10 mt-4 relative z-10">
         <div className="text-center flex-1">
-          <div className="flex items-center justify-center mb-2">
+            <div className="flex items-center justify-center mb-2">
             <FaMobileAlt className="text-orange-500 mr-2" size={16} />
-            <p className="text-gray-700 font-medium">Mobile</p>
+            <p className="text-black font-medium">Mobile</p>
           </div>
           <p className="font-bold text-2xl bg-clip-text text-transparent bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400">
             {loading ? (
@@ -143,9 +143,9 @@ const DeviceSplit = () => {
           </p>
         </div>
         <div className="text-center flex-1">
-          <div className="flex items-center justify-center mb-2">
+            <div className="flex items-center justify-center mb-2">
             <FaLaptop className="text-orange-500 mr-2" size={16} />
-            <p className="text-gray-700 font-medium">Desktop</p>
+            <p className="text-black font-medium">Desktop</p>
           </div>
           <p className="font-bold text-2xl bg-clip-text text-transparent bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400">
             {loading ? (
