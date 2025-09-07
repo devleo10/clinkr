@@ -453,111 +453,50 @@ const PrivateProfile = () => {
   // Ensure rendering logic correctly uses profile state
   return (
     <div className="min-h-screen relative overflow-hidden">
-      <BoltBackground />
-      
-      <div className="relative z-10 max-w-4xl mx-auto px-4 py-8">
+  <div className="relative z-10 max-w-4xl mx-auto px-4 py-8">
         {/* Header Section */}
-        <motion.div 
-          className="flex justify-between items-center mb-8"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <Link to="/homepage" className="flex items-center gap-1 sm:gap-2">
-                <img 
-                  src={logo} 
-                  alt="Clinkr Logo" 
-                  className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 lg:w-10 lg:h-10"
-                />
-                <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold relative group">
-                  <span className="bg-clip-text text-transparent bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400 hover:from-orange-400 hover:via-amber-500 hover:to-orange-600 transition-all duration-300">
-                    Clinkr
-                  </span>
-                  <div className="absolute bottom-0 left-0 w-0 h-[2px] bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400 group-hover:w-full transition-all duration-300"></div>
-                </h1>
-              </Link>
-            <div className="flex items-center gap-2">
-              <div className="bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400 text-white font-bold px-6 py-2 rounded-lg shadow hover:from-orange-400 hover:via-amber-500 hover:to-orange-600 transition-all duration-300">
-                <Link to='/dashboard'>
-                  Visit Dashboard
-                </Link>
-              </div>
-              
-              {/* Quick Actions Menu */}
-              <div className="relative" ref={actionsMenuRef}>
-                <button
-                  className="p-2 rounded-full hover:bg-orange-50 focus:outline-none focus:ring-2 focus:ring-orange-400 transition-all duration-300"
-                  aria-label="More actions"
-                  onClick={() => setShowActionsMenu(!showActionsMenu)}
-                  title="More actions"
-                >
-                  <MoreVertical className="text-orange-400 hover:text-orange-600" size={20} />
-                </button>
-                
-                {/* Actions Dropdown */}
-                {showActionsMenu && (
-                  <div className="absolute right-0 top-12 bg-white rounded-lg shadow-lg border border-orange-100 py-2 min-w-48 z-50">
-                    <button
-                      className="w-full px-4 py-2 text-left hover:bg-orange-50 flex items-center gap-3 text-sm"
-                      onClick={() => {
-                        handlePreviewProfile();
-                        setShowActionsMenu(false);
-                      }}
-                    >
-                      <FaEye className="text-orange-400" size={14} />
-                      Preview Public Profile
-                    </button>
-                    
-                    <button
-                      className="w-full px-4 py-2 text-left hover:bg-orange-50 flex items-center gap-3 text-sm"
-                      onClick={() => {
-                        navigate('/dashboard');
-                        setShowActionsMenu(false);
-                      }}
-                    >
-                      <FaChartBar className="text-orange-600" size={14} />
-                      View Analytics
-                    </button>
-                    
-                    <button
-                      className="w-full px-4 py-2 text-left hover:bg-orange-50 flex items-center gap-3 text-sm"
-                      onClick={() => {
-                        setLinkReorderMode(!linkReorderMode);
-                        setShowActionsMenu(false);
-                      }}
-                    >
-                      <FaGripVertical className="text-orange-400" size={14} />
-                      {linkReorderMode ? 'Exit Reorder Mode' : 'Reorder Links'}
-                    </button>
-                    
-                    <div className="border-t border-orange-100 my-1"></div>
-                    
-                    <button
-                      className="w-full px-4 py-2 text-left hover:bg-red-50 flex items-center gap-3 text-sm text-red-600"
-                      onClick={() => {
-                        setDeleteDialogOpen(true);
-                        setShowActionsMenu(false);
-                      }}
-                    >
-                      <FaTrash className="text-red-500" size={14} />
-                      Delete Profile
-                    </button>
-                  </div>
-                )}
-              </div>
+        <div className="flex justify-between items-center mb-6">
+          <Link to="/homepage" className="flex items-center gap-2">
+            <img src={logo} alt="Clinkr" className="w-8 h-8" />
+            <h1 className="text-2xl font-semibold text-gray-900">Clinkr</h1>
+          </Link>
+          <div className="flex items-center gap-2">
+            <Link to='/dashboard' className="px-4 py-2 bg-gray-100 rounded-md text-gray-800">Dashboard</Link>
+            <div className="relative" ref={actionsMenuRef}>
+              <button
+                className="p-2 rounded-full hover:bg-gray-100 focus:outline-none"
+                aria-label="More actions"
+                onClick={() => setShowActionsMenu(!showActionsMenu)}
+                title="More actions"
+              >
+                <MoreVertical className="text-gray-600" size={20} />
+              </button>
+              {showActionsMenu && (
+                <div className="absolute right-0 top-12 bg-white rounded-lg shadow border py-2 min-w-48 z-50">
+                  <button className="w-full px-4 py-2 text-left hover:bg-gray-50 flex items-center gap-3 text-sm" onClick={() => { handlePreviewProfile(); setShowActionsMenu(false); }}>
+                    <FaEye className="text-gray-600" size={14} /> Preview Public Profile
+                  </button>
+                  <button className="w-full px-4 py-2 text-left hover:bg-gray-50 flex items-center gap-3 text-sm" onClick={() => { navigate('/dashboard'); setShowActionsMenu(false); }}>
+                    <FaChartBar className="text-gray-600" size={14} /> View Analytics
+                  </button>
+                  <button className="w-full px-4 py-2 text-left hover:bg-gray-50 flex items-center gap-3 text-sm" onClick={() => { setLinkReorderMode(!linkReorderMode); setShowActionsMenu(false); }}>
+                    <FaGripVertical className="text-gray-600" size={14} /> {linkReorderMode ? 'Exit Reorder Mode' : 'Reorder Links'}
+                  </button>
+                  <div className="border-t my-1"></div>
+                  <button className="w-full px-4 py-2 text-left hover:bg-red-50 flex items-center gap-3 text-sm text-red-600" onClick={() => { setDeleteDialogOpen(true); setShowActionsMenu(false); }}>
+                    <FaTrash className="text-red-500" size={14} /> Delete Profile
+                  </button>
+                </div>
+              )}
             </div>
-          </motion.div>
+          </div>
+        </div>
       
           {/* Profile Content */}
-          <motion.div 
-            className="text-center relative bg-white/80 backdrop-blur-sm rounded-2xl p-8 mb-8 border border-orange-100 shadow-lg"
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-          >
+          <div className="text-center relative bg-white rounded-2xl p-6 mb-8 border border-gray-100 shadow-sm">
           {/* Profile Picture Section */}
-          <div className="w-32 h-32 mx-auto rounded-full bg-gradient-to-tr from-orange-400 via-amber-300 to-orange-200 p-1 flex items-center justify-center overflow-visible mb-4 relative shadow-2xl group">
-            <div className="w-full h-full rounded-full bg-white flex items-center justify-center overflow-hidden">
+          <div className="w-32 h-32 mx-auto rounded-full p-1 flex items-center justify-center mb-4 relative shadow-sm border border-gray-100 bg-white">
+            <div className="w-full h-full rounded-full overflow-hidden flex items-center justify-center bg-gray-50">
               {loading && (
                 <div className="absolute inset-0 flex items-center justify-center bg-transparent z-20">
                   <LoadingScreen compact />
@@ -574,22 +513,15 @@ const PrivateProfile = () => {
                 <FaUser size={60} className="text-orange-200" />
               )}
             </div>
-            {/* Overlay with update/delete on hover */}
-            <div className="absolute inset-0 flex flex-col items-center justify-end opacity-0 group-hover:opacity-100 transition-opacity bg-gradient-to-t from-white/80 via-white/40 to-transparent z-10 rounded-full">
+            <div className="absolute inset-0 flex flex-col items-center justify-end opacity-0 group-hover:opacity-100 transition-opacity z-10 rounded-full">
               <button
                 type="button"
-                onClick={() => {
-                  if (fileInputRef.current) {
-                    fileInputRef.current.value = '';
-                    fileInputRef.current.click();
-                  }
-                }}
-                className="mb-2 flex items-center gap-1 bg-orange-600 text-white px-3 py-1 rounded-full shadow hover:bg-orange-700 text-xs font-medium border border-orange-200 transition-all duration-300"
+                onClick={() => { if (fileInputRef.current) { fileInputRef.current.value = ''; fileInputRef.current.click(); } }}
+                className="mb-2 flex items-center gap-1 bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-xs font-medium border border-gray-200"
                 aria-label="Update profile picture"
                 disabled={loading}
               >
-                <Edit size={14} />
-                Update
+                <Edit size={14} /> Update
               </button>
               {profile?.profile_picture && !loading && (
                 <button
@@ -615,12 +547,11 @@ const PrivateProfile = () => {
                       setLoading(false);
                     }
                   }}
-                  className="mb-3 flex items-center gap-1 bg-red-100 text-red-600 px-3 py-1 rounded-full shadow hover:bg-red-200 text-xs font-medium border border-red-200 transition-all duration-300"
+                  className="mb-3 flex items-center gap-1 bg-red-50 text-red-600 px-3 py-1 rounded-full text-xs font-medium border border-red-100"
                   aria-label="Delete profile picture"
                   disabled={loading}
                 >
-                  <FaTrash size={13} />
-                  Delete
+                  <FaTrash size={13} /> Delete
                 </button>
               )}
             </div>
@@ -990,7 +921,6 @@ const PrivateProfile = () => {
             {linkError && <p className="text-red-500 text-sm text-center">{linkError}</p>}
           </motion.div>
           </div>
-        </motion.div>
     
         {/* Delete Link Confirmation Dialog */}
         <AlertDialog open={linkToDeleteIndex !== null} onOpenChange={() => setLinkToDeleteIndex(null)}>
@@ -1081,7 +1011,7 @@ const PrivateProfile = () => {
 `}</style>
       </div>
     </div>
-    );
+  );
 };
 
 export default PrivateProfile;

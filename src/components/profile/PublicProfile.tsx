@@ -26,108 +26,65 @@ const PublicProfile = () => {
   const [activeLinkMenu, setActiveLinkMenu] = useState<number | null>(null);
   const linkMenuRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (activeLinkMenu !== null) {
-        const linkMenuRef = linkMenuRefs.current[activeLinkMenu];
-        if (linkMenuRef && !linkMenuRef.contains(event.target as Node)) {
-          setActiveLinkMenu(null);
-        }
-      }
-    };
+        {/* Header */}
+        <motion.div 
+          className="flex justify-center items-center mb-8"
+          initial={{ scale: 0, rotate: -180 }}
+          animate={{ scale: 1, rotate: 0 }}
+          transition={{ 
+            type: "spring", 
+            stiffness: 200, 
+            damping: 15,
+            duration: 1 
+          }}
+        >
+          <Link to="/homepage" className="flex items-center gap-4">
+            <img src={logo} alt="Clinkr Logo" className="w-10 h-10" />
+            <h1 className="text-3xl md:text-4xl font-bold text-gray-900">Clinkr</h1>
+          </Link>
+        </motion.div>
 
-    if (activeLinkMenu !== null) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
+        {/* Profile Content */}
+        <motion.div 
+          className="relative max-w-2xl mx-auto"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
+          {/* Main Profile Card (clean) */}
+          <div className="relative bg-white rounded-2xl p-8 shadow-md border border-gray-100">
+            <div className="text-center relative z-10">
+              {/* Profile Picture Section */}
+              <div className="w-36 h-36 mx-auto rounded-full p-1 flex items-center justify-center mb-6 relative shadow-sm border border-gray-100 bg-white">
+                <div className="w-full h-full rounded-full overflow-hidden flex items-center justify-center bg-gray-50">
+                  {profile?.profile_picture ? (
+                    <motion.img
+                      src={profile.profile_picture}
+                      alt={profile.username}
+                      className="w-full h-full object-cover rounded-full"
+                      initial={{ scale: 1.1, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ duration: 0.3 }}
+                      style={{ background: 'transparent' }}
+                    />
+                  ) : (
+                    <motion.div
+                      initial={{ scale: 0.8, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ duration: 0.3 }}
+                      className="bg-gradient-to-r from-orange-100 to-amber-100 w-full h-full flex items-center justify-center"
+                    >
+                      <FaUser size={64} className="text-orange-500" />
+                    </motion.div>
+                  )}
+                </div>
+              </div>
 
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [activeLinkMenu]);
-
-  useEffect(() => {
-    const loadData = async () => {
-      await fetchProfile();
-    };
-    loadData();
-  }, [username]);
-
-  useEffect(() => {
-    console.log('Profile ID:', profile?.id); // Debugging profile ID
-    if (profile?.id) {
-      recordView();
-    }
-  }, [profile?.id]);
-
-  useEffect(() => {
-    console.log('Profile page accessed'); // Debugging profile page access
-    console.log('Referrer:', document.referrer || 'No referrer'); // Debugging referrer source
-    if (profile?.id) {
-      recordView();
-    }
-  }, [profile?.id]);
-
-  const recordView = async () => {
-    try {
-        console.log('recordView function called'); // Debugging function call
-
-        let visitorId = localStorage.getItem('visitorId');
-        if (!visitorId) {
-            visitorId = btoa(Math.random().toString()).slice(0, 10);
-            localStorage.setItem('visitorId', visitorId);
-        }
-
-        console.log('Visitor ID:', visitorId); // Debugging visitor ID
-
-        if (!profile?.id) {
-            console.error('Profile ID is missing. Cannot record view.');
-            return;
-        }
-
-        let referrer = document.referrer || 'direct';
-        try {
-            const referrerUrl = new URL(referrer);
-            referrer = referrerUrl.hostname.replace(/^www\./, '');
-        } catch (error) {
-            console.error('Error parsing referrer URL:', error);
-        }
-
-        console.log('Recording view data:', {
-            viewer_hash: visitorId,
-            profile_id: profile.id,
-            viewed_at: new Date().toISOString(),
-            referrer: referrer
-        });
-
-        const { error: insertError } = await supabase
-            .from('profile_views')
-            .insert({
-                viewer_hash: visitorId,
-                profile_id: profile.id,
-                viewed_at: new Date().toISOString(),
-                referrer: referrer
-            });
-
-        if (insertError) {
-            console.error('Error inserting view:', insertError);
-        } else {
-            console.log('View successfully recorded'); // Debugging successful view recording
-        }
-
-    } catch (err) {
-        console.error('Error in recordView function:', err);
-    }
-};
-
-  const fetchProfile = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('username', username)
-        .maybeSingle();
-
+              <div className="text-center mt-4">
+                <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900">
+                  {loading ? 'Loading...' : (profile?.username || 'Profile not found')}
+                </h1>
+              </div>
       if (error) {
         throw error;
       }
@@ -298,61 +255,10 @@ const PublicProfile = () => {
            background: 'radial-gradient(circle at 20% 20%, rgba(255, 122, 26, 0.4) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(255, 181, 107, 0.3) 0%, transparent 50%), radial-gradient(circle at 40% 90%, rgba(255, 154, 62, 0.3) 0%, transparent 50%), radial-gradient(circle at 70% 10%, rgba(255, 193, 80, 0.4) 0%, transparent 50%), linear-gradient(135deg, #FFF8F0 0%, #FFFBF5 100%)',
          }}>
       
-      {/* Funky Floating Elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {[...Array(15)].map((_, i) => (
-          <motion.div
-            key={i}
-            className={`absolute w-6 h-6 rounded-full opacity-30 ${
-              i % 4 === 0 ? 'bg-orange-400' : 
-              i % 4 === 1 ? 'bg-amber-400' : 
-              i % 4 === 2 ? 'bg-orange-300' : 'bg-amber-300'
-            }`}
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-            }}
-            animate={{
-              y: [0, -40, 0],
-              x: [0, Math.random() * 30 - 15, 0],
-              scale: [1, 1.3, 1],
-              rotate: [0, 360],
-            }}
-            transition={{
-              duration: 4 + Math.random() * 3,
-              repeat: Infinity,
-              delay: Math.random() * 2,
-            }}
-          />
-        ))}
+      {/* Subtle neutral background for cleaner look */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute inset-0 bg-gradient-to-b from-white to-orange-50 opacity-60" />
       </div>
-
-      {/* Animated gradient orbs */}
-      <motion.div
-        className="absolute top-1/4 left-1/4 w-72 h-72 bg-gradient-to-r from-orange-400/20 to-amber-500/20 rounded-full blur-3xl"
-        animate={{
-          scale: [1, 1.3, 1],
-          rotate: [0, 180, 360],
-        }}
-        transition={{
-          duration: 15,
-          repeat: Infinity,
-          ease: "linear"
-        }}
-      />
-      
-      <motion.div
-        className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-gradient-to-r from-amber-400/20 to-orange-500/20 rounded-full blur-3xl"
-        animate={{
-          scale: [1.2, 1, 1.2],
-          rotate: [360, 180, 0],
-        }}
-        transition={{
-          duration: 18,
-          repeat: Infinity,
-          ease: "linear"
-        }}
-      />
       
       <div className="max-w-4xl mx-auto px-4 py-4 relative z-10">
         {/* Funky Header */}
@@ -368,138 +274,22 @@ const PublicProfile = () => {
           }}
         >
           <Link to="/homepage" className="flex items-center gap-4">
-            <motion.div
-              className="relative"
-              whileHover={{ scale: 1.2 }}
-              whileTap={{ scale: 0.9 }}
-            >
-              <motion.img 
-                src={logo} 
-                alt="Clinkr Logo" 
-                className="w-12 h-12 drop-shadow-2xl"
-                animate={{
-                  rotate: [0, 10, -10, 0],
-                }}
-                transition={{
-                  duration: 3,
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                }}
-              />
-              <motion.div
-                className="absolute -inset-3 bg-gradient-to-r from-orange-400 to-orange-600 rounded-full opacity-30 blur-lg"
-                animate={{
-                  scale: [1, 1.4, 1],
-                  opacity: [0.3, 0.6, 0.3],
-                }}
-                transition={{
-                  duration: 2,
-                  repeat: Infinity,
-                }}
-              />
-            </motion.div>
-            
-            <motion.h1 
-              className="text-3xl md:text-5xl font-black relative"
-              whileHover={{ scale: 1.05 }}
-            >
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600 drop-shadow-lg">
-                Clinkr
-              </span>
-              <motion.div
-                className="absolute -inset-2 bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600 rounded-lg opacity-20 blur-xl"
-                animate={{
-                  opacity: [0.2, 0.5, 0.2],
-                }}
-                transition={{
-                  duration: 3,
-                  repeat: Infinity,
-                }}
-              />
-              {/* Sparkle effects */}
-              <motion.div className="absolute -top-2 -right-2">
-                <FaHandSparkles className="text-orange-400 text-2xl" />
-              </motion.div>
-              <motion.div 
-                className="absolute -bottom-2 -left-2"
-                animate={{
-                  rotate: [0, 360],
-                }}
-                transition={{
-                  duration: 4,
-                  repeat: Infinity,
-                }}
-              >
-                <FaRocket className="text-orange-400 text-xl" />
-              </motion.div>
-            </motion.h1>
+            <img src={logo} alt="Clinkr Logo" className="w-10 h-10" />
+            <h1 className="text-3xl md:text-4xl font-bold text-gray-900">Clinkr</h1>
+          </Link>
           </Link>
         </motion.div>
   
         {/* Funky Profile Content */}
-        <motion.div 
-          className="relative max-w-2xl mx-auto"
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-        >
-          {/* Main Profile Card with Neon Effect */}
-          <motion.div
-            className="relative bg-gradient-to-br from-white/90 via-white/70 to-white/50 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-white/30"
-            whileHover={{ 
-              scale: 1.02,
-              boxShadow: "0 0 50px rgba(255, 122, 26, 0.3), 0 0 100px rgba(255, 122, 26, 0.2)"
-            }}
-            style={{ 
-              boxShadow: "0 0 30px rgba(255, 122, 26, 0.2), 0 0 60px rgba(255, 122, 26, 0.1)"
-            }}
-          >
-            {/* Animated border glow */}
-            <motion.div
-              className="absolute inset-0 bg-gradient-to-r from-orange-400 via-amber-500 to-orange-400 rounded-3xl opacity-30 blur-sm"
-              animate={{
-                background: [
-                  "linear-gradient(to right, #fb923c, #f59e0b, #fb923c)",
-                  "linear-gradient(to right, #f59e0b, #fb923c, #f59e0b)",
-                  "linear-gradient(to right, #fb923c, #f59e0b, #fb923c)"
-                ]
-              }}
-              transition={{
-                duration: 4,
-                repeat: Infinity,
-                ease: "linear"
-              }}
-            />
-            
-            {/* Corner decorations */}
-            <motion.div className="absolute top-4 right-4 text-3xl"
-              animate={{ rotate: [0, 360] }}
-              transition={{ duration: 8, repeat: Infinity }}>
-              ✨
-            </motion.div>
-            <motion.div className="absolute bottom-4 left-4 text-2xl"
-              animate={{ scale: [1, 1.2, 1] }}
-              transition={{ duration: 2, repeat: Infinity }}>
-              🚀
-            </motion.div>
           <motion.div 
-            className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-500 via-amber-500 to-orange-400"
-            initial={{ scaleX: 0 }}
-            animate={{ scaleX: 1 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-          />
-          
-          {/* Corner decoration */}
-          <motion.div
-            className="absolute top-0 right-0 w-20 h-20"
-            initial={{ opacity: 0, scale: 0 }}
-            animate={{ opacity: 0.15, scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
+            className="relative max-w-2xl mx-auto"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
           >
-            <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-orange-500 to-orange-600 rounded-bl-full" />
-          </motion.div>
-          
-          <div className="text-center relative z-10">
+            {/* Main Profile Card (clean) */}
+            <div className="relative bg-white rounded-2xl p-8 shadow-md border border-gray-100">
+              <div className="text-center relative z-10">
             {/* Profile Picture Section */}
             <motion.div 
               className="w-36 h-36 mx-auto rounded-full bg-gradient-to-tr from-orange-400 via-amber-300 to-orange-200 p-1 flex items-center justify-center overflow-visible mb-6 relative shadow-lg"
@@ -507,15 +297,8 @@ const PublicProfile = () => {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 0.4 }}
-            >
-              <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-orange-400 via-amber-300 to-orange-200 opacity-50 blur-md"></div>
-              <div className="w-full h-full rounded-full bg-white flex items-center justify-center overflow-hidden relative z-10">
-                {loading ? (
-                  <div className="absolute inset-0 flex items-center justify-center bg-transparent">
-                    <LoadingScreen compact />
-                  </div>
-                ) : profile?.profile_picture ? (
-                  <motion.img
+              <div className="w-36 h-36 mx-auto rounded-full p-1 flex items-center justify-center mb-6 relative shadow-sm border border-gray-100 bg-white">
+                <div className="w-full h-full rounded-full overflow-hidden flex items-center justify-center bg-gray-50">
                     src={profile.profile_picture}
                     alt={profile.username}
                     className="w-full h-full object-cover rounded-full"
@@ -547,49 +330,15 @@ const PublicProfile = () => {
               </div>
             </motion.div>
         
-            <motion.div className="text-center mt-4">
-              <motion.h1 
-                className="text-2xl sm:text-3xl font-bold text-gray-800"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.5 }}
-              >
-                {loading ? (
-                  <div className="inline-flex items-center gap-2">
-                    <span>Loading</span>
-                    <motion.span 
-                      animate={{ opacity: [0, 1, 0] }} 
-                      transition={{ duration: 1.5, repeat: Infinity }}
-                    >...</motion.span>
-                  </div>
-                ) : (
-                  <span className="relative">
-                    {profile?.username || 'Profile not found'}
-                    <motion.div 
-                      className="absolute -bottom-1 left-0 right-0 h-[2px] bg-gradient-to-r from-orange-300 to-amber-300 rounded-full" 
-                      initial={{ width: 0, opacity: 0 }}
-                      animate={{ width: "100%", opacity: 0.7 }}
-                      transition={{ duration: 0.6, delay: 0.5 }}
-                    />
-                  </span>
-                )}
-              </motion.h1>
-            </motion.div>
+              <div className="text-center mt-4">
+                <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900">
+                  {loading ? 'Loading...' : (profile?.username || 'Profile not found')}
+                </h1>
+              </div>
       
-            <motion.div className="text-center max-w-lg mx-auto">
-              <motion.p 
-                className="text-gray-600 mt-4 leading-relaxed"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.3 }}
-              >
-                {loading ? (
-                  <div className="h-4 w-2/3 mx-auto bg-gray-200 animate-pulse rounded-full"></div>
-                ) : (
-                  profile?.bio || 'Bio not available'
-                )}
-              </motion.p>
-            </motion.div>
+              <div className="text-center max-w-lg mx-auto mt-3">
+                <p className="text-gray-600 leading-relaxed">{loading ? 'Loading...' : (profile?.bio || 'Bio not available')}</p>
+              </div>
       
             {/* Links Section */}
             <motion.div 
@@ -613,51 +362,34 @@ const PublicProfile = () => {
                     }}
                     className={activeLinkMenu === index ? 'relative' : ''}
                   >
-                    <Card className="hover:shadow-xl transition-all duration-300 rounded-xl border border-white/40 bg-white/90 backdrop-blur-lg" style={{ overflow: 'visible', position: 'relative' }}>
-                      <CardContent className="flex items-center justify-between gap-3 md:gap-4 p-3 py-2.5 relative" style={{ overflow: 'visible' }}>
-                        {/* Subtle gradient overlay */}
-                        <div className="absolute inset-0 bg-gradient-to-br from-orange-50/40 via-transparent to-amber-50/40 opacity-70" />
-                        
-                        {/* Link content */}
-                        <div className="flex items-center gap-3 flex-grow min-w-0 relative z-10">
-                          <motion.div 
-                            className="flex-shrink-0 w-9 h-9 rounded-full bg-white shadow-sm border border-indigo-100 flex items-center justify-center overflow-visible"
-                            whileHover={{ rotate: [0, -10, 10, -5, 5, 0], scale: 1.1 }}
-                            transition={{ duration: 0.5 }}
-                          >
-                            {getSocialIcon(link.url, 28)}
-                          </motion.div>
-                          <div className="flex flex-col items-start flex-grow min-w-0">
-                            <span className="text-base font-medium bg-gradient-to-r from-orange-700 via-amber-600 to-orange-600 bg-clip-text text-transparent truncate group-hover:from-orange-600 group-hover:via-amber-500 group-hover:to-orange-500 transition-all duration-300 leading-tight">{link.title}</span>
-                            <a
-                              href={link.url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-xs text-gray-500 hover:text-orange-600 transition-colors block leading-tight"
-                              style={{
-                                overflow: 'hidden',
-                                textOverflow: 'ellipsis',
-                                whiteSpace: 'nowrap',
-                                display: 'block',
-                                maxWidth: '100%'
-                              }}
-                              onClick={(e) => handleLinkClick(link.url, index, e)}
-                            >
-                              <motion.span 
-                                className="inline-flex items-center gap-1"
-                                whileHover={{ x: 3 }}
-                                transition={{ type: "spring", stiffness: 400, damping: 10 }}
-                              >
-                                <span className="block md:hidden">
-                                  {link.url.length > 25 ? link.url.slice(0, 22) + '...' : link.url}
-                                </span>
-                                <span className="hidden md:block">
-                                  {link.url.length > 45 ? link.url.slice(0, 42) + '...' : link.url}
-                                </span>
-                              </motion.span>
-                            </a>
-                          </div>
-                        </div>
+                            <Card className="hover:shadow transition-all duration-200 rounded-xl border border-gray-100 bg-white" style={{ overflow: 'visible', position: 'relative' }}>
+                            <CardContent className="flex items-center justify-between gap-3 md:gap-4 p-3 py-2.5 relative" style={{ overflow: 'visible' }}>
+                              <div className="flex items-center gap-3 flex-grow min-w-0 relative z-10">
+                                <div className="flex-shrink-0 w-9 h-9 rounded-full bg-gray-50 shadow-sm border border-gray-100 flex items-center justify-center overflow-hidden">
+                                  {getSocialIcon(link.url, 28)}
+                                </div>
+                                <div className="flex flex-col items-start flex-grow min-w-0">
+                                  <span className="text-base font-medium text-gray-900 truncate leading-tight">{link.title}</span>
+                                  <a
+                                    href={link.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-xs text-gray-500 hover:text-gray-700 transition-colors block leading-tight truncate"
+                                    style={{
+                                      overflow: 'hidden',
+                                      textOverflow: 'ellipsis',
+                                      whiteSpace: 'nowrap',
+                                      display: 'block',
+                                      maxWidth: '100%'
+                                    }}
+                                    onClick={(e) => handleLinkClick(link.url, index, e)}
+                                  >
+                                    <span className="inline-block">
+                                      {link.url.length > 45 ? link.url.slice(0, 42) + '...' : link.url}
+                                    </span>
+                                  </a>
+                                </div>
+                              </div>
                         <div 
                           className="relative flex-shrink-0 dropdown-container" 
                           ref={(el) => {
@@ -665,19 +397,17 @@ const PublicProfile = () => {
                           }}
                           style={{ zIndex: activeLinkMenu === index ? 1001 : 10, position: 'relative' }}
                         >
-                          <motion.button
-                            className="p-1.5 rounded-full hover:bg-gradient-to-r hover:from-orange-100 hover:via-amber-100 hover:to-orange-200 focus:outline-none transition-colors"
+                          <button
+                            className="p-1.5 rounded-full hover:bg-gray-100 focus:outline-none transition-colors"
                             aria-label="Link actions"
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.95 }}
                             onClick={(e) => {
                               e.preventDefault();
                               e.stopPropagation();
                               setActiveLinkMenu(activeLinkMenu === index ? null : index);
                             }}
                           >
-                            <MoreHorizontal className="h-4 w-4 text-orange-400" />
-                          </motion.button>
+                            <MoreHorizontal className="h-4 w-4 text-gray-500" />
+                          </button>
                           
                           <AnimatePresence>
                             {activeLinkMenu === index && (
