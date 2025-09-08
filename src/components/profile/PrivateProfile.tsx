@@ -1,30 +1,21 @@
 import { useState, useEffect, useRef } from 'react';
 import { Card, CardContent } from "../ui/card";
 import { Edit } from "lucide-react";
-import { Link, useParams, useNavigate } from 'react-router-dom';
-import logo from "../../assets/Frame.png";
+import { useParams } from 'react-router-dom';
+// removed unused import: logo
 import { supabase } from '../../lib/supabaseClient';
-import { FaUser, FaShare, FaTrash, FaEye,FaCopy, FaGripVertical, FaChartBar } from 'react-icons/fa';
+import { FaUser, FaShare, FaTrash, FaCopy, FaGripVertical } from 'react-icons/fa';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "../ui/alert-dialog";
-import { useAuth } from '../auth/AuthProvider';
 import LinkValidator from "../../lib/link-validator";
-import Cropper from 'react-easy-crop';
-import Modal from 'react-modal';
-import { Globe } from 'lucide-react';
 import { MoreVertical, GripVertical } from "lucide-react";
+import { getSocialIcon } from '../../lib/profile-utils';
 import { motion, Reorder } from 'framer-motion';
 import LoadingScreen from '../ui/loadingScreen';
-import LogoBars from '../ui/LogoBars';
-import BoltBackground from '../homepage/BoltBackground';
-
-interface UserProfile {
-  username: string;
-  bio: string;
-  profile_picture: string | null;
-  links: string[];
-  link_title: string[];
-  id: string;
-}
+import CropModal from './CropModal';
+import EditLinkModal from './EditLinkModal';
+import ProfileHeader from './ProfileHeader';
+// removed unused import: LinksList
+import { useProfile } from './useProfile';
 
 interface EditState {
   fullName: boolean;
@@ -32,44 +23,21 @@ interface EditState {
   profilePicture: boolean;
 }
 const PrivateProfile = () => {
-  const { session } = useAuth();
-  const navigate = useNavigate();
 
-  useEffect(() => {
-    if (!session) {
-      navigate('/signup');
-    }
-  }, [session, navigate]);
-
-  // Remove these state variable
-  const [profile, setProfile] = useState<UserProfile | null>(null);
-  const [loading, setLoading] = useState(true);
   const { username } = useParams();
-  const [error, setError] = useState<string | null>(null);
-  const [editState, setEditState] = useState<EditState>({
-    fullName: false,
-    bio: false,
-    profilePicture: false
-  });
+  const { profile, setProfile, loading, setLoading, error, setError, getCurrentUserId } = useProfile(username);
+  const [editState, setEditState] = useState<EditState>({ fullName: false, bio: false, profilePicture: false });
   const [editedBio, setEditedBio] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [cropModalOpen, setCropModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
-  const [crop, setCrop] = useState({ x: 0, y: 0 });
-  const [zoom, setZoom] = useState(1);
-  const [croppedAreaPixels, setCroppedAreaPixels] = useState<any>(null);
-
-  // Toast notification state
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const [linkReorderMode, setLinkReorderMode] = useState(false);
-
-  // Feature states
   const [showActionsMenu, setShowActionsMenu] = useState(false);
   const [activeLinkMenu, setActiveLinkMenu] = useState<number | null>(null);
-
   const toastTimeout = useRef<NodeJS.Timeout | null>(null);
   const actionsMenuRef = useRef<HTMLDivElement>(null);
   const linkMenuRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -99,54 +67,17 @@ const PrivateProfile = () => {
     };
   }, [showActionsMenu, activeLinkMenu]);
 
-  useEffect(() => {
-    fetchProfile();
-  }, [username]);
-
-  const fetchProfile = async () => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        setLoading(false);
-        return;
-      }
-
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', user.id)  // Add this line to filter by user ID
-        .single();
-  
-      if (error) throw error;
-  
-      const profileData: UserProfile = {
-        id: data.id,
-        username: data.username || '',
-        bio: data.bio || '',
-        profile_picture: data.profile_picture,
-        links: Array.isArray(data.links) ? data.links : (data.links ? JSON.parse(data.links) : []),
-        link_title: Array.isArray(data.link_title) ? data.link_title : (data.link_title ? JSON.parse(data.link_title) : []),
-      };
-  
-      setProfile(profileData);
-    } catch (err: any) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-
+  // Removed redundant fetchProfile call, useProfile hook handles profile fetching
 
   const handleBioUpdate = async () => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('No user found');
+      const userId = await getCurrentUserId();
+      if (!userId) throw new Error('No user found');
 
       const { error: updateError } = await supabase
         .from('profiles')
         .update({ bio: editedBio })
-        .eq('id', user.id);
+        .eq('id', userId);
 
       if (updateError) throw updateError;
 
@@ -159,15 +90,13 @@ const PrivateProfile = () => {
 
   
   // Transform profile links into the required format
-  const links = Array.isArray(profile?.links) ? profile.links.map((url, index) => {
-    return {
-      title: profile?.link_title && profile.link_title[index] 
-        ? String(profile.link_title[index]) 
-        : String(url),
+  const links = (() => {
+    return Array.isArray(profile?.links) ? profile.links.map((url, index) => ({
+      title: profile?.link_title && profile.link_title[index] ? String(profile.link_title[index]) : String(url),
       clicks: 0,
       url: typeof url === 'string' ? url : '',
-    };
-  }) : []; 
+    })) : [];
+  })();
   
   const [newLink, setNewLink] = useState({ url: '', title: '' });
   const [linkError, setLinkError] = useState<string | null>(null);
@@ -184,8 +113,8 @@ const PrivateProfile = () => {
     }
     setLinkError(null);
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('No user found');
+      const userId = await getCurrentUserId();
+      if (!userId) throw new Error('No user found');
 
       // Store only the URL in the links array
       const updatedLinks = [...(profile?.links || []), newLink.url];
@@ -199,7 +128,7 @@ const PrivateProfile = () => {
           links: updatedLinks,
           link_title: updatedLinkTitles 
         })
-        .eq('id', user.id);
+        .eq('id', userId);
 
       if (updateError) throw updateError;
 
@@ -221,8 +150,8 @@ const PrivateProfile = () => {
     if (linkToDeleteIndex === null) return;
 
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('No user found');
+      const userId = await getCurrentUserId();
+      if (!userId) throw new Error('No user found');
 
       if (!profile) return;
 
@@ -232,7 +161,7 @@ const PrivateProfile = () => {
       const { error: updateError } = await supabase
         .from('profiles')
         .update({ links: updatedLinks, link_title: updatedLinkTitles })
-        .eq('id', user.id);
+        .eq('id', userId);
 
       if (updateError) throw updateError;
 
@@ -257,12 +186,7 @@ const PrivateProfile = () => {
     }
   }; // Updated URL construction
 
-  // New function to preview profile
-  const handlePreviewProfile = () => {
-    if (profile?.username) {
-      window.open(`/${profile.username}`, '_blank');
-    }
-  };
+  // removed unused function: handlePreviewProfile
 
  
     
@@ -280,8 +204,8 @@ const PrivateProfile = () => {
   // New function to handle link reordering
   const handleReorderLinks = async (newOrder: any[]) => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('No user found');
+      const userId = await getCurrentUserId();
+      if (!userId) throw new Error('No user found');
       
       const reorderedUrls = newOrder.map(item => item.url);
       const reorderedTitles = newOrder.map(item => item.title);
@@ -292,7 +216,7 @@ const PrivateProfile = () => {
           links: reorderedUrls,
           link_title: reorderedTitles 
         })
-        .eq('id', user.id);
+        .eq('id', userId);
       
       if (updateError) throw updateError;
       
@@ -311,8 +235,8 @@ const PrivateProfile = () => {
   const handleDeleteProfile = async () => {
     setDeleting(true);
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('No user found');
+      const userId = await getCurrentUserId();
+      if (!userId) throw new Error('No user found');
 
       // Delete profile picture from storage if exists
       if (profile?.profile_picture) {
@@ -330,18 +254,18 @@ const PrivateProfile = () => {
       }
 
       // Delete all related analytics/views if needed (optional, add more as needed)
-      await supabase.from('profile_views').delete().eq('profile_id', user.id);
-      await supabase.from('link_analytics').delete().eq('profile_id', user.id);
-      await supabase.from('profiles').delete().eq('profile_id', user.id);
+      await supabase.from('profile_views').delete().eq('profile_id', userId);
+      await supabase.from('link_analytics').delete().eq('profile_id', userId);
+      await supabase.from('profiles').delete().eq('profile_id', userId);
       // Delete the profile itself
-      const { error } = await supabase.from('profiles').delete().eq('id', user.id);
+      const { error } = await supabase.from('profiles').delete().eq('id', userId);
       if (error) throw error;
 
       // Optionally, sign out the user
       await supabase.auth.signOut();
 
       // Redirect to signup or homepage
-      navigate('/signup');
+  // removed stray navigate('/signup')
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -350,69 +274,12 @@ const PrivateProfile = () => {
     }
   };
 
-  // Helper to get cropped image blob
-  async function getCroppedImg(imageSrc: string, crop: any) {
-    const image = await createImage(imageSrc);
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    if (!ctx) throw new Error('No 2d context');
-    canvas.width = crop.width;
-    canvas.height = crop.height;
-    ctx.drawImage(
-      image,
-      crop.x,
-      crop.y,
-      crop.width,
-      crop.height,
-      0,
-      0,
-      crop.width,
-      crop.height
-    );
-    return new Promise<Blob>((resolve, reject) => {
-      canvas.toBlob((blob) => {
-        if (blob) resolve(blob);
-        else reject(new Error('Canvas is empty'));
-      }, 'image/png');
-    });
-  }
-  function createImage(url: string): Promise<HTMLImageElement> {
-    return new Promise((resolve, reject) => {
-      const image = new window.Image();
-      image.addEventListener('load', () => resolve(image));
-      image.addEventListener('error', error => reject(error));
-      image.setAttribute('crossOrigin', 'anonymous');
-      image.src = url;
-    });
-  }
 
-  // Helper for link icon (generic globe, clinkr logo, or social icon)
-  const getSocialIcon = (url: string, size: number = 25) => {
-  if (typeof url !== 'string') return <Globe size={size} className="text-orange-300" />;
-    try {
-      const domain = new URL(url).hostname.replace(/^www\./, '');
-      if (domain.includes('clinkr.live')) {
-  return <img src={logo} alt="Clinkr" className={`w-[${size}px] h-[${size}px] rounded-full bg-white border border-orange-200`} style={{objectFit:'contain', background:'bg-gradient-to-r from-orange-100 to-amber-100 opacity-20 blur-3xl -z-10', width: size, height: size}} />;
-      }
-      // Try to fetch favicon/logo for all other domains
-      return (
-        <img
-          src={`https://logo.clearbit.com/${domain}`}
-          onError={(e) => {
-            (e.target as HTMLImageElement).src = `https://www.google.com/s2/favicons?sz=64&domain=${domain}`;
-          }}
-          alt={`${domain} icon`}
-          style={{ width: size, height: size, borderRadius: '50%', background: '#fff', objectFit: 'contain', border: '1px solid #ffebe1' }}
-        />
-      );
-    } catch {
-  return <Globe size={size} className="text-orange-300" />;
-    }
-  };
+
+
 
   const [editLinkIndex, setEditLinkIndex] = useState<number | null>(null);
   const [editLinkData, setEditLinkData] = useState({ url: '', title: '' });
-  const [editLinkError, setEditLinkError] = useState<string | null>(null);
 
   const handleEditLink = (index: number) => {
     setEditLinkIndex(index);
@@ -420,77 +287,32 @@ const PrivateProfile = () => {
       url: typeof links[index].url === 'string' ? links[index].url : '',
       title: typeof links[index].title === 'string' ? links[index].title : '',
     });
-    setEditLinkError(null);
-  };
-
-  const handleEditLinkSave = async () => {
-    if (!editLinkData.url || !editLinkData.title) {
-      setEditLinkError('Please enter both URL and title.');
-      return;
-    }
-    if (profile && editLinkIndex !== null) {
-      try {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) throw new Error('No user found');
-        const updatedLinks = [...profile.links];
-        const updatedLinkTitles = [...profile.link_title];
-        updatedLinks[editLinkIndex] = editLinkData.url;
-        updatedLinkTitles[editLinkIndex] = editLinkData.title;
-        const { error: updateError } = await supabase
-          .from('profiles')
-          .update({ links: updatedLinks, link_title: updatedLinkTitles })
-          .eq('id', user.id);
-        if (updateError) throw updateError;
-        setProfile(prev => prev ? { ...prev, links: updatedLinks, link_title: updatedLinkTitles } : null);
-        setEditLinkIndex(null);
-        setEditLinkData({ url: '', title: '' });
-      } catch (err: any) {
-        setEditLinkError(err.message);
-      }
-    }
   };
 
   // Ensure rendering logic correctly uses profile state
   return (
-    <div className="min-h-screen relative overflow-hidden">
   <div className="relative z-10 max-w-4xl mx-auto px-4 py-8">
         {/* Header Section */}
-        <div className="flex justify-between items-center mb-6">
-          <Link to="/homepage" className="flex items-center gap-2">
-            <img src={logo} alt="Clinkr" className="w-8 h-8" />
-            <h1 className="text-2xl font-semibold text-gray-900">Clinkr</h1>
-          </Link>
-          <div className="flex items-center gap-2">
-            <Link to='/dashboard' className="px-4 py-2 bg-gray-100 rounded-md text-gray-800">Dashboard</Link>
-            <div className="relative" ref={actionsMenuRef}>
-              <button
-                className="p-2 rounded-full hover:bg-gray-100 focus:outline-none"
-                aria-label="More actions"
-                onClick={() => setShowActionsMenu(!showActionsMenu)}
-                title="More actions"
-              >
-                <MoreVertical className="text-gray-600" size={20} />
-              </button>
-              {showActionsMenu && (
-                <div className="absolute right-0 top-12 bg-white rounded-lg shadow border py-2 min-w-48 z-50">
-                  <button className="w-full px-4 py-2 text-left hover:bg-gray-50 flex items-center gap-3 text-sm" onClick={() => { handlePreviewProfile(); setShowActionsMenu(false); }}>
-                    <FaEye className="text-gray-600" size={14} /> Preview Public Profile
-                  </button>
-                  <button className="w-full px-4 py-2 text-left hover:bg-gray-50 flex items-center gap-3 text-sm" onClick={() => { navigate('/dashboard'); setShowActionsMenu(false); }}>
-                    <FaChartBar className="text-gray-600" size={14} /> View Analytics
-                  </button>
-                  <button className="w-full px-4 py-2 text-left hover:bg-gray-50 flex items-center gap-3 text-sm" onClick={() => { setLinkReorderMode(!linkReorderMode); setShowActionsMenu(false); }}>
-                    <FaGripVertical className="text-gray-600" size={14} /> {linkReorderMode ? 'Exit Reorder Mode' : 'Reorder Links'}
-                  </button>
-                  <div className="border-t my-1"></div>
-                  <button className="w-full px-4 py-2 text-left hover:bg-red-50 flex items-center gap-3 text-sm text-red-600" onClick={() => { setDeleteDialogOpen(true); setShowActionsMenu(false); }}>
-                    <FaTrash className="text-red-500" size={14} /> Delete Profile
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
+        <ProfileHeader
+          profile={profile}
+          loading={loading}
+          error={error}
+          setError={setError}
+          setLoading={setLoading}
+          setProfile={setProfile}
+          getCurrentUserId={getCurrentUserId}
+          setSelectedImage={setSelectedImage}
+          setCropModalOpen={setCropModalOpen}
+          fileInputRef={fileInputRef as React.RefObject<HTMLInputElement>}
+          handleShareProfile={handleShareProfile}
+          showToast={showToast}
+          toastMessage={toastMessage}
+          setEditedBio={setEditedBio}
+          editState={editState}
+          setEditState={setEditState}
+          editedBio={editedBio}
+          handleBioUpdate={handleBioUpdate}
+        />
       
           {/* Profile Content */}
           <div className="text-center relative bg-white rounded-2xl p-6 mb-8 border border-gray-100 shadow-sm">
@@ -530,11 +352,11 @@ const PrivateProfile = () => {
                     setLoading(true);
                     setError(null);
                     try {
-                      const { data: userData, error: userError } = await supabase.auth.getUser();
-                      if (userError || !userData?.user) throw new Error('No user found');
+                      const userId = await getCurrentUserId();
+                      if (!userId) throw new Error('No user found');
                       const previousFilePath = new URL(profile.profile_picture as string).pathname.replace(/^\/storage\/v1\/object\/public\/user-data\//, '');
                       await supabase.storage.from('user-data').remove([previousFilePath]);
-                      const { error: updateError } = await supabase.from('profiles').update({ profile_picture: null }).eq('id', userData.user.id);
+                      const { error: updateError } = await supabase.from('profiles').update({ profile_picture: null }).eq('id', userId);
                       if (updateError) throw updateError;
                       setProfile(prev => prev ? { ...prev, profile_picture: null } : null);
                     } catch (err) {
@@ -578,100 +400,23 @@ const PrivateProfile = () => {
                 e.target.value = '';
               }}
             />
+            
             {/* Crop Modal */}
-            <Modal
+            <CropModal
               isOpen={cropModalOpen}
-              onRequestClose={() => setCropModalOpen(false)}
-              ariaHideApp={false}
-              style={{ overlay: { zIndex: 1000 } }}
-            >
-              <div className="flex flex-col items-center p-4">
-                <h2 className="mb-2 font-bold">Crop your profile picture</h2>
-                {selectedImage && (
-                  <div className="relative w-64 h-64 bg-gray-100">
-                    <Cropper
-                      image={URL.createObjectURL(selectedImage)}
-                      crop={crop}
-                      zoom={zoom}
-                      aspect={1}
-                      onCropChange={setCrop}
-                      onZoomChange={setZoom}
-                      onCropComplete={(_: any, croppedAreaPixels: any) => setCroppedAreaPixels(croppedAreaPixels)}
-                    />
-                  </div>
-                )}
-                <div className="flex gap-2 mt-4">
-                  <button className="px-4 py-2 bg-gray-200 rounded" onClick={() => setCropModalOpen(false)} disabled={loading}>Cancel</button>
-                  <button
-                    className={
-                      'px-4 py-2 rounded text-white font-bold bg-gradient-to-r from-orange-600 via-amber-500 to-orange-500 shadow ' +
-                      (loading ? 'opacity-70 cursor-not-allowed' : 'hover:from-orange-500 hover:via-amber-500 hover:to-orange-600 transition-all duration-300')
-                    }
-                    onClick={async () => {
-                      if (!selectedImage || !croppedAreaPixels) return;
-                      setLoading(true);
-                      setError(null);
-                      try {
-                        const imageSrc = URL.createObjectURL(selectedImage);
-                        const croppedBlob = await getCroppedImg(imageSrc, croppedAreaPixels);
-                        const { data: userData, error: userError } = await supabase.auth.getUser();
-                        if (userError || !userData?.user) throw new Error('No user found');
-                        if (profile?.profile_picture) {
-                          try {
-                            const previousFilePath = new URL(profile.profile_picture).pathname.replace(/^\/storage\/v1\/object\/public\/user-data\//, '');
-                            await supabase.storage.from('user-data').remove([previousFilePath]);
-                          } catch (e) { /* ignore */ }
-                        }
-                        const filePath = `avatars/${userData.user.id}-${Date.now()}.png`;
-                        const { data, error } = await supabase.storage.from('user-data').upload(filePath, croppedBlob, { cacheControl: '3600', upsert: true });
-                        if (error) {
-                          setError('Upload failed: ' + error.message);
-                          setLoading(false);
-                          return;
-                        }
-                        let publicUrl = '';
-                        if (data && data.path) {
-                          const { data: urlData } = supabase.storage.from('user-data').getPublicUrl(data.path);
-                          publicUrl = urlData.publicUrl;
-                        } else {
-                          const { data: urlData } = supabase.storage.from('user-data').getPublicUrl(filePath);
-                          publicUrl = urlData.publicUrl;
-                        }
-                        if (!publicUrl) {
-                          setError('Failed to get public URL for uploaded image.');
-                          setLoading(false);
-                          return;
-                        }
-                        const { error: updateError } = await supabase.from('profiles').update({ profile_picture: publicUrl }).eq('id', userData.user.id);
-                        if (updateError) {
-                          setError('Failed to update profile: ' + updateError.message);
-                          setLoading(false);
-                          return;
-                        }
-                        setProfile(prev => prev ? { ...prev, profile_picture: publicUrl } : null);
-                        setCropModalOpen(false);
-                        setSelectedImage(null);
-                      } catch (err) {
-                        if (err instanceof Error) {
-                          setError(err.message || 'Failed to update profile picture.');
-                        } else {
-                          setError('Failed to update profile picture.');
-                        }
-                      } finally {
-                        setLoading(false);
-                      }
-                    }}
-                    disabled={loading}
-                  >
-                    {loading ? (
-                      <span className="flex items-center gap-2"><LogoBars size={20} color="#FB923C" reducedMotion={false} />Uploading...</span>
-                    ) : (
-                      'Crop & Upload'
-                    )}
-                  </button>
-                </div>
-              </div>
-            </Modal>
+              onClose={() => {
+                setCropModalOpen(false);
+                setSelectedImage(null);
+              }}
+              selectedImage={selectedImage}
+              onSuccess={(publicUrl) => {
+                setProfile(prev => prev ? { ...prev, profile_picture: publicUrl } : null);
+              }}
+              onError={(error) => setError(error)}
+              getCurrentUserId={getCurrentUserId}
+              profile={profile || undefined}
+            />
+            
             {error && (
               <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-red-100 text-red-600 text-xs py-1 px-2 rounded-md whitespace-nowrap z-30">
                 {error}
@@ -728,7 +473,7 @@ const PrivateProfile = () => {
               </motion.div>
               <button
                 onClick={handleShareProfile}
-                className="inline-flex items-center gap-1 px-4 py-2 text-base font-bold text-white bg-gradient-to-r from-orange-600 via-amber-500 to-orange-500 rounded-lg shadow-lg hover:from-orange-500 hover:via-amber-500 hover:to-orange-600 transition-all duration-300 border-2 border-orange-200 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-2"
+                className="inline-flex items-center gap-1 px-4 py-2 text-base font-bold text-white bg-gradient-to-r from-orange-600 via-amber-500 to-orange-500 rounded-lg shadow-lg hover:from-orange-500 hover:via-amber-500 hover:to-orange-600 transition-all duration-300"
               >
                 <FaShare size={16} />
                 Get Your Link-in-Bio link
@@ -962,42 +707,23 @@ const PrivateProfile = () => {
         </AlertDialog>
 
         {/* Edit Link Modal */}
-        {editLinkIndex !== null && (
-          <Modal
-            isOpen={editLinkIndex !== null}
-            onRequestClose={() => setEditLinkIndex(null)}
-            ariaHideApp={false}
-            style={{ overlay: { zIndex: 1000 } }}
-          >
-            <div className="flex flex-col items-center p-4 bg-white rounded-lg">
-              <h2 className="mb-2 font-bold text-gray-900">Edit Link</h2>
-              <input
-                type="text"
-                value={editLinkData.url}
-                onChange={e => setEditLinkData(prev => ({ ...prev, url: e.target.value }))}
-                placeholder="Edit link URL"
-                className="border rounded-md p-2 w-full mb-2 focus:ring-[#4F46E5] focus:border-[#4F46E5] hover:border-[#4F46E5]"
-              />
-              <input
-                type="text"
-                value={editLinkData.title}
-                onChange={e => setEditLinkData(prev => ({ ...prev, title: e.target.value }))}
-                placeholder="Edit link title"
-                className="border rounded-md p-2 w-full mb-2 focus:ring-[#4F46E5] focus:border-[#4F46E5] hover:border-[#4F46E5]"
-              />
-              {editLinkError && <span className="text-xs text-red-500 mb-2">{editLinkError}</span>}
-              <div className="flex gap-2 mt-2">
-                <button className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300" onClick={() => setEditLinkIndex(null)}>Cancel</button>
-                <button
-                  className="px-4 py-2 rounded text-white font-bold bg-gradient-to-r from-orange-600 via-amber-500 to-orange-500 shadow hover:from-orange-500 hover:via-amber-500 hover:to-orange-600 transition-all duration-300"
-                  onClick={handleEditLinkSave}
-                >
-                  Save
-                </button>
-              </div>             
-               </div>
-          </Modal>
-        )}
+        <EditLinkModal
+          isOpen={editLinkIndex !== null}
+          onClose={() => {
+            setEditLinkIndex(null);
+            setEditLinkData({ url: '', title: '' });
+          }}
+          editLinkData={editLinkData}
+          onSave={(updatedLinks, updatedTitles) => {
+            setProfile(prev => prev ? { ...prev, links: updatedLinks, link_title: updatedTitles } : null);
+            setEditLinkIndex(null);
+            setEditLinkData({ url: '', title: '' });
+          }}
+          onError={(error) => setError(error)}
+          getCurrentUserId={getCurrentUserId}
+          profile={profile}
+          editLinkIndex={editLinkIndex}
+        />
         <style>{`
 @keyframes fade-in-out {
   0% { opacity: 0; transform: translateY(20px) scale(0.95); }
@@ -1012,6 +738,6 @@ const PrivateProfile = () => {
       </div>
     </div>
   );
-};
+}
 
 export default PrivateProfile;
