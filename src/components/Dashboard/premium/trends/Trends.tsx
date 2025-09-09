@@ -1,34 +1,7 @@
-import { TabsContent } from "@radix-ui/react-tabs";
-import { useState, useEffect, } from "react";
 import { ArrowUpRight, ArrowDownRight, MousePointerClick, Eye, Clock, Filter } from "lucide-react";
-import { supabase } from "../../../../lib/supabaseClient";
-import { Tabs, TabsList, TabsTrigger } from "../../../ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../ui/select";
-import { motion } from 'framer-motion';
 import LoadingScreen from '../../../ui/loadingScreen';
-// Interface for analytics data
-interface AnalyticsItem {
-  id: string;
-  profile_id: string;
-  user_id: string;
-  event_type: string;
-  device_type: string;
-  browser: string;
-  country_code: string;
-  region: string;
-  city: string;
-  lat: number | null;
-  lng: number | null;
-  created_at: string;
-  link_url?: string; // Added property to fix compile error
-}
-
-interface ProfileView {
-  id: string;
-  profile_id: string;
-  viewer_hash: string;
-  viewed_at: string; // Updated from created_at to viewed_at
-}
+import { usePremiumDashboardData } from '../PremiumDashboardContext';
 
 interface TrendData {
   total: number;
@@ -46,587 +19,210 @@ interface EngagementMetric {
 }
 
 const Trends = () => {
-  // State for analytics data
-  const [isLoading, setIsLoading] = useState(true);
-  const [timeFrame, setTimeFrame] = useState<"7days" | "30days" | "90days">("30days");
-  const [deviceFilter, setDeviceFilter] = useState<"all" | "mobile" | "desktop">("all");
-  
-  // State for trend data
-  const [clickTrends, setClickTrends] = useState<TrendData>({
-    total: 0,
-    growth: 0,
-    dailyAverage: 0,
-    peakDay: ""
-  });
+  const { data, isLoading, timeFrame, setTimeFrame } = usePremiumDashboardData();
 
-  const [viewTrends, setViewTrends] = useState<TrendData>({
-    total: 0,
-    growth: 0,
-    dailyAverage: 0,
-    peakDay: "",
-    peakTime: ""
-  });
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center py-8">
+        <LoadingScreen compact message="Loading trends data..." />
+      </div>
+    );
+  }
 
-  const [engagementData, setEngagementData] = useState<EngagementMetric[]>([
-    { metric: "Avg. Time on Link", value: "0s", trend: "up", change: 0 },
-    { metric: "Bounce Rate", value: "0%", trend: "down", change: 0 },
-    { metric: "Return Visits", value: "0%", trend: "up", change: 0 }
-  ]);
+  if (!data) {
+    return (
+      <div className="text-center py-8">
+        <p className="text-gray-500">No trends data available</p>
+      </div>
+    );
+  }
 
-  const [trendInsights, setTrendInsights] = useState<string[]>([]);
-  
-  // Raw data storage
-  const [analyticsData, setAnalyticsData] = useState<AnalyticsItem[]>([]);
-  const [profileViewsData, setProfileViewsData] = useState<ProfileView[]>([]);
-  
-  // Fetch data from Supabase
-  useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      try {
-        // Get current user
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) throw new Error("User not authenticated");
-        
-        // Calculate date range based on timeFrame
-        const now = new Date();
-        let startDate = new Date();
-        
-        if (timeFrame === "7days") {
-          startDate.setDate(now.getDate() - 7);
-        } else if (timeFrame === "30days") {
-          startDate.setDate(now.getDate() - 30);
-        } else if (timeFrame === "90days") {
-          startDate.setDate(now.getDate() - 90);
-        }
-        
-        // Format dates for Supabase query
-        const startDateStr = startDate.toISOString();
-        
-        // Fetch link analytics data
-        const { data: analytics, error: analyticsError } = await supabase
-          .from('link_analytics')
-          .select('*')
-          .eq('profile_id', user.id)
-          .gte('created_at', startDateStr);
-          
-        if (analyticsError) throw analyticsError;
-        
-        // Fetch profile views data
-        const { data: profileViews, error: profileViewsError } = await supabase
-          .from('profile_views')
-          .select('*')
-          .eq('profile_id', user.id)
-          .gte('viewed_at', startDateStr);
-        
-        if (profileViewsError) throw profileViewsError;
-        
-        // Store raw data
-        setAnalyticsData(analytics || []);
-        setProfileViewsData(profileViews || []);
-        
-        // Process data
-        processData(analytics || [], profileViews || []);
-      } catch (error) {
-        console.error('Error fetching trends data:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    
-    fetchData();
-  }, [timeFrame]);
-  
-  // Process data when filters change
-  useEffect(() => {
-    if (analyticsData.length > 0 || profileViewsData.length > 0) {
-      processData(analyticsData, profileViewsData);
-    }
-  }, [deviceFilter, analyticsData, profileViewsData]);
-  
-  // Process and calculate metrics
-  const processData = (analytics: AnalyticsItem[], profileViews: ProfileView[]) => {
-    // Filter data based on device type if needed
-    const filteredAnalytics = deviceFilter === "all" 
-      ? analytics 
-      : analytics.filter(item => {
-          if (deviceFilter === "mobile") {
-            return item.device_type.toLowerCase().includes("mobile") || 
-                   item.device_type.toLowerCase().includes("tablet");
-          } else {
-            return item.device_type.toLowerCase().includes("desktop") || 
-                   item.device_type.toLowerCase().includes("laptop");
-          }
-        });
-    
-    // Calculate click trends
-    const clicks = filteredAnalytics.filter(item => item.event_type === "click");
-    
-    // Calculate total clicks
-    const totalClicks = clicks.length;
-    
-    // Calculate daily average
-    const clicksByDay = clicks.reduce((acc: {[key: string]: number}, item) => {
-      const date = new Date(item.created_at).toLocaleDateString();
-      acc[date] = (acc[date] || 0) + 1;
-      return acc;
-    }, {});
-    
-    const uniqueDays = Object.keys(clicksByDay).length || 1;
-    const dailyAvgClicks = Math.round(totalClicks / uniqueDays);
-    
-    // Find peak day
-    let peakDay = "";
-    let maxClicks = 0;
-    
-    Object.entries(clicksByDay).forEach(([date, count]) => {
-      if (count > maxClicks) {
-        maxClicks = count;
-        peakDay = new Date(date).toLocaleDateString('en-US', { weekday: 'long' });
-      }
-    });
-    
-    // Calculate growth (comparing first half to second half of period)
-    const sortedClicks = [...clicks].sort((a, b) => 
-      new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
-    
-    const midPoint = Math.floor(sortedClicks.length / 2);
-    const firstHalf = sortedClicks.slice(0, midPoint).length || 1;
-    const secondHalf = sortedClicks.slice(midPoint).length || 1;
-    const growthRate = Math.round(((secondHalf - firstHalf) / firstHalf) * 100);
-    
-    // Update click trends
-    setClickTrends({
-      total: totalClicks,
-      growth: growthRate,
-      dailyAverage: dailyAvgClicks,
-      peakDay: peakDay || "N/A"
-    });
-    
-    // Calculate view trends
-    const totalViews = profileViews.length;
-    
-    // Calculate views by day
-    const viewsByDay = profileViews.reduce((acc: {[key: string]: number}, item) => {
-      const date = new Date(item.viewed_at).toLocaleDateString();
-      acc[date] = (acc[date] || 0) + 1;
-      return acc;
-    }, {});
-    
-    const uniqueViewDays = Object.keys(viewsByDay).length || 1;
-    const dailyAvgViews = Math.round(totalViews / uniqueViewDays);
-    
-    // Find peak day for views
-    let peakViewDay = "";
-    let maxViews = 0;
-    
-    Object.entries(viewsByDay).forEach(([date, count]) => {
-      if (count > maxViews) {
-        maxViews = count;
-        peakViewDay = new Date(date).toLocaleDateString('en-US', { weekday: 'long' });
-      }
-    });
-    
-    // Calculate peak time (12-hour format)
-    const viewsByHour = profileViews.reduce((acc: {[key: string]: number}, item) => {
-      const hour = new Date(item.viewed_at).getHours();
-      acc[hour] = (acc[hour] || 0) + 1;
-      return acc;
-    }, {});
+  const { trends } = data;
 
-    let peakHour = 0;
-    let maxViewsPerHour = 0;
-
-    Object.entries(viewsByHour).forEach(([hour, count]) => {
-      if (count > maxViewsPerHour) {
-        maxViewsPerHour = count;
-        peakHour = parseInt(hour);
-      }
-    });
-
-    // Format peak time in 12-hour format
-    function formatHour12(hour: number) {
-      const period = hour >= 12 ? 'PM' : 'AM';
-      let h = hour % 12;
-      if (h === 0) h = 12;
-      return `${h} ${period}`;
-    }
-    // Only set peak time if there is data
-    let peakTimeRange = "N/A";
-    if (profileViews.length > 0) {
-      peakTimeRange = peakHour !== undefined
-        ? `${formatHour12(peakHour)} - ${formatHour12((peakHour + 2) % 24)}`
-        : "N/A";
-    }
-    
-    // Update view trends
-    setViewTrends({
-      total: totalViews,
-      growth: growthRate, // Corrected from viewGrowthRate to growthRate
-      dailyAverage: dailyAvgViews,
-      peakDay: peakViewDay || "N/A",
-      peakTime: peakTimeRange
-    });
-    
-    // Calculate engagement metrics
-    
-    // 1. Average time on link (using created_at timestamps)
-    let avgTimeValue = "0s";
-    let timeChangePercent = 0;
-    if (clicks.length > 1) {
-      // Group clicks by user_id and link_url
-      const grouped: { [key: string]: AnalyticsItem[] } = {};
-      clicks.forEach(item => {
-        const key = `${item.user_id || ''}|${item.link_url || ''}`;
-        if (!grouped[key]) grouped[key] = [];
-        grouped[key].push(item);
-      });
-      // Collect all time differences
-      let totalDuration = 0;
-      let count = 0;
-      Object.values(grouped).forEach(events => {
-        // Sort by created_at
-        const sorted = events.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
-        for (let i = 1; i < sorted.length; i++) {
-          const diff = (new Date(sorted[i].created_at).getTime() - new Date(sorted[i - 1].created_at).getTime()) / 1000;
-          // Only count reasonable durations (e.g., less than 1 hour)
-          if (diff > 0 && diff < 3600) {
-            totalDuration += diff;
-            count++;
-          }
-        }
-      });
-      const avgSeconds = count > 0 ? Math.round(totalDuration / count) : 0;
-      avgTimeValue = avgSeconds > 60 ? `${Math.floor(avgSeconds / 60)}m ${avgSeconds % 60}s` : `${avgSeconds}s`;
-      // timeChangePercent: not enough data for previous period, so keep as 0
-    }
-    
-    // 2. Bounce rate (single page visits, dynamic)
-    // We'll define bounce as users who only clicked once in the period
-    const clickViewerCounts = clicks.reduce((acc: {[key: string]: number}, item) => {
-      acc[item.user_id] = (acc[item.user_id] || 0) + 1;
-      return acc;
-    }, {});
-    const singleClickers = Object.values(clickViewerCounts).filter(count => count === 1).length;
-    const totalClickViewers = Object.keys(clickViewerCounts).length || 1;
-    const bounceRate = Math.round((singleClickers / totalClickViewers) * 100);
-    
-    // 3. Return visits (dynamic)
-    const returningClickers = Object.values(clickViewerCounts).filter(count => count > 1).length;
-    const returnRate = Math.round((returningClickers / totalClickViewers) * 100);
-    
-    // Set change as 0 for now (needs previous period for real change)
-    const bounceChangePercent = 0;
-    const returnChangePercent = 0;
-
-    setEngagementData([
-      { metric: "Avg. Time on Link", value: avgTimeValue, trend: "up", change: timeChangePercent },
-      { metric: "Bounce Rate", value: `${bounceRate}%`, trend: "down", change: Math.abs(bounceChangePercent) },
-      { metric: "Return Visits", value: `${returnRate}%`, trend: "up", change: returnChangePercent }
-    ]);
-    
-    // Generate insights
-    const insights = [];
-    
-    // Only push insights if there is enough data
-    if (totalClicks > 0 && totalViews > 0) {
-      // Click-through rate insight
-      const ctr = Math.round((totalClicks / totalViews) * 100);
-      insights.push(`Click-through rate is ${ctr}% ${growthRate > 0 ? 'and growing' : 'but declining'}`); 
-
-      // Peak engagement insight
-      insights.push(`Peak engagement occurs on ${peakDay || peakViewDay} during ${peakTimeRange}`);
-
-      // Device-specific insight
-      const mobileClicks = analytics.filter(item => 
-        item.event_type === "click" && 
-        (item.device_type?.toLowerCase().includes("mobile") || item.device_type?.toLowerCase().includes("tablet"))
-      ).length;
-      const desktopClicks = analytics.filter(item => 
-        item.event_type === "click" && 
-        (item.device_type?.toLowerCase().includes("desktop") || item.device_type?.toLowerCase().includes("laptop"))
-      ).length;
-      if (mobileClicks > desktopClicks) {
-        insights.push(`Mobile engagement dominates with ${Math.round((mobileClicks / totalClicks) * 100)}% of clicks`);
-      } else if (desktopClicks > 0) {
-        insights.push(`Desktop users are more engaged with ${Math.round((desktopClicks / totalClicks) * 100)}% of clicks`);
-      }
-
-      // Browser insight if we have enough data
-      const browserCounts = analytics.reduce((acc: {[key: string]: number}, item) => {
-        if (item.browser) {
-          acc[item.browser] = (acc[item.browser] || 0) + 1;
-        }
-        return acc;
-      }, {});
-      if (Object.keys(browserCounts).length > 0) {
-        const topBrowser = Object.entries(browserCounts).sort((a, b) => b[1] - a[1])[0];
-        insights.push(`${topBrowser[0]} users show highest engagement at ${Math.round((topBrowser[1] / totalClicks) * 100)}%`);
-      }
-    }
-    setTrendInsights(insights);
+  // Calculate trend data
+  const clicksTrend: TrendData = {
+    total: trends.dailyData.reduce((sum, day) => sum + day.clicks, 0),
+    growth: 0, // Would need historical data
+    dailyAverage: Math.round(trends.dailyData.reduce((sum, day) => sum + day.clicks, 0) / trends.dailyData.length),
+    peakDay: trends.dailyData.reduce((peak, day) => day.clicks > peak.clicks ? day : peak, trends.dailyData[0])?.date || 'N/A'
   };
 
+  const viewsTrend: TrendData = {
+    total: trends.dailyData.reduce((sum, day) => sum + day.views, 0),
+    growth: 0, // Would need historical data
+    dailyAverage: Math.round(trends.dailyData.reduce((sum, day) => sum + day.views, 0) / trends.dailyData.length),
+    peakDay: trends.dailyData.reduce((peak, day) => day.views > peak.views ? day : peak, trends.dailyData[0])?.date || 'N/A'
+  };
+
+  // Engagement metrics
+  const engagementMetrics: EngagementMetric[] = [
+    {
+      metric: "Click Rate",
+      value: `${Math.round((clicksTrend.total / viewsTrend.total) * 100)}%`,
+      trend: "up",
+      change: 0
+    },
+    {
+      metric: "Daily Average",
+      value: clicksTrend.dailyAverage.toLocaleString(),
+      trend: "up",
+      change: 0
+    },
+    {
+      metric: "Peak Performance",
+      value: clicksTrend.peakDay,
+      trend: "up",
+      change: 0
+    }
+  ];
+
   return (
-    <div>
-      <TabsContent value="trends" className="pt-4">
-        {/* Filter Controls */}
-        <motion.div 
-          className="flex flex-wrap gap-4 mb-6"
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
-        >
-          <div>
-            <Tabs defaultValue={timeFrame} onValueChange={(value) => setTimeFrame(value as "7days" | "30days" | "90days")}>
-              <TabsList className="bg-white/90 backdrop-blur-sm border border-orange-100 shadow-sm">
-                <TabsTrigger 
-                  value="7days"
-                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-orange-600 data-[state=active]:via-amber-500 data-[state=active]:to-orange-400 data-[state=active]:text-white"
-                >
-                  7 Days
-                </TabsTrigger>
-                <TabsTrigger 
-                  value="30days"
-                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:via-indigo-600 data-[state=active]:to-blue-500 data-[state=active]:text-white"
-                >
-                  30 Days
-                </TabsTrigger>
-                <TabsTrigger 
-                  value="90days"
-                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:via-indigo-600 data-[state=active]:to-blue-500 data-[state=active]:text-white"
-                >
-                  90 Days
-                </TabsTrigger>
-              </TabsList>
-            </Tabs>
-          </div>
-          
-          <div className="flex items-center gap-2">
-            <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-orange-100 to-orange-200 text-orange-600">
-              <Filter size={16} />
-            </div>
-            <Select value={deviceFilter} onValueChange={(value) => setDeviceFilter(value as "all" | "mobile" | "desktop")}>
-              <SelectTrigger className="w-[180px] border-indigo-100 hover:border-indigo-300 transition-all">
-                <SelectValue placeholder="Device Type" />
-              </SelectTrigger>
-              <SelectContent className="bg-white/95 backdrop-blur-sm border border-indigo-100">
-                <SelectItem value="all">All Devices</SelectItem>
-                <SelectItem value="mobile">Mobile Only</SelectItem>
-                <SelectItem value="desktop">Desktop Only</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </motion.div>
-        
-        {isLoading ? (
-          <LoadingScreen compact message="Loading trends data..." />
-        ) : (
-        <motion.div 
-          className="grid grid-cols-1 md:grid-cols-3 gap-6"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.3, staggerChildren: 0.1 }}
-        >
-          {/* Click Trends Card */}
-          <motion.div 
-            className="glass-card bg-white/80 backdrop-blur-lg border border-white/30 p-6 rounded-xl shadow-md hover:shadow-lg transition-all relative overflow-hidden"
-            whileHover={{ y: -5 }}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            {/* Subtle gradient background */}
-              <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-white to-orange-100 opacity-70" />
-            
-            {/* Animated accent line */}
-            <motion.div 
-              className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400"
-              initial={{ scaleX: 0 }}
-              animate={{ scaleX: 1 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-            />
-            
-            <div className="relative z-10">
-              <div className="flex items-center gap-2 mb-4">
-                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-r from-purple-100 to-blue-100 text-indigo-600">
-                  <MousePointerClick size={20} />
-                </div>
-                <h2 className="text-lg font-semibold text-black">Click Trends</h2>
-              </div>
-              <div className="space-y-4">
-                <div>
-                  <p className="text-sm text-black font-medium">Total Clicks</p>
-                  <div className="flex items-center gap-2">
-                    <h3 className="text-2xl font-bold text-black">
-                      {clickTrends.total.toLocaleString()}
-                    </h3>
-                    <span className="text-xs text-green-500 flex items-center font-medium bg-green-50 px-2 py-1 rounded-full">
-                      <ArrowUpRight size={14} />
-                      {clickTrends.growth}%
-                    </span>
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-sm text-black font-medium">Daily Average</p>
-                    <p className="text-md font-semibold text-orange-700">{clickTrends.dailyAverage.toLocaleString()}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-black font-medium">Peak Day</p>
-                    <p className="text-md font-semibold text-indigo-700">{clickTrends.peakDay}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </motion.div>
+    <div className="space-y-8" style={{ willChange: 'transform' }}>
+      {/* Time Frame Selector */}
+      <div className="flex justify-between items-center">
+        <h2 className="text-xl font-semibold">Performance Trends</h2>
+        <Select value={timeFrame} onValueChange={setTimeFrame}>
+          <SelectTrigger className="w-[140px]">
+            <SelectValue placeholder="Time Frame" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="7days">Last 7 Days</SelectItem>
+            <SelectItem value="30days">Last 30 Days</SelectItem>
+            <SelectItem value="90days">Last 90 Days</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
 
-          {/* View Trends Card */}
-          <motion.div 
-            className="glass-card bg-white/80 backdrop-blur-lg border border-white/30 p-6 rounded-xl shadow-md hover:shadow-lg transition-all relative overflow-hidden"
-            whileHover={{ y: -5 }}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: 0.1 }}
-          >
-            {/* Subtle gradient background */}
-            <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-blue-50 opacity-70" />
-            
-            {/* Animated accent line */}
-            <motion.div 
-              className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500"
-              initial={{ scaleX: 0 }}
-              animate={{ scaleX: 1 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-            />
-            
-            <div className="relative z-10">
-              <div className="flex items-center gap-2 mb-4">
-                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-r from-purple-100 to-blue-100 text-indigo-600">
-                  <Eye size={20} />
-                </div>
-                <h2 className="text-lg font-semibold text-black">View Trends</h2>
-              </div>
-              <div className="space-y-4">
-                <div>
-                  <p className="text-sm text-black font-medium">Total Views</p>
-                  <div className="flex items-center gap-2">
-                    <h3 className="text-2xl font-bold text-black">
-                      {viewTrends.total.toLocaleString()}
-                    </h3>
-                    <span className="text-xs text-green-500 flex items-center font-medium bg-green-50 px-2 py-1 rounded-full">
-                      <ArrowUpRight size={14} />
-                      {viewTrends.growth}%
-                    </span>
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-sm text-black font-medium">Daily Average</p>
-                    <p className="text-md font-semibold text-orange-700">{viewTrends.dailyAverage.toLocaleString()}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-black font-medium">Peak Time</p>
-                    <p className="text-md font-semibold text-indigo-700">{viewTrends.peakTime || 'N/A'}</p>
-                  </div>
-                </div>
-              </div>
+      {/* Trend Overview Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-600">Total Clicks</p>
+              <p className="text-2xl font-bold">{clicksTrend.total.toLocaleString()}</p>
             </div>
-          </motion.div>
-
-          {/* Engagement Metrics Card */}
-          <motion.div 
-            className="glass-card bg-white/80 backdrop-blur-lg border border-white/30 p-6 rounded-xl shadow-md hover:shadow-lg transition-all relative overflow-hidden"
-            whileHover={{ y: -5 }}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: 0.2 }}
-          >
-            {/* Subtle gradient background */}
-            <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-white to-orange-100 opacity-70" />
-            
-            {/* Animated accent line */}
-            <motion.div 
-              className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400"
-              initial={{ scaleX: 0 }}
-              animate={{ scaleX: 1 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-            />
-            
-            <div className="relative z-10">
-              <div className="flex items-center gap-2 mb-4">
-                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-r from-purple-100 to-blue-100 text-indigo-600">
-                  <Clock size={20} />
-                </div>
-                <h2 className="text-lg font-semibold text-black">Engagement Metrics</h2>
-              </div>
-              <div className="space-y-4">
-                {engagementData.map((metric, index) => (
-                  <div key={index} className="flex justify-between items-center py-2 border-b border-indigo-50 last:border-0">
-                    <span className="text-sm text-black font-medium">{metric.metric}</span>
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-semibold text-indigo-700">{metric.value}</span>
-                      <span className={`text-xs ${metric.trend === "up" ? "text-green-500" : "text-red-500"} flex items-center font-medium ${metric.trend === "up" ? "bg-green-50" : "bg-red-50"} px-2 py-1 rounded-full`}>
-                        {metric.trend === "up" ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}
-                        {metric.change}%
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </motion.div>
-        </motion.div>
-        )}
-        
-        {/* Trend Insights */}
-        <motion.div 
-          className="mt-6 glass-card bg-white/80 backdrop-blur-lg border border-white/30 p-6 rounded-xl shadow-md relative overflow-hidden"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.4 }}
-        >
-          {/* Subtle gradient background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-blue-50 opacity-70" />
-          
-          {/* Animated accent line */}
-          <motion.div 
-            className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500"
-            initial={{ scaleX: 0 }}
-            animate={{ scaleX: 1 }}
-            transition={{ duration: 0.6, delay: 0.5 }}
-          />
-          
-          <div className="relative z-10">
-            <h2 className="text-lg font-semibold text-black mb-4">Trend Insights</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {trendInsights.length > 0 ? (
-                trendInsights.map((insight, index) => (
-                    <motion.div 
-                    key={index} 
-                    className="p-4 bg-white/70 backdrop-blur-sm rounded-lg border border-orange-100 shadow-sm hover:shadow transition-all"
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.3, delay: 0.1 * index }}
-                    whileHover={{ y: -3, transition: { duration: 0.2 } }}
-                  >
-                    <p className="text-sm text-black">{insight}</p>
-                  </motion.div>
-                ))
-              ) : (
-                <motion.div 
-                  className="p-4 bg-white/70 backdrop-blur-sm rounded-lg border border-indigo-50 shadow-sm col-span-3"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.3, delay: 0.5 }}
-                >
-                  <p className="text-sm text-black">Not enough data to generate insights. Try changing the time period or adding more links.</p>
-                </motion.div>
-              )}
+            <div className="p-2 bg-blue-100 rounded-lg">
+              <MousePointerClick className="w-6 h-6 text-blue-600" />
             </div>
           </div>
-        </motion.div>
-      </TabsContent>
+          <div className="flex items-center mt-2">
+            <ArrowUpRight className="w-4 h-4 text-green-500" />
+            <span className="text-sm text-green-500 ml-1">+{clicksTrend.growth}%</span>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-600">Total Views</p>
+              <p className="text-2xl font-bold">{viewsTrend.total.toLocaleString()}</p>
+            </div>
+            <div className="p-2 bg-green-100 rounded-lg">
+              <Eye className="w-6 h-6 text-green-600" />
+            </div>
+          </div>
+          <div className="flex items-center mt-2">
+            <ArrowUpRight className="w-4 h-4 text-green-500" />
+            <span className="text-sm text-green-500 ml-1">+{viewsTrend.growth}%</span>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-600">Daily Average</p>
+              <p className="text-2xl font-bold">{clicksTrend.dailyAverage.toLocaleString()}</p>
+            </div>
+            <div className="p-2 bg-purple-100 rounded-lg">
+              <Clock className="w-6 h-6 text-purple-600" />
+            </div>
+          </div>
+          <div className="flex items-center mt-2">
+            <ArrowUpRight className="w-4 h-4 text-green-500" />
+            <span className="text-sm text-green-500 ml-1">+0%</span>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-600">Peak Day</p>
+              <p className="text-lg font-bold">{clicksTrend.peakDay}</p>
+            </div>
+            <div className="p-2 bg-orange-100 rounded-lg">
+              <Filter className="w-6 h-6 text-orange-600" />
+            </div>
+          </div>
+          <div className="flex items-center mt-2">
+            <ArrowUpRight className="w-4 h-4 text-green-500" />
+            <span className="text-sm text-green-500 ml-1">Best day</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Engagement Metrics */}
+      <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+        <h3 className="text-lg font-semibold mb-4">Engagement Metrics</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {engagementMetrics.map((metric, index) => (
+            <div key={index} className="text-center">
+              <p className="text-sm text-gray-600 mb-1">{metric.metric}</p>
+              <p className="text-2xl font-bold mb-2">{metric.value}</p>
+              <div className="flex items-center justify-center">
+                {metric.trend === "up" ? (
+                  <ArrowUpRight className="w-4 h-4 text-green-500" />
+                ) : (
+                  <ArrowDownRight className="w-4 h-4 text-red-500" />
+                )}
+                <span className={`text-sm ml-1 ${metric.trend === "up" ? "text-green-500" : "text-red-500"}`}>
+                  {metric.change}%
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Trend Charts Placeholder */}
+      <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+        <h3 className="text-lg font-semibold mb-4">Performance Over Time</h3>
+        <div className="h-64 flex items-center justify-center bg-gray-50 rounded-lg">
+          <p className="text-gray-500">Chart visualization would go here</p>
+        </div>
+      </div>
+
+      {/* Weekly and Monthly Views */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+          <h3 className="text-lg font-semibold mb-4">Weekly Performance</h3>
+          <div className="space-y-3">
+            {trends.weeklyData.slice(0, 4).map((week, index) => (
+              <div key={index} className="flex justify-between items-center">
+                <span className="text-sm text-gray-600">Week {week.week}</span>
+                <div className="text-right">
+                  <div className="font-semibold">{week.clicks} clicks</div>
+                  <div className="text-sm text-gray-500">{week.views} views</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+          <h3 className="text-lg font-semibold mb-4">Monthly Performance</h3>
+          <div className="space-y-3">
+            {trends.monthlyData.slice(0, 3).map((month, index) => (
+              <div key={index} className="flex justify-between items-center">
+                <span className="text-sm text-gray-600">{month.month}</span>
+                <div className="text-right">
+                  <div className="font-semibold">{month.clicks} clicks</div>
+                  <div className="text-sm text-gray-500">{month.views} views</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

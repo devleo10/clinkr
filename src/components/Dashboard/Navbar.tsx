@@ -1,10 +1,25 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import logo from '../../assets/Frame.png';
 import { motion } from 'framer-motion';
+import { supabase } from '../../lib/supabaseClient';
 
 const Navbar = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const isProfile = location.pathname.includes('profile');
+
+  const handleProfileClick = () => {
+    navigate('/privateprofile');
+  };
+
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+      navigate('/homepage');
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  };
 
   return (
     <motion.div
@@ -15,7 +30,7 @@ const Navbar = () => {
     >
       {/* Animated gradient bar at the top */}
       <motion.div 
-  className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400 z-10"
+        className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400 z-10"
         animate={{ 
           backgroundPosition: ['0% 50%', '100% 50%', '0% 50%']
         }}
@@ -27,15 +42,12 @@ const Navbar = () => {
         style={{ backgroundSize: '200% 200%' }}
       />
 
-      {/* Glassmorphism effect with additional subtle highlights */}
-      <nav className="relative border-b border-white/20 px-4 sm:px-6 py-4 backdrop-blur-lg shadow-lg">
-        <div className="absolute inset-0 bg-white/60" />
-  <div className="absolute inset-0 bg-gradient-to-r from-orange-100/40 via-orange-200/30 to-orange-50/40 opacity-80" />
-        <div className="absolute inset-0 backdrop-blur-md" />
+      {/* Completely transparent navbar - no background */}
+      <nav className="relative px-4 sm:px-6 py-4">
         
         <div className="max-w-7xl mx-auto flex flex-row items-center justify-between relative z-10">
           {/* Logo + Brand */}
-          <div className="flex items-center space-x-2 mb-4 sm:mb-0">
+          <div className="flex items-center space-x-2">
             <Link to="/homepage" className="flex items-center gap-1 sm:gap-2">
               <motion.img 
                 src={logo} 
@@ -47,41 +59,44 @@ const Navbar = () => {
                   transition: { duration: 0.5 }
                 }}
               />
-              <Link to="/homepage" className="group">
-                <motion.h1
-                  className="text-xl sm:text-2xl font-bold text-gradient group-hover:scale-105 transition-transform duration-200"
-                  whileHover={{ scale: 1.05 }}
-                >
-                  Clinkr
-                </motion.h1>
-              </Link>
-            </Link>
-          </div>
-
-          
-
-            <Link to="/privateprofile">
-              <motion.button
-                whileHover={{ 
-                  scale: 1.05,
-                  boxShadow: "0 0 20px rgba(99, 102, 241, 0.5)"
-                }}
-                whileTap={{ scale: 0.95 }}
-                className={`relative overflow-hidden glass-button ${
-                  isProfile 
-                    ? 'bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400 text-white'
-                    : 'bg-gradient-to-r from-orange-500 to-orange-400 text-white font-bold px-6 py-2 rounded-xl shadow-md hover:from-orange-400 hover:to-orange-500 transition-all duration-300'
-
-                } font-medium px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl shadow-md transition-all duration-300 text-xs sm:text-sm md:text-base flex items-center gap-2`}
+              <motion.h1
+                className="text-xl sm:text-2xl font-bold text-gradient group-hover:scale-105 transition-transform duration-200"
+                whileHover={{ scale: 1.05 }}
               >
-                <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <span>Profile</span>
-              </motion.button>
+                Clinkr
+              </motion.h1>
             </Link>
           </div>
-        
+
+          {/* Right side buttons */}
+          <div className="flex items-center gap-3">
+            <motion.button
+              onClick={handleProfileClick}
+              className={`btn-primary text-sm font-semibold px-5 py-2.5 rounded-lg flex items-center gap-2 ${
+                isProfile ? 'opacity-100' : 'opacity-90'
+              }`}
+              whileHover={{ scale: 1.02, y: -1 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span>Profile</span>
+            </motion.button>
+
+            <motion.button
+              onClick={handleLogout}
+              className="text-sm font-semibold px-5 py-2.5 rounded-lg flex items-center gap-2 bg-gradient-to-r from-red-500 to-red-600 text-white hover:from-red-400 hover:to-red-500 transition-all duration-300"
+              whileHover={{ scale: 1.02, y: -1 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              </svg>
+              <span>Logout</span>
+            </motion.button>
+          </div>
+        </div>
       </nav>
     </motion.div>
   );

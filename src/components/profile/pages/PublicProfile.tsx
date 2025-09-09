@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
-import { Card, CardContent } from "../ui/card";
-import logo from "../../assets/Frame.png";
+import { Card, CardContent } from "../../ui/card";
+import logo from "../../../assets/Frame.png";
 import { Link, useParams } from 'react-router-dom';
-import { supabase } from '../../lib/supabaseClient';
+import { supabase } from '../../../lib/supabaseClient';
 import { FaUser } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
-import LoadingScreen from '../ui/loadingScreen';
+import LoadingScreen from '../../ui/loadingScreen';
 import { MoreHorizontal } from 'lucide-react';
-import { getSocialIcon, detectDeviceType, detectBrowser } from '../../lib/profile-utils';
+import { getSocialIcon, detectDeviceType, detectBrowser } from '../../../lib/profile-utils';
 
 interface UserProfile {
   username: string;

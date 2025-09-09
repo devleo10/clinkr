@@ -1,79 +1,8 @@
 import { FaGlobeAsia } from "react-icons/fa";
-import { useState, useEffect } from 'react';
-import { supabase } from '../../../lib/supabaseClient';
-import { motion } from 'framer-motion';
+import { useDashboardData } from '../DashboardDataContext';
 
 const TopCountry = () => {
-  const [topCountry, setTopCountry] = useState({
-    name: '',
-    clicks: 0,
-    percentage: 0
-  });
-  const [loading, setLoading] = useState(true);
-
-  const fetchTopCountry = async () => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        setLoading(false);
-        return;
-      }
-
-      // Get the user's profile and link analytics data
-      const { data, error } = await supabase
-        .from('link_analytics')
-        .select('country_code, region')
-        .eq('profile_id', user.id);
-
-      if (error) throw error;
-
-      // Calculate country statistics, handling null/undefined values
-      const countryStats = data.reduce((acc, curr) => {
-        const country = curr.country_code || 'Unknown';
-        acc[country] = (acc[country] || 0) + 1;
-        return acc;
-      }, {} as Record<string, number>);
-
-      const totalClicks = data.length;
-      
-      if (totalClicks === 0) {
-        setTopCountry({
-          name: 'No Data',
-          clicks: 0,
-          percentage: 0
-        });
-        return;
-      }
-
-      const sortedCountries = Object.entries(countryStats)
-        .sort(([, a], [, b]) => b - a)
-        .filter(([country]) => country !== 'Unknown');
-
-      if (sortedCountries.length > 0) {
-        const [country, clicks] = sortedCountries[0];
-        setTopCountry({
-          name: getCountryName(country),
-          clicks: clicks,
-          percentage: totalClicks > 0 ? Math.round((clicks / totalClicks) * 100 * 10) / 10 : 0
-        });
-      } else {
-        setTopCountry({
-          name: 'No Location Data',
-          clicks: 0,
-          percentage: 0
-        });
-      }
-    } catch (error) {
-      console.error('Error fetching top country:', error);
-      setTopCountry({
-        name: 'Error',
-        clicks: 0,
-        percentage: 0
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { data, isLoading } = useDashboardData();
 
   // Helper function to get country name from code
   const getCountryName = (code: string) => {
@@ -123,29 +52,20 @@ const TopCountry = () => {
     return countryNames[code] || code;
   };
 
-  
-  useEffect(() => {
-    fetchTopCountry();
-  }, []);
+  const topCountry = data?.topCountries?.[0] || { country: 'No Data', visits: 0 };
+  const totalClicks = data?.totalClicks || 0;
+  const percentage = totalClicks > 0 ? Math.round((topCountry.visits / totalClicks) * 100 * 10) / 10 : 0;
 
   return (
-    <motion.div 
-      className="w-full glass-card bg-white/80 backdrop-blur-lg border border-white/30 p-6 rounded-xl hover:border-orange-200 flex flex-col justify-between min-h-[180px] shadow-lg hover:shadow-xl transition-all relative overflow-hidden"
-      whileHover={{ 
-        scale: 1.02,
-        boxShadow: "0 10px 25px -5px rgba(255, 122, 26, 0.2)"
-      }}
+    <div 
+      className="w-full glass-card bg-white/80 backdrop-blur-lg border border-white/30 p-6 rounded-xl flex flex-col justify-between min-h-[180px] shadow-lg transition-all relative overflow-hidden"
+      style={{ willChange: 'transform' }}
     >
       {/* Subtle gradient background */}
       <div className="absolute inset-0 bg-gradient-to-br from-orange-50/50 via-white/50 to-orange-100/50 opacity-70" />
       
       {/* Animated accent */}
-      <motion.div 
-        className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400"
-        initial={{ scaleX: 0 }}
-        animate={{ scaleX: 1 }}
-        transition={{ duration: 0.8, delay: 0.2 }}
-      />
+      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400" />
       
       <div className="flex justify-between items-center relative z-10">
         <h1 className="font-bold text-black">Top Country</h1>
@@ -154,35 +74,25 @@ const TopCountry = () => {
         </div>
       </div>
       <div className="mt-8 flex relative z-10">
-  <h1 className="text-3xl font-extrabold text-black">
-          {loading ? (
-            <motion.span
-              animate={{ opacity: [0.5, 1, 0.5] }}
-              transition={{ duration: 1.5, repeat: Infinity }}
-            >
-              ...
-            </motion.span>
+        <h1 className="text-3xl font-extrabold text-black">
+          {isLoading ? (
+            <span className="animate-pulse">...</span>
           ) : (
-            topCountry.name
+            getCountryName(topCountry.country)
           )}
         </h1>
       </div>
       <div className="relative z-10">
         <p className="text-sm text-black font-medium">
-          {loading ? (
-            <motion.span
-              animate={{ opacity: [0.5, 1, 0.5] }}
-              transition={{ duration: 1.5, repeat: Infinity }}
-            >
-              ...
-            </motion.span>
+          {isLoading ? (
+            <span className="animate-pulse">...</span>
           ) : (
-            `${topCountry.clicks.toLocaleString()} Clicks (${topCountry.percentage}%)`
+            `${topCountry.visits.toLocaleString()} Clicks (${percentage}%)`
           )}
         </p>
       </div>
-    </motion.div>
+    </div>
   );
-}
+};
 
 export default TopCountry;

@@ -11,6 +11,7 @@ import { supabase } from '../../lib/supabaseClient';
 import { useAuth } from '../auth/AuthProvider';
 import BoltBackground from '../homepage/BoltBackground';
 import LoadingScreen from '../ui/loadingScreen';
+import { DashboardDataProvider } from './DashboardDataContext';
 
 const DashBoard = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -75,27 +76,26 @@ const DashBoard = () => {
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
-      className="min-h-screen relative font-inter text-black"
-      style={{
-        background: 'radial-gradient(at 15% 20%, rgba(255, 237, 213, 0.3) 0%, transparent 55%), radial-gradient(at 85% 30%, rgba(255, 245, 235, 0.3) 0%, transparent 60%), radial-gradient(at 70% 80%, rgba(255, 251, 248, 0.3) 0%, transparent 55%), linear-gradient(130deg, var(--c-bg), #FAFAFA)',
-      }}
-    >
-      <BoltBackground />
-      
-      <Navbar />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 relative z-10">
+    <DashboardDataProvider>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.2 }}
+        className="min-h-screen relative font-inter text-black"
+        style={{
+          background: 'radial-gradient(at 15% 20%, rgba(255, 237, 213, 0.3) 0%, transparent 55%), radial-gradient(at 85% 30%, rgba(255, 245, 235, 0.3) 0%, transparent 60%), radial-gradient(at 70% 80%, rgba(255, 251, 248, 0.3) 0%, transparent 55%), linear-gradient(130deg, var(--c-bg), #FAFAFA)',
+        }}
+      >
+        <BoltBackground />
+        
+        <Navbar />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 relative z-10">
         <motion.div
-          initial={{ y: -20, opacity: 0 }}
+          initial={{ y: -10, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.4 }}
-          className="glass-card bg-white/80 backdrop-blur-lg border border-white/30 p-6 rounded-xl shadow-lg hover:shadow-xl mb-8 relative overflow-hidden"
-          whileHover={{
-            boxShadow: "0 20px 25px -5px rgba(255, 122, 26, 0.15)"
-          }}
+          transition={{ duration: 0.2 }}
+          className="glass-card bg-white/80 backdrop-blur-lg border border-white/30 p-6 rounded-xl shadow-lg mb-8 relative overflow-hidden"
+          style={{ willChange: 'transform' }}
         >
           {/* Subtle gradient background */}
           <div className="absolute inset-0 bg-gradient-to-br from-orange-50/50 via-white/50 to-orange-100/50 opacity-70" />
@@ -105,7 +105,7 @@ const DashBoard = () => {
             className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400"
             initial={{ scaleX: 0 }}
             animate={{ scaleX: 1 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
+            transition={{ duration: 0.3 }}
           />
           
           {/* Corner decoration */}
@@ -113,7 +113,7 @@ const DashBoard = () => {
             className="absolute top-0 right-0 w-16 h-16"
             initial={{ opacity: 0, scale: 0 }}
             animate={{ opacity: 0.1, scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
+            transition={{ duration: 0.2 }}
           >
             <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-orange-400 to-amber-300 rounded-bl-full" />
           </motion.div>
@@ -122,40 +122,21 @@ const DashBoard = () => {
           <div className="flex flex-col items-center mb-6 relative z-10">
             <motion.div
               className="flex items-center justify-center"
-              initial={{ opacity: 0, y: -10 }}
+              initial={{ opacity: 0, y: -5 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
+              transition={{ duration: 0.2 }}
             >
-              <motion.div
-                className="mr-3 p-2 rounded-full bg-gradient-to-br from-amber-100 to-orange-100 shadow-md"
-                whileHover={{ scale: 1.1, rotate: 5 }}
-                transition={{ type: "spring", stiffness: 300 }}
-              >
+              <div className="mr-3 p-2 rounded-full bg-gradient-to-br from-amber-100 to-orange-100 shadow-md">
                 <FaChartLine size={24} className="text-orange-500" />
-              </motion.div>
-              <motion.h1 
-                className="font-extrabold text-2xl sm:text-3xl text-black text-center"
-                whileHover={{
-                  scale: 1.01,
-                  transition: { duration: 0.15 }
-                }}
-              >
+              </div>
+              <h1 className="font-extrabold text-2xl sm:text-3xl text-black text-center">
                 Analytics Dashboard
-              </motion.h1>
+              </h1>
             </motion.div>
-            <motion.div 
-              className="h-1 w-24 mt-2 bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400 rounded-full shadow-sm"
-              animate={{ width: '6rem' }}
-              transition={{ duration: 0.8, delay: 0.5 }}
-            />
-            <motion.p
-              className="mt-2 max-w-md text-center text-sm text-black"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-            >
+            <div className="h-1 w-24 mt-2 bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400 rounded-full shadow-sm" />
+            <p className="mt-2 max-w-md text-center text-sm text-black">
               Track your links' performance and view detailed statistics
-            </motion.p>
+            </p>
           </div>
           
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 relative z-10">
@@ -163,11 +144,7 @@ const DashBoard = () => {
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-orange-500">
                 <FaSearch className="filter drop-shadow-sm" />
               </div>
-              <motion.div
-                initial={{ scale: 0.98, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                className="w-full"
-              >
+              <div className="w-full">
                 <input
                   type="text"
                   value={searchQuery}
@@ -175,59 +152,32 @@ const DashBoard = () => {
                   placeholder="Search links..."
                   className="w-full pl-10 pr-4 py-3 glass-input bg-white/80 backdrop-blur-lg border border-white/50 rounded-xl shadow-lg focus:outline-none focus:ring-2 focus:ring-orange-400 text-black placeholder-gray-400 transition-all"
                 />
-              </motion.div>
-              <motion.div 
-                className="absolute inset-0 rounded-xl pointer-events-none"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                whileHover={{ opacity: 1 }}
-                style={{ boxShadow: '0 0 20px rgba(255, 122, 26, 0.15)' }}
-              />
+              </div>
             </div>
             <div className="flex items-center">
               <Link to="/premiumdashboard">
-                <motion.button
-                  className="flex items-center space-x-2 px-4 py-3 rounded-xl bg-gradient-to-r from-orange-600 via-amber-500 to-orange-500 hover:from-orange-500 hover:via-amber-500 hover:to-orange-600 text-white transition-all duration-300 shadow-lg border border-white/20"
-                  whileHover={{
-                    scale: 1.05,
-                    boxShadow: '0 10px 15px -3px rgba(255, 160, 80, 0.3)',
-                  }}
-                  whileTap={{ scale: 0.95 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4, delay: 0.2 }}
+                <button
+                  className="flex items-center space-x-2 px-4 py-3 rounded-xl bg-gradient-to-r from-orange-600 via-amber-500 to-orange-500 hover:from-orange-500 hover:via-amber-500 hover:to-orange-600 text-white transition-all duration-200 shadow-lg border border-white/20"
                 >
                   <span className="font-bold">Check Premium Analytics</span>
                   <FaChartLine size={18} className="ml-2" />
-                </motion.button>
+                </button>
               </Link>
             </div>
           </div>
         </motion.div>
-        <motion.div
-          initial={{ scale: 0.95, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.4, delay: 0.1 }}
-          className="mb-8"
-        >
+        <div className="mb-8">
           <Cards />
-        </motion.div>
-        <motion.div
-          initial={{ x: -50, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ duration: 0.4, delay: 0.2 }}
-          className="mb-8"
-        >
+        </div>
+        <div className="mb-8">
           <LinkDatas searchQuery={debouncedSearchQuery} />
-        </motion.div>
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-        >
+        </div>
+        <div>
           <Upgrade />
-        </motion.div>
+        </div>
       </div>
     </motion.div>
+    </DashboardDataProvider>
   );
 };
 

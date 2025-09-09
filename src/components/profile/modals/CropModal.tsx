@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import Cropper from 'react-easy-crop';
 import Modal from 'react-modal';
-import { supabase } from '../../lib/supabaseClient';
-import LogoBars from '../ui/LogoBars';
+import { supabase } from '../../../lib/supabaseClient';
+import LogoBars from '../../ui/LogoBars';
 
 interface CropModalProps {
   isOpen: boolean;

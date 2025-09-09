@@ -1,8 +1,8 @@
 import { Reorder, motion } from 'framer-motion';
-import { Card, CardContent } from '../ui/card';
+import { Card, CardContent } from '../../ui/card';
 import { MoreVertical, GripVertical } from 'lucide-react';
 import { FaCopy, FaTrash, FaEdit } from 'react-icons/fa';
-import { getSocialIcon } from '../../lib/profile-utils';
+import { getSocialIcon } from '../../../lib/profile-utils';
 
 interface LinkItem {
   title: string;

@@ -1,4 +1,3 @@
-import { useRef } from 'react';
 import { FaUser, FaTrash, FaShare } from 'react-icons/fa';
 import { Edit } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -85,10 +84,10 @@ const ProfileHeader = ({
                   const userId = await getCurrentUserId();
                   if (!userId) throw new Error('No user found');
                   const previousFilePath = new URL(profile.profile_picture as string).pathname.replace(/^\/storage\/v1\/object\/public\/user-data\//, '');
-                  await import('../../lib/supabaseClient').then(({ supabase }) =>
+                  await import('../../../lib/supabaseClient').then(({ supabase }) =>
                     supabase.storage.from('user-data').remove([previousFilePath])
                   );
-                  const { error: updateError } = await import('../../lib/supabaseClient').then(({ supabase }) =>
+                  const { error: updateError } = await import('../../../lib/supabaseClient').then(({ supabase }) =>
                     supabase.from('profiles').update({ profile_picture: null }).eq('id', userId)
                   );
                   if (updateError) throw updateError;

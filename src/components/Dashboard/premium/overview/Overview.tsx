@@ -1,230 +1,35 @@
 import { StatsGrid } from './StatsGrid'
-import { TabsContent } from '@radix-ui/react-tabs'
-import { useState, useEffect } from 'react'
-import { supabase } from '../../../../lib/supabaseClient'
-import { motion } from 'framer-motion'
+import { usePremiumDashboardData } from '../PremiumDashboardContext'
 import LoadingScreen from '../../../ui/loadingScreen'
 
-interface OverviewData {
-  totalClicks: string;
-  uniqueVisitors: string;
-  conversionRate: string;
-  avgTime: string;
-  totalViews: string;
-  changes: {
-    clicks: string;
-    visitors: string;
-    conversion: string;
-    time: string;
-    views: string;
-  };
-}
-
 const Overview = () => {
-  const [overviewData, setOverviewData] = useState<OverviewData>({
-    totalClicks: '0',
-    uniqueVisitors: '0',
-    conversionRate: '0%',
-    avgTime: '0s',
-    totalViews: '0',
-    changes: {
-      clicks: '0%',
-      visitors: '0%',
-      conversion: '0%',
-      time: '0%',
-      views: '0%'
-    }
-  });
-  const [isLoading, setIsLoading] = useState(true);
+  const { data, isLoading } = usePremiumDashboardData();
 
-  useEffect(() => {
-    fetchOverviewData();
-  }, []);
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center py-8">
+        <LoadingScreen compact message="Loading overview data..." />
+      </div>
+    );
+  }
 
-  const fetchOverviewData = async () => {
-    setIsLoading(true);
-    try {
-      // Get current user
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("User not authenticated");
-
-      // Get current date and date 30 days ago for comparison
-      const now = new Date();
-      const thirtyDaysAgo = new Date();
-      thirtyDaysAgo.setDate(now.getDate() - 30);
-      const sixtyDaysAgo = new Date();
-      sixtyDaysAgo.setDate(now.getDate() - 60);
-      
-      // Format dates for queries
-      const thirtyDaysAgoStr = thirtyDaysAgo.toISOString();
-      const sixtyDaysAgoStr = sixtyDaysAgo.toISOString();
-
-      // Fetch current period profile views
-      const { data: currentProfileViews, error: currentProfileViewsError } = await supabase
-          .from('profile_views')
-          .select('viewer_hash, viewed_at')
-          .eq('profile_id', user.id)
-          .gte('viewed_at', thirtyDaysAgoStr);
-
-      if (currentProfileViewsError) throw currentProfileViewsError;
-
-      // Fetch previous period profile views
-      const { data: previousProfileViews, error: previousProfileViewsError } = await supabase
-          .from('profile_views')
-          .select('viewer_hash, viewed_at')
-          .eq('profile_id', user.id)
-          .gte('viewed_at', sixtyDaysAgoStr)
-          .lt('viewed_at', thirtyDaysAgoStr);
-
-      if (previousProfileViewsError) throw previousProfileViewsError;
-
-      // Calculate unique visitors for current and previous periods
-      const currentUniqueVisitors = new Set(currentProfileViews.map(item => item.viewer_hash)).size;
-      const previousUniqueVisitors = new Set(previousProfileViews.map(item => item.viewer_hash)).size;
-      
-      // Calculate visitor change percentage
-      const visitorChangePercent = previousUniqueVisitors > 0 
-          ? ((currentUniqueVisitors - previousUniqueVisitors) / previousUniqueVisitors * 100).toFixed(1)
-          : '100.0';
-
-      // Fetch current period link analytics
-      const { data: currentAnalytics, error: currentAnalyticsError } = await supabase
-          .from('link_analytics')
-          .select('*')
-          .eq('profile_id', user.id)
-          .gte('created_at', thirtyDaysAgoStr);
-
-      if (currentAnalyticsError) throw currentAnalyticsError;
-
-      // Fetch previous period link analytics
-      const { data: previousAnalytics, error: previousAnalyticsError } = await supabase
-          .from('link_analytics')
-          .select('*')
-          .eq('profile_id', user.id)
-          .gte('created_at', sixtyDaysAgoStr)
-          .lt('created_at', thirtyDaysAgoStr);
-
-      if (previousAnalyticsError) throw previousAnalyticsError;
-
-      // Calculate clicks for current and previous periods
-      const currentClicks = currentAnalytics.filter(item => item.event_type === 'click').length;
-      const previousClicks = previousAnalytics.filter(item => item.event_type === 'click').length;
-      
-      // Calculate click change percentage
-      const clickChangePercent = previousClicks > 0 
-          ? ((currentClicks - previousClicks) / previousClicks * 100).toFixed(1)
-          : '100.0';
-
-      // Calculate conversion rate (clicks / views)
-      const currentConversionRate = currentUniqueVisitors > 0 
-          ? ((currentClicks / currentUniqueVisitors) * 100).toFixed(1)
-          : '0.0';
-      const previousConversionRate = previousUniqueVisitors > 0 
-          ? ((previousClicks / previousUniqueVisitors) * 100).toFixed(1)
-          : '0.0';
-      
-      // Calculate conversion rate change
-      const conversionChangePercent = parseFloat(previousConversionRate) > 0 
-          ? ((parseFloat(currentConversionRate) - parseFloat(previousConversionRate)) / parseFloat(previousConversionRate) * 100).toFixed(1)
-          : '0.0';
-
-      // Calculate average session time (simplified - would need more data for accuracy)
-      // For now using a placeholder calculation based on number of interactions per visitor
-      const currentAvgInteractions = currentUniqueVisitors > 0 
-          ? (currentAnalytics.length / currentUniqueVisitors).toFixed(1)
-          : '0.0';
-      const previousAvgInteractions = previousUniqueVisitors > 0 
-          ? (previousAnalytics.length / previousUniqueVisitors).toFixed(1)
-          : '0.0';
-      
-      // Convert to seconds (arbitrary multiplier for demonstration)
-      const currentAvgTimeSeconds = Math.round(parseFloat(currentAvgInteractions) * 45);
-      const previousAvgTimeSeconds = Math.round(parseFloat(previousAvgInteractions) * 45);
-      
-      // Format average time
-      const formatTime = (seconds: number) => {
-        const minutes = Math.floor(seconds / 60);
-        const remainingSeconds = seconds % 60;
-        return `${minutes}m ${remainingSeconds}s`;
-      };
-      
-      const avgTimeChangePercent = previousAvgTimeSeconds > 0 
-          ? ((currentAvgTimeSeconds - previousAvgTimeSeconds) / previousAvgTimeSeconds * 100).toFixed(1)
-          : '0.0';
-
-      // Calculate view change percentage
-      const currentViews = currentProfileViews.length;
-      const previousViews = previousProfileViews.length;
-      const viewChangePercent = previousViews > 0 
-          ? ((currentViews - previousViews) / previousViews * 100).toFixed(1)
-          : '100.0';
-
-      // Set the overview data with real calculations
-      setOverviewData({
-          totalClicks: currentClicks.toString(),
-          uniqueVisitors: currentUniqueVisitors.toString(),
-          conversionRate: `${currentConversionRate}%`,
-          avgTime: formatTime(currentAvgTimeSeconds),
-          totalViews: currentProfileViews.length.toString(),
-          changes: {
-              clicks: `${parseFloat(clickChangePercent) >= 0 ? '+' : ''}${clickChangePercent}%`,
-              visitors: `${parseFloat(visitorChangePercent) >= 0 ? '+' : ''}${visitorChangePercent}%`,
-              conversion: `${parseFloat(conversionChangePercent) >= 0 ? '+' : ''}${conversionChangePercent}%`,
-              time: `${parseFloat(avgTimeChangePercent) >= 0 ? '+' : ''}${avgTimeChangePercent}%`,
-              views: `${parseFloat(viewChangePercent) >= 0 ? '+' : ''}${viewChangePercent}%`
-          }
-      });
-    } catch (error) {
-      console.error('Error fetching overview data:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  if (!data) {
+    return (
+      <div className="text-center py-8">
+        <p className="text-gray-500">No data available</p>
+      </div>
+    );
+  }
 
   return (
-    <div>
-      <TabsContent value="overview" className="space-y-6">
-        {isLoading ? (
-          <div className="w-full flex items-center justify-center py-8">
-            <LoadingScreen compact message="Loading overview data..." />
-          </div>
-        ) : (
-          <>
-            <StatsGrid
-              totalClicks={overviewData.totalClicks}
-              uniqueVisitors={overviewData.uniqueVisitors}
-              conversionRate={overviewData.conversionRate}
-              totalViews={overviewData.totalViews}
-              changes={overviewData.changes}
-            />
-            
-            <motion.div 
-              className="glass-card bg-white/80 backdrop-blur-md border border-white/30 p-6 rounded-xl shadow-md mt-6 relative overflow-hidden"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6, duration: 0.3 }}
-              whileHover={{ 
-                y: -5,
-                boxShadow: "0 10px 25px -5px rgba(99, 102, 241, 0.2)"
-              }}
-            >
-              <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-white to-white opacity-70" />
-              <div className="relative z-10">
-                <h3 className="text-lg font-semibold text-black mb-2">Key Insights</h3>
-                <p className="text-black font-medium">
-                  {parseFloat(overviewData.changes.visitors.replace(/[+%]/g, '')) > 0 
-                    ? `Your profile traffic has increased by ${overviewData.changes.visitors} compared to last week.` 
-                    : `Your profile traffic has decreased by ${overviewData.changes.visitors.replace('+', '')} compared to last week.`}
-                  {' '}
-                  {parseInt(overviewData.conversionRate) > 0 
-                    ? `Your conversion rate is ${overviewData.conversionRate}.` 
-                    : 'Try to improve your conversion rate by enhancing your profile content.'}
-                </p>
-              </div>
-            </motion.div>
-          </>
-        )}
-      </TabsContent>
+    <div style={{ willChange: 'transform' }}>
+      <StatsGrid 
+        totalClicks={data.overview.totalClicks}
+        uniqueVisitors={data.overview.uniqueVisitors}
+        conversionRate={data.overview.conversionRate}
+        totalViews={data.overview.totalViews}
+        changes={data.overview.changes}
+      />
     </div>
   );
 };

@@ -13,11 +13,12 @@ import {
 } from "../../ui/dropdown-menu";
 import { supabase } from '../../../lib/supabaseClient';
 import Navbar from '../Navbar';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { toast } from 'react-hot-toast';
 import BoltBackground from '../../homepage/BoltBackground';
 import { FaChartLine } from 'react-icons/fa';
 import LoadingScreen from '../../ui/loadingScreen';
+import { PremiumDashboardProvider } from './PremiumDashboardContext';
 
 interface TabConfig {
   value: string;
@@ -138,97 +139,51 @@ const PremiumDashBoard = () => {
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
-      className="min-h-screen relative"
-    >
-      <BoltBackground />
-      <Navbar />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 relative z-10">
-        <motion.div
-          initial={{ y: -20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.4 }}
-          className="glass-card bg-white/80 backdrop-blur-lg border border-orange-100 p-6 rounded-xl shadow-lg hover:shadow-xl mb-8 relative overflow-hidden"
-          whileHover={{
-            boxShadow: "0 20px 25px -5px rgba(251, 146, 60, 0.15)"
-          }}
+    <PremiumDashboardProvider>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.2 }}
+        className="min-h-screen relative"
+      >
+        <BoltBackground />
+        <Navbar />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 relative z-10">
+        <div
+          className="glass-card bg-white/80 backdrop-blur-lg border border-orange-100 p-6 rounded-xl shadow-lg mb-8 relative overflow-hidden"
+          style={{ willChange: 'transform' }}
         >
           {/* Subtle gradient background */}
           <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-white to-orange-100 opacity-70"></div>
           {/* Animated accent */}
-          <motion.div 
-            className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400"
-            initial={{ scaleX: 0 }}
-            animate={{ scaleX: 1 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-          />
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400" />
           {/* Corner decoration */}
-          <motion.div
-            className="absolute top-0 right-0 w-16 h-16"
-            initial={{ opacity: 0, scale: 0 }}
-            animate={{ opacity: 0.1, scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-          >
+          <div className="absolute top-0 right-0 w-16 h-16 opacity-10">
             <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-orange-400 to-amber-300 rounded-bl-full" />
-          </motion.div>
+          </div>
           {/* Analytics Dashboard Heading */}
           <div className="flex flex-col items-center mb-6 relative z-10">
-            <motion.div
-              className="flex items-center justify-center"
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-            >
-              <motion.div
-                className="mr-3 p-2 rounded-full bg-gradient-to-br from-amber-100 to-orange-100 shadow-md"
-                whileHover={{ scale: 1.1, rotate: 5 }}
-                transition={{ type: "spring", stiffness: 300 }}
-              >
+            <div className="flex items-center justify-center">
+              <div className="mr-3 p-2 rounded-full bg-gradient-to-br from-amber-100 to-orange-100 shadow-md">
                 <FaChartLine size={24} className="text-orange-500" />
-              </motion.div>
-              <motion.h1 
-                className="font-extrabold text-2xl sm:text-3xl text-black text-center"
-                whileHover={{
-                  scale: 1.03,
-                  transition: { duration: 0.2 }
-                }}
-              >
+              </div>
+              <h1 className="font-extrabold text-2xl sm:text-3xl text-black text-center">
                 Premium Analytics
-              </motion.h1>
-            </motion.div>
-            <motion.div 
-              className="h-1 w-24 mt-2 bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400 rounded-full shadow-sm"
-              animate={{ width: '6rem' }}
-              transition={{ duration: 0.8, delay: 0.5 }}
-            />
-            <motion.p
-              className="text-black mt-2 max-w-md text-center text-sm"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-            >
+              </h1>
+            </div>
+            <div className="h-1 w-24 mt-2 bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400 rounded-full shadow-sm" />
+            <p className="text-black mt-2 max-w-md text-center text-sm">
               Unlock advanced insights and trends for your links
-            </motion.p>
+            </p>
           </div>
           
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 relative z-10">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                  <motion.button
-                    className="flex items-center space-x-3 px-6 py-3 rounded-xl bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400 hover:from-orange-400 hover:via-amber-500 hover:to-orange-600 text-white transition-all duration-300 shadow-lg border border-white/20"
-                    whileHover={{
-                      scale: 1.05,
-                      boxShadow: '0 10px 15px -3px rgba(251, 146, 60, 0.4)',
-                    }}
-                    whileTap={{ scale: 0.95 }}
-                    disabled={isExporting}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: 0.3 }}
-                  >
+                <button
+                  className="flex items-center space-x-3 px-6 py-3 rounded-xl bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400 hover:from-orange-400 hover:via-amber-500 hover:to-orange-600 text-white transition-all duration-200 shadow-lg border border-white/20"
+                  disabled={isExporting}
+                >
                     {isExporting ? (
                       <>
                         <div className="flex items-center gap-2">
@@ -244,14 +199,10 @@ const PremiumDashBoard = () => {
                         </svg>
                       </>
                     )}
-                  </motion.button>
+                </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="bg-white/95 backdrop-blur-md border border-orange-100 shadow-xl rounded-lg p-2 w-48">
-                  <motion.div 
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.2 }}
-                  >
+                  <div>
                     <DropdownMenuItem 
                       onClick={() => handleExport('pdf')}
                       className="hover:bg-gradient-to-r hover:from-orange-50 hover:to-orange-100 cursor-pointer transition-colors rounded-md p-3 m-1 flex items-center group"
@@ -276,37 +227,22 @@ const PremiumDashBoard = () => {
                         <div className="text-xs text-black">Raw data format</div>
                       </div>
                     </DropdownMenuItem>
-                  </motion.div>
+                  </div>
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
-        </motion.div>
+        </div>
 
         {/* Tabs Section */}
-        <motion.div
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="glass-card bg-white/80 backdrop-blur-lg border border-orange-100 p-6 rounded-xl shadow-lg hover:shadow-xl relative overflow-hidden"
+        <div
+          className="glass-card bg-white/80 backdrop-blur-lg border border-orange-100 p-6 rounded-xl shadow-lg relative overflow-hidden"
+          style={{ willChange: 'transform' }}
         >
           {/* Subtle gradient background */}
           <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-white to-orange-100 opacity-70"></div>
           
           {/* Animated flowing gradient line on top */}
-          <div className="absolute top-0 left-0 right-0 h-1 overflow-hidden">
-            <motion.div
-              className="absolute inset-0 bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400"
-              animate={{
-                x: ["0%", "100%"],
-                opacity: [0.8, 1, 0.8]
-              }}
-              transition={{
-                duration: 10,
-                repeat: Infinity,
-                ease: "linear"
-              }}
-            ></motion.div>
-          </div>
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400" />
           
        
           
@@ -323,67 +259,34 @@ const PremiumDashBoard = () => {
                     className="absolute inset-0 bg-gradient-to-r from-orange-50 to-orange-100 opacity-0 group-hover:opacity-100 group-data-[state=active]:opacity-0 rounded-lg transition-opacity"
                     initial={false}
                   />
-                  <motion.span
-                    whileTap={{ scale: 0.95 }}
-                    whileHover={{ y: -1 }}
-                    className="flex items-center gap-1.5 sm:gap-1.5 relative z-10 justify-center flex-col sm:flex-row"
-                  >
+                  <span className="flex items-center gap-1.5 sm:gap-1.5 relative z-10 justify-center flex-col sm:flex-row">
                     <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={tab.icon} />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={tab.icon} />
                     </svg>
                     <span className="font-medium truncate text-center">{tab.label}</span>
-                  </motion.span>
+                  </span>
                   </TabsTrigger>
                 ))}
                 </TabsList>
 
-              <AnimatePresence mode="wait">
-                <TabsContent value="overview" className="relative z-10">
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <Overview />
-                  </motion.div>
-                </TabsContent>
-                <TabsContent value="geography" className="relative z-10">
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <Geography />
-                  </motion.div>
-                </TabsContent>
-                <TabsContent value="devices" className="relative z-10">
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <Devices />
-                  </motion.div>
-                </TabsContent>
-                <TabsContent value="trends" className="relative z-10">
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <Trends />
-                  </motion.div>
-                </TabsContent>
-              </AnimatePresence>
+              <TabsContent value="overview" className="relative z-10">
+                <Overview />
+              </TabsContent>
+              <TabsContent value="geography" className="relative z-10">
+                <Geography />
+              </TabsContent>
+              <TabsContent value="devices" className="relative z-10">
+                <Devices />
+              </TabsContent>
+              <TabsContent value="trends" className="relative z-10">
+                <Trends />
+              </TabsContent>
             </Tabs>
           </div>
-        </motion.div>
+        </div>
       </div>
     </motion.div>
+    </PremiumDashboardProvider>
   );
 };
 

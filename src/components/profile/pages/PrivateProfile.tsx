@@ -1,21 +1,20 @@
-import { useState, useEffect, useRef } from 'react';
-import { Card, CardContent } from "../ui/card";
+import React, { useState, useEffect, useRef } from 'react';
+import { Card, CardContent } from "../../ui/card";
 import { Edit } from "lucide-react";
 import { useParams } from 'react-router-dom';
 // removed unused import: logo
-import { supabase } from '../../lib/supabaseClient';
+import { supabase } from '../../../lib/supabaseClient';
 import { FaUser, FaShare, FaTrash, FaCopy, FaGripVertical } from 'react-icons/fa';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "../ui/alert-dialog";
-import LinkValidator from "../../lib/link-validator";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "../../ui/alert-dialog";
+import LinkValidator from "../../../lib/link-validator";
 import { MoreVertical, GripVertical } from "lucide-react";
-import { getSocialIcon } from '../../lib/profile-utils';
+import { getSocialIcon } from '../../../lib/profile-utils';
 import { motion, Reorder } from 'framer-motion';
-import LoadingScreen from '../ui/loadingScreen';
-import CropModal from './CropModal';
-import EditLinkModal from './EditLinkModal';
-import ProfileHeader from './ProfileHeader';
+import LoadingScreen from '../../ui/loadingScreen';
+import { CropModal, EditLinkModal } from '../modals';
+import { ProfileHeader } from '../components';
 // removed unused import: LinksList
-import { useProfile } from './useProfile';
+import { useProfile } from '../hooks';
 
 interface EditState {
   fullName: boolean;

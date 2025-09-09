@@ -1,94 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import { supabase } from '../../lib/supabaseClient';
-import { motion } from 'framer-motion';
+import React from 'react';
 import LoadingScreen from '../ui/loadingScreen';
-
-interface Link {
-  title: string;
-  url: string;
-  clicks: number;
-}
+import { useDashboardData } from './DashboardDataContext';
 
 interface LinkDatasProps {
   searchQuery: string;
 }
 
 const LinkDatas: React.FC<LinkDatasProps> = ({ searchQuery }) => {
-  const [links, setLinks] = useState<Link[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { data, isLoading, error } = useDashboardData();
 
-  useEffect(() => {
-    fetchProfileLinks();
-  }, []);
-
-  const fetchProfileLinks = async () => {
-    try {
-      setLoading(true);
-      // Get the current user
-      const { data: { user }, error: userError } = await supabase.auth.getUser();
-      
-      if (userError) throw userError;
-      if (!user) throw new Error('No user found');
-
-      // Get the user's profile
-      const { data: profileData, error: profileError } = await supabase
-        .from('profiles')
-        .select('links, link_title')
-        .eq('id', user.id)
-        .single();
-
-      if (profileError) throw profileError;
-
-      // Get click analytics for all links
-      const { data: analyticsData, error: analyticsError } = await supabase
-        .rpc('get_link_clicks', { user_id_param: user.id });
-
-      if (analyticsError) throw analyticsError;
-
-      // Create a map of URL to click count
-      const clickCounts = new Map();
-      if (analyticsData) {
-        analyticsData.forEach((item: any) => {
-          clickCounts.set(item.link_url, parseInt(item.click_count));
-        });
-      }
-
-      // Transform the data into the Link format
-      const userLinks: Link[] = [];
-      
-      if (profileData && profileData.links && profileData.link_title) {
-        const links = Array.isArray(profileData.links) 
-          ? profileData.links 
-          : (profileData.links ? JSON.parse(profileData.links) : []);
-          
-        const titles = Array.isArray(profileData.link_title) 
-          ? profileData.link_title 
-          : (profileData.link_title ? JSON.parse(profileData.link_title) : []);
-        
-        // Create Link objects from the data
-        for (let i = 0; i < links.length; i++) {
-          const url = links[i];
-          // Only add if url is a string
-          if (typeof url === 'string') {
-            userLinks.push({
-              title: titles[i] || url,
-              url: url,
-              clicks: clickCounts.get(url) || 0
-            });
-          }
-        }
-      }
-      
-      setLinks(userLinks);
-    } catch (err: any) {
-      console.error('Error fetching links:', err);
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  const links = data?.links || [];
   const filteredLinks = links.filter(link =>
     link.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     link.url.toLowerCase().includes(searchQuery.toLowerCase())
@@ -133,7 +54,7 @@ const LinkDatas: React.FC<LinkDatasProps> = ({ searchQuery }) => {
     );
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="w-full h-auto min-h-20 mb-10 md:mb-20 glass-card bg-white/80 backdrop-blur-lg border border-white/30 px-10 py-6 md:py-8 flex flex-col justify-center items-center space-y-4 rounded-xl shadow-lg">
         {/* Use the new standardized compact loader */}
@@ -151,17 +72,15 @@ const LinkDatas: React.FC<LinkDatasProps> = ({ searchQuery }) => {
   }
 
   return (
-    <div className='w-full h-auto min-h-20 mb-10 md:mb-20 glass-card bg-white/80 backdrop-blur-lg border border-white/30 px-4 sm:px-6 lg:px-8 py-6 rounded-xl shadow-lg relative overflow-hidden'>
+    <div 
+      className='w-full h-auto min-h-20 mb-10 md:mb-20 glass-card bg-white/80 backdrop-blur-lg border border-white/30 px-4 sm:px-6 lg:px-8 py-6 rounded-xl shadow-lg relative overflow-hidden'
+      style={{ willChange: 'transform' }}
+    >
       {/* Subtle gradient background */}
-  <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-white to-orange-50 opacity-70" />
+      <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-white to-orange-50 opacity-70" />
       
       {/* Animated accent */}
-      <motion.div 
-        className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-600 via-amber-500 to-orange-500"
-        initial={{ scaleX: 0 }}
-        animate={{ scaleX: 1 }}
-        transition={{ duration: 0.8, delay: 0.2 }}
-      />
+      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-600 via-amber-500 to-orange-500" />
       
       {filteredLinks.length === 0 ? (
         <div className="text-center py-8 relative z-10">
