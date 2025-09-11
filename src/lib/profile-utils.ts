@@ -101,23 +101,21 @@ export function getSocialIcon(url: string, size: number = 24): React.ReactElemen
 export function detectDeviceType(): string {
   const userAgent = navigator.userAgent.toLowerCase();
   
-  if (/android/.test(userAgent)) {
-    return 'Android';
-  }
-  if (/iphone|ipad|ipod/.test(userAgent)) {
-    return 'iOS';
-  }
-  if (/windows/.test(userAgent)) {
-    return 'Windows';
-  }
-  if (/macintosh|mac os x/.test(userAgent)) {
-    return 'macOS';
-  }
-  if (/linux/.test(userAgent)) {
-    return 'Linux';
+  // Check for mobile devices first
+  if (/android|iphone|ipad|ipod|mobile|blackberry|windows phone/.test(userAgent)) {
+    // Distinguish between mobile and tablet
+    if (/ipad|tablet|kindle|playbook|silk/.test(userAgent)) {
+      return 'tablet';
+    }
+    return 'mobile';
   }
   
-  return 'Unknown';
+  // Check for desktop devices
+  if (/windows|macintosh|mac os x|linux|ubuntu|fedora|debian/.test(userAgent)) {
+    return 'desktop';
+  }
+  
+  return 'desktop'; // Default to desktop for unknown devices
 }
 
 export function detectBrowser(): string {

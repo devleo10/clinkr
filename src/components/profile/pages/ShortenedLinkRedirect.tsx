@@ -24,6 +24,10 @@ const ShortenedLinkRedirect = ({ shortLink }: ShortenedLinkRedirectProps) => {
         const browser = detectBrowser();
         let lat: number | null = null;
         let lng: number | null = null;
+        
+        console.log('Tracking click for short code:', shortLink.short_code);
+        console.log('Detected device type:', deviceType);
+        console.log('Detected browser:', browser);
 
         // Get geolocation
         try {
@@ -42,7 +46,7 @@ const ShortenedLinkRedirect = ({ shortLink }: ShortenedLinkRedirectProps) => {
           .eq('id', shortLink.id);
 
         // Track analytics
-        await supabase.from('link_analytics').insert({
+        const analyticsData = {
           user_id: shortLink.user_id,
           link_url: shortLink.original_url,
           short_code: shortLink.short_code,
@@ -52,7 +56,20 @@ const ShortenedLinkRedirect = ({ shortLink }: ShortenedLinkRedirectProps) => {
           link_type: 'shortened_link',
           lat,
           lng,
-        });
+        };
+        
+        console.log('Inserting analytics data:', analyticsData);
+        
+        const { data: insertedData, error: analyticsError } = await supabase
+          .from('link_analytics')
+          .insert(analyticsData)
+          .select();
+          
+        if (analyticsError) {
+          console.error('Analytics insertion error:', analyticsError);
+        } else {
+          console.log('Analytics data inserted successfully:', insertedData);
+        }
 
         // Redirect to original URL
         window.location.href = shortLink.original_url;
