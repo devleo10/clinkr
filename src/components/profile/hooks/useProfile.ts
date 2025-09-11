@@ -5,8 +5,6 @@ export interface UserProfile {
   username: string;
   bio: string;
   profile_picture: string | null;
-  links: string[];
-  link_title: string[];
   id: string;
 }
 
@@ -43,8 +41,6 @@ export function useProfile(username?: string) {
           username: data.username || '',
           bio: data.bio || '',
           profile_picture: data.profile_picture,
-          links: Array.isArray(data.links) ? data.links : (data.links ? JSON.parse(data.links) : []),
-          link_title: Array.isArray(data.link_title) ? data.link_title : (data.link_title ? JSON.parse(data.link_title) : []),
         });
       } catch (err: any) {
         setError(err?.message || 'Failed to load profile');

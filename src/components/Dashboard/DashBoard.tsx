@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import Navbar from './Navbar';
 import Cards from './cards/Cards';
 import LinkDatas from './LinkDatas';
+import LinkManagement from './LinkManagement';
 import { motion } from 'framer-motion';
 import Upgrade from './cards/Upgrade';
 import debounce from 'lodash/debounce';
@@ -171,6 +172,9 @@ const DashBoard = () => {
         </div>
         <div className="mb-8">
           <LinkDatas searchQuery={debouncedSearchQuery} />
+        </div>
+        <div className="mb-8">
+          <LinkManagement userId={session?.user?.id || ''} />
         </div>
         <div>
           <Upgrade />

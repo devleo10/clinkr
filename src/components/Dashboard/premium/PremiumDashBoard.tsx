@@ -64,7 +64,7 @@ const PremiumDashBoard = () => {
       const { data: analyticsData, error: analyticsError } = await supabase
         .from('link_analytics')
         .select('*')
-        .eq('profile_id', user.id);
+        .eq('user_id', user.id);
 
       if (analyticsError) throw analyticsError;
 
@@ -72,7 +72,7 @@ const PremiumDashBoard = () => {
       const { data: profileViewsData, error: profileViewsError } = await supabase
         .from('profile_views')
         .select('*')
-        .eq('profile_id', user.id);
+        .eq('user_id', user.id);
 
       if (profileViewsError) throw profileViewsError;
 

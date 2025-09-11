@@ -99,13 +99,13 @@ export const PremiumDashboardProvider: React.FC<PremiumDashboardProviderProps> =
         supabase
           .from('link_analytics')
           .select('*')
-          .eq('profile_id', user.id)
+          .eq('user_id', user.id)
           .gte('created_at', startDateStr)
           .order('created_at', { ascending: false }),
         supabase
           .from('profile_views')
           .select('*')
-          .eq('profile_id', user.id)
+          .eq('user_id', user.id)
           .gte('viewed_at', startDateStr)
           .order('viewed_at', { ascending: false })
       ]);
@@ -127,14 +127,14 @@ export const PremiumDashboardProvider: React.FC<PremiumDashboardProviderProps> =
       const previousAnalyticsResult = await supabase
         .from('link_analytics')
         .select('id')
-        .eq('profile_id', user.id)
+        .eq('user_id', user.id)
         .gte('created_at', previousStartDate.toISOString())
         .lt('created_at', startDateStr);
         
       const previousProfileViewsResult = await supabase
         .from('profile_views')
         .select('viewer_hash')
-        .eq('profile_id', user.id)
+        .eq('user_id', user.id)
         .gte('viewed_at', previousStartDate.toISOString())
         .lt('viewed_at', startDateStr);
 

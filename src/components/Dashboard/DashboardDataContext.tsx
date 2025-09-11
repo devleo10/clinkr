@@ -57,25 +57,21 @@ export const DashboardDataProvider: React.FC<DashboardDataProviderProps> = ({ ch
       const { data: analyticsData, error: analyticsError } = await supabase
         .from('link_analytics')
         .select('id, country_code, device_type, created_at')
-        .eq('profile_id', user.id)
+        .eq('user_id', user.id)
         .gte('created_at', sixtyDaysAgo.toISOString());
 
       if (analyticsError) throw analyticsError;
 
-      // Get profile links data
-      const { data: profileData, error: profileError } = await supabase
-        .from('profiles')
-        .select('links, link_title')
-        .eq('id', user.id)
-        .single();
+      // Profile data is no longer needed since we use shortened_links
 
-      if (profileError) throw profileError;
+      // Get shortened links data instead of profile links
+      const { data: shortenedLinksData, error: shortenedLinksError } = await supabase
+        .from('shortened_links')
+        .select('id, short_code, original_url, title, clicks')
+        .eq('user_id', user.id)
+        .eq('is_active', true);
 
-      // Get click counts for links
-      const { data: clickData, error: clickError } = await supabase
-        .rpc('get_link_clicks', { user_id_param: user.id });
-
-      if (clickError) throw clickError;
+      if (shortenedLinksError) throw shortenedLinksError;
 
       // Process analytics data
       const currentPeriodData = analyticsData?.filter(item => 
@@ -118,34 +114,17 @@ export const DashboardDataProvider: React.FC<DashboardDataProviderProps> = ({ ch
         tablet: Math.round(((deviceCounts.tablet || 0) / totalDeviceCount) * 100) || 0,
       };
 
-      // Process links data
-      const clickCounts = new Map();
-      if (clickData) {
-        clickData.forEach((item: any) => {
-          clickCounts.set(item.link_url, parseInt(item.click_count));
-        });
-      }
+      // Click counts are now handled directly from shortened_links table
 
       const links: Array<{ title: string; url: string; clicks: number }> = [];
-      if (profileData && profileData.links && profileData.link_title) {
-        const userLinks = Array.isArray(profileData.links) 
-          ? profileData.links 
-          : (profileData.links ? JSON.parse(profileData.links) : []);
-          
-        const titles = Array.isArray(profileData.link_title) 
-          ? profileData.link_title 
-          : (profileData.link_title ? JSON.parse(profileData.link_title) : []);
-        
-        for (let i = 0; i < userLinks.length; i++) {
-          const url = userLinks[i];
-          if (typeof url === 'string') {
-            links.push({
-              title: titles[i] || url,
-              url: url,
-              clicks: clickCounts.get(url) || 0
-            });
-          }
-        }
+      if (shortenedLinksData) {
+        shortenedLinksData.forEach(link => {
+          links.push({
+            title: link.title || link.original_url,
+            url: link.original_url,
+            clicks: link.clicks || 0
+          });
+        });
       }
 
       const dashboardData: DashboardData = {

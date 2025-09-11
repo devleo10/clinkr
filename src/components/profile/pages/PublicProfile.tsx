@@ -1,55 +1,70 @@
 import { useState, useEffect } from 'react';
-import { Card, CardContent } from "../../ui/card";
-import logo from "../../../assets/Frame.png";
 import { Link, useParams } from 'react-router-dom';
 import { supabase } from '../../../lib/supabaseClient';
-import { FaUser } from 'react-icons/fa';
+import { FaUser, FaExternalLinkAlt, FaShare } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
 import LoadingScreen from '../../ui/loadingScreen';
-import { MoreHorizontal } from 'lucide-react';
-import { getSocialIcon, detectDeviceType, detectBrowser } from '../../../lib/profile-utils';
+import { getSocialIcon } from '../../../lib/profile-utils';
+import usePerformanceOptimization from '../../../hooks/usePerformanceOptimization';
+import { ShortLink } from '../../../lib/linkShorteningService';
 
 interface UserProfile {
   username: string;
   bio: string;
   profile_picture: string | null;
-  links: string[];
-  link_title: string[];
   id: string;
 }
 
 const PublicProfile = () => {
   const { username } = useParams();
   const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [shortLinks, setShortLinks] = useState<ShortLink[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [activeLinkMenu, setActiveLinkMenu] = useState<number | null>(null);
+  const { simplifiedAnimations } = usePerformanceOptimization();
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
         setLoading(true);
-        const { data, error } = await supabase
+        
+        // First, get the profile
+        const { data: profileData, error: profileError } = await supabase
           .from('profiles')
           .select('*')
           .eq('username', username)
           .single();
         
-        if (error) throw error;
+        if (profileError) throw profileError;
         
-        const profileData: UserProfile = {
-          id: data.id,
-          username: data.username || '',
-          bio: data.bio || '',
-          profile_picture: data.profile_picture,
-          links: Array.isArray(data.links) ? data.links : (data.links ? JSON.parse(data.links) : []),
-          link_title: Array.isArray(data.link_title) ? data.link_title : (data.link_title ? JSON.parse(data.link_title) : []),
+        const profile: UserProfile = {
+          id: profileData.id,
+          username: profileData.username || '',
+          bio: profileData.bio || '',
+          profile_picture: profileData.profile_picture,
         };
         
-        setProfile(profileData);
+        setProfile(profile);
+        
+        // Then, get the shortened links for this user
+        const { data: links, error: linksError } = await supabase
+          .from('shortened_links')
+          .select('*')
+          .eq('user_id', profileData.id)
+          .eq('is_active', true)
+          .order('created_at', { ascending: false });
+        
+        if (linksError) {
+          console.error('Error fetching shortened links:', linksError);
+          setShortLinks([]);
+        } else {
+          setShortLinks(links || []);
+        }
+        
       } catch (err: any) {
         setError(err?.message || 'Failed to load profile');
         setProfile(null);
+        setShortLinks([]);
       } finally {
         setLoading(false);
       }
@@ -58,50 +73,27 @@ const PublicProfile = () => {
     if (username) fetchProfile();
   }, [username]);
 
-  const links = Array.isArray(profile?.links) ? profile.links.map((url, index) => ({
-    title: profile?.link_title && profile.link_title[index] ? profile.link_title[index] : url,
-    url,
-  })) : [];
+  const handleLinkClick = (shortCode: string) => {
+    // Navigate to the shortened link - this will trigger tracking in ShortenedLinkRedirect
+    window.open(`/${shortCode}`, '_blank');
+  };
 
-  const handleLinkClick = async (url: string, index: number, e: React.MouseEvent) => {
+
+  const handleShareProfile = async () => {
+    const profileUrl = window.location.href;
     try {
-      e.preventDefault();
-      
-      if (!profile || !profile.id) { 
-        window.open(url, '_blank'); 
-        return; 
+      if (navigator.share) {
+        await navigator.share({
+          title: `${profile?.username}'s Links`,
+          text: `Check out ${profile?.username}'s links`,
+          url: profileUrl,
+        });
+      } else {
+        await navigator.clipboard.writeText(profileUrl);
+        // Could add a toast notification here if needed
       }
-      
-      const deviceType = detectDeviceType();
-      const browser = detectBrowser();
-      let lat: number | null = null;
-      let lng: number | null = null;
-      
-      try {
-        const resp = await fetch('https://ipapi.co/json/');
-        const data = await resp.json();
-        lat = data.latitude; 
-        lng = data.longitude;
-      } catch {
-        // Ignore geolocation errors
-      }
-      
-      await supabase.from('link_analytics').insert({ 
-        profile_id: profile.id, 
-        user_id: profile.id, 
-        link_url: url, 
-        link_index: index, 
-        device_type: deviceType, 
-        browser, 
-        event_type: 'click', 
-        lat, 
-        lng 
-      });
-      
-      window.open(url, '_blank');
     } catch (err) {
-      console.error('click analytics error', err);
-      window.open(url, '_blank');
+      console.error('Failed to share profile:', err);
     }
   };
 
@@ -128,96 +120,160 @@ const PublicProfile = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white">
-      <div className="max-w-3xl mx-auto px-4 py-8">
-        <div className="flex justify-center items-center mb-8">
-          <Link to="/homepage" className="flex items-center gap-4">
-            <img src={logo} alt="Clinkr Logo" className="w-10 h-10" />
-            <h1 className="text-3xl md:text-4xl font-bold text-gray-900">Clinkr</h1>
-          </Link>
-        </div>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100">
+      {/* Background Pattern */}
+      <div className="fixed inset-0 profile-bg-pattern opacity-30" />
 
-        <div className="relative bg-white rounded-2xl p-6 shadow border border-gray-100">
-          <div className="text-center">
-            <div className="w-36 h-36 mx-auto rounded-full overflow-hidden mb-4 bg-gray-50 flex items-center justify-center">
-              {profile?.profile_picture ? (
-                <img 
-                  src={profile.profile_picture} 
-                  alt={profile.username} 
-                  className="w-full h-full object-cover" 
-                />
-              ) : (
-                <FaUser size={64} className="text-orange-400" />
-              )}
-            </div>
-            <h2 className="text-2xl font-semibold text-gray-900">@{profile.username}</h2>
-            <p className="text-gray-600 mt-2">{profile.bio || 'No bio available'}</p>
-          </div>
+      <div className="relative z-10 max-w-md mx-auto px-4 py-8">
+        {/* Profile Header */}
+        <motion.div 
+          className="text-center mb-8"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          {/* Profile Picture */}
+          <motion.div 
+            className="w-32 h-32 mx-auto rounded-full overflow-hidden mb-6 profile-picture-glow border-4 border-white"
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            {profile?.profile_picture ? (
+              <img 
+                src={profile.profile_picture} 
+                alt={profile.username} 
+                className="w-full h-full object-cover" 
+              />
+            ) : (
+              <div className="w-full h-full bg-gradient-to-br from-orange-400 to-amber-500 flex items-center justify-center">
+                <FaUser size={48} className="text-white" />
+              </div>
+            )}
+          </motion.div>
 
-          <div className="mt-6 space-y-3">
-            <AnimatePresence>
-              {links.map((link, i) => (
-                <motion.div 
-                  key={i} 
-                  initial={{ opacity: 0, y: 10 }} 
-                  animate={{ opacity: 1, y: 0 }} 
-                  exit={{ opacity: 0 }}
-                  transition={{ delay: i * 0.1 }}
-                >
-                  <Card className="hover:shadow-md transition-shadow cursor-pointer">
-                    <CardContent className="flex items-center justify-between gap-3 p-4">
-                      <div 
-                        className="flex items-center gap-3 flex-1"
-                        onClick={(e) => handleLinkClick(link.url, i, e)}
-                      >
-                        <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center">
-                          {getSocialIcon(link.url, 28)}
-                        </div>
-                        <div className="flex flex-col flex-1 min-w-0">
-                          <span className="font-medium text-gray-900 truncate">{link.title}</span>
-                          <span className="text-xs text-gray-500 truncate">{link.url}</span>
-                        </div>
-                      </div>
-                      
-                      <div className="relative">
-                        <button 
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setActiveLinkMenu(activeLinkMenu === i ? null : i);
-                          }}
-                          className="p-1.5 rounded-full hover:bg-gray-100"
-                        >
-                          <MoreHorizontal className="h-4 w-4 text-gray-500" />
-                        </button>
-                        
-                        {activeLinkMenu === i && (
-                          <div className="absolute right-0 top-10 bg-white border rounded shadow-lg p-2 z-10">
-                            <button 
-                              onClick={(e) => { 
-                                e.stopPropagation();
-                                navigator.clipboard.writeText(link.url); 
-                                setActiveLinkMenu(null); 
-                              }} 
-                              className="text-sm hover:bg-gray-100 px-2 py-1 rounded w-full text-left"
-                            >
-                              Copy Link
-                            </button>
-                          </div>
-                        )}
-                      </div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
-            </AnimatePresence>
-          </div>
+          {/* Username */}
+          <motion.h1 
+            className="text-2xl font-bold text-gray-900 mb-2"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+          >
+            @{profile.username}
+          </motion.h1>
 
-          {links.length === 0 && (
-            <div className="text-center mt-8 text-gray-500">
-              <p>No links available</p>
-            </div>
+          {/* Bio */}
+          {profile.bio && (
+            <motion.p 
+              className="text-gray-600 text-sm leading-relaxed mb-6 max-w-sm mx-auto"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.5 }}
+            >
+              {profile.bio}
+            </motion.p>
           )}
+
+          {/* Share Button */}
+          <motion.button
+            onClick={handleShareProfile}
+            className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-full text-sm font-medium text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 shadow-sm"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, delay: 0.6 }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <FaShare size={14} />
+            Share Profile
+          </motion.button>
+        </motion.div>
+
+        {/* Links */}
+        <div className="space-y-3">
+          <AnimatePresence>
+            {shortLinks.map((link, i) => (
+              <motion.div 
+                key={link.id} 
+                initial={{ opacity: 0, y: 20 }} 
+                animate={{ opacity: 1, y: 0 }} 
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ 
+                  duration: 0.4, 
+                  delay: simplifiedAnimations ? 0 : i * 0.1 + 0.7,
+                  ease: "easeOut"
+                }}
+                whileHover={{ scale: simplifiedAnimations ? 1 : 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <div 
+                  className="profile-link-card rounded-2xl p-4 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 cursor-pointer group relative overflow-hidden"
+                  onClick={() => handleLinkClick(link.short_code)}
+                >
+                  {/* Hover Effect Background */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-orange-50 to-amber-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  
+                  <div className="relative z-10 flex items-center gap-4">
+                    {/* Icon */}
+                    <div className="w-12 h-12 rounded-xl social-icon-container flex items-center justify-center group-hover:bg-white transition-colors duration-300 shadow-sm">
+                      {getSocialIcon(link.original_url, 24)}
+                    </div>
+                    
+                    {/* Content */}
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-semibold text-gray-900 truncate group-hover:text-orange-700 transition-colors duration-300">
+                        {link.title}
+                      </h3>
+                      <p className="text-sm text-gray-500 truncate">
+                        {link.original_url.length > 40 ? `${link.original_url.slice(0, 40)}...` : link.original_url}
+                      </p>
+                      <p className="text-xs text-orange-600 font-mono mt-1">
+                        clinkr.live/{link.short_code}
+                      </p>
+                    </div>
+                    
+                    {/* External Link Icon */}
+                    <div className="w-8 h-8 rounded-full bg-orange-500 flex items-center justify-center group-hover:bg-orange-600 transition-colors duration-300">
+                      <FaExternalLinkAlt size={12} className="text-white" />
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </AnimatePresence>
         </div>
+
+        {/* Empty State */}
+        {shortLinks.length === 0 && (
+          <motion.div 
+            className="text-center py-12"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.8 }}
+          >
+            <div className="w-16 h-16 mx-auto rounded-full bg-gray-100 flex items-center justify-center mb-4">
+              <FaUser size={24} className="text-gray-400" />
+            </div>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">No links yet</h3>
+            <p className="text-gray-500 text-sm">This profile doesn't have any links to share.</p>
+          </motion.div>
+        )}
+
+        {/* Footer */}
+        <motion.div 
+          className="text-center mt-12"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 1 }}
+        >
+          <Link 
+            to="/homepage" 
+            className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-orange-600 transition-colors duration-200"
+          >
+            <span>Powered by</span>
+            <span className="font-semibold">Clinkr</span>
+          </Link>
+        </motion.div>
       </div>
     </div>
   );
