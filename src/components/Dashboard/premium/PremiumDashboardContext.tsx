@@ -105,7 +105,7 @@ export const PremiumDashboardProvider: React.FC<PremiumDashboardProviderProps> =
         supabase
           .from('profile_views')
           .select('*')
-          .eq('user_id', user.id)
+          .eq('profile_id', user.id)
           .gte('viewed_at', startDateStr)
           .order('viewed_at', { ascending: false })
       ]);
@@ -115,6 +115,9 @@ export const PremiumDashboardProvider: React.FC<PremiumDashboardProviderProps> =
 
       const analyticsData = analyticsResult.data || [];
       const profileViewsData = profileViewsResult.data || [];
+      
+      console.log('Analytics data fetched:', analyticsData.length, 'records');
+      console.log('Profile views data fetched:', profileViewsData.length, 'records');
 
       // Process Overview Data
       const currentPeriodViews = profileViewsData.length;
@@ -134,7 +137,7 @@ export const PremiumDashboardProvider: React.FC<PremiumDashboardProviderProps> =
       const previousProfileViewsResult = await supabase
         .from('profile_views')
         .select('viewer_hash')
-        .eq('user_id', user.id)
+        .eq('profile_id', user.id)
         .gte('viewed_at', previousStartDate.toISOString())
         .lt('viewed_at', startDateStr);
 
@@ -303,15 +306,54 @@ export const PremiumDashboardProvider: React.FC<PremiumDashboardProviderProps> =
         monthlyData
       };
 
-      const premiumData: PremiumDashboardData = {
-        overview,
-        geography,
-        devices,
-        trends,
-        lastFetch: Date.now()
-      };
+      // If no data, create sample data for demonstration
+      if (analyticsData.length === 0 && profileViewsData.length === 0) {
+        console.log('No analytics data found, creating sample data for demonstration');
+        
+        const sampleData: PremiumDashboardData = {
+          overview: {
+            totalClicks: '0',
+            uniqueVisitors: '0',
+            conversionRate: '0%',
+            avgTime: '0s',
+            totalViews: '0',
+            changes: {
+              clicks: '+0%',
+              visitors: '+0%',
+              conversion: '+0%',
+              time: '+0%',
+              views: '+0%'
+            }
+          },
+          geography: {
+            heatmapData: [],
+            countryStats: [],
+            analyticsData: []
+          },
+          devices: {
+            deviceStats: [],
+            browserStats: []
+          },
+          trends: {
+            dailyData: [],
+            weeklyData: [],
+            monthlyData: []
+          },
+          lastFetch: Date.now()
+        };
+        
+        setData(sampleData);
+      } else {
+        const premiumData: PremiumDashboardData = {
+          overview,
+          geography,
+          devices,
+          trends,
+          lastFetch: Date.now()
+        };
 
-      setData(premiumData);
+        setData(premiumData);
+      }
     } catch (err: any) {
       console.error('Error fetching premium dashboard data:', err);
       setError(err.message);
