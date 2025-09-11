@@ -1,9 +1,23 @@
 import React from 'react';
-import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin, FaYoutube, FaGithub, FaGoogle } from 'react-icons/fa';
-import { SiTiktok, SiDiscord, SiTelegram, SiWhatsapp, SiSnapchat, SiPinterest, SiReddit, SiTwitch, SiSpotify, SiApple, SiGoogle, SiAmazon, SiNetflix } from 'react-icons/si';
+import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin, FaYoutube, FaGithub, FaLink, FaRobot, FaCode, FaMicrochip, FaLightbulb } from 'react-icons/fa';
+import { SiTiktok, SiDiscord, SiTelegram, SiWhatsapp, SiSnapchat, SiPinterest, SiReddit, SiTwitch, SiSpotify, SiApple, SiGoogle, SiAmazon, SiNetflix, SiOpenai } from 'react-icons/si';
 
 export function getSocialIcon(url: string, size: number = 24): React.ReactElement {
   const urlLower = url.toLowerCase();
+  
+  // AI/Chat platforms (check these first for better specificity)
+  if (urlLower.includes('deepseek.com') || urlLower.includes('deepseek')) {
+    return React.createElement(FaMicrochip, { size, className: "text-blue-600" });
+  }
+  if (urlLower.includes('openai.com') || urlLower.includes('chatgpt') || urlLower.includes('openai')) {
+    return React.createElement(SiOpenai, { size, className: "text-green-600" });
+  }
+  if (urlLower.includes('claude') || urlLower.includes('anthropic')) {
+    return React.createElement(FaRobot, { size, className: "text-orange-500" });
+  }
+  if (urlLower.includes('gemini') || urlLower.includes('bard')) {
+    return React.createElement(FaLightbulb, { size, className: "text-purple-500" });
+  }
   
   // Social media platforms
   if (urlLower.includes('facebook.com') || urlLower.includes('fb.com')) {
@@ -56,7 +70,7 @@ export function getSocialIcon(url: string, size: number = 24): React.ReactElemen
   if (urlLower.includes('apple.com')) {
     return React.createElement(SiApple, { size, className: "text-gray-800" });
   }
-  if (urlLower.includes('google.com')) {
+  if (urlLower.includes('google.com') || urlLower.includes('gmail.com') || urlLower.includes('goog')) {
     return React.createElement(SiGoogle, { size, className: "text-blue-500" });
   }
   if (urlLower.includes('microsoft.com')) {
@@ -69,8 +83,19 @@ export function getSocialIcon(url: string, size: number = 24): React.ReactElemen
     return React.createElement(SiNetflix, { size, className: "text-red-600" });
   }
   
+  // Development/Coding platforms
+  if (urlLower.includes('stackoverflow.com')) {
+    return React.createElement(FaCode, { size, className: "text-orange-500" });
+  }
+  if (urlLower.includes('codepen.io')) {
+    return React.createElement(FaCode, { size, className: "text-black" });
+  }
+  if (urlLower.includes('jsfiddle.net')) {
+    return React.createElement(FaCode, { size, className: "text-blue-500" });
+  }
+  
   // Default link icon
-  return React.createElement(FaGoogle, { size, className: "text-gray-500" });
+  return React.createElement(FaLink, { size, className: "text-gray-500" });
 }
 
 export function detectDeviceType(): string {
