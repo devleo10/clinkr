@@ -3,7 +3,8 @@ import DashBoard from "./components/Dashboard/DashBoard";
 import HomePage from "./components/homepage/HomePage";
 import PremiumDashBoard from "./components/Dashboard/premium/PremiumDashBoard";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
-import { PrivateProfile, PublicProfile } from "./components/profile";
+import { PrivateProfile } from "./components/profile";
+import SmartRouteResolver from "./components/profile/pages/SmartRouteResolver";
 import GetStarted from "./components/auth/GetStarted";
 import Onboarding from "./components/auth/Onboarding";
 import { AuthProvider } from "./components/auth/AuthProvider";
@@ -66,8 +67,8 @@ function App() {
       element: <About />,
     },
     {
-      path: "/:username",
-      element: <PublicProfile />,
+      path: "/:identifier",
+      element: <SmartRouteResolver />,
     },
 
     {

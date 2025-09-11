@@ -10,7 +10,7 @@ const PrivacyPolicy = () => {
         <h1 className="text-3xl font-bold mb-6 text-white">Privacy Policy for Clinkr</h1>
 
         <p className="mb-4">
-          At Clinkr, accessible from clinkr.com, one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types of information that is collected and recorded by Clinkr and how we use it.
+          At Clinkr, accessible from clinkr.live, one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types of information that is collected and recorded by Clinkr and how we use it.
         </p>
 
         <p className="mb-4">

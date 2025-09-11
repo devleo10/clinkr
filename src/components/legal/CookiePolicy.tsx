@@ -9,7 +9,7 @@ const CookiePolicy = () => {
         <h1 className="text-3xl font-bold mb-6 text-white">Cookie Policy for Clinkr</h1>
 
         <p className="mb-4">
-          This Cookie Policy explains how Clinkr ("Company," "we," "us," and "our") uses cookies and similar technologies to recognize you when you visit our websites at clinkr.com ("Websites"). It explains what these technologies are and why we use them, as well as your rights to control our use of them.
+          This Cookie Policy explains how Clinkr ("Company," "we," "us," and "our") uses cookies and similar technologies to recognize you when you visit our websites at clinkr.live ("Websites"). It explains what these technologies are and why we use them, as well as your rights to control our use of them.
         </p>
 
         <p className="mb-4">
@@ -85,7 +85,7 @@ const CookiePolicy = () => {
         <h2 className="text-2xl font-semibold mb-4 text-white">Where can I get further information?</h2>
 
         <p className="mb-4">
-          If you have any questions about our use of cookies or other technologies, please email us at support@clinkr.com or by post to:
+          If you have any questions about our use of cookies or other technologies, please email us at support@clinkr.live or by post to:
         </p>
 
         <p className="mb-4">

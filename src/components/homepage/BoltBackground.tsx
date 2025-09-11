@@ -1,9 +1,11 @@
 
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
+import usePerformanceOptimization from '../../hooks/usePerformanceOptimization';
 
 const BoltBackground = () => {
   const [isVisible, setIsVisible] = useState(true);
+  const { disableBackgroundEffects, simplifiedAnimations } = usePerformanceOptimization();
 
   useEffect(() => {
     const handleVisibilityChange = () => {
@@ -19,70 +21,51 @@ const BoltBackground = () => {
       {/* Modern gradient mesh background */}
       <div className="absolute inset-0 gradient-mesh" />
       
-      {/* Animated floating elements - only when tab is visible */}
-      {isVisible && (
+      {/* Conditional animated floating elements based on performance */}
+      {isVisible && !disableBackgroundEffects && (
         <>
           <motion.div 
-            className="absolute w-[600px] h-[600px] rounded-full opacity-30"
+            className="absolute w-[400px] h-[400px] rounded-full opacity-20"
             style={{
-              background: 'radial-gradient(circle, rgba(255, 122, 26, 0.15) 0%, rgba(255, 122, 26, 0.05) 40%, transparent 70%)',
+              background: 'radial-gradient(circle, rgba(255, 122, 26, 0.1) 0%, rgba(255, 122, 26, 0.03) 40%, transparent 70%)',
               left: '10%',
               top: '10%',
-              filter: 'blur(80px)',
+              filter: 'blur(60px)',
             }}
-            animate={{
-              x: [0, 30, -20, 0],
-              y: [0, -20, 10, 0],
-              scale: [1, 1.1, 0.9, 1],
+            animate={simplifiedAnimations ? {} : {
+              x: [0, 20, -15, 0],
+              y: [0, -15, 10, 0],
+              scale: [1, 1.05, 0.95, 1],
             }}
-            transition={{
-              duration: 20,
+            transition={simplifiedAnimations ? {} : {
+              duration: 25,
               repeat: Infinity,
               ease: "easeInOut"
             }}
           />
           
-          <motion.div 
-            className="absolute w-[500px] h-[500px] rounded-full opacity-25"
-            style={{
-              background: 'radial-gradient(circle, rgba(255, 122, 26, 0.08) 0%, rgba(255, 122, 26, 0.02) 40%, transparent 70%)',
-              right: '15%',
-              top: '20%',
-              filter: 'blur(70px)',
-            }}
-            animate={{
-              x: [0, -25, 15, 0],
-              y: [0, 25, -15, 0],
-              scale: [1, 0.8, 1.2, 1],
-            }}
-            transition={{
-              duration: 25,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: 5
-            }}
-          />
-          
-          <motion.div 
-            className="absolute w-[400px] h-[400px] rounded-full opacity-20"
-            style={{
-              background: 'radial-gradient(circle, rgba(255, 122, 26, 0.06) 0%, rgba(255, 122, 26, 0.01) 40%, transparent 70%)',
-              left: '60%',
-              bottom: '20%',
-              filter: 'blur(60px)',
-            }}
-            animate={{
-              x: [0, 20, -30, 0],
-              y: [0, -15, 20, 0],
-              scale: [1, 1.3, 0.7, 1],
-            }}
-            transition={{
-              duration: 18,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: 10
-            }}
-          />
+          {!simplifiedAnimations && (
+            <motion.div 
+              className="absolute w-[300px] h-[300px] rounded-full opacity-15"
+              style={{
+                background: 'radial-gradient(circle, rgba(255, 122, 26, 0.08) 0%, rgba(255, 122, 26, 0.02) 40%, transparent 70%)',
+                right: '15%',
+                top: '20%',
+                filter: 'blur(50px)',
+              }}
+              animate={{
+                x: [0, -20, 10, 0],
+                y: [0, 20, -10, 0],
+                scale: [1, 0.9, 1.1, 1],
+              }}
+              transition={{
+                duration: 30,
+                repeat: Infinity,
+                ease: "easeInOut",
+                delay: 8
+              }}
+            />
+          )}
         </>
       )}
       

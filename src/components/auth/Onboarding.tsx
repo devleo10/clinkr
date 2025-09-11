@@ -257,10 +257,10 @@ const Onboarding = () => {
         <div className="flex-grow flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
           <div className="max-w-md w-full space-y-8 bg-white/40 backdrop-blur-lg border border-white/50 rounded-xl p-8 shadow-xl hover:shadow-2xl transition-all duration-300 relative">
             {/* Subtle gradient background */}
-            <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 via-transparent to-purple-500/5 opacity-70 rounded-xl" />
+            <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 via-transparent to-amber-500/5 opacity-70 rounded-xl" />
             
             {/* Animated accent */}
-            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 rounded-t-xl" />
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-600 via-amber-500 to-orange-500 rounded-t-xl" />
             
             {/* Header Section */}
             <div className="text-center relative z-10">
@@ -270,7 +270,7 @@ const Onboarding = () => {
                   alt="Clinkr Logo" 
                   className="h-8 w-auto sm:h-10" 
                 />
-                <h1 className="text-2xl sm:text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500">
+                <h1 className="text-2xl sm:text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-orange-600 via-amber-500 to-orange-500">
                   Clinkr
                 </h1>
               </div>
@@ -284,7 +284,7 @@ const Onboarding = () => {
 
             {/* Progress Indicator */}
             <div className="relative mb-8">
-              <div className="absolute left-0 right-0 h-0.5 bg-gradient-to-r from-purple-400 via-indigo-400 to-blue-400 top-5 opacity-20 rounded-full"></div>
+              <div className="absolute left-0 right-0 h-0.5 bg-gradient-to-r from-orange-400 via-amber-400 to-orange-400 top-5 opacity-20 rounded-full"></div>
               
               <div className="flex justify-between items-center relative">
                 {[1, 2, 3].map((step) => (
@@ -292,7 +292,7 @@ const Onboarding = () => {
                     <div 
                       className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 ${
                         currentStep >= step 
-                          ? 'bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500 text-white shadow-lg' 
+                          ? 'bg-gradient-to-r from-orange-500 via-amber-500 to-orange-500 text-white shadow-lg' 
                           : 'bg-gray-200 text-gray-400 border border-gray-300'
                       } relative z-10`}
                     >
@@ -312,7 +312,7 @@ const Onboarding = () => {
                 {/* Profile Picture Upload */}
                 <div className="flex flex-col items-center space-y-4">
                   <div className="relative">
-                    <div className="w-32 h-32 rounded-full bg-gradient-to-tr from-purple-500 via-indigo-500 to-blue-400 p-1 flex items-center justify-center overflow-hidden shadow-lg">
+                    <div className="w-32 h-32 rounded-full bg-gradient-to-tr from-orange-500 via-amber-500 to-orange-400 p-1 flex items-center justify-center overflow-hidden shadow-lg">
                       <div className="w-full h-full rounded-full bg-white flex items-center justify-center overflow-hidden">
                         {formData.profile_picture ? (
                           <div className="relative w-full h-full">
@@ -328,14 +328,14 @@ const Onboarding = () => {
                             )}
                           </div>
                         ) : (
-                          <FaUser size={40} className="text-indigo-600" />
+                          <FaUser size={40} className="text-orange-600" />
                         )}
                       </div>
                     </div>
                     <button
                       type="button"
                       onClick={() => fileInputRef.current?.click()}
-                      className="absolute bottom-0 right-0 bg-gradient-to-r from-indigo-600 to-blue-500 text-white p-2 rounded-full hover:from-indigo-500 hover:to-blue-400 transition-colors shadow-lg"
+                      className="absolute bottom-0 right-0 bg-gradient-to-r from-orange-600 to-amber-500 text-white p-2 rounded-full hover:from-orange-500 hover:to-amber-400 transition-colors shadow-lg"
                     >
                       <FaCamera size={16} />
                     </button>
@@ -357,7 +357,7 @@ const Onboarding = () => {
                     name="username"
                     type="text"
                     required
-                    className="mt-1 appearance-none rounded-lg relative block w-full px-3 py-3 bg-white/80 backdrop-blur-sm border border-gray-300 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-all duration-200"
+                    className="mt-1 appearance-none rounded-lg relative block w-full px-3 py-3 bg-white/80 backdrop-blur-sm border border-gray-300 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 sm:text-sm transition-all duration-200"
                     placeholder="doejohn999"
                     value={formData.username}
                     onChange={e => {
@@ -374,7 +374,7 @@ const Onboarding = () => {
                     id="bio"
                     name="bio"
                     rows={3}
-                    className="mt-1 appearance-none rounded-lg relative block w-full px-3 py-3 bg-white/80 backdrop-blur-sm border border-gray-300 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-all duration-200 resize-none"
+                    className="mt-1 appearance-none rounded-lg relative block w-full px-3 py-3 bg-white/80 backdrop-blur-sm border border-gray-300 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 sm:text-sm transition-all duration-200 resize-none"
                     placeholder="Write a crisp bio within 160 characters"
                     value={formData.bio}
                     onChange={handleInputChange}
@@ -398,7 +398,7 @@ const Onboarding = () => {
                           type="text"
                           value={link.title}
                           onChange={(e) => handleLinkChange(index, 'title', e.target.value)}
-                          className="w-full rounded-lg px-3 py-2 bg-white/80 backdrop-blur-sm border border-gray-300 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-all duration-200"
+                          className="w-full rounded-lg px-3 py-2 bg-white/80 backdrop-blur-sm border border-gray-300 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 sm:text-sm transition-all duration-200"
                           placeholder="Link Title (e.g., My Website)"
                         />
                         <div className="flex gap-2">
@@ -406,7 +406,7 @@ const Onboarding = () => {
                             type="url"
                             value={link.url}
                             onChange={(e) => handleLinkChange(index, 'url', e.target.value)}
-                            className="flex-1 rounded-lg px-3 py-2 bg-white/80 backdrop-blur-sm border border-gray-300 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-all duration-200"
+                            className="flex-1 rounded-lg px-3 py-2 bg-white/80 backdrop-blur-sm border border-gray-300 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 sm:text-sm transition-all duration-200"
                             placeholder="https://example.com"
                           />
                           {formData.links.length > 1 && (
@@ -425,7 +425,7 @@ const Onboarding = () => {
                       <button
                         type="button"
                         onClick={() => setFormData(prev => ({ ...prev, links: [...prev.links, { title: '', url: '' }] }))}
-                        className="mt-3 flex items-center gap-2 text-indigo-600 hover:text-indigo-500 transition-colors text-sm font-medium"
+                        className="mt-3 flex items-center gap-2 text-orange-600 hover:text-orange-500 transition-colors text-sm font-medium"
                       >
                         <FaPlus size={12} />
                         Add another link
@@ -440,7 +440,7 @@ const Onboarding = () => {
             {currentStep === 3 && (
               <div className="space-y-6 text-center relative z-10">
                 <div className="bg-white/60 backdrop-blur-sm p-6 rounded-lg shadow-lg border border-white/40">
-                  <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-purple-500 via-indigo-500 to-blue-500 flex items-center justify-center">
+                  <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-orange-500 via-amber-500 to-orange-500 flex items-center justify-center">
                     <FaChartLine size={28} className="text-white" />
                   </div>
                   <h3 className="text-xl font-bold text-gray-800 mb-2">You're All Set!</h3>
@@ -449,7 +449,7 @@ const Onboarding = () => {
                   </p>
                   <div className="py-3">
                       <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
-                        <div className="h-full w-full bg-gradient-to-r from-purple-400 via-indigo-400 to-blue-400 rounded-full">
+                        <div className="h-full w-full bg-gradient-to-r from-orange-400 via-amber-400 to-orange-400 rounded-full">
                           <LoadingScreen compact />
                         </div>
                       </div>
@@ -472,13 +472,13 @@ const Onboarding = () => {
               <button
                 onClick={handleNextStep}
                 disabled={isLoading || !isStepValid}
-                className={`flex-1 py-3 px-4 border border-transparent rounded-lg text-sm font-medium text-white bg-gradient-to-br from-purple-600 via-indigo-600 to-blue-600 hover:from-purple-700 hover:via-indigo-700 hover:to-blue-700 active:from-purple-800 active:via-indigo-800 active:to-blue-800 shadow-lg hover:shadow-xl active:shadow-md transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-indigo-500/50 focus:ring-offset-2 ${
+                className={`flex-1 py-3 px-4 border border-transparent rounded-lg text-sm font-medium text-white bg-gradient-to-br from-orange-600 via-amber-500 to-orange-600 hover:from-orange-700 hover:via-amber-600 hover:to-orange-700 active:from-orange-800 active:via-amber-700 active:to-orange-800 shadow-lg hover:shadow-xl active:shadow-md transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-orange-500/50 focus:ring-offset-2 ${
                   isLoading ? 'opacity-100' : ''
                 } disabled:opacity-100 disabled:cursor-not-allowed disabled:hover:shadow-lg transform hover:scale-[1.02] active:scale-[0.98] hover:-translate-y-0.5 active:translate-y-0 relative overflow-hidden`}
                 style={{
                   boxShadow: isLoading || !isStepValid 
                     ? '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)' 
-                    : '0 10px 15px -3px rgba(79, 70, 229, 0.4), 0 4px 6px -2px rgba(79, 70, 229, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
+                    : '0 10px 15px -3px rgba(249, 115, 22, 0.4), 0 4px 6px -2px rgba(249, 115, 22, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
                 }}
               >
                 {/* Button glow effect */}

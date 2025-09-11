@@ -185,19 +185,19 @@ const Features = () => {
                 {/* Dynamic gradient background */}
                 <motion.div variants={bgVariants} className={`absolute inset-0 bg-gradient-to-br ${feature.bgGradient} opacity-0`} />
                 
-                {/* Floating orb effect (use motion for transforms) */}
+                {/* Simplified floating orb effect */}
                 <motion.div 
                   variants={orbVariants}
-                  className={`absolute -top-10 -right-10 w-20 h-20 bg-gradient-to-br ${makeFadedGradient(feature.gradient)} rounded-full blur-xl`}
+                  className={`absolute -top-10 -right-10 w-16 h-16 bg-gradient-to-br ${makeFadedGradient(feature.gradient)} rounded-full blur-lg`}
                   animate={{
-                    scale: [1, 1.1, 1],
-                    opacity: [0.3, 0.5, 0.3]
+                    scale: [1, 1.05, 1],
+                    opacity: [0.2, 0.4, 0.2]
                   }}
                   transition={{
-                    duration: 4 + index * 0.5,
+                    duration: 6,
                     repeat: Infinity,
                     ease: "easeInOut",
-                    delay: index * 0.3
+                    delay: index * 0.5
                   }}
                 />
                 

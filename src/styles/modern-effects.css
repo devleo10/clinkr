@@ -1,5 +1,28 @@
 /* Modern UI Effects for Clinkr Landing Page */
 
+/* Performance optimization utilities */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Reduce motion for low-end devices */
+@media (max-width: 768px) {
+  .animate-wave-slow,
+  .animate-wave-medium,
+  .animate-wave-fast,
+  .animate-grid,
+  .animate-float-gentle,
+  .animate-glow-pulse,
+  .animate-mesh-shift {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
 /* Glass morphism utilities */
 .glass-modern {
   background: rgba(255, 255, 255, 0.95);

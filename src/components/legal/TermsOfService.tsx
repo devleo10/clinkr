@@ -42,7 +42,7 @@ const TermsOfService = () => {
             </div>
 
         <p className="mb-4">
-          Welcome to Clinkr! These terms and conditions outline the rules and regulations for the use of Clinkr's Website, located at clinkr.com.
+          Welcome to Clinkr! These terms and conditions outline the rules and regulations for the use of Clinkr's Website, located at clinkr.live.
         </p>
 
         <p className="mb-4">

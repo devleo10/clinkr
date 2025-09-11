@@ -17,20 +17,13 @@ const Pricing = () => {
         <p className="text-gray-800 text-base font-semibold">Start Free, Upgrade when you need more</p>
       </div>
       
-      {/* Shared background floating orbs (single source of truth for both cards) */}
+      {/* Simplified background floating orbs */}
       <motion.div className="absolute inset-0 pointer-events-none z-0" aria-hidden>
         <motion.div
-          className="absolute w-44 h-44 rounded-full"
-          style={{ left: '6%', top: '8%', filter: 'blur(48px)', background: 'radial-gradient(circle, rgba(255,144,81,0.18) 0%, rgba(255,144,81,0.03) 50%, transparent 70%)' }}
-          animate={{ x: [0, 30, -20, 0], y: [0, -20, 10, 0], scale: [1, 1.12, 0.95, 1] }}
-          transition={{ duration: 22, repeat: Infinity, ease: 'easeInOut' }}
-        />
-
-        <motion.div
-          className="absolute w-56 h-56 rounded-full"
-          style={{ right: '8%', top: '18%', filter: 'blur(60px)', background: 'radial-gradient(circle, rgba(255,144,81,0.12) 0%, rgba(255,144,81,0.02) 40%, transparent 70%)' }}
-          animate={{ x: [0, -25, 15, 0], y: [0, 25, -15, 0], scale: [1, 0.9, 1.08, 1] }}
-          transition={{ duration: 26, repeat: Infinity, ease: 'easeInOut', delay: 4 }}
+          className="absolute w-32 h-32 rounded-full"
+          style={{ left: '6%', top: '8%', filter: 'blur(40px)', background: 'radial-gradient(circle, rgba(255,144,81,0.12) 0%, rgba(255,144,81,0.02) 50%, transparent 70%)' }}
+          animate={{ x: [0, 20, -15, 0], y: [0, -15, 8, 0], scale: [1, 1.05, 0.95, 1] }}
+          transition={{ duration: 25, repeat: Infinity, ease: 'easeInOut' }}
         />
       </motion.div>
 
