@@ -24,7 +24,7 @@ const TermsOfService = () => {
           
           {/* Animated accent */}
           <motion.div 
-            className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400"
+            className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-400 via-amber-500 to-orange-400"
             initial={{ scaleX: 0 }}
             animate={{ scaleX: 1 }}
             transition={{ duration: 0.8, delay: 0.2 }}
@@ -32,7 +32,7 @@ const TermsOfService = () => {
           
           <div className="relative z-10">
             <motion.h1 
-              className="text-3xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400"
+              className="text-3xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-orange-400 via-amber-500 to-orange-400"
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}

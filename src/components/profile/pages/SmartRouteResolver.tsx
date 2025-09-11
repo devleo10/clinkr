@@ -86,7 +86,7 @@ const SmartRouteResolver = () => {
           <p className="text-gray-600 mb-4">The requested page or link could not be found.</p>
           <button
             onClick={() => navigate('/homepage')}
-            className="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors"
+            className="px-4 py-2 bg-orange-400 text-white rounded-lg hover:bg-orange-500 transition-colors"
           >
             Go Home
           </button>

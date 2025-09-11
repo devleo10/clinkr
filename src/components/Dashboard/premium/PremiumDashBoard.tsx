@@ -156,7 +156,7 @@ const PremiumDashBoard = () => {
           {/* Subtle gradient background */}
           <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-white to-orange-100 opacity-70"></div>
           {/* Animated accent */}
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400" />
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-400 via-amber-500 to-orange-400" />
           {/* Corner decoration */}
           <div className="absolute top-0 right-0 w-16 h-16 opacity-10">
             <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-orange-400 to-amber-300 rounded-bl-full" />
@@ -171,7 +171,7 @@ const PremiumDashBoard = () => {
                 Premium Analytics
               </h1>
             </div>
-            <div className="h-1 w-24 mt-2 bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400 rounded-full shadow-sm" />
+            <div className="h-1 w-24 mt-2 bg-gradient-to-r from-orange-400 via-amber-500 to-orange-400 rounded-full shadow-sm" />
             <p className="text-black mt-2 max-w-md text-center text-sm">
               Unlock advanced insights and trends for your links
             </p>
@@ -181,7 +181,7 @@ const PremiumDashBoard = () => {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button
-                  className="flex items-center space-x-3 px-6 py-3 rounded-xl bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400 hover:from-orange-400 hover:via-amber-500 hover:to-orange-600 text-white transition-all duration-200 shadow-lg border border-white/20"
+                  className="flex items-center space-x-3 px-6 py-3 rounded-xl bg-gradient-to-r from-orange-400 via-amber-500 to-orange-400 hover:from-orange-400 hover:via-amber-500 hover:to-orange-400 text-white transition-all duration-200 shadow-lg border border-white/20"
                   disabled={isExporting}
                 >
                     {isExporting ? (
@@ -207,7 +207,7 @@ const PremiumDashBoard = () => {
                       onClick={() => handleExport('pdf')}
                       className="hover:bg-gradient-to-r hover:from-orange-50 hover:to-orange-100 cursor-pointer transition-colors rounded-md p-3 m-1 flex items-center group"
                     >
-                      <svg className="w-5 h-5 mr-3 text-orange-600 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-5 h-5 mr-3 text-orange-400 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                       </svg>
                       <div>
@@ -219,7 +219,7 @@ const PremiumDashBoard = () => {
                       onClick={() => handleExport('csv')}
                       className="hover:bg-gradient-to-r hover:from-orange-50 hover:to-orange-100 cursor-pointer transition-colors rounded-md p-3 m-1 flex items-center group"
                     >
-                      <svg className="w-5 h-5 mr-3 text-orange-600 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-5 h-5 mr-3 text-orange-400 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
                       </svg>
                       <div>
@@ -242,7 +242,7 @@ const PremiumDashBoard = () => {
           <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-white to-orange-100 opacity-70"></div>
           
           {/* Animated flowing gradient line on top */}
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400" />
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-400 via-amber-500 to-orange-400" />
           
        
           
@@ -253,7 +253,7 @@ const PremiumDashBoard = () => {
                   <TabsTrigger 
                   key={tab.value}
                   value={tab.value} 
-                  className="relative group text-black data-[state=active]:bg-gradient-to-r data-[state=active]:from-orange-600 data-[state=active]:via-amber-500 data-[state=active]:to-orange-400 data-[state=active]:text-white rounded-lg transition-all duration-300 shadow-sm hover:shadow-md data-[state=active]:shadow-lg py-2.5 px-3 flex-shrink-0 text-xs sm:text-sm md:text-base min-w-0 flex-1"
+                  className="relative group text-black data-[state=active]:bg-gradient-to-r data-[state=active]:from-orange-400 data-[state=active]:via-amber-500 data-[state=active]:to-orange-400 data-[state=active]:text-white rounded-lg transition-all duration-300 shadow-sm hover:shadow-md data-[state=active]:shadow-lg py-2.5 px-3 flex-shrink-0 text-xs sm:text-sm md:text-base min-w-0 flex-1"
                   >
                   <motion.div
                     className="absolute inset-0 bg-gradient-to-r from-orange-50 to-orange-100 opacity-0 group-hover:opacity-100 group-data-[state=active]:opacity-0 rounded-lg transition-opacity"

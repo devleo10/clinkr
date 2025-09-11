@@ -103,7 +103,7 @@ const DashBoard = () => {
           
           {/* Animated accent */}
           <motion.div 
-            className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400"
+            className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-400 via-amber-500 to-orange-400"
             initial={{ scaleX: 0 }}
             animate={{ scaleX: 1 }}
             transition={{ duration: 0.3 }}
@@ -128,13 +128,13 @@ const DashBoard = () => {
               transition={{ duration: 0.2 }}
             >
               <div className="mr-3 p-2 rounded-full bg-gradient-to-br from-amber-100 to-orange-100 shadow-md">
-                <FaChartLine size={24} className="text-orange-500" />
+                <FaChartLine size={24} className="text-orange-400" />
               </div>
               <h1 className="font-extrabold text-2xl sm:text-3xl text-black text-center">
                 Analytics Dashboard
               </h1>
             </motion.div>
-            <div className="h-1 w-24 mt-2 bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400 rounded-full shadow-sm" />
+            <div className="h-1 w-24 mt-2 bg-gradient-to-r from-orange-400 via-amber-500 to-orange-400 rounded-full shadow-sm" />
             <p className="mt-2 max-w-md text-center text-sm text-black">
               Track your links' performance and view detailed statistics
             </p>
@@ -142,7 +142,7 @@ const DashBoard = () => {
           
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 relative z-10">
             <div className="relative w-full sm:max-w-md group">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-orange-500">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-orange-400">
                 <FaSearch className="filter drop-shadow-sm" />
               </div>
               <div className="w-full">
@@ -158,7 +158,7 @@ const DashBoard = () => {
             <div className="flex items-center">
               <Link to="/premiumdashboard">
                 <button
-                  className="flex items-center space-x-2 px-4 py-3 rounded-xl bg-gradient-to-r from-orange-600 via-amber-500 to-orange-500 hover:from-orange-500 hover:via-amber-500 hover:to-orange-600 text-white transition-all duration-200 shadow-lg border border-white/20"
+                  className="flex items-center space-x-2 px-4 py-3 rounded-xl bg-gradient-to-r from-orange-400 via-amber-500 to-orange-400 hover:from-orange-400 hover:via-amber-500 hover:to-orange-400 text-white transition-all duration-200 shadow-lg border border-white/20"
                 >
                   <span className="font-bold">Check Premium Analytics</span>
                   <FaChartLine size={18} className="ml-2" />

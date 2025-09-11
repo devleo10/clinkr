@@ -260,7 +260,7 @@ const Onboarding = () => {
             <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 via-transparent to-amber-500/5 opacity-70 rounded-xl" />
             
             {/* Animated accent */}
-            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-600 via-amber-500 to-orange-500 rounded-t-xl" />
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-400 via-amber-500 to-orange-400 rounded-t-xl" />
             
             {/* Header Section */}
             <div className="text-center relative z-10">
@@ -270,7 +270,7 @@ const Onboarding = () => {
                   alt="Clinkr Logo" 
                   className="h-8 w-auto sm:h-10" 
                 />
-                <h1 className="text-2xl sm:text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-orange-600 via-amber-500 to-orange-500">
+                <h1 className="text-2xl sm:text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-orange-400 via-amber-500 to-orange-400">
                   Clinkr
                 </h1>
               </div>
@@ -328,14 +328,14 @@ const Onboarding = () => {
                             )}
                           </div>
                         ) : (
-                          <FaUser size={40} className="text-orange-600" />
+                          <FaUser size={40} className="text-orange-400" />
                         )}
                       </div>
                     </div>
                     <button
                       type="button"
                       onClick={() => fileInputRef.current?.click()}
-                      className="absolute bottom-0 right-0 bg-gradient-to-r from-orange-600 to-amber-500 text-white p-2 rounded-full hover:from-orange-500 hover:to-amber-400 transition-colors shadow-lg"
+                      className="absolute bottom-0 right-0 bg-gradient-to-r from-orange-400 to-amber-500 text-white p-2 rounded-full hover:from-orange-400 hover:to-amber-400 transition-colors shadow-lg"
                     >
                       <FaCamera size={16} />
                     </button>
@@ -357,7 +357,7 @@ const Onboarding = () => {
                     name="username"
                     type="text"
                     required
-                    className="mt-1 appearance-none rounded-lg relative block w-full px-3 py-3 bg-white/80 backdrop-blur-sm border border-gray-300 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 sm:text-sm transition-all duration-200"
+                    className="mt-1 appearance-none rounded-lg relative block w-full px-3 py-3 bg-white/80 backdrop-blur-sm border border-gray-300 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400 sm:text-sm transition-all duration-200"
                     placeholder="doejohn999"
                     value={formData.username}
                     onChange={e => {
@@ -365,7 +365,7 @@ const Onboarding = () => {
                       setFormData(prev => ({ ...prev, username: value }));
                     }}
                   />
-                  <p className="text-xs text-amber-600 mt-1 font-medium">⚠️ Username cannot be changed later.</p>
+                  <p className="text-xs text-amber-500 mt-1 font-medium">⚠️ Username cannot be changed later.</p>
                 </div>
                 
                 <div>
@@ -374,7 +374,7 @@ const Onboarding = () => {
                     id="bio"
                     name="bio"
                     rows={3}
-                    className="mt-1 appearance-none rounded-lg relative block w-full px-3 py-3 bg-white/80 backdrop-blur-sm border border-gray-300 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 sm:text-sm transition-all duration-200 resize-none"
+                    className="mt-1 appearance-none rounded-lg relative block w-full px-3 py-3 bg-white/80 backdrop-blur-sm border border-gray-300 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400 sm:text-sm transition-all duration-200 resize-none"
                     placeholder="Write a crisp bio within 160 characters"
                     value={formData.bio}
                     onChange={handleInputChange}
@@ -398,7 +398,7 @@ const Onboarding = () => {
                           type="text"
                           value={link.title}
                           onChange={(e) => handleLinkChange(index, 'title', e.target.value)}
-                          className="w-full rounded-lg px-3 py-2 bg-white/80 backdrop-blur-sm border border-gray-300 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 sm:text-sm transition-all duration-200"
+                          className="w-full rounded-lg px-3 py-2 bg-white/80 backdrop-blur-sm border border-gray-300 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400 sm:text-sm transition-all duration-200"
                           placeholder="Link Title (e.g., My Website)"
                         />
                         <div className="flex gap-2">
@@ -406,7 +406,7 @@ const Onboarding = () => {
                             type="url"
                             value={link.url}
                             onChange={(e) => handleLinkChange(index, 'url', e.target.value)}
-                            className="flex-1 rounded-lg px-3 py-2 bg-white/80 backdrop-blur-sm border border-gray-300 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 sm:text-sm transition-all duration-200"
+                            className="flex-1 rounded-lg px-3 py-2 bg-white/80 backdrop-blur-sm border border-gray-300 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400 sm:text-sm transition-all duration-200"
                             placeholder="https://example.com"
                           />
                           {formData.links.length > 1 && (
@@ -425,7 +425,7 @@ const Onboarding = () => {
                       <button
                         type="button"
                         onClick={() => setFormData(prev => ({ ...prev, links: [...prev.links, { title: '', url: '' }] }))}
-                        className="mt-3 flex items-center gap-2 text-orange-600 hover:text-orange-500 transition-colors text-sm font-medium"
+                        className="mt-3 flex items-center gap-2 text-orange-400 hover:text-orange-500 transition-colors text-sm font-medium"
                       >
                         <FaPlus size={12} />
                         Add another link
@@ -472,7 +472,7 @@ const Onboarding = () => {
               <button
                 onClick={handleNextStep}
                 disabled={isLoading || !isStepValid}
-                className={`flex-1 py-3 px-4 border border-transparent rounded-lg text-sm font-medium text-white bg-gradient-to-br from-orange-600 via-amber-500 to-orange-600 hover:from-orange-700 hover:via-amber-600 hover:to-orange-700 active:from-orange-800 active:via-amber-700 active:to-orange-800 shadow-lg hover:shadow-xl active:shadow-md transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-orange-500/50 focus:ring-offset-2 ${
+                className={`flex-1 py-3 px-4 border border-transparent rounded-lg text-sm font-medium text-white bg-gradient-to-br from-orange-400 via-amber-500 to-orange-400 hover:from-orange-500 hover:via-amber-500 hover:to-orange-500 active:from-orange-500 active:via-amber-500 active:to-orange-500 shadow-lg hover:shadow-xl active:shadow-md transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-orange-400/50 focus:ring-offset-2 ${
                   isLoading ? 'opacity-100' : ''
                 } disabled:opacity-100 disabled:cursor-not-allowed disabled:hover:shadow-lg transform hover:scale-[1.02] active:scale-[0.98] hover:-translate-y-0.5 active:translate-y-0 relative overflow-hidden`}
                 style={{

@@ -157,7 +157,7 @@ const Trends = () => {
               <p className="text-lg font-bold">{clicksTrend.peakDay}</p>
             </div>
             <div className="p-2 bg-orange-100 rounded-lg">
-              <Filter className="w-6 h-6 text-orange-600" />
+              <Filter className="w-6 h-6 text-orange-400" />
             </div>
           </div>
           <div className="flex items-center mt-2">

@@ -390,12 +390,12 @@ const PrivateProfile = () => {
         <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
           {linkReorderMode && (
             <div className="mb-4 p-3 bg-orange-50 rounded-lg border border-orange-200">
-              <div className="flex items-center gap-2 text-orange-700">
+              <div className="flex items-center gap-2 text-orange-500">
                 <FaGripVertical size={16} />
                 <span className="text-sm font-medium">Reorder Mode Active - Drag links to reorder them</span>
                 <button
                   onClick={() => setLinkReorderMode(false)}
-                  className="ml-auto text-orange-600 hover:text-orange-800 text-sm font-medium"
+                  className="ml-auto text-orange-400 hover:text-orange-500 text-sm font-medium"
                 >
                   Exit
                 </button>
@@ -463,13 +463,13 @@ const PrivateProfile = () => {
                             href={typeof link.url === 'string' ? link.url : ''}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-xs sm:text-sm text-gray-500 hover:text-orange-600 transition-colors block truncate w-full"
+                            className="text-xs sm:text-sm text-gray-500 hover:text-orange-400 transition-colors block truncate w-full"
                           >
                             {typeof link.url === 'string' && link.url.length > (window.innerWidth < 640 ? 20 : 38) ? 
                               link.url.slice(0, window.innerWidth < 640 ? 17 : 35) + '...' : link.url}
                           </a>
                           <div className="flex items-center gap-2 mt-1">
-                            <span className="text-xs text-orange-600 font-mono bg-orange-50 px-2 py-1 rounded">
+                            <span className="text-xs text-orange-400 font-mono bg-orange-50 px-2 py-1 rounded">
                               {linkShorteningService.getShortLinkUrl(link.short_code)}
                             </span>
                             <span className="text-xs text-gray-400 flex items-center gap-1">
@@ -619,7 +619,7 @@ const PrivateProfile = () => {
             <button
               onClick={handleAddLink}
               disabled={!newLink.url || !newLink.title || (newLink.customCode ? slugAvailability.available === false : false)}
-              className="bg-gradient-to-r from-orange-600 via-amber-500 to-orange-500 text-white font-bold px-6 py-2 rounded-lg shadow hover:from-orange-500 hover:via-amber-500 hover:to-orange-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="bg-gradient-to-r from-orange-400 via-amber-500 to-orange-400 text-white font-bold px-6 py-2 rounded-lg shadow hover:from-orange-500 hover:via-amber-500 hover:to-orange-500 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Add More Link
             </button>
@@ -638,7 +638,7 @@ const PrivateProfile = () => {
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel className="bg-gray-200 text-gray-800 hover:bg-gray-300" onClick={() => setLinkToDeleteIndex(null)}>Cancel</AlertDialogCancel>
-              <AlertDialogAction className="bg-gradient-to-r from-orange-600 via-amber-500 to-orange-500 text-white font-bold px-6 py-2 rounded-lg shadow hover:from-orange-500 hover:via-amber-500 hover:to-orange-600 transition-all duration-300" onClick={handleDeleteLink}>Continue</AlertDialogAction>
+              <AlertDialogAction className="bg-gradient-to-r from-orange-400 via-amber-500 to-orange-400 text-white font-bold px-6 py-2 rounded-lg shadow hover:from-orange-500 hover:via-amber-500 hover:to-orange-500 transition-all duration-300" onClick={handleDeleteLink}>Continue</AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>

@@ -111,7 +111,7 @@ const PublicProfile = () => {
         <div className="text-center">
           <h2 className="text-2xl font-semibold text-gray-900 mb-2">Profile not found</h2>
           <p className="text-gray-600">{error || 'The requested profile does not exist.'}</p>
-          <Link to="/homepage" className="mt-4 inline-block text-orange-600 hover:text-orange-700">
+          <Link to="/homepage" className="mt-4 inline-block text-orange-400 hover:text-orange-500">
             Go back to homepage
           </Link>
         </div>
@@ -221,19 +221,19 @@ const PublicProfile = () => {
                     
                     {/* Content */}
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-gray-900 truncate group-hover:text-orange-700 transition-colors duration-300">
+                      <h3 className="font-semibold text-gray-900 truncate group-hover:text-orange-500 transition-colors duration-300">
                         {link.title}
                       </h3>
                       <p className="text-sm text-gray-500 truncate">
                         {link.original_url.length > 40 ? `${link.original_url.slice(0, 40)}...` : link.original_url}
                       </p>
-                      <p className="text-xs text-orange-600 font-mono mt-1">
+                      <p className="text-xs text-orange-400 font-mono mt-1">
                         {window.location.hostname}/{link.short_code}
                       </p>
                     </div>
                     
                     {/* External Link Icon */}
-                    <div className="w-8 h-8 rounded-full bg-orange-500 flex items-center justify-center group-hover:bg-orange-600 transition-colors duration-300">
+                    <div className="w-8 h-8 rounded-full bg-orange-400 flex items-center justify-center group-hover:bg-orange-500 transition-colors duration-300">
                       <FaExternalLinkAlt size={12} className="text-white" />
                     </div>
                   </div>
@@ -268,7 +268,7 @@ const PublicProfile = () => {
         >
           <Link 
             to="/homepage" 
-            className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-orange-600 transition-colors duration-200"
+            className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-orange-400 transition-colors duration-200"
           >
             <span>Powered by</span>
             <span className="font-semibold">Clinkr</span>

@@ -130,7 +130,7 @@ const ProfileHeader = ({
           }}
         />
       </div>
-      <p className="text-orange-600 mb-2 font-medium">@{profile?.username}</p>
+      <p className="text-orange-400 mb-2 font-medium">@{profile?.username}</p>
       <div className="relative inline-block">
         {editState.bio ? (
           <div className="mt-2">
@@ -147,7 +147,7 @@ const ProfileHeader = ({
             <div className="text-xs text-gray-500 text-right mt-1">{editedBio.length}/160</div>
             <button
               onClick={handleBioUpdate}
-              className="mt-2 px-4 py-2 bg-gradient-to-r from-orange-600 via-amber-500 to-orange-500 text-white rounded-md font-bold shadow hover:from-orange-500 hover:via-amber-500 hover:to-orange-600 transition-all duration-300"
+              className="mt-2 px-4 py-2 bg-gradient-to-r from-orange-400 via-amber-500 to-orange-400 text-white rounded-md font-bold shadow hover:from-orange-400 hover:via-amber-500 hover:to-orange-400 transition-all duration-300"
             >
               Save Bio
             </button>
@@ -177,14 +177,14 @@ const ProfileHeader = ({
           </motion.div>
           <button
             onClick={handleShareProfile}
-            className="inline-flex items-center gap-1 px-4 py-2 text-base font-bold text-white bg-gradient-to-r from-orange-600 via-amber-500 to-orange-500 rounded-lg shadow-lg hover:from-orange-500 hover:via-amber-500 hover:to-orange-600 transition-all duration-300 border-2 border-orange-200 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-2"
+            className="inline-flex items-center gap-1 px-4 py-2 text-base font-bold text-white bg-gradient-to-r from-orange-400 via-amber-500 to-orange-400 rounded-lg shadow-lg hover:from-orange-400 hover:via-amber-500 hover:to-orange-400 transition-all duration-300 border-2 border-orange-200 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-2"
           >
             <FaShare size={16} />
             Get Your Link-in-Bio link
           </button>
           {showToast && (
             <div className="fixed left-1/2 bottom-4 -translate-x-1/2 flex justify-center items-center w-full pointer-events-none z-50">
-              <div className="bg-gradient-to-r from-orange-600 via-amber-500 to-orange-500 text-white px-6 py-3 rounded-lg shadow-lg animate-fade-in-out pointer-events-auto">
+              <div className="bg-gradient-to-r from-orange-400 via-amber-500 to-orange-400 text-white px-6 py-3 rounded-lg shadow-lg animate-fade-in-out pointer-events-auto">
                 {toastMessage || 'Link copied to clipboard!'}
               </div>
             </div>

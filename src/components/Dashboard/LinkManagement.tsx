@@ -288,7 +288,7 @@ const LinkManagement: React.FC<LinkManagementProps> = ({ userId, onLinkUpdate })
   if (fetchingLinks) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-600"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-400"></div>
       </div>
     );
   }
@@ -333,7 +333,7 @@ const LinkManagement: React.FC<LinkManagementProps> = ({ userId, onLinkUpdate })
                 placeholder="My Awesome Link"
                 value={newLink.title}
                 onChange={(e) => setNewLink(prev => ({ ...prev, title: e.target.value }))}
-                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-orange-400 focus:border-transparent"
               />
             </div>
             <div>
@@ -343,7 +343,7 @@ const LinkManagement: React.FC<LinkManagementProps> = ({ userId, onLinkUpdate })
                 placeholder="https://example.com"
                 value={newLink.url}
                 onChange={(e) => setNewLink(prev => ({ ...prev, url: e.target.value }))}
-                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-orange-400 focus:border-transparent"
               />
             </div>
           </div>
@@ -359,7 +359,7 @@ const LinkManagement: React.FC<LinkManagementProps> = ({ userId, onLinkUpdate })
                 placeholder="my-awesome-slug"
                 value={newLink.customCode}
                 onChange={(e) => setNewLink(prev => ({ ...prev, customCode: e.target.value }))}
-                className={`w-full border rounded-lg px-4 py-2 pr-10 focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
+                className={`w-full border rounded-lg px-4 py-2 pr-10 focus:ring-2 focus:ring-orange-400 focus:border-transparent ${
                   slugAvailability.available === true
                     ? 'border-green-300 bg-green-50'
                     : slugAvailability.available === false
@@ -389,7 +389,7 @@ const LinkManagement: React.FC<LinkManagementProps> = ({ userId, onLinkUpdate })
           <div className="flex items-center gap-2">
             <button
               onClick={() => setShowAdvanced(!showAdvanced)}
-              className="flex items-center gap-2 text-orange-600 hover:text-orange-500 transition-colors text-sm font-medium"
+              className="flex items-center gap-2 text-orange-400 hover:text-orange-400 transition-colors text-sm font-medium"
             >
               {showAdvanced ? <FaEyeSlash size={14} /> : <FaEye size={14} />}
               {showAdvanced ? 'Hide' : 'Show'} Advanced Options
@@ -411,7 +411,7 @@ const LinkManagement: React.FC<LinkManagementProps> = ({ userId, onLinkUpdate })
                     placeholder="Optional description for your link"
                     value={newLink.description}
                     onChange={(e) => setNewLink(prev => ({ ...prev, description: e.target.value }))}
-                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-orange-500 focus:border-transparent resize-none"
+                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-orange-400 focus:border-transparent resize-none"
                     rows={2}
                   />
                 </div>
@@ -423,7 +423,7 @@ const LinkManagement: React.FC<LinkManagementProps> = ({ userId, onLinkUpdate })
                       type="date"
                       value={newLink.expiresAt}
                       onChange={(e) => setNewLink(prev => ({ ...prev, expiresAt: e.target.value }))}
-                      className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                      className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-orange-400 focus:border-transparent"
                     />
                   </div>
                   <div>
@@ -433,7 +433,7 @@ const LinkManagement: React.FC<LinkManagementProps> = ({ userId, onLinkUpdate })
                       placeholder="Optional password"
                       value={newLink.password}
                       onChange={(e) => setNewLink(prev => ({ ...prev, password: e.target.value }))}
-                      className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                      className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-orange-400 focus:border-transparent"
                     />
                   </div>
                 </div>
@@ -444,13 +444,13 @@ const LinkManagement: React.FC<LinkManagementProps> = ({ userId, onLinkUpdate })
                     {newLink.tags.map((tag, index) => (
                       <span
                         key={index}
-                        className="inline-flex items-center gap-1 px-2 py-1 bg-orange-100 text-orange-800 rounded-full text-xs"
+                        className="inline-flex items-center gap-1 px-2 py-1 bg-orange-100 text-orange-400 rounded-full text-xs"
                       >
                         <FaTag size={10} />
                         {tag}
                         <button
                           onClick={() => removeTag(tag)}
-                          className="ml-1 text-orange-600 hover:text-orange-800"
+                          className="ml-1 text-orange-400 hover:text-orange-400"
                         >
                           <FaTimes size={8} />
                         </button>
@@ -467,7 +467,7 @@ const LinkManagement: React.FC<LinkManagementProps> = ({ userId, onLinkUpdate })
                         e.currentTarget.value = '';
                       }
                     }}
-                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-orange-400 focus:border-transparent"
                   />
                 </div>
 
@@ -479,7 +479,7 @@ const LinkManagement: React.FC<LinkManagementProps> = ({ userId, onLinkUpdate })
                       placeholder="google"
                       value={newLink.utm_source}
                       onChange={(e) => setNewLink(prev => ({ ...prev, utm_source: e.target.value }))}
-                      className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                      className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-orange-400 focus:border-transparent"
                     />
                   </div>
                   <div>
@@ -489,7 +489,7 @@ const LinkManagement: React.FC<LinkManagementProps> = ({ userId, onLinkUpdate })
                       placeholder="email"
                       value={newLink.utm_medium}
                       onChange={(e) => setNewLink(prev => ({ ...prev, utm_medium: e.target.value }))}
-                      className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                      className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-orange-400 focus:border-transparent"
                     />
                   </div>
                   <div>
@@ -499,7 +499,7 @@ const LinkManagement: React.FC<LinkManagementProps> = ({ userId, onLinkUpdate })
                       placeholder="summer-sale"
                       value={newLink.utm_campaign}
                       onChange={(e) => setNewLink(prev => ({ ...prev, utm_campaign: e.target.value }))}
-                      className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                      className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-orange-400 focus:border-transparent"
                     />
                   </div>
                 </div>
@@ -511,7 +511,7 @@ const LinkManagement: React.FC<LinkManagementProps> = ({ userId, onLinkUpdate })
           <button
             onClick={handleCreateLink}
             disabled={loading || !newLink.url || !newLink.title || (newLink.customCode && slugAvailability.available === false)}
-            className="w-full py-3 px-4 bg-gradient-to-r from-orange-600 via-amber-500 to-orange-500 text-white rounded-lg hover:from-orange-700 hover:via-amber-600 hover:to-orange-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 font-medium"
+            className="w-full py-3 px-4 bg-gradient-to-r from-orange-400 via-amber-500 to-orange-400 text-white rounded-lg hover:from-orange-500 hover:via-amber-500 hover:to-orange-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 font-medium"
           >
             {loading ? 'Creating...' : 'Create Link'}
           </button>
@@ -555,7 +555,7 @@ const LinkManagement: React.FC<LinkManagementProps> = ({ userId, onLinkUpdate })
                           type="text"
                           value={editData.title}
                           onChange={(e) => setEditData(prev => ({ ...prev, title: e.target.value }))}
-                          className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                          className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-orange-400 focus:border-transparent"
                         />
                       </div>
                       <div>
@@ -564,7 +564,7 @@ const LinkManagement: React.FC<LinkManagementProps> = ({ userId, onLinkUpdate })
                           type="url"
                           value={editData.url}
                           onChange={(e) => setEditData(prev => ({ ...prev, url: e.target.value }))}
-                          className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                          className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-orange-400 focus:border-transparent"
                         />
                       </div>
                     </div>
@@ -588,7 +588,7 @@ const LinkManagement: React.FC<LinkManagementProps> = ({ userId, onLinkUpdate })
                   <div className="flex items-center justify-between">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-2">
-                        <FaLink className="text-orange-600 flex-shrink-0" size={16} />
+                        <FaLink className="text-orange-400 flex-shrink-0" size={16} />
                         <span className="font-semibold text-gray-900 truncate">{link.title}</span>
                         {link.password && <FaLock className="text-gray-400" size={12} />}
                         {link.expires_at && new Date(link.expires_at) < new Date() && (
@@ -596,7 +596,7 @@ const LinkManagement: React.FC<LinkManagementProps> = ({ userId, onLinkUpdate })
                         )}
                       </div>
                       <p className="text-sm text-gray-600 truncate mb-1">{link.original_url}</p>
-                      <p className="text-xs text-orange-600 font-mono bg-orange-50 px-2 py-1 rounded inline-block">
+                      <p className="text-xs text-orange-400 font-mono bg-orange-50 px-2 py-1 rounded inline-block">
                         {linkShorteningService.getShortLinkUrl(link.short_code)}
                       </p>
                       {link.description && (
@@ -630,7 +630,7 @@ const LinkManagement: React.FC<LinkManagementProps> = ({ userId, onLinkUpdate })
                     <div className="flex items-center gap-1 ml-4">
                       <button
                         onClick={() => handleCopyLink(link.short_code)}
-                        className="p-2 text-gray-600 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
+                        className="p-2 text-gray-600 hover:text-orange-400 hover:bg-orange-50 rounded-lg transition-colors"
                         title="Copy short link"
                       >
                         <FaCopy size={16} />
@@ -639,7 +639,7 @@ const LinkManagement: React.FC<LinkManagementProps> = ({ userId, onLinkUpdate })
                         href={link.original_url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="p-2 text-gray-600 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
+                        className="p-2 text-gray-600 hover:text-orange-400 hover:bg-orange-50 rounded-lg transition-colors"
                         title="Open original URL"
                       >
                         <FaExternalLinkAlt size={16} />
@@ -648,7 +648,7 @@ const LinkManagement: React.FC<LinkManagementProps> = ({ userId, onLinkUpdate })
                         href={linkShorteningService.getQRCodeUrl(link.short_code)}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="p-2 text-gray-600 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
+                        className="p-2 text-gray-600 hover:text-orange-400 hover:bg-orange-50 rounded-lg transition-colors"
                         title="View QR Code"
                       >
                         <FaQrcode size={16} />

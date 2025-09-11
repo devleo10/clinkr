@@ -182,7 +182,7 @@ const LinkShortening = () => {
     return (
       <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
         <div className="flex items-center justify-center h-64">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-600"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-400"></div>
         </div>
       </div>
     );
@@ -192,7 +192,7 @@ const LinkShortening = () => {
     <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
       <div className="flex items-center gap-3 mb-6">
         <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
-          <FaLink className="text-orange-600" size={20} />
+          <FaLink className="text-orange-400" size={20} />
         </div>
         <div>
           <h2 className="text-2xl font-bold text-gray-900">Link Shortening</h2>
@@ -367,11 +367,11 @@ const LinkShortening = () => {
                 <div className="flex items-center justify-between">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-2">
-                      <FaLink className="text-orange-600 flex-shrink-0" size={16} />
+                      <FaLink className="text-orange-400 flex-shrink-0" size={16} />
                       <span className="font-semibold text-gray-900 truncate">{link.title}</span>
                     </div>
                     <p className="text-sm text-gray-600 truncate mb-1">{link.original_url}</p>
-                    <p className="text-xs text-orange-600 font-mono bg-orange-50 px-2 py-1 rounded inline-block">
+                    <p className="text-xs text-orange-400 font-mono bg-orange-50 px-2 py-1 rounded inline-block">
                       {linkShorteningService.getShortLinkUrl(link.short_code)}
                     </p>
                     <div className="flex items-center gap-4 mt-2 text-xs text-gray-500">
@@ -389,7 +389,7 @@ const LinkShortening = () => {
                   <div className="flex items-center gap-1 ml-4">
                     <button
                       onClick={() => handleCopyShortLink(link.short_code)}
-                      className="p-2 text-gray-600 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
+                      className="p-2 text-gray-600 hover:text-orange-400 hover:bg-orange-50 rounded-lg transition-colors"
                       title="Copy short link"
                     >
                       <FaCopy size={16} />
@@ -398,7 +398,7 @@ const LinkShortening = () => {
                       href={link.original_url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="p-2 text-gray-600 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
+                      className="p-2 text-gray-600 hover:text-orange-400 hover:bg-orange-50 rounded-lg transition-colors"
                       title="Open original URL"
                     >
                       <FaExternalLinkAlt size={16} />
@@ -407,7 +407,7 @@ const LinkShortening = () => {
                       href={linkShorteningService.getQRCodeUrl(link.short_code)}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="p-2 text-gray-600 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
+                      className="p-2 text-gray-600 hover:text-orange-400 hover:bg-orange-50 rounded-lg transition-colors"
                       title="View QR Code"
                     >
                       <FaQrcode size={16} />
