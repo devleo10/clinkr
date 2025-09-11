@@ -228,7 +228,7 @@ const PublicProfile = () => {
                         {link.original_url.length > 40 ? `${link.original_url.slice(0, 40)}...` : link.original_url}
                       </p>
                       <p className="text-xs text-orange-600 font-mono mt-1">
-                        clinkr.live/{link.short_code}
+                        {window.location.hostname}/{link.short_code}
                       </p>
                     </div>
                     
