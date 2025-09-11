@@ -221,6 +221,11 @@ export const PremiumDashboardProvider: React.FC<PremiumDashboardProviderProps> =
 
       const totalDevices = Object.values(deviceCounts).reduce((a, b) => a + b, 0);
       const totalBrowsers = Object.values(browserCounts).reduce((a, b) => a + b, 0);
+      
+      console.log('Device counts:', deviceCounts);
+      console.log('Browser counts:', browserCounts);
+      console.log('Total devices:', totalDevices);
+      console.log('Total browsers:', totalBrowsers);
 
       const deviceStats = Object.entries(deviceCounts)
         .map(([type, count]) => ({
@@ -331,8 +336,16 @@ export const PremiumDashboardProvider: React.FC<PremiumDashboardProviderProps> =
             analyticsData: []
           },
           devices: {
-            deviceStats: [],
-            browserStats: []
+            deviceStats: [
+              { type: 'mobile', count: 0, percentage: 0 },
+              { type: 'desktop', count: 0, percentage: 0 },
+              { type: 'tablet', count: 0, percentage: 0 }
+            ],
+            browserStats: [
+              { browser: 'Chrome', count: 0, percentage: 0 },
+              { browser: 'Firefox', count: 0, percentage: 0 },
+              { browser: 'Safari', count: 0, percentage: 0 }
+            ]
           },
           trends: {
             dailyData: [],
