@@ -182,7 +182,7 @@ const LinkShortening = () => {
     return (
       <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
         <div className="flex items-center justify-center h-64">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-400"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2" style={{ borderColor: '#ED7B00' }}></div>
         </div>
       </div>
     );
@@ -191,8 +191,8 @@ const LinkShortening = () => {
   return (
     <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
       <div className="flex items-center gap-3 mb-6">
-        <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
-          <FaLink className="text-orange-400" size={20} />
+        <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ backgroundColor: 'rgba(237, 123, 0, 0.1)' }}>
+          <FaLink style={{ color: '#ED7B00' }} size={20} />
         </div>
         <div>
           <h2 className="text-2xl font-bold text-gray-900">Link Shortening</h2>
@@ -236,7 +236,8 @@ const LinkShortening = () => {
               placeholder="https://example.com"
               value={newLink.url}
               onChange={(e) => setNewLink(prev => ({ ...prev, url: e.target.value }))}
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:border-transparent"
+              style={{ '--focus-ring': 'rgba(237, 123, 0, 0.3)' } as React.CSSProperties}
             />
           </div>
           <div>
@@ -246,7 +247,8 @@ const LinkShortening = () => {
               placeholder="My Awesome Link"
               value={newLink.title}
               onChange={(e) => setNewLink(prev => ({ ...prev, title: e.target.value }))}
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:border-transparent"
+              style={{ '--focus-ring': 'rgba(237, 123, 0, 0.3)' } as React.CSSProperties}
             />
           </div>
           <div>
@@ -291,8 +293,9 @@ const LinkShortening = () => {
         
         <button
           onClick={handleCreateShortLink}
-          disabled={loading || !newLink.url || (newLink.customCode && slugAvailability.available === false)}
-          className="px-6 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+          disabled={loading || !newLink.url || (newLink.customCode && slugAvailability.available === false) || false}
+          className="px-6 py-2 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+          style={{ backgroundColor: '#ED7B00', '--hover-bg': '#E66426' } as React.CSSProperties}
         >
           {loading ? 'Creating...' : 'Create Short Link'}
         </button>
@@ -350,7 +353,8 @@ const LinkShortening = () => {
                   <div className="flex gap-2">
                     <button
                       onClick={() => handleEditShortLink(link.short_code)}
-                      className="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors text-sm"
+                      className="px-4 py-2 text-white rounded-lg transition-colors text-sm"
+                      style={{ backgroundColor: '#ED7B00', '--hover-bg': '#E66426' } as React.CSSProperties}
                     >
                       Save Changes
                     </button>
@@ -367,11 +371,11 @@ const LinkShortening = () => {
                 <div className="flex items-center justify-between">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-2">
-                      <FaLink className="text-orange-400 flex-shrink-0" size={16} />
+                      <FaLink style={{ color: '#ED7B00' }} className="flex-shrink-0" size={16} />
                       <span className="font-semibold text-gray-900 truncate">{link.title}</span>
                     </div>
                     <p className="text-sm text-gray-600 truncate mb-1">{link.original_url}</p>
-                    <p className="text-xs text-orange-400 font-mono bg-orange-50 px-2 py-1 rounded inline-block">
+                    <p className="text-xs font-mono px-2 py-1 rounded inline-block" style={{ color: '#ED7B00', backgroundColor: 'rgba(237, 123, 0, 0.1)' }}>
                       {linkShorteningService.getShortLinkUrl(link.short_code)}
                     </p>
                     <div className="flex items-center gap-4 mt-2 text-xs text-gray-500">

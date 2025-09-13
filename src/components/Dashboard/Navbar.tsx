@@ -2,11 +2,15 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import logo from '../../assets/Frame.png';
 import { motion } from 'framer-motion';
 import { supabase } from '../../lib/supabaseClient';
+import { useState, useRef, useEffect } from 'react';
+import { FaEllipsisV, FaUser, FaSignOutAlt } from 'react-icons/fa';
 
 const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const isProfile = location.pathname.includes('profile');
+  const [showDropdown, setShowDropdown] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const handleProfileClick = () => {
     navigate('/privateprofile');
@@ -21,6 +25,20 @@ const Navbar = () => {
     }
   };
 
+  // Handle click outside dropdown
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setShowDropdown(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   return (
     <motion.div
       initial={{ y: -20, opacity: 0 }}
@@ -30,7 +48,8 @@ const Navbar = () => {
     >
       {/* Animated gradient bar at the top */}
       <motion.div 
-        className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400 z-10"
+        className="absolute top-0 left-0 right-0 h-[3px] z-10"
+        style={{ background: 'linear-gradient(to right, #B73D00, #ED7B00, #E66426)' }}
         animate={{ 
           backgroundPosition: ['0% 50%', '100% 50%', '0% 50%']
         }}
@@ -78,23 +97,43 @@ const Navbar = () => {
               whileHover={{ scale: 1.02, y: -1 }}
               whileTap={{ scale: 0.98 }}
             >
-              <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
+              <FaUser className="w-4 h-4 sm:w-5 sm:h-5" />
               <span>Profile</span>
             </motion.button>
 
-            <motion.button
-              onClick={handleLogout}
-              className="text-sm font-semibold px-5 py-2.5 rounded-lg flex items-center gap-2 bg-gradient-to-r from-red-500 to-red-600 text-white hover:from-red-400 hover:to-red-500 transition-all duration-300"
-              whileHover={{ scale: 1.02, y: -1 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-              </svg>
-              <span>Logout</span>
-            </motion.button>
+            {/* Three-dot menu */}
+            <div className="relative" ref={dropdownRef}>
+              <motion.button
+                onClick={() => setShowDropdown(!showDropdown)}
+                className="p-2 rounded-lg bg-white/80 backdrop-blur-sm border border-gray-200 hover:bg-white hover:shadow-md transition-all duration-200"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <FaEllipsisV className="w-4 h-4 text-gray-600" />
+              </motion.button>
+
+              {/* Dropdown menu */}
+              {showDropdown && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                  transition={{ duration: 0.15 }}
+                  className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50"
+                >
+                  <button
+                    onClick={() => {
+                      handleLogout();
+                      setShowDropdown(false);
+                    }}
+                    className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-3"
+                  >
+                    <FaSignOutAlt className="w-4 h-4 text-red-500" />
+                    <span>Logout</span>
+                  </button>
+                </motion.div>
+              )}
+            </div>
           </div>
         </div>
       </nav>

@@ -83,14 +83,19 @@ export const DashboardDataProvider: React.FC<DashboardDataProviderProps> = ({ ch
         return date >= sixtyDaysAgo && date < thirtyDaysAgo;
       }) || [];
 
-      // Calculate total clicks and percentage change
-      const currentClicks = currentPeriodData.length;
-      const previousClicks = previousPeriodData.length;
-      const percentageChange = previousClicks === 0 
-        ? (currentClicks > 0 ? 100 : 0)
-        : ((currentClicks - previousClicks) / previousClicks) * 100;
+      // Calculate total clicks from shortened_links table (actual clicks)
+      const totalClicksFromLinks = shortenedLinksData?.reduce((sum, link) => sum + (link.clicks || 0), 0) || 0;
+      
+      // Calculate analytics events for comparison (should match total clicks)
+      const currentAnalyticsEvents = currentPeriodData.length;
+      const previousAnalyticsEvents = previousPeriodData.length;
+      
+      // Calculate percentage change based on analytics events
+      const percentageChange = previousAnalyticsEvents === 0 
+        ? (currentAnalyticsEvents > 0 ? 100 : 0)
+        : ((currentAnalyticsEvents - previousAnalyticsEvents) / previousAnalyticsEvents) * 100;
 
-      // Calculate top countries
+      // Calculate top countries from analytics data
       const countryVisits: Record<string, number> = {};
       currentPeriodData.forEach(item => {
         const country = item.country_code || 'Unknown';
@@ -101,7 +106,7 @@ export const DashboardDataProvider: React.FC<DashboardDataProviderProps> = ({ ch
         .sort((a, b) => b.visits - a.visits)
         .slice(0, 5);
 
-      // Calculate device split
+      // Calculate device split from analytics data
       const deviceCounts: Record<string, number> = {};
       currentPeriodData.forEach(item => {
         const device = item.device_type || 'Unknown';
@@ -109,13 +114,12 @@ export const DashboardDataProvider: React.FC<DashboardDataProviderProps> = ({ ch
       });
       const totalDeviceCount = Object.values(deviceCounts).reduce((a, b) => a + b, 0);
       const deviceSplit = {
-        mobile: Math.round(((deviceCounts.mobile || 0) / totalDeviceCount) * 100) || 0,
-        desktop: Math.round(((deviceCounts.desktop || 0) / totalDeviceCount) * 100) || 0,
-        tablet: Math.round(((deviceCounts.tablet || 0) / totalDeviceCount) * 100) || 0,
+        mobile: totalDeviceCount > 0 ? Math.round(((deviceCounts.mobile || 0) / totalDeviceCount) * 100) : 0,
+        desktop: totalDeviceCount > 0 ? Math.round(((deviceCounts.desktop || 0) / totalDeviceCount) * 100) : 0,
+        tablet: totalDeviceCount > 0 ? Math.round(((deviceCounts.tablet || 0) / totalDeviceCount) * 100) : 0,
       };
 
-      // Click counts are now handled directly from shortened_links table
-
+      // Process links data
       const links: Array<{ title: string; url: string; clicks: number }> = [];
       if (shortenedLinksData) {
         shortenedLinksData.forEach(link => {
@@ -128,7 +132,7 @@ export const DashboardDataProvider: React.FC<DashboardDataProviderProps> = ({ ch
       }
 
       const dashboardData: DashboardData = {
-        totalClicks: currentClicks,
+        totalClicks: totalClicksFromLinks, // Use actual clicks from shortened_links
         percentageChange: Number(percentageChange.toFixed(1)),
         topCountries,
         deviceSplit,

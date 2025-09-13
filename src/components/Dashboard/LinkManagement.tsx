@@ -2,11 +2,10 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   FaLink, FaCopy, FaTrash, FaExternalLinkAlt, FaChartLine, FaQrcode, 
-  FaEdit, FaCheck, FaTimes, FaSpinner, FaPlus, FaTag, FaCalendarAlt,
-  FaEye, FaEyeSlash, FaLock, FaUnlock
+  FaEdit, FaCheck, FaTimes, FaSpinner, FaTag,
+  FaEye, FaEyeSlash, FaLock
 } from 'react-icons/fa';
 import { linkShorteningService, ShortLink } from '../../lib/linkShorteningService';
-import { useAuth } from '../auth/AuthProvider';
 import { usePerformanceOptimization } from '../../hooks/usePerformanceOptimization';
 
 interface EnhancedLink extends ShortLink {
@@ -510,7 +509,7 @@ const LinkManagement: React.FC<LinkManagementProps> = ({ userId, onLinkUpdate })
           {/* Create Button */}
           <button
             onClick={handleCreateLink}
-            disabled={loading || !newLink.url || !newLink.title || (newLink.customCode && slugAvailability.available === false)}
+            disabled={loading || !newLink.url || !newLink.title || (newLink.customCode && slugAvailability.available === false) || false}
             className="w-full py-3 px-4 bg-gradient-to-r from-orange-400 via-amber-500 to-orange-400 text-white rounded-lg hover:from-orange-500 hover:via-amber-500 hover:to-orange-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 font-medium"
           >
             {loading ? 'Creating...' : 'Create Link'}

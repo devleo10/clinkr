@@ -58,7 +58,7 @@ const LinkDatas: React.FC<LinkDatasProps> = ({ searchQuery }) => {
     return (
       <div className="w-full h-auto min-h-20 mb-10 md:mb-20 glass-card bg-white/80 backdrop-blur-lg border border-white/30 px-10 py-6 md:py-8 flex flex-col justify-center items-center space-y-4 rounded-xl shadow-lg">
         {/* Use the new standardized compact loader */}
-        <LoadingScreen compact message="Loading your links, please wait" />
+        <LoadingScreen compact />
       </div>
     );
   }

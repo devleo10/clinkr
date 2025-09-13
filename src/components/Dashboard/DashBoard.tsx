@@ -1,6 +1,7 @@
+
 import { useState, useEffect, useCallback } from 'react';
 import { FaSearch, FaChartLine } from 'react-icons/fa';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Navbar from './Navbar';
 import Cards from './cards/Cards';
 import LinkDatas from './LinkDatas';
@@ -40,6 +41,7 @@ const DashBoard = () => {
 
   const { session } = useAuth();
   const navigate = useNavigate();
+  
   useEffect(() => {
     const checkProfile = async () => {
       if (!session?.user?.id) {
@@ -63,14 +65,7 @@ const DashBoard = () => {
   }, [session, navigate]);
 
   if (!profileChecked) {
-    return (
-      <div className="min-h-screen flex items-center justify-center relative">
-        <BoltBackground />
-        <div className="relative z-10">
-          <LoadingScreen compact message="Loading dashboard..." />
-        </div>
-      </div>
-    );
+    return <LoadingScreen />;
   }
   if (!profileValid) {
     return null;
@@ -83,13 +78,12 @@ const DashBoard = () => {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.2 }}
         className="min-h-screen relative font-inter text-black"
-        style={{
-          background: 'radial-gradient(at 15% 20%, rgba(255, 237, 213, 0.3) 0%, transparent 55%), radial-gradient(at 85% 30%, rgba(255, 245, 235, 0.3) 0%, transparent 60%), radial-gradient(at 70% 80%, rgba(255, 251, 248, 0.3) 0%, transparent 55%), linear-gradient(130deg, var(--c-bg), #FAFAFA)',
-        }}
+        style={{ background: 'var(--c-bg)' }}
       >
         <BoltBackground />
         
         <Navbar />
+        
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 relative z-10">
         <motion.div
           initial={{ y: -10, opacity: 0 }}
@@ -130,57 +124,50 @@ const DashBoard = () => {
               <div className="mr-3 p-2 rounded-full bg-gradient-to-br from-amber-100 to-orange-100 shadow-md">
                 <FaChartLine size={24} className="text-orange-400" />
               </div>
-              <h1 className="font-extrabold text-2xl sm:text-3xl text-black text-center">
+              <h1 className="text-2xl sm:text-3xl font-bold text-gradient bg-gradient-to-r from-orange-600 via-amber-600 to-orange-700 bg-clip-text text-transparent">
                 Analytics Dashboard
               </h1>
             </motion.div>
-            <div className="h-1 w-24 mt-2 bg-gradient-to-r from-orange-400 via-amber-500 to-orange-400 rounded-full shadow-sm" />
-            <p className="mt-2 max-w-md text-center text-sm text-black">
-              Track your links' performance and view detailed statistics
-            </p>
+            <motion.p 
+              className="text-gray-600 text-center mt-2"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.1 }}
+            >
+              Track your link performance and insights
+            </motion.p>
           </div>
-          
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 relative z-10">
-            <div className="relative w-full sm:max-w-md group">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-orange-400">
-                <FaSearch className="filter drop-shadow-sm" />
-              </div>
-              <div className="w-full">
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={handleSearch}
-                  placeholder="Search links..."
-                  className="w-full pl-10 pr-4 py-3 glass-input bg-white/80 backdrop-blur-lg border border-white/50 rounded-xl shadow-lg focus:outline-none focus:ring-2 focus:ring-orange-400 text-black placeholder-gray-400 transition-all"
-                />
-              </div>
+
+          {/* Search Bar */}
+          <div className="relative mb-6">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <FaSearch className="h-5 w-5 text-gray-400" />
             </div>
-            <div className="flex items-center">
-              <Link to="/premiumdashboard">
-                <button
-                  className="flex items-center space-x-2 px-4 py-3 rounded-xl bg-gradient-to-r from-orange-400 via-amber-500 to-orange-400 hover:from-orange-400 hover:via-amber-500 hover:to-orange-400 text-white transition-all duration-200 shadow-lg border border-white/20"
-                >
-                  <span className="font-bold">Check Premium Analytics</span>
-                  <FaChartLine size={18} className="ml-2" />
-                </button>
-              </Link>
+            <div className="w-full">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={handleSearch}
+                placeholder="Search links..."
+                className="w-full pl-10 pr-4 py-3 glass-input bg-white/80 backdrop-blur-lg border border-white/50 rounded-xl shadow-lg focus:outline-none focus:ring-2 focus:ring-orange-400 text-black placeholder-gray-400 transition-all"
+              />
             </div>
           </div>
         </motion.div>
-        <div className="mb-8">
-          <Cards />
+
+        {/* Cards Grid */}
+        <Cards />
+
+        {/* Upgrade Card */}
+        <Upgrade />
+
+        {/* Link Management */}
+        <LinkManagement userId={session?.user?.id || ''} />
+
+        {/* Link Data Table */}
+        <LinkDatas searchQuery={debouncedSearchQuery} />
         </div>
-        <div className="mb-8">
-          <LinkDatas searchQuery={debouncedSearchQuery} />
-        </div>
-        <div className="mb-8">
-          <LinkManagement userId={session?.user?.id || ''} />
-        </div>
-        <div>
-          <Upgrade />
-        </div>
-      </div>
-    </motion.div>
+      </motion.div>
     </DashboardDataProvider>
   );
 };
