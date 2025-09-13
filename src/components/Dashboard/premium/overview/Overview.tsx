@@ -8,7 +8,7 @@ const Overview = () => {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center py-8">
-        <LoadingScreen compact message="Loading overview data..." />
+        <LoadingScreen compact />
       </div>
     );
   }

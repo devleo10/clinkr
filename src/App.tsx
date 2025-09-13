@@ -1,19 +1,25 @@
 import { Navigate, RouterProvider, createBrowserRouter } from "react-router-dom";
-import DashBoard from "./components/Dashboard/DashBoard";
-import HomePage from "./components/homepage/HomePage";
-import PremiumDashBoard from "./components/Dashboard/premium/PremiumDashBoard";
-import ProtectedRoute from "./components/auth/ProtectedRoute";
-import { PrivateProfile } from "./components/profile";
-import SmartRouteResolver from "./components/profile/pages/SmartRouteResolver";
-import GetStarted from "./components/auth/GetStarted";
-import Onboarding from "./components/auth/Onboarding";
+import { Suspense, lazy } from "react";
 import { AuthProvider } from "./components/auth/AuthProvider";
-import PrivacyPolicy from "./components/legal/PrivacyPolicy";
-import TermsOfService from "./components/legal/TermsOfService";
-import CookiePolicy from "./components/legal/CookiePolicy";
+import { LoadingProvider } from "./contexts/LoadingContext";
+import GlobalLoadingOverlay from "./components/GlobalLoadingOverlay";
+import SuspenseFallback from "./components/SuspenseFallback";
 import { Analytics } from "@vercel/analytics/react";
-import About from "./components/homepage/About";
-import AuthPages from "./components/auth/AuthPages";
+
+// Lazy load components for better performance
+const DashBoard = lazy(() => import("./components/Dashboard/DashBoard"));
+const HomePage = lazy(() => import("./components/homepage/HomePage"));
+const PremiumDashBoard = lazy(() => import("./components/Dashboard/premium/PremiumDashBoard"));
+const ProtectedRoute = lazy(() => import("./components/auth/ProtectedRoute"));
+const PrivateProfile = lazy(() => import("./components/profile").then(module => ({ default: module.PrivateProfile })));
+const SmartRouteResolver = lazy(() => import("./components/profile/pages/SmartRouteResolver"));
+const GetStarted = lazy(() => import("./components/auth/GetStarted"));
+const Onboarding = lazy(() => import("./components/auth/Onboarding"));
+const PrivacyPolicy = lazy(() => import("./components/legal/PrivacyPolicy"));
+const TermsOfService = lazy(() => import("./components/legal/TermsOfService"));
+const CookiePolicy = lazy(() => import("./components/legal/CookiePolicy"));
+const About = lazy(() => import("./components/homepage/About"));
+const AuthPages = lazy(() => import("./components/auth/AuthPages"));
 
 function App() {
   <Analytics />;
@@ -24,17 +30,27 @@ function App() {
     },
     {
       path: "/homepage/*",
-      element: <HomePage />,
+      element: (
+        <Suspense fallback={<SuspenseFallback />}>
+          <HomePage />
+        </Suspense>
+      ),
     },
     {
       path: "/getstarted",
-      element: <GetStarted />,
+      element: (
+        <Suspense fallback={<SuspenseFallback />}>
+          <GetStarted />
+        </Suspense>
+      ),
     },
     {
       path: "/onboarding",
       element: (
         <ProtectedRoute requireAuth={true} requireProfile={false}>
-          <Onboarding />
+          <Suspense fallback={<SuspenseFallback />}>
+            <Onboarding />
+          </Suspense>
         </ProtectedRoute>
       ),
     },
@@ -42,7 +58,9 @@ function App() {
       path: "/dashboard",
       element: (
         <ProtectedRoute requireAuth={true} requireProfile={true}>
-          <DashBoard />
+          <Suspense fallback={<SuspenseFallback />}>
+            <DashBoard />
+          </Suspense>
         </ProtectedRoute>
       ),
     },
@@ -50,7 +68,9 @@ function App() {
       path: "/privateprofile",
       element: (
         <ProtectedRoute requireAuth={true} requireProfile={true}>
-          <PrivateProfile />
+          <Suspense fallback={<SuspenseFallback />}>
+            <PrivateProfile />
+          </Suspense>
         </ProtectedRoute>
       ),
     },
@@ -58,40 +78,68 @@ function App() {
       path: "/premiumdashboard",
       element: (
         <ProtectedRoute requireAuth={true} requireProfile={true}>
-          <PremiumDashBoard />
+          <Suspense fallback={<SuspenseFallback />}>
+            <PremiumDashBoard />
+          </Suspense>
         </ProtectedRoute>
       ),
     },
     {
       path: "/about",
-      element: <About />,
+      element: (
+        <Suspense fallback={<SuspenseFallback />}>
+          <About />
+        </Suspense>
+      ),
     },
     {
       path: "/:identifier",
-      element: <SmartRouteResolver />,
+      element: (
+        <Suspense fallback={<SuspenseFallback />}>
+          <SmartRouteResolver />
+        </Suspense>
+      ),
     },
-
     {
       path: "/privacypolicy",
-      element: <PrivacyPolicy />,
+      element: (
+        <Suspense fallback={<SuspenseFallback />}>
+          <PrivacyPolicy />
+        </Suspense>
+      ),
     },
     {
       path: "/termsofservice",
-      element: <TermsOfService />,
+      element: (
+        <Suspense fallback={<SuspenseFallback />}>
+          <TermsOfService />
+        </Suspense>
+      ),
     },
     {
       path: "/cookiepolicy",
-      element: <CookiePolicy />,
+      element: (
+        <Suspense fallback={<SuspenseFallback />}>
+          <CookiePolicy />
+        </Suspense>
+      ),
     },
     {
       path: "/*",
-      element: <AuthPages />,
+      element: (
+        <Suspense fallback={<SuspenseFallback />}>
+          <AuthPages />
+        </Suspense>
+      ),
     },
   ]);
 
   return (
     <AuthProvider>
-      <RouterProvider router={router} />
+      <LoadingProvider>
+        <RouterProvider router={router} />
+        <GlobalLoadingOverlay />
+      </LoadingProvider>
     </AuthProvider>
   );
 }

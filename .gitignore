@@ -1,3 +1,9 @@
+# Supabase
+supabase/
+.supabase/
+*.supabase
+supabase-temp*
+
 # Logs
 logs
 *.log

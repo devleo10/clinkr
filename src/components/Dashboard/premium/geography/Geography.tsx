@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { Filter, Smartphone, Laptop, Calendar } from "lucide-react";
 import LoadingScreen from '../../../ui/loadingScreen';
 import { usePremiumDashboardData } from '../PremiumDashboardContext';
+import { formatCountryData } from '../../../../lib/countryUtils';
 
 interface HeatmapLayerProps {
   points: Array<[number, number, number]>;
@@ -59,7 +60,7 @@ const Geography = () => {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center py-8">
-        <LoadingScreen compact message="Loading geography data..." />
+        <LoadingScreen compact />
       </div>
     );
   }
@@ -195,18 +196,27 @@ const Geography = () => {
         <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
           <h3 className="text-lg font-semibold mb-4">Top Countries</h3>
           <div className="space-y-3">
-            {countryStats.slice(0, 5).map((country, index) => (
-              <div key={country.country} className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <span className="text-sm font-medium text-gray-600">#{index + 1}</span>
-                  <span className="font-medium">{country.country}</span>
+            {countryStats.slice(0, 5).map((country, index) => {
+              const formattedCountry = formatCountryData(country);
+              return (
+                <div key={country.country} className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <span className="text-sm font-medium text-gray-600">#{index + 1}</span>
+                    {formattedCountry.flag && (
+                      <span className="text-lg">{formattedCountry.flag}</span>
+                    )}
+                    <span className="font-medium">{formattedCountry.countryName}</span>
+                    {!formattedCountry.isValid && (
+                      <span className="text-xs text-orange-500">({country.country})</span>
+                    )}
+                  </div>
+                  <div className="text-right">
+                    <div className="font-semibold">{country.visits.toLocaleString()}</div>
+                    <div className="text-sm text-gray-500">{country.percentage}%</div>
+                  </div>
                 </div>
-                <div className="text-right">
-                  <div className="font-semibold">{country.visits.toLocaleString()}</div>
-                  <div className="text-sm text-gray-500">{country.percentage}%</div>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 

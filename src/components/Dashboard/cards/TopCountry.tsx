@@ -1,60 +1,20 @@
 import { FaGlobeAsia } from "react-icons/fa";
 import { useDashboardData } from '../DashboardDataContext';
+import { filterAndSortCountries } from '../../../lib/countryUtils';
 
 const TopCountry = () => {
   const { data, isLoading } = useDashboardData();
 
-  // Helper function to get country name from code
-  const getCountryName = (code: string) => {
-    const countryNames: { [key: string]: string } = {
-      'US': 'United States',
-      'GB': 'United Kingdom',
-      'IN': 'India',
-      'CA': 'Canada',
-      'AU': 'Australia',
-      'DE': 'Germany',
-      'FR': 'France',
-      'JP': 'Japan',
-      'CN': 'China',
-      'BR': 'Brazil',
-      'RU': 'Russia',
-      'IT': 'Italy',
-      'ES': 'Spain',
-      'MX': 'Mexico',
-      'KR': 'South Korea',
-      'NL': 'Netherlands',
-      'CH': 'Switzerland',
-      'SE': 'Sweden',
-      'NO': 'Norway',
-      'DK': 'Denmark',
-      'FI': 'Finland',
-      'SG': 'Singapore',
-      'NZ': 'New Zealand',
-      'ZA': 'South Africa',
-      'IE': 'Ireland',
-      'AE': 'United Arab Emirates',
-      'AR': 'Argentina',
-      'PL': 'Poland',
-      'TR': 'Turkey',
-      'ID': 'Indonesia',
-      'TH': 'Thailand',
-      'VN': 'Vietnam',
-      'MY': 'Malaysia',
-      'PH': 'Philippines',
-      'BE': 'Belgium',
-      'PT': 'Portugal',
-      'GR': 'Greece',
-      'AT': 'Austria',
-      'IL': 'Israel',
-      'UA': 'Ukraine',
-      'Unknown': 'Unknown'
-    };
-    return countryNames[code] || code;
-  };
-
-  const topCountry = data?.topCountries?.[0] || { country: 'No Data', visits: 0 };
+  // Process and validate country data
+  const processedCountries = data?.topCountries ? filterAndSortCountries(data.topCountries) : [];
+  
+  // Get the best country to display (first valid country or fallback)
+  const displayCountry = processedCountries.length > 0 
+    ? processedCountries[0] 
+    : { country: 'Unknown', countryName: 'No Data', visits: 0, isValid: false, flag: '' };
+  
   const totalClicks = data?.totalClicks || 0;
-  const percentage = totalClicks > 0 ? Math.round((topCountry.visits / totalClicks) * 100 * 10) / 10 : 0;
+  const percentage = totalClicks > 0 ? Math.round((displayCountry.visits / totalClicks) * 100 * 10) / 10 : 0;
 
   return (
     <div 
@@ -74,22 +34,32 @@ const TopCountry = () => {
         </div>
       </div>
       <div className="mt-8 flex relative z-10">
-        <h1 className="text-3xl font-extrabold text-black">
-          {isLoading ? (
-            <span className="animate-pulse">...</span>
-          ) : (
-            getCountryName(topCountry.country)
+        <div className="flex items-center gap-3">
+          {displayCountry.flag && (
+            <span className="text-2xl">{displayCountry.flag}</span>
           )}
-        </h1>
+          <h1 className="text-3xl font-extrabold text-black">
+            {isLoading ? (
+              <span className="animate-pulse">...</span>
+            ) : (
+              displayCountry.countryName
+            )}
+          </h1>
+        </div>
       </div>
       <div className="relative z-10">
         <p className="text-sm text-black font-medium">
           {isLoading ? (
             <span className="animate-pulse">...</span>
           ) : (
-            `${topCountry.visits.toLocaleString()} Clicks (${percentage}%)`
+            `${displayCountry.visits.toLocaleString()} Clicks (${percentage}%)`
           )}
         </p>
+        {!displayCountry.isValid && displayCountry.country !== 'Unknown' && (
+          <p className="text-xs text-orange-600 mt-1">
+            Country code: {displayCountry.country}
+          </p>
+        )}
       </div>
     </div>
   );

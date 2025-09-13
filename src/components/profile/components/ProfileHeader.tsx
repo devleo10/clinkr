@@ -1,6 +1,7 @@
 import { FaUser, FaTrash, FaShare } from 'react-icons/fa';
 import { Edit } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { validateImageFile } from '../../../lib/imageCompression';
 
 interface ProfileHeaderProps {
   profile: any;
@@ -114,16 +115,15 @@ const ProfileHeader = ({
           onChange={async (e) => {
             const file = e.target.files?.[0];
             if (!file) return;
-            if (file.size > 5 * 1024 * 1024) {
-              setError('File size too large. Please choose an image under 5MB.');
+            
+            // Validate the image file first
+            const validation = validateImageFile(file, 10); // 10MB max
+            if (!validation.isValid) {
+              setError(validation.error || 'Invalid image file');
               e.target.value = '';
               return;
             }
-            if (!file.type.startsWith('image/')) {
-              setError('Please upload an image file.');
-              e.target.value = '';
-              return;
-            }
+            
             setSelectedImage(file);
             setCropModalOpen(true);
             e.target.value = '';

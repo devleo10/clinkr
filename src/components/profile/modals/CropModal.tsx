@@ -3,6 +3,7 @@ import Cropper from 'react-easy-crop';
 import Modal from 'react-modal';
 import { supabase } from '../../../lib/supabaseClient';
 import LogoBars from '../../ui/LogoBars';
+import { compressImageToTargetSize, validateImageFile, formatFileSize } from '../../../lib/imageCompression';
 
 interface CropModalProps {
   isOpen: boolean;
@@ -70,8 +71,22 @@ const CropModal = ({
     
     setLoading(true);
     try {
+      // Validate the image file first
+      const validation = validateImageFile(selectedImage, 10); // 10MB max
+      if (!validation.isValid) {
+        onError(validation.error || 'Invalid image file');
+        setLoading(false);
+        return;
+      }
+
       const imageSrc = URL.createObjectURL(selectedImage);
       const croppedBlob = await getCroppedImg(imageSrc, croppedAreaPixels);
+      
+      // Compress the cropped image to under 300KB
+      const compressionResult = await compressImageToTargetSize(croppedBlob as File, 300);
+      
+      console.log(`Image compressed: ${formatFileSize(compressionResult.originalSize)} → ${formatFileSize(compressionResult.compressedSize)} (${compressionResult.compressionRatio.toFixed(1)}% reduction)`);
+      
       const userId = await getCurrentUserId();
       if (!userId) throw new Error('No user found');
 
@@ -80,12 +95,14 @@ const CropModal = ({
         try {
           const previousFilePath = new URL(profile.profile_picture).pathname.replace(/^\/storage\/v1\/object\/public\/user-data\//, '');
           await supabase.storage.from('user-data').remove([previousFilePath]);
-        } catch (e) { /* ignore */ }
+        } catch (e) { 
+          console.warn('Failed to remove previous profile picture:', e);
+        }
       }
 
-      // Upload new image
-      const filePath = `avatars/${userId}-${Date.now()}.png`;
-      const { data, error } = await supabase.storage.from('user-data').upload(filePath, croppedBlob, { 
+      // Upload compressed image
+      const filePath = `avatars/${userId}-${Date.now()}.jpg`;
+      const { data, error } = await supabase.storage.from('user-data').upload(filePath, compressionResult.compressedBlob, { 
         cacheControl: '3600', 
         upsert: true 
       });

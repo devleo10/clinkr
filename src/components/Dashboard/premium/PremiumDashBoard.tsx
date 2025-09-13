@@ -150,8 +150,8 @@ const PremiumDashBoard = () => {
         <Navbar />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 relative z-10">
         <div
-          className="glass-card bg-white/80 backdrop-blur-lg border border-orange-100 p-6 rounded-xl shadow-lg mb-8 relative overflow-hidden"
-          style={{ willChange: 'transform' }}
+          className="glass-card bg-white/80 backdrop-blur-lg border p-6 rounded-xl shadow-lg mb-8 relative overflow-hidden"
+          style={{ willChange: 'transform', borderColor: 'rgba(237, 123, 0, 0.2)' }}
         >
           {/* Subtle gradient background */}
           <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-white to-orange-100 opacity-70"></div>
@@ -159,19 +159,19 @@ const PremiumDashBoard = () => {
           <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-400 via-amber-500 to-orange-400" />
           {/* Corner decoration */}
           <div className="absolute top-0 right-0 w-16 h-16 opacity-10">
-            <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-orange-400 to-amber-300 rounded-bl-full" />
+            <div className="absolute top-0 right-0 w-16 h-16 rounded-bl-full" style={{ background: 'linear-gradient(to bottom right, #ED7B00, #FCBB1F)' }} />
           </div>
           {/* Analytics Dashboard Heading */}
           <div className="flex flex-col items-center mb-6 relative z-10">
             <div className="flex items-center justify-center">
-              <div className="mr-3 p-2 rounded-full bg-gradient-to-br from-amber-100 to-orange-100 shadow-md">
-                <FaChartLine size={24} className="text-orange-500" />
+              <div className="mr-3 p-2 rounded-full shadow-md" style={{ background: 'linear-gradient(to bottom right, rgba(237, 123, 0, 0.1), rgba(230, 100, 38, 0.1))' }}>
+                <FaChartLine size={24} style={{ color: '#ED7B00' }} />
               </div>
               <h1 className="font-extrabold text-2xl sm:text-3xl text-black text-center">
                 Premium Analytics
               </h1>
             </div>
-            <div className="h-1 w-24 mt-2 bg-gradient-to-r from-orange-400 via-amber-500 to-orange-400 rounded-full shadow-sm" />
+            <div className="h-1 w-24 mt-2 rounded-full shadow-sm" style={{ background: 'linear-gradient(to right, #ED7B00, #E66426, #ED7B00)' }} />
             <p className="text-black mt-2 max-w-md text-center text-sm">
               Unlock advanced insights and trends for your links
             </p>
@@ -181,13 +181,14 @@ const PremiumDashBoard = () => {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button
-                  className="flex items-center space-x-3 px-6 py-3 rounded-xl bg-gradient-to-r from-orange-400 via-amber-500 to-orange-400 hover:from-orange-400 hover:via-amber-500 hover:to-orange-400 text-white transition-all duration-200 shadow-lg border border-white/20"
+                  className="flex items-center space-x-3 px-6 py-3 rounded-xl text-white transition-all duration-200 shadow-lg border border-white/20"
+                  style={{ background: 'linear-gradient(to right, #ED7B00, #E66426, #ED7B00)' }}
                   disabled={isExporting}
                 >
                     {isExporting ? (
                       <>
                         <div className="flex items-center gap-2">
-                          <LoadingScreen compact message="" />
+                          <LoadingScreen compact />
                           <span className="font-bold">Exporting...</span>
                         </div>
                       </>

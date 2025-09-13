@@ -10,7 +10,7 @@ const Devices = () => {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center py-8">
-        <LoadingScreen compact message="Loading device data..." />
+        <LoadingScreen compact />
       </div>
     );
   }
