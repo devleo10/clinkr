@@ -67,15 +67,15 @@ const GetStarted = () => {
       <div className="max-w-md w-full space-y-8 bg-white/40 backdrop-blur-lg border border-white/50 rounded-xl p-8 shadow-xl hover:shadow-2xl transition-all duration-300 relative z-10">
         {/* Subtle gradient background */}
         <div className="absolute inset-0 bg-gradient-to-br from-orange-100/40 via-transparent to-orange-300/30 opacity-70 rounded-xl" />
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-500 via-amber-500 to-orange-400 rounded-t-xl" />
+        <div className="absolute top-0 left-0 right-0 h-1 rounded-t-xl" style={{ background: 'linear-gradient(to right, #ED7B00, #E66426, #ED7B00)' }} />
         <div className="text-center relative z-10">
           <Link to="/homepage" className="inline-block transform hover:scale-105 transition-transform duration-200">
             <img src={logo} alt="Clinkr Logo" className="mx-auto h-12 w-auto cursor-pointer" />
           </Link>
-          <h2 className="mt-6 text-3xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400">
+          <h2 className="mt-6 text-3xl font-bold text-center bg-clip-text text-transparent" style={{ background: 'linear-gradient(to right, #B73D00, #ED7B00, #E66426)' }}>
             Welcome to Clinkr
           </h2>
-          <p className="mt-2 text-sm text-orange-700">
+          <p className="mt-2 text-sm" style={{ color: '#B73D00' }}>
             Create your account and start tracking your link metrics
           </p>
         </div>
@@ -90,10 +90,10 @@ const GetStarted = () => {
           <div className="mt-6">
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-orange-200"></div>
+                <div className="w-full border-t" style={{ borderColor: 'rgba(237, 123, 0, 0.3)' }}></div>
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-3 bg-white text-orange-500 rounded-md">Continue with</span>
+                <span className="px-3 bg-white rounded-md" style={{ color: '#ED7B00' }}>Continue with</span>
               </div>
             </div>
             
@@ -102,7 +102,13 @@ const GetStarted = () => {
                 onClick={handleGoogleSignIn}
                 disabled={loading}
                 type="button"
-                className="w-full inline-flex justify-center items-center py-3 px-4 bg-white hover:bg-orange-50 border border-orange-200 rounded-md shadow-sm text-sm font-medium text-orange-700 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-2"
+                className="w-full inline-flex justify-center items-center py-3 px-4 bg-white border rounded-md shadow-sm text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2"
+                style={{ 
+                  borderColor: 'rgba(237, 123, 0, 0.3)',
+                  color: '#B73D00',
+                  '--hover-bg': 'rgba(237, 123, 0, 0.05)',
+                  '--focus-ring': 'rgba(237, 123, 0, 0.3)'
+                } as React.CSSProperties}
               >
                 <FcGoogle size={20} />
                 <span className="ml-2">Google</span>
@@ -112,7 +118,13 @@ const GetStarted = () => {
                 onClick={handleGitHubSignIn}
                 disabled={loading}
                 type="button"
-                className="w-full inline-flex justify-center items-center py-3 px-4 bg-orange-700 hover:bg-orange-600 border border-orange-800 rounded-md shadow-sm text-sm font-medium text-white disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
+                className="w-full inline-flex justify-center items-center py-3 px-4 border rounded-md shadow-sm text-sm font-medium text-white disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2"
+                style={{ 
+                  backgroundColor: '#B73D00',
+                  borderColor: '#B73D00',
+                  '--hover-bg': '#ED7B00',
+                  '--focus-ring': 'rgba(237, 123, 0, 0.3)'
+                } as React.CSSProperties}
               >
                 <FaGithub size={20} />
                 <span className="ml-2">GitHub</span>
@@ -121,13 +133,13 @@ const GetStarted = () => {
           </div>
         
           <div className="text-center mt-6">
-            <p className="text-sm text-orange-500">
+            <p className="text-sm" style={{ color: '#ED7B00' }}>
               By signing up, you agree to our{" "}
-              <Link to="/terms" className="text-orange-600 hover:text-orange-500 underline underline-offset-2">
+              <Link to="/terms" className="underline underline-offset-2" style={{ color: '#B73D00' }}>
                 Terms of Service
               </Link>{" "}
               and{" "}
-              <Link to="/privacy" className="text-orange-600 hover:text-orange-500 underline underline-offset-2">
+              <Link to="/privacy" className="underline underline-offset-2" style={{ color: '#B73D00' }}>
                 Privacy Policy
               </Link>
             </p>

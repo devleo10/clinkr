@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from './AuthProvider';
+import { useLoading } from '../../contexts/LoadingContext';
 import { supabase } from '../../lib/supabaseClient';
-import LoadingScreen from '../ui/loadingScreen';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -12,6 +12,7 @@ interface ProtectedRouteProps {
 
 const ProtectedRoute = ({ children, requireAuth, requireProfile = false }: ProtectedRouteProps) => {
   const { session, loading: authLoading } = useAuth();
+  const { showLoading, hideLoading } = useLoading();
   const [hasProfile, setHasProfile] = useState<boolean | null>(null);
   const [profileCheckComplete, setProfileCheckComplete] = useState(false);
   const location = useLocation();
@@ -19,6 +20,7 @@ const ProtectedRoute = ({ children, requireAuth, requireProfile = false }: Prote
   useEffect(() => {
     const checkProfile = async () => {
       if (authLoading) {
+        showLoading('Verifying session...');
         return; // Wait for auth to load
       }
 
@@ -27,16 +29,19 @@ const ProtectedRoute = ({ children, requireAuth, requireProfile = false }: Prote
       if (!session?.user?.id) {
         setHasProfile(false);
         setProfileCheckComplete(true);
+        hideLoading();
         return;
       }
 
       if (!requireProfile) {
         setHasProfile(true);
         setProfileCheckComplete(true);
+        hideLoading();
         return;
       }
 
       try {
+        showLoading('Checking profile...');
         const { data: profile, error } = await supabase
           .from('profiles')
           .select('username')
@@ -53,21 +58,15 @@ const ProtectedRoute = ({ children, requireAuth, requireProfile = false }: Prote
         setHasProfile(false);
       } finally {
         setProfileCheckComplete(true);
+        hideLoading();
       }
     };
 
     checkProfile();
-  }, [session, requireProfile]);
+  }, [session, requireProfile, showLoading, hideLoading]);
 
   if (authLoading || !profileCheckComplete) {
-    // Use compact variant here but center it to avoid flash at top-left during route changes.
-    return (
-      <div className="fixed inset-0 flex items-center justify-center z-40 pointer-events-none">
-        <div className="pointer-events-auto">
-          <LoadingScreen compact message="Verifying session..." />
-        </div>
-      </div>
-    );
+    return null; // Global loading overlay will handle this
   }
 
   // If auth is required and there's no session, redirect to signup
