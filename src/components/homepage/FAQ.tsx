@@ -80,12 +80,14 @@ const FAQ = () => {
         
         {/* Enhanced accent line */}
         <div 
-          className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-600 via-amber-600 to-orange-500 rounded-t-2xl"
+          className="absolute top-0 left-0 right-0 h-1 rounded-t-2xl"
+          style={{ background: 'linear-gradient(to right, #B73D00, #ED7B00, #E66426)' }}
         />
         
         <div className="relative z-10 text-center">
           <motion.h1 
-            className="text-3xl md:text-4xl font-black text-center mb-3 text-transparent bg-clip-text bg-gradient-to-r from-orange-600 via-amber-600 to-orange-500 drop-shadow-sm tracking-tight"
+          className="text-3xl md:text-4xl font-black text-center mb-3 text-transparent bg-clip-text drop-shadow-sm tracking-tight"
+          style={{ background: 'linear-gradient(to right, #B73D00, #ED7B00, #E66426)' }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
@@ -119,7 +121,7 @@ const FAQ = () => {
               
               {/* Category accent */}
               <div 
-                className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-500 via-amber-500 to-orange-500 rounded-t-xl"
+                className="absolute top-0 left-0 right-0 h-1 rounded-t-xl" style={{ background: 'linear-gradient(to right, #ED7B00, #E66426, #ED7B00)' }}
               />
               
               <div className="relative z-10">
@@ -128,7 +130,7 @@ const FAQ = () => {
                   whileHover={{ x: 5 }}
                   transition={{ type: "spring", stiffness: 300 }}
                 >
-                  <div className="w-3 h-3 bg-gradient-to-r from-orange-500 to-amber-500 rounded-full"></div>
+                  <div className="w-3 h-3 rounded-full" style={{ background: 'linear-gradient(to right, #ED7B00, #E66426)' }}></div>
                   {section.category}
                 </motion.h2>                <div className="space-y-3">
                   {section.items.map((item, itemIndex) => {
@@ -138,11 +140,13 @@ const FAQ = () => {
                     return (
                       <motion.div
                         key={itemIndex}
-                        className="border border-orange-200/60 rounded-lg overflow-hidden bg-white/70 backdrop-blur-sm hover:border-orange-300 transition-all duration-300"
+                        className="border rounded-lg overflow-hidden bg-white/70 backdrop-blur-sm transition-all duration-300"
+                        style={{ borderColor: 'rgba(237, 123, 0, 0.3)', '--hover-border-color': 'rgba(230, 100, 38, 0.5)' } as React.CSSProperties}
                         whileHover={{ scale: 1.01 }}
                       >
                         <motion.div
-                          className="flex justify-between items-center p-4 cursor-pointer hover:bg-orange-50/50 transition-colors duration-300"
+                          className="flex justify-between items-center p-4 cursor-pointer transition-colors duration-300"
+                          style={{ '--hover-bg': 'rgba(237, 123, 0, 0.05)' } as React.CSSProperties}
                           onClick={() => setOpenIndex(isOpen ? null : index)}
                           whileHover={{ x: 5 }}
                         >
@@ -150,7 +154,8 @@ const FAQ = () => {
                             {item.question}
                           </h3>
                           <motion.div
-                            className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-orange-100 to-amber-100 text-orange-700 shadow-md"
+                            className="flex items-center justify-center w-8 h-8 rounded-full shadow-md"
+                            style={{ background: 'linear-gradient(to right, rgba(237, 123, 0, 0.1), rgba(230, 100, 38, 0.1))', color: '#B73D00' }}
                             animate={{ rotate: isOpen ? 180 : 0 }}
                             transition={{ duration: 0.3 }}
                           >

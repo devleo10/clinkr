@@ -20,7 +20,7 @@ const About = () => (
       </p>
       <h2 className="text-2xl font-semibold mt-6 mb-2 text-black">Contact & Support</h2>
       <p>
-  Have questions, feedback, or need help? Reach out to us anytime at <a href="mailto:support@clinkr.live" className="text-orange-600 underline">clinkr.work@gmail.com</a>.
+  Have questions, feedback, or need help? Reach out to us anytime at <a href="mailto:support@clinkr.live" className="underline" style={{ color: '#B73D00' }}>clinkr.work@gmail.com</a>.
       </p>
     </div>
   </div>

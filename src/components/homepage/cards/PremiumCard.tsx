@@ -13,7 +13,11 @@ const PremiumCard = () => {
   };
   return (
     <motion.div 
-      className="w-full relative bg-white backdrop-blur-xl border-2 border-orange-500 p-8 rounded-3xl hover:border-orange-600 flex flex-col justify-between shadow-2xl hover:shadow-3xl group transition-all duration-500 overflow-hidden"
+      className="w-full relative bg-white backdrop-blur-xl border-2 p-8 rounded-3xl flex flex-col justify-between shadow-2xl hover:shadow-3xl group transition-all duration-500 overflow-hidden"
+      style={{ 
+        borderColor: '#ED7B00',
+        '--hover-border-color': '#E66426'
+      } as React.CSSProperties}
       variants={itemVariants}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -26,7 +30,7 @@ const PremiumCard = () => {
   {/* Floating elements removed — moved to Pricing wrapper to reduce duplicate animations */}
       
       {/* Top accent */}
-      <div className="absolute top-0 left-0 right-0 h-3 bg-gradient-to-r from-orange-500 via-orange-600 to-orange-700 rounded-t-3xl" />
+      <div className="absolute top-0 left-0 right-0 h-3 rounded-t-3xl" style={{ background: 'linear-gradient(to right, #ED7B00, #E66426, #B73D00)' }} />
       
       {/* Corner decoration */}
       <div className="absolute bottom-0 right-0 w-32 h-32 opacity-[0.15] group-hover:opacity-[0.25] transition-opacity duration-500">

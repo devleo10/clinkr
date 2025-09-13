@@ -14,7 +14,11 @@ const FreeCard = () => {
   };
   return (
     <motion.div 
-      className="w-full relative bg-white/95 backdrop-blur-xl border-2 border-orange-200/70 p-8 rounded-3xl hover:border-orange-300 flex flex-col justify-between shadow-2xl hover:shadow-3xl group transition-all duration-500 overflow-hidden"
+      className="w-full relative bg-white/95 backdrop-blur-xl border-2 p-8 rounded-3xl flex flex-col justify-between shadow-2xl hover:shadow-3xl group transition-all duration-500 overflow-hidden"
+      style={{ 
+        borderColor: 'rgba(237, 123, 0, 0.3)',
+        '--hover-border-color': 'rgba(230, 100, 38, 0.5)'
+      } as React.CSSProperties}
       variants={itemVariants}
       initial="rest"
       whileHover="hover"
@@ -26,7 +30,7 @@ const FreeCard = () => {
       <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-white to-white opacity-90 transition-opacity duration-500" />
       
       {/* Top accent */}
-      <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600 rounded-t-3xl" />
+      <div className="absolute top-0 left-0 right-0 h-1.5 rounded-t-3xl" style={{ background: 'linear-gradient(to right, #ED7B00, #E66426, #B73D00)' }} />
       
       {/* Corner decoration */}
   <div className="absolute bottom-0 right-0 w-20 h-20 opacity-[0.15] group-hover:opacity-[0.25] transition-opacity duration-500">
@@ -62,7 +66,7 @@ const FreeCard = () => {
                   className="flex items-center transition-transform duration-300"
                   transition={{ delay: 0.1 * index + 0.3 }}
                 >
-                  <div className="flex items-center justify-center w-6 h-6 rounded-full mr-4 shadow-lg bg-gradient-to-r from-orange-500 to-orange-600">
+                  <div className="flex items-center justify-center w-6 h-6 rounded-full mr-4 shadow-lg" style={{ background: 'linear-gradient(to right, #ED7B00, #E66426)' }}>
                     <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                     </svg>

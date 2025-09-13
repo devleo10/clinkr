@@ -13,7 +13,7 @@ const Pricing = () => {
       <div 
         className="flex flex-col justify-center items-center text-center mb-12 relative z-10"
       >
-        <h1 className="text-2xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-amber-500 to-orange-400 drop-shadow-sm tracking-tight mb-3">Choose Your Perfect Plan</h1>
+        <h1 className="text-2xl md:text-4xl font-extrabold text-transparent bg-clip-text drop-shadow-sm tracking-tight mb-3" style={{ background: 'linear-gradient(to right, #ED7B00, #E66426, #ED7B00)' }}>Choose Your Perfect Plan</h1>
         <p className="text-gray-800 text-base font-semibold">Start Free, Upgrade when you need more</p>
       </div>
       

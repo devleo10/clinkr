@@ -120,15 +120,15 @@ const HomePage = () => {
                 transition={{ delay: 1.2, duration: 0.8 }}
               >
                 <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-orange-500"></div>
+                  <div className="w-2 h-2 rounded-full" style={{ backgroundColor: '#ED7B00' }}></div>
                   <span>Free forever</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-orange-500"></div>
+                  <div className="w-2 h-2 rounded-full" style={{ backgroundColor: '#ED7B00' }}></div>
                   <span>No credit card</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full" style={{ backgroundColor: 'var(--c-accent)' }}></div>
+                  <div className="w-2 h-2 rounded-full" style={{ backgroundColor: '#ED7B00' }}></div>
                   <span>Real-time analytics</span>
                 </div>
               </motion.div>
@@ -156,8 +156,8 @@ const HomePage = () => {
                       <p className="text-sm text-gray-600">Live preview</p>
                     </div>
                     <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 rounded-full animate-glow-pulse bg-orange-500"></div>
-                      <span className="text-xs font-medium text-orange-600">Live</span>
+                      <div className="w-2 h-2 rounded-full animate-glow-pulse" style={{ backgroundColor: '#ED7B00' }}></div>
+                      <span className="text-xs font-medium" style={{ color: '#B73D00' }}>Live</span>
                     </div>
                   </div>
                   
@@ -195,7 +195,7 @@ const HomePage = () => {
                   >
                     <div className="flex items-center justify-between mb-4">
                       <h4 className="font-medium text-black">Click Trends</h4>
-                      <div className="text-xs px-2 py-1 rounded-full bg-orange-500 text-white">
+                      <div className="text-xs px-2 py-1 rounded-full text-white" style={{ backgroundColor: '#ED7B00' }}>
                         Last 7 days
                       </div>
                     </div>

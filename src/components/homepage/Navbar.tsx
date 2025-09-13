@@ -88,25 +88,25 @@ const Navbar = () => {
       <div className="hidden lg:flex items-center space-x-8">
         <motion.button 
           onClick={() => navigateToSection('features')} 
-          className="text-sm font-medium hover:scale-105 transition-all duration-200 focus-ring text-gray-600 hover:text-orange-600"
+          className="text-sm font-medium hover:scale-105 transition-all duration-200 focus-ring text-gray-600 hover:text-[#ED7B00]"
         >
           Features
         </motion.button>
         <motion.button 
           onClick={() => navigateToSection('pricing')} 
-          className="text-sm font-medium hover:scale-105 transition-all duration-200 focus-ring text-gray-600 hover:text-orange-600"
+          className="text-sm font-medium hover:scale-105 transition-all duration-200 focus-ring text-gray-600 hover:text-[#ED7B00]"
         >
           Pricing
         </motion.button>
         <motion.button 
           onClick={() => navigateToSection('faq')}
-          className="text-sm font-medium hover:scale-105 transition-all duration-200 focus-ring text-gray-600 hover:text-orange-600"
+          className="text-sm font-medium hover:scale-105 transition-all duration-200 focus-ring text-gray-600 hover:text-[#ED7B00]"
         >
           FAQ
         </motion.button>
         <Link 
           to="/about"
-          className="text-sm font-medium hover:scale-105 transition-all duration-200 focus-ring text-gray-600 hover:text-orange-600"
+          className="text-sm font-medium hover:scale-105 transition-all duration-200 focus-ring text-gray-600 hover:text-[#ED7B00]"
         >
           About
         </Link>
