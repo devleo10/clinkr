@@ -16,12 +16,12 @@
     --c-border: #E5E3DD;
     --c-text: #0F1115;
     --c-text-dim: #5A5E66;
-    --c-accent: #FF9051;
-    --c-accent-rgb: 255 144 81;
-    --c-positive: #FF9A3E;
-    --c-negative: #FF6B3E;
-    --c-info: #FF7A1A;
-    --c-focus: #FF7A1A;
+    --c-accent: #ED7B00;
+    --c-accent-rgb: 237 123 0;
+    --c-positive: #E66426;
+    --c-negative: #B73D00;
+    --c-info: #FCBB1F;
+    --c-focus: #ED7B00;
     
     /* Radii */
     --radius-sm: 6px;
@@ -32,7 +32,7 @@
     --shadow-sm: 0 1px 2px rgba(0,0,0,.06);
     --shadow-md: 0 4px 12px -2px rgba(0,0,0,.08);
     --shadow-lg: 0 12px 32px -8px rgba(0,0,0,.12);
-    --shadow-glow: 0 0 0 1px rgba(255, 122, 26, 0.1), 0 4px 20px -4px rgba(255, 122, 26, 0.15);
+    --shadow-glow: 0 0 0 1px rgba(237, 123, 0, 0.1), 0 4px 20px -4px rgba(237, 123, 0, 0.15);
     
     /* Legacy variables for compatibility */
     --background: 248 247 244;
@@ -41,13 +41,13 @@
     --card-foreground: 15 17 21;
     --popover: 255 255 255;
     --popover-foreground: 15 17 21;
-    --primary: 255 122 26;
+    --primary: 237 123 0;
     --primary-foreground: 255 255 255;
     --secondary: 229 227 221;
     --secondary-foreground: 15 17 21;
     --muted: 229 227 221;
     --muted-foreground: 90 94 102;
-    --accent: 255 122 26;
+    --accent: 237 123 0;
     --accent-foreground: 255 255 255;
     --destructive: 214 69 69;
     --destructive-foreground: 255 255 255;
@@ -293,7 +293,7 @@
 }
 
 .btn-primary:hover {
-  background: #FF8A2A;
+  background: #E66426;
   transform: translateY(-1px);
   box-shadow: var(--shadow-glow);
 }
