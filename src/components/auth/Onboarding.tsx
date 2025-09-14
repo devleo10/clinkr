@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../../lib/supabaseClient";
 import { useAuth } from "../auth/AuthProvider";
-import { FaUser, FaLink, FaChartLine, FaCamera, FaPlus, FaTrash } from "react-icons/fa";
+import { FaUser, FaChartLine, FaCamera } from "react-icons/fa";
 import logo from "../../assets/Frame.png";
 import BoltBackground from "../homepage/BoltBackground";
 import Footer from "../homepage/Footer";
@@ -19,12 +19,11 @@ const Onboarding = () => {
     username: '',
     bio: '',
     profile_picture: null as File | null,
-    links: [{ title: '', url: '' }],
   });
   const [profilePictureUrl, setProfilePictureUrl] = useState<string | null>(null);
   const [isUploadingPicture, setIsUploadingPicture] = useState(false);
 
-  // Add this useEffect at the top of your component
+  // Check if user is authenticated and has completed onboarding
   useEffect(() => {
     const checkProfile = async () => {
       if (!session?.user?.id) {
@@ -34,23 +33,38 @@ const Onboarding = () => {
       }
 
       try {
-        // Check if user already has a profile
+        // Get current user from auth to ensure session is valid
+        const { data: { user }, error: userError } = await supabase.auth.getUser();
+        
+        if (userError || !user) {
+          console.error('Auth error:', userError);
+          navigate('/getstarted');
+          return;
+        }
+
+        // Check if user already has a profile with username
         const { data: profile, error } = await supabase
           .from('profiles')
-          .select('*')
-          .eq('id', session.user.id)
+          .select('username')
+          .eq('id', user.id)
           .single();
 
         if (error) {
           if (error.code !== 'PGRST116') { // PGRST116 is the "not found" error code
             console.error('Error checking profile:', error);
           }
-        } else if (profile?.username) {
+          // Profile doesn't exist, stay on onboarding
+          return;
+        }
+
+        if (profile?.username) {
           // If profile exists and has a username, redirect to dashboard
           navigate('/dashboard');
         }
       } catch (error) {
         console.error('Error checking profile:', error);
+        // On error, redirect to get started
+        navigate('/getstarted');
       }
     };
 
@@ -67,9 +81,6 @@ const Onboarding = () => {
         );
         break;
       case 2:
-        setIsStepValid(formData.links.length > 0 && formData.links.every(link => link.url.trim() !== ''));
-        break;
-      case 3:
         setIsStepValid(true);
         break;
       default:
@@ -86,7 +97,7 @@ const Onboarding = () => {
     }));
   };
 
-  // Handle profile picture change
+  // Handle profile picture change (only store locally, don't upload yet)
   const handleProfilePictureChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -97,64 +108,19 @@ const Onboarding = () => {
         return;
       }
 
+      // Just store the file locally, don't upload to storage yet
       setFormData(prev => ({ ...prev, profile_picture: file }));
-      setIsUploadingPicture(true);
       
-      try {
-        // Compress the image to under 300KB
-        const compressionResult = await compressImageToTargetSize(file, 300);
-        
-        console.log(`Image compressed: ${formatFileSize(compressionResult.originalSize)} → ${formatFileSize(compressionResult.compressedSize)} (${compressionResult.compressionRatio.toFixed(1)}% reduction)`);
-
-        const { data: { user }, error: userError } = await supabase.auth.getUser();
-        if (userError || !user) throw new Error(userError?.message || 'No user found');
-        
-        const fileName = `${user.id}-${Math.random().toString(36).substring(7)}.jpg`;
-        
-        // Upload the compressed file
-        const { error: uploadError } = await supabase.storage
-          .from('user-data')
-          .upload(fileName, compressionResult.compressedBlob, {
-            cacheControl: '3600',
-            upsert: false
-          });
-          
-        if (uploadError) throw uploadError;
-        
-        // Get public URL
-        const { data: { publicUrl } } = supabase.storage
-          .from('user-data')
-          .getPublicUrl(fileName);
-          
-        setProfilePictureUrl(publicUrl);
-      } catch (err: any) {
-        alert('Failed to upload profile picture: ' + err.message);
-      } finally {
-        setIsUploadingPicture(false);
-      }
+      // Create a local preview URL for display
+      const previewUrl = URL.createObjectURL(file);
+      setProfilePictureUrl(previewUrl);
     }
   };
 
-  // Update handleLinkChange to only update formData.links
-  const handleLinkChange = (idx: number, field: 'url' | 'title', value: string) => {
-    setFormData(prev => ({
-      ...prev,
-      links: prev.links.map((link, i) =>
-        i === idx ? { ...link, [field]: value } : link
-      ),
-    }));
-  };
-
-  const removeLink = (idx: number) => {
-    setFormData(prev => ({
-      ...prev,
-      links: prev.links.filter((_, i) => i !== idx),
-    }));
-  };
 
   // Handle next step
   const handleNextStep = () => {
-    if (currentStep < 3) {
+    if (currentStep < 2) {
       setCurrentStep(prev => prev + 1);
     } else {
       // Submit form and navigate to dashboard
@@ -169,7 +135,7 @@ const Onboarding = () => {
     }
   };
 
-  // Handle form submission
+  // Handle form submission (upload image and save profile only when completing onboarding)
   const handleSubmit = async () => {
     setIsLoading(true);
     try {
@@ -199,13 +165,46 @@ const Onboarding = () => {
         return;
       }
   
-      // Use profilePictureUrl if available (already compressed and uploaded)
-      let finalProfilePictureUrl = profilePictureUrl;
+      // Upload profile picture only now (when completing onboarding)
+      let finalProfilePictureUrl = null;
       
-      // If no profile picture was uploaded during onboarding, that's fine
-      // We don't need to upload it again here since it's already handled in handleProfilePictureChange
+      if (formData.profile_picture) {
+        setIsUploadingPicture(true);
+        try {
+          // Compress the image to under 300KB
+          const compressionResult = await compressImageToTargetSize(formData.profile_picture, 300);
+          
+          console.log(`Image compressed: ${formatFileSize(compressionResult.originalSize)} → ${formatFileSize(compressionResult.compressedSize)} (${compressionResult.compressionRatio.toFixed(1)}% reduction)`);
+          
+          const fileName = `${user.id}-${Math.random().toString(36).substring(7)}.jpg`;
+          
+          // Upload the compressed file
+          const { error: uploadError } = await supabase.storage
+            .from('user-data')
+            .upload(fileName, compressionResult.compressedBlob, {
+              cacheControl: '3600',
+              upsert: false
+            });
+            
+          if (uploadError) throw uploadError;
+          
+          // Get public URL
+          const { data: { publicUrl } } = supabase.storage
+            .from('user-data')
+            .getPublicUrl(fileName);
+            
+          finalProfilePictureUrl = publicUrl;
+        } catch (err: any) {
+          alert('Failed to upload profile picture: ' + err.message);
+          setIsLoading(false);
+          setIsUploadingPicture(false);
+          return;
+        } finally {
+          setIsUploadingPicture(false);
+        }
+      }
       
-      // Save profile data first (without links)
+      // Save profile data
       const { data: profileData, error: profileError } = await supabase
         .from('profiles')
         .upsert({
@@ -222,35 +221,10 @@ const Onboarding = () => {
         console.error('Profile save error:', profileError);
         throw new Error(`Failed to save profile: ${profileError.message}`);
       }
-
-      // Save links to shortened_links table if any links were provided
-      if (formData.links.length > 0 && formData.links.some(link => link.url.trim())) {
-        const linksToSave = formData.links
-          .filter(link => link.url.trim()) // Only save links with URLs
-          .map((link, index) => ({
-            short_code: `${formData.username}-link-${index + 1}`, // Generate unique short code
-            original_url: link.url,
-            title: link.title || `Link ${index + 1}`,
-            user_id: user.id,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
-            is_active: true,
-            clicks: 0
-          }));
-
-        const { error: linksError } = await supabase
-          .from('shortened_links')
-          .insert(linksToSave);
-
-        if (linksError) {
-          console.warn('Failed to save links:', linksError);
-          // Don't throw error here, profile is already saved
-        }
-      }
   
-      // Navigate to profile page after successful save
+      // Navigate to dashboard after successful save
       if (profileData) {
-        navigate('/privateprofile');
+        navigate('/dashboard');
       } else {
         throw new Error('Profile data not saved');
       }
@@ -264,8 +238,20 @@ const Onboarding = () => {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Cleanup local URL when component unmounts
+  useEffect(() => {
+    return () => {
+      if (profilePictureUrl && profilePictureUrl.startsWith('blob:')) {
+        URL.revokeObjectURL(profilePictureUrl);
+      }
+    };
+  }, [profilePictureUrl]);
+
   return (
     <div className="min-h-screen relative">
+      {/* Show full loading screen when submitting */}
+      {isLoading && <LoadingScreen />}
+      
       {/* Background */}
       <BoltBackground />
       
@@ -273,7 +259,7 @@ const Onboarding = () => {
         <div className="flex-grow flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
           <div className="max-w-md w-full space-y-8 bg-white/40 backdrop-blur-lg border border-white/50 rounded-xl p-8 shadow-xl hover:shadow-2xl transition-all duration-300 relative">
             {/* Subtle gradient background */}
-            <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 via-transparent to-amber-500/5 opacity-70 rounded-xl" />
+            <div className="absolute inset-0 bg-gradient-to-br from-[rgba(237,123,0,0.02)] via-transparent to-[rgba(252,187,31,0.02)] opacity-70 rounded-xl" />
             
             {/* Animated accent */}
             <div className="absolute top-0 left-0 right-0 h-1 rounded-t-xl" style={{ background: 'linear-gradient(to right, #ED7B00, #E66426, #ED7B00)' }} />
@@ -286,7 +272,7 @@ const Onboarding = () => {
                   alt="Clinkr Logo" 
                   className="h-8 w-auto sm:h-10" 
                 />
-                <h1 className="text-2xl sm:text-3xl font-extrabold bg-clip-text text-transparent" style={{ background: 'linear-gradient(to right, #ED7B00, #E66426, #ED7B00)' }}>
+                <h1 className="text-2xl sm:text-3xl font-extrabold bg-gradient-to-r from-[#ED7B00] via-[#E66426] to-[#ED7B00] bg-clip-text text-transparent">
                   Clinkr
                 </h1>
               </div>
@@ -303,20 +289,20 @@ const Onboarding = () => {
               <div className="absolute left-0 right-0 h-0.5 top-5 opacity-20 rounded-full" style={{ background: 'linear-gradient(to right, #ED7B00, #E66426, #ED7B00)' }}></div>
               
               <div className="flex justify-between items-center relative">
-                {[1, 2, 3].map((step) => (
+                {[1, 2].map((step) => (
                   <div key={step} className="flex flex-col items-center">
                     <div 
                       className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 ${
                         currentStep >= step 
                           ? 'text-white shadow-lg'
                           : 'bg-white/80 backdrop-blur-sm border border-gray-300 text-gray-700' 
-                          : 'bg-gray-200 text-gray-400 border border-gray-300'
                       } relative z-10`}
+                      style={currentStep >= step ? { background: 'linear-gradient(to bottom right, #ED7B00, #E66426, #ED7B00)' } : {}}
                     >
-                      {step === 1 ? <FaUser className="text-sm" /> : step === 2 ? <FaLink className="text-sm" /> : <FaChartLine className="text-sm" />}
+                      {step === 1 ? <FaUser className="text-sm" /> : <FaChartLine className="text-sm" />}
                     </div>
                     <span className={`text-xs mt-2 font-medium ${currentStep >= step ? 'text-gray-700' : 'text-gray-400'}`}>
-                      {step === 1 ? 'Profile' : step === 2 ? 'Links' : 'Finish'}
+                      {step === 1 ? 'Profile' : 'Finish'}
                     </span>
                   </div>
                 ))}
@@ -339,8 +325,11 @@ const Onboarding = () => {
                               className="w-full h-full object-cover rounded-full"
                             />
                             {isUploadingPicture && (
-                              <div className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-full">
-                                <LoadingScreen compact />
+                              <div className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-full z-10">
+                                <div className="flex flex-col items-center justify-center">
+                                  <div className="w-8 h-8 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                                  <span className="text-white text-xs mt-2 font-medium">Uploading...</span>
+                                </div>
                               </div>
                             )}
                           </div>
@@ -375,7 +364,7 @@ const Onboarding = () => {
                     name="username"
                     type="text"
                     required
-                    className="mt-1 appearance-none rounded-lg relative block w-full px-3 py-3 bg-white/80 backdrop-blur-sm border border-gray-300 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:border-orange-400 sm:text-sm transition-all duration-200"
+                    className="mt-1 appearance-none rounded-lg relative block w-full px-3 py-3 bg-white/80 backdrop-blur-sm border border-gray-300 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:border-transparent sm:text-sm transition-all duration-200"
                     style={{ '--focus-ring': 'rgba(237, 123, 0, 0.3)' } as React.CSSProperties}
                     placeholder="doejohn999"
                     value={formData.username}
@@ -393,7 +382,7 @@ const Onboarding = () => {
                     id="bio"
                     name="bio"
                     rows={3}
-                    className="mt-1 appearance-none rounded-lg relative block w-full px-3 py-3 bg-white/80 backdrop-blur-sm border border-gray-300 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:border-orange-400 sm:text-sm transition-all duration-200 resize-none"
+                    className="mt-1 appearance-none rounded-lg relative block w-full px-3 py-3 bg-white/80 backdrop-blur-sm border border-gray-300 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:border-transparent sm:text-sm transition-all duration-200 resize-none"
                     style={{ '--focus-ring': 'rgba(237, 123, 0, 0.3)' } as React.CSSProperties}
                     placeholder="Write a crisp bio within 160 characters"
                     value={formData.bio}
@@ -405,62 +394,8 @@ const Onboarding = () => {
               </div>
             )}
 
-            {/* Step 2: Links */}
+            {/* Step 2: Final Step */}
             {currentStep === 2 && (
-              <div className="space-y-6 relative z-10">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Add Your Links</label>
-                  <p className="text-xs text-gray-500 mb-4">You can add up to 5 links</p>
-                  <div className="space-y-3">
-                    {formData.links.map((link, index) => (
-                      <div key={index} className="space-y-2">
-                        <input
-                          type="text"
-                          value={link.title}
-                          onChange={(e) => handleLinkChange(index, 'title', e.target.value)}
-                          className="w-full rounded-lg px-3 py-2 bg-white/80 backdrop-blur-sm border border-gray-300 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:border-orange-400 sm:text-sm transition-all duration-200"
-                          style={{ '--focus-ring': 'rgba(237, 123, 0, 0.3)' } as React.CSSProperties}
-                          placeholder="Link Title (e.g., My Website)"
-                        />
-                        <div className="flex gap-2">
-                          <input
-                            type="url"
-                            value={link.url}
-                            onChange={(e) => handleLinkChange(index, 'url', e.target.value)}
-                            className="flex-1 rounded-lg px-3 py-2 bg-white/80 backdrop-blur-sm border border-gray-300 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:border-orange-400 sm:text-sm transition-all duration-200"
-                            style={{ '--focus-ring': 'rgba(237, 123, 0, 0.3)' } as React.CSSProperties}
-                            placeholder="https://example.com"
-                          />
-                          {formData.links.length > 1 && (
-                            <button
-                              type="button"
-                              onClick={() => removeLink(index)}
-                              className="px-3 py-2 bg-red-100 hover:bg-red-200 text-red-600 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-red-500"
-                            >
-                              <FaTrash size={14} />
-                            </button>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                    {formData.links.length < 5 && (
-                      <button
-                        type="button"
-                        onClick={() => setFormData(prev => ({ ...prev, links: [...prev.links, { title: '', url: '' }] }))}
-                        className="mt-3 flex items-center gap-2 transition-colors text-sm font-medium"
-                        style={{ color: '#ED7B00', '--hover-color': '#E66426' } as React.CSSProperties}
-                      >
-                        <FaPlus size={12} />
-                        Add another link
-                      </button>
-                    )}
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Step 3: Final Step */}
-            {currentStep === 3 && (
               <div className="space-y-6 text-center relative z-10">
                 <div className="bg-white/60 backdrop-blur-sm p-6 rounded-lg shadow-lg border border-white/40">
                   <div className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center" style={{ background: 'linear-gradient(to bottom right, #ED7B00, #E66426, #ED7B00)' }}>
@@ -471,11 +406,11 @@ const Onboarding = () => {
                     Your Clinkr profile is ready to go. Start tracking your link metrics and grow your online presence.
                   </p>
                   <div className="py-3">
-                      <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
-                        <div className="h-full w-full rounded-full" style={{ background: 'linear-gradient(to right, #ED7B00, #E66426, #ED7B00)' }}>
-                          <LoadingScreen compact />
-                        </div>
+                    <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="h-full w-full rounded-full" style={{ background: 'linear-gradient(to right, #ED7B00, #E66426, #ED7B00)' }}>
+                        <LoadingScreen compact />
                       </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -495,35 +430,11 @@ const Onboarding = () => {
               <button
                 onClick={handleNextStep}
                 disabled={isLoading || !isStepValid}
-                className={`flex-1 py-3 px-4 border border-transparent rounded-lg text-sm font-medium text-white shadow-lg hover:shadow-xl active:shadow-md transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-offset-2 ${
-                  currentStep === totalSteps - 1 ? 'bg-gradient-to-br from-[#ED7B00] via-[#E66426] to-[#ED7B00] hover:from-[#E66426] hover:via-[#ED7B00] hover:to-[#E66426] active:from-[#E66426] active:via-[#ED7B00] active:to-[#E66426] focus:ring-[#ED7B00]/50' : 'bg-gradient-to-br from-[#ED7B00] via-[#E66426] to-[#ED7B00] hover:from-[#E66426] hover:via-[#ED7B00] hover:to-[#E66426] active:from-[#E66426] active:via-[#ED7B00] active:to-[#E66426] focus:ring-[#ED7B00]/50'
-                  isLoading ? 'opacity-100' : ''
-                } disabled:opacity-100 disabled:cursor-not-allowed disabled:hover:shadow-lg transform hover:scale-[1.02] active:scale-[0.98] hover:-translate-y-0.5 active:translate-y-0 relative overflow-hidden`}
-                style={{
-                  boxShadow: isLoading || !isStepValid 
-                    ? '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)' 
-                    : '0 10px 15px -3px rgba(249, 115, 22, 0.4), 0 4px 6px -2px rgba(249, 115, 22, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
-                }}
+                className="btn-primary flex-1 py-3 px-4 rounded-lg text-sm font-semibold text-white transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {/* Button glow effect */}
-                <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 rounded-lg"></div>
-                
-                {/* Button content */}
-                <span className="relative z-10">
-                  {isLoading ? (
-                    <span className="inline-flex items-center gap-2">
-                      <LoadingScreen compact />
-                      Processing...
-                    </span>
-                  ) : (
-                    <span className="font-semibold">
-                      {currentStep < 3 ? 'Next' : 'Get Started'}
-                    </span>
-                  )}
+                <span className="font-semibold">
+                  {currentStep < 2 ? 'Next' : 'Get Started'}
                 </span>
-                
-                {/* Animated background shine effect */}
-                <div className="absolute inset-0 -skew-x-12 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 hover:opacity-100 hover:animate-shine transition-opacity duration-300"></div>
               </button>
             </div>
           </div>

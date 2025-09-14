@@ -93,14 +93,6 @@ function App() {
       ),
     },
     {
-      path: "/:identifier",
-      element: (
-        <Suspense fallback={<SuspenseFallback />}>
-          <SmartRouteResolver />
-        </Suspense>
-      ),
-    },
-    {
       path: "/privacypolicy",
       element: (
         <Suspense fallback={<SuspenseFallback />}>
@@ -121,6 +113,14 @@ function App() {
       element: (
         <Suspense fallback={<SuspenseFallback />}>
           <CookiePolicy />
+        </Suspense>
+      ),
+    },
+    {
+      path: "/:identifier",
+      element: (
+        <Suspense fallback={<SuspenseFallback />}>
+          <SmartRouteResolver />
         </Suspense>
       ),
     },

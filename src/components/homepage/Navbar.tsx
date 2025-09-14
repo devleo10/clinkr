@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState} from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import logo from '../../assets/Frame.png';
 import { useAuth } from '../auth/AuthProvider';
@@ -6,18 +6,10 @@ import { motion } from 'framer-motion';
 
 const Navbar = () => {
   const [showDropdown, setShowDropdown] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
   const navigate = useNavigate();
   const { session } = useAuth();
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-    };
-    
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+
 
   const handleButtonClick = () => {
     if (session) {
@@ -57,10 +49,7 @@ const Navbar = () => {
       initial={{ y: -20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
-      className={`w-full flex items-center justify-between px-6 sm:px-8 py-4 relative z-20 transition-all duration-300 ${
-        scrolled 
-          ? 'glass-card mx-4 mt-4 rounded-2xl shadow-lg' 
-          : 'bg-transparent'
+      className={`w-full flex items-center justify-between px-6 sm:px-8 py-4 relative z-20 transition-all duration-300 'bg-transparent'
       }`}
     >
       {/* Logo and brand section */}

@@ -3,7 +3,7 @@ import logo from '../../assets/Frame.png';
 import { motion } from 'framer-motion';
 import { supabase } from '../../lib/supabaseClient';
 import { useState, useRef, useEffect } from 'react';
-import { FaEllipsisV, FaUser, FaSignOutAlt } from 'react-icons/fa';
+import { FaEllipsisV, FaUser, FaSignOutAlt, FaTrash } from 'react-icons/fa';
 
 const Navbar = () => {
   const location = useLocation();
@@ -22,6 +22,66 @@ const Navbar = () => {
       navigate('/homepage');
     } catch (error) {
       console.error('Logout error:', error);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    const confirmed = window.confirm(
+      'Are you sure you want to delete your account? This action cannot be undone and will permanently delete all your data, links, and profile.'
+    );
+    
+    if (!confirmed) return;
+    
+    try {
+      // Get current user
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      if (userError || !user) throw new Error('No user found');
+      
+      // Import the cleanup function
+      const { cleanupUserData } = await import('../../lib/userCleanup');
+      
+      // Use Edge Function for complete cleanup
+      const result = await cleanupUserData(user.id);
+      
+      if (result.success) {
+        alert('Account deleted successfully. You will be redirected to the homepage.');
+        // Navigate to homepage
+        navigate('/homepage');
+      } else {
+        console.error('Account deletion failed:', result.errors);
+        alert(`Account deletion failed: ${result.message}. Please contact support if you continue to experience issues.`);
+      }
+      
+    } catch (error: any) {
+      console.error('Error deleting account:', error);
+      alert('Failed to delete account: ' + error.message);
+    }
+  };
+
+  const handleClearAllLinks = async () => {
+    const confirmed = window.confirm(
+      'Are you sure you want to delete all your shortened links? This action cannot be undone.'
+    );
+    
+    if (!confirmed) return;
+    
+    try {
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      if (userError || !user) throw new Error('No user found');
+      
+      const { error: deleteError } = await supabase
+        .from('shortened_links')
+        .delete()
+        .eq('user_id', user.id);
+        
+      if (deleteError) throw deleteError;
+      
+      alert('All links have been deleted');
+      // Refresh the page to update the dashboard
+      window.location.reload();
+    } catch (error) {
+      console.error('Clear links error:', error);
+      alert('Failed to delete links. Please try again.');
     }
   };
 
@@ -49,7 +109,10 @@ const Navbar = () => {
       {/* Animated gradient bar at the top */}
       <motion.div 
         className="absolute top-0 left-0 right-0 h-[3px] z-10"
-        style={{ background: 'linear-gradient(to right, #B73D00, #ED7B00, #E66426)' }}
+        style={{ 
+          background: 'linear-gradient(to right, #B73D00, #ED7B00, #E66426)',
+          backgroundSize: '200% 200%'
+        }}
         animate={{ 
           backgroundPosition: ['0% 50%', '100% 50%', '0% 50%']
         }}
@@ -58,7 +121,6 @@ const Navbar = () => {
           repeat: Infinity,
           ease: "easeInOut"
         }}
-        style={{ backgroundSize: '200% 200%' }}
       />
 
       {/* Completely transparent navbar - no background */}
@@ -119,8 +181,34 @@ const Navbar = () => {
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: -10, scale: 0.95 }}
                   transition={{ duration: 0.15 }}
-                  className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50"
+                  className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50"
                 >
+                  <button
+                    onClick={() => {
+                      handleClearAllLinks();
+                      setShowDropdown(false);
+                    }}
+                    className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-red-50 flex items-center gap-3"
+                  >
+                    <FaTrash className="w-4 h-4 text-red-500" />
+                    <span>Clear All Links</span>
+                  </button>
+                  
+                  <div className="border-t border-gray-100 my-1"></div>
+                  
+                  <button
+                    onClick={() => {
+                      handleDeleteAccount();
+                      setShowDropdown(false);
+                    }}
+                    className="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50 flex items-center gap-3"
+                  >
+                    <FaTrash className="w-4 h-4 text-red-500" />
+                    <span>Delete Account</span>
+                  </button>
+                  
+                  <div className="border-t border-gray-100 my-1"></div>
+                  
                   <button
                     onClick={() => {
                       handleLogout();
@@ -128,7 +216,7 @@ const Navbar = () => {
                     }}
                     className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-3"
                   >
-                    <FaSignOutAlt className="w-4 h-4 text-red-500" />
+                    <FaSignOutAlt className="w-4 h-4 text-gray-500" />
                     <span>Logout</span>
                   </button>
                 </motion.div>

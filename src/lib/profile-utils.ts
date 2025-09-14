@@ -139,3 +139,107 @@ export function detectBrowser(): string {
   
   return 'Unknown';
 }
+
+
+
+export function getPlatformName(url: string): string {
+  const urlLower = url.toLowerCase();
+  
+  // AI/Chat platforms
+  if (urlLower.includes('deepseek.com') || urlLower.includes('deepseek')) {
+    return 'DeepSeek';
+  }
+  if (urlLower.includes('openai.com') || urlLower.includes('chatgpt') || urlLower.includes('openai')) {
+    return 'ChatGPT';
+  }
+  if (urlLower.includes('claude') || urlLower.includes('anthropic')) {
+    return 'Claude';
+  }
+  if (urlLower.includes('gemini') || urlLower.includes('bard')) {
+    return 'Gemini';
+  }
+  
+  // Social media platforms
+  if (urlLower.includes('facebook.com') || urlLower.includes('fb.com')) {
+    return 'Facebook';
+  }
+  if (urlLower.includes('twitter.com') || urlLower.includes('x.com')) {
+    return 'Twitter';
+  }
+  if (urlLower.includes('instagram.com')) {
+    return 'Instagram';
+  }
+  if (urlLower.includes('linkedin.com')) {
+    return 'LinkedIn';
+  }
+  if (urlLower.includes('youtube.com') || urlLower.includes('youtu.be')) {
+    return 'YouTube';
+  }
+  if (urlLower.includes('tiktok.com')) {
+    return 'TikTok';
+  }
+  if (urlLower.includes('github.com')) {
+    return 'GitHub';
+  }
+  if (urlLower.includes('discord.com') || urlLower.includes('discord.gg')) {
+    return 'Discord';
+  }
+  if (urlLower.includes('t.me') || urlLower.includes('telegram.org')) {
+    return 'Telegram';
+  }
+  if (urlLower.includes('wa.me') || urlLower.includes('whatsapp.com')) {
+    return 'WhatsApp';
+  }
+  if (urlLower.includes('snapchat.com')) {
+    return 'Snapchat';
+  }
+  if (urlLower.includes('pinterest.com')) {
+    return 'Pinterest';
+  }
+  if (urlLower.includes('reddit.com')) {
+    return 'Reddit';
+  }
+  if (urlLower.includes('twitch.tv')) {
+    return 'Twitch';
+  }
+  if (urlLower.includes('spotify.com')) {
+    return 'Spotify';
+  }
+  
+  // Tech platforms
+  if (urlLower.includes('apple.com')) {
+    return 'Apple';
+  }
+  if (urlLower.includes('google.com') || urlLower.includes('gmail.com') || urlLower.includes('goog')) {
+    return 'Google';
+  }
+  if (urlLower.includes('microsoft.com')) {
+    return 'Microsoft';
+  }
+  if (urlLower.includes('amazon.com')) {
+    return 'Amazon';
+  }
+  if (urlLower.includes('netflix.com')) {
+    return 'Netflix';
+  }
+  
+  // Development/Coding platforms
+  if (urlLower.includes('stackoverflow.com')) {
+    return 'Stack Overflow';
+  }
+  if (urlLower.includes('codepen.io')) {
+    return 'CodePen';
+  }
+  if (urlLower.includes('jsfiddle.net')) {
+    return 'JSFiddle';
+  }
+  
+  // Extract domain name as fallback
+  try {
+    const urlObj = new URL(url);
+    const domain = urlObj.hostname.replace('www.', '');
+    return domain.charAt(0).toUpperCase() + domain.slice(1);
+  } catch {
+    return 'Link';
+  }
+}

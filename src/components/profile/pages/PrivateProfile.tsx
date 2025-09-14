@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Card, CardContent } from "../../ui/card";
-import { useParams } from 'react-router-dom';
 import { supabase } from '../../../lib/supabaseClient';
 import { FaTrash, FaCopy, FaGripVertical, FaCheck, FaTimes, FaSpinner, FaChartLine } from 'react-icons/fa';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "../../ui/alert-dialog";
@@ -21,9 +20,9 @@ interface EditState {
   bio: boolean;
   profilePicture: boolean;
 }
+
 const PrivateProfile = () => {
-  const { username } = useParams();
-  const { profile, setProfile, loading, setLoading, error, setError, getCurrentUserId } = useProfile(username);
+  const { profile, setProfile, loading, setLoading, error, setError, getCurrentUserId } = useProfile();
   const { simplifiedAnimations } = usePerformanceOptimization();
   const { session } = useAuth();
   
@@ -286,34 +285,18 @@ const PrivateProfile = () => {
       const userId = await getCurrentUserId();
       if (!userId) throw new Error('No user found');
 
-      // Delete profile picture from storage if exists
-      if (profile?.profile_picture) {
-        try {
-          if (profile.profile_picture) {
-            let previousFilePath = '';
-            if (profile.profile_picture) {
-              previousFilePath = new URL(profile.profile_picture).pathname.replace(/^\/storage\/v1\/object\/public\/user-data\//, '');
-              await supabase.storage.from('user-data').remove([previousFilePath]);
-            }
-          }
-        } catch (e) {
-          // Ignore storage errors
-        }
+      // Import the cleanup function
+      const { cleanupUserData } = await import('../../../lib/userCleanup');
+      
+      // Use Edge Function for complete cleanup
+      const result = await cleanupUserData(userId);
+      
+      if (result.success) {
+        // Redirect to homepage
+        window.location.href = '/homepage';
+      } else {
+        setError(result.message || 'Failed to delete profile');
       }
-
-      // Delete all related analytics/views if needed (optional, add more as needed)
-      await supabase.from('profile_views').delete().eq('profile_id', userId);
-      await supabase.from('link_analytics').delete().eq('profile_id', userId);
-      await supabase.from('profiles').delete().eq('profile_id', userId);
-      // Delete the profile itself
-      const { error } = await supabase.from('profiles').delete().eq('id', userId);
-      if (error) throw error;
-
-      // Optionally, sign out the user
-      await supabase.auth.signOut();
-
-      // Redirect to signup or homepage
-  // removed stray navigate('/signup')
     } catch (err: any) {
       setError(err.message);
     } finally {

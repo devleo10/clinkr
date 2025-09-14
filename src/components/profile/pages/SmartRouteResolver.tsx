@@ -106,6 +106,7 @@ const SmartRouteResolver = () => {
   }
 
   if (resolution?.type === 'username') {
+    console.log('Found profile, rendering PublicProfile for:', resolution.data.username);
     return <PublicProfile />;
   }
 

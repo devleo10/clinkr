@@ -50,8 +50,11 @@ const ProfileHeader = ({
       <div className="w-32 h-32 mx-auto rounded-full p-1 flex items-center justify-center mb-4 relative shadow-sm border border-gray-100 bg-white group">
         <div className="w-full h-full rounded-full overflow-hidden flex items-center justify-center bg-gray-50">
           {loading && (
-            <div className="absolute inset-0 flex items-center justify-center bg-transparent z-20">
-              {/* Loading spinner or screen */}
+            <div className="absolute inset-0 flex items-center justify-center bg-black/20 rounded-full z-20">
+              <div className="flex flex-col items-center justify-center">
+                <div className="w-8 h-8 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                <span className="text-white text-xs mt-2 font-medium">Uploading...</span>
+              </div>
             </div>
           )}
           {profile?.profile_picture ? (
