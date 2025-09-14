@@ -1,15 +1,18 @@
 import { Link, useParams } from 'react-router-dom';
-import { FaUser, FaShare } from 'react-icons/fa';
+import { useState } from 'react';
+import { FaUser, FaShare, FaEllipsisV } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
 import LoadingScreen from '../../ui/loadingScreen';
 import { getSocialIcon, getPlatformName } from '../../../lib/profile-utils';
 import usePerformanceOptimization from '../../../hooks/usePerformanceOptimization';
 import { usePublicProfile } from '../hooks/usePublicProfile';
+import logo from '../../../assets/Frame.png';
 
 const PublicProfile = () => {
   const { identifier } = useParams();
   const { profile, shortLinks, loading, error } = usePublicProfile(identifier || '');
   const { simplifiedAnimations } = usePerformanceOptimization();
+  const [showMenu, setShowMenu] = useState(false);
 
   console.log('PublicProfile component mounted, identifier:', identifier);
 
@@ -125,45 +128,124 @@ const PublicProfile = () => {
       </div>
 
       <div className="relative z-10 max-w-md mx-auto px-6 py-12">
-        {/* App Logo */}
-        <motion.div 
-          className="text-center mb-8"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
-          <div className="inline-flex items-center gap-2 px-6 py-3 bg-white/80 backdrop-blur-sm border border-orange-200/50 rounded-full shadow-lg">
-            <div className="w-6 h-6 bg-gradient-to-r from-orange-500 to-amber-500 rounded-full"></div>
-            <span className="text-lg font-bold bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent">
-              Clinkr
-            </span>
-          </div>
-        </motion.div>
 
-        {/* Profile Picture */}
+        {/* Profile Section with Logo and Photo */}
         <motion.div 
-          className="text-center mb-6"
+          className="flex items-center justify-between mb-6"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
         >
-          <div className="relative w-32 h-32 mx-auto">
-            <div className="absolute inset-0 bg-white rounded-full p-2 shadow-xl">
-              <div className="w-full h-full rounded-full overflow-hidden bg-gray-100">
-                {profile?.profile_picture ? (
-                  <img 
-                    src={profile.profile_picture} 
-                    alt={profile.username} 
-                    className="w-full h-full object-cover" 
-                  />
-                ) : (
-                  <div className="w-full h-full bg-gradient-to-br from-gray-400 to-gray-500 flex items-center justify-center">
-                    <FaUser size={40} className="text-white" />
-                  </div>
-                )}
-              </div>
+          {/* Logo and Brand - Left Side */}
+          <motion.div 
+            className="flex items-center gap-3"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+          >
+            <Link to="/" className="flex items-center">
+              <motion.img 
+                src={logo} 
+                alt="Clinkr Logo" 
+                className="w-8 h-8" 
+                whileHover={{ scale: 1.1, rotate: 5 }}
+                transition={{ duration: 0.2 }}
+              />
+            </Link>
+            <Link to="/" className="group">
+              <motion.h1 
+                className="text-xl font-bold text-gradient group-hover:scale-105 transition-transform duration-200"
+                whileHover={{ scale: 1.05 }}
+              >
+                Clinkr
+              </motion.h1>
+            </Link>
+          </motion.div>
+
+          {/* Three Dot Menu - Right Side */}
+          <div className="relative">
+            <motion.button
+              onClick={() => setShowMenu(!showMenu)}
+              className="p-2 rounded-lg hover:bg-white/20 transition-colors"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+            >
+              <FaEllipsisV className="w-5 h-5 text-gray-600" />
+            </motion.button>
+
+            {/* Dropdown Menu */}
+            <AnimatePresence>
+              {showMenu && (
+                <motion.div 
+                  initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                  className="absolute right-0 mt-2 w-48 bg-white/95 backdrop-blur-sm border border-orange-200/50 rounded-xl py-2 shadow-lg z-30"
+                >
+                  <button 
+                    onClick={() => {
+                      handleShareProfile();
+                      setShowMenu(false);
+                    }}
+                    className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors flex items-center gap-3"
+                  >
+                    <FaShare size={14} />
+                    Share Profile
+                  </button>
+                  <button 
+                    onClick={() => {
+                      handleCopyProfileUrl();
+                      setShowMenu(false);
+                    }}
+                    className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors flex items-center gap-3"
+                  >
+                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                    Copy URL
+                  </button>
+                  <button 
+                    onClick={() => {
+                      handleContactUser();
+                      setShowMenu(false);
+                    }}
+                    className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors flex items-center gap-3"
+                  >
+                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                    Contact
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </motion.div>
+
+        {/* Profile Picture - Larger Size, No Color Overlay */}
+        <motion.div 
+          className="text-center mb-6"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+        >
+          <div className="relative w-48 h-48 mx-auto">
+            <div className="w-full h-full rounded-full overflow-hidden bg-gray-100 shadow-xl">
+              {profile?.profile_picture ? (
+                <img 
+                  src={profile.profile_picture} 
+                  alt={profile.username} 
+                  className="w-full h-full object-cover" 
+                />
+              ) : (
+                <div className="w-full h-full bg-gradient-to-br from-gray-400 to-gray-500 flex items-center justify-center">
+                  <FaUser size={60} className="text-white" />
+                </div>
+              )}
             </div>
-            <div className="absolute inset-0 bg-gray-200/20 rounded-full blur-xl scale-110"></div>
           </div>
         </motion.div>
 
@@ -172,7 +254,7 @@ const PublicProfile = () => {
           className="text-2xl font-bold mb-6 text-center bg-gradient-to-r from-orange-600 via-amber-600 to-yellow-600 bg-clip-text text-transparent"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
+          transition={{ duration: 0.5, delay: 0.6 }}
         >
           {profile.username}
         </motion.h1>
@@ -257,74 +339,6 @@ const PublicProfile = () => {
           </AnimatePresence>
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex flex-col gap-3 mb-8">
-          {/* Share Button */}
-          <motion.button
-            onClick={handleShareProfile}
-            className="group relative inline-flex items-center justify-center gap-3 px-8 py-3 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-semibold rounded-full shadow-lg hover:shadow-xl hover:from-orange-600 hover:to-amber-600 transition-all duration-300"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, delay: 1.0 }}
-            whileHover={{ scale: 1.05, y: -2 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <FaShare size={16} className="group-hover:rotate-12 transition-transform duration-300" />
-            <span>Share Profile</span>
-          </motion.button>
-
-          {/* Additional Action Buttons */}
-          <div className="flex gap-3">
-            {/* Copy URL Button */}
-            <motion.button
-              onClick={handleCopyProfileUrl}
-              className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3 bg-white/90 backdrop-blur-sm border border-orange-200/50 text-gray-700 font-medium rounded-full shadow-lg hover:shadow-xl hover:bg-white hover:border-orange-300/70 transition-all duration-300"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 1.1 }}
-              whileHover={{ scale: 1.02, y: -1 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-              </svg>
-              <span>Copy URL</span>
-            </motion.button>
-
-            {/* Contact Button */}
-            <motion.button
-              onClick={handleContactUser}
-              className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3 bg-white/90 backdrop-blur-sm border border-orange-200/50 text-gray-700 font-medium rounded-full shadow-lg hover:shadow-xl hover:bg-white hover:border-orange-300/70 transition-all duration-300"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 1.2 }}
-              whileHover={{ scale: 1.02, y: -1 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-              </svg>
-              <span>Contact</span>
-            </motion.button>
-          </div>
-        </div>
-
-        {/* Stats */}
-        {shortLinks.length > 0 && (
-          <motion.div 
-            className="text-center mb-8"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 1.3 }}
-          >
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/60 backdrop-blur-sm border border-orange-200/50 rounded-full">
-              <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
-              <span className="text-sm text-gray-600 font-medium">
-                {shortLinks.length} {shortLinks.length === 1 ? 'link' : 'links'} available
-              </span>
-            </div>
-          </motion.div>
-        )}
 
         {/* Empty State */}
         {shortLinks.length === 0 && (
