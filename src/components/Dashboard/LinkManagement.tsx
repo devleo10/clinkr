@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   FaLink, FaCopy, FaTrash, FaExternalLinkAlt, FaChartLine, FaQrcode, 
-  FaEdit, FaCheck, FaTimes, FaSpinner, FaTag,
-  FaEye, FaEyeSlash, FaLock, FaPlus
+  FaEdit, FaTag,
+  FaLock, FaPlus
 } from 'react-icons/fa';
 import { linkShorteningService, ShortLink } from '../../lib/linkShorteningService';
 import { usePerformanceOptimization } from '../../hooks/usePerformanceOptimization';
@@ -26,7 +26,6 @@ interface LinkManagementProps {
 const LinkManagement: React.FC<LinkManagementProps> = ({ userId, onLinkUpdate }) => {
   const { simplifiedAnimations } = usePerformanceOptimization();
   const [links, setLinks] = useState<EnhancedLink[]>([]);
-  const [loading, setLoading] = useState(false);
   const [fetchingLinks, setFetchingLinks] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);

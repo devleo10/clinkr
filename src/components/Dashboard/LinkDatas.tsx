@@ -82,9 +82,13 @@ const LinkDatas: React.FC<LinkDatasProps> = ({ searchQuery }) => {
       {/* Animated accent */}
       <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-600 via-amber-500 to-orange-500" />
       
-      {filteredLinks.length === 0 ? (
+      {links.length === 0 ? (
         <div className="text-center py-8 relative z-10">
-          <p className="text-black">No links found. Add your first link to get started!</p>
+          <p className="text-gray-500 text-sm">No links to display yet</p>
+        </div>
+      ) : filteredLinks.length === 0 ? (
+        <div className="text-center py-8 relative z-10">
+          <p className="text-black">No links found matching your search.</p>
         </div>
       ) : (
         <div className="relative z-10">
