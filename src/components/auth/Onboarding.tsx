@@ -364,7 +364,7 @@ const Onboarding = () => {
                     name="username"
                     type="text"
                     required
-                    className="mt-1 appearance-none rounded-lg relative block w-full px-3 py-3 bg-white/80 backdrop-blur-sm border border-gray-300 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:border-transparent sm:text-sm transition-all duration-200"
+                    className="mt-1 appearance-none rounded-lg relative block w-full px-3 py-3 bg-white/80 backdrop-blur-sm border border-gray-300 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent sm:text-sm transition-all duration-200"
                     style={{ '--focus-ring': 'rgba(237, 123, 0, 0.3)' } as React.CSSProperties}
                     placeholder="doejohn999"
                     value={formData.username}
@@ -382,7 +382,7 @@ const Onboarding = () => {
                     id="bio"
                     name="bio"
                     rows={3}
-                    className="mt-1 appearance-none rounded-lg relative block w-full px-3 py-3 bg-white/80 backdrop-blur-sm border border-gray-300 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:border-transparent sm:text-sm transition-all duration-200 resize-none"
+                    className="mt-1 appearance-none rounded-lg relative block w-full px-3 py-3 bg-white/80 backdrop-blur-sm border border-gray-300 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent sm:text-sm transition-all duration-200 resize-none"
                     style={{ '--focus-ring': 'rgba(237, 123, 0, 0.3)' } as React.CSSProperties}
                     placeholder="Write a crisp bio within 160 characters"
                     value={formData.bio}
@@ -422,7 +422,7 @@ const Onboarding = () => {
                 <button
                   onClick={handlePrevStep}
                   disabled={isLoading}
-                  className="flex-1 py-3 px-4 bg-white/80 backdrop-blur-sm border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all transform hover:scale-105 duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+                  className="flex-1 py-3 px-4 bg-white/80 backdrop-blur-sm border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all transform hover:scale-105 duration-200 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-2"
                 >
                   Back
                 </button>
