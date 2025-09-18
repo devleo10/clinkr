@@ -5,6 +5,12 @@ export interface CreateShortLinkData {
   title?: string;
   customCode?: string;
   expiresAt?: Date;
+  description?: string;
+  password?: string;
+  tags?: string[];
+  utm_source?: string;
+  utm_medium?: string;
+  utm_campaign?: string;
 }
 
 export interface ShortLink {
@@ -17,6 +23,12 @@ export interface ShortLink {
   created_at: string;
   expires_at?: string;
   is_active: boolean;
+  description?: string;
+  password?: string;
+  tags?: string[];
+  utm_source?: string;
+  utm_medium?: string;
+  utm_campaign?: string;
 }
 
 class LinkShorteningService {
@@ -32,7 +44,18 @@ class LinkShorteningService {
   ];
 
   async createShortLink(data: CreateShortLinkData, userId: string): Promise<ShortLink> {
-    const { originalUrl, title, customCode, expiresAt } = data;
+    const { 
+      originalUrl, 
+      title, 
+      customCode, 
+      expiresAt, 
+      description, 
+      password, 
+      tags, 
+      utm_source, 
+      utm_medium, 
+      utm_campaign 
+    } = data;
 
     // Validate URL
     if (!this.isValidUrl(originalUrl)) {
@@ -83,8 +106,14 @@ class LinkShorteningService {
         short_code: shortCode,
         original_url: originalUrl,
         title: title || this.extractTitleFromUrl(originalUrl),
-        user_id: userId, // Only need user_id, no profile_id needed
+        user_id: userId,
         expires_at: expiresAt?.toISOString(),
+        description: description || null,
+        password: password || null,
+        tags: tags || null,
+        utm_source: utm_source || null,
+        utm_medium: utm_medium || null,
+        utm_campaign: utm_campaign || null,
       })
       .select()
       .single();

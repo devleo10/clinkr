@@ -142,7 +142,7 @@ const ProfileHeader = ({
               onChange={(e) => {
                 if (e.target.value.length <= 160) setEditedBio(e.target.value);
               }}
-              className="w-full p-2 border rounded-md focus:ring-[#4F46E5] focus:border-transparent"
+              className="w-full p-2 border rounded-md focus:ring-2 focus:ring-orange-400 focus:border-transparent"
               placeholder="Write your bio..."
               rows={3}
               maxLength={160}

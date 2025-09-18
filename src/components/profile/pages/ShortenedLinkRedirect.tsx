@@ -29,6 +29,25 @@ const ShortenedLinkRedirect = ({ shortLink }: ShortenedLinkRedirectProps) => {
         console.log('Detected device type:', deviceType);
         console.log('Detected browser:', browser);
 
+        // Get user's IP address and hash it for unique visitor tracking
+        let hashedIp: string | null = null;
+        try {
+          // Try to get IP from geolocation API response
+          const ipResponse = await fetch('https://api.ipify.org?format=json');
+          const ipData = await ipResponse.json();
+          const userIp = ipData.ip;
+          
+          // Hash the IP address for privacy (simple hash for demo)
+          if (userIp) {
+            hashedIp = btoa(userIp).replace(/[^a-zA-Z0-9]/g, '').substring(0, 16);
+            console.log('IP hashed for unique visitor tracking:', hashedIp);
+          }
+        } catch (ipError) {
+          console.log('Could not get IP address:', ipError);
+          // Use a fallback identifier based on user agent + timestamp
+          hashedIp = btoa(navigator.userAgent + Date.now().toString()).replace(/[^a-zA-Z0-9]/g, '').substring(0, 16);
+        }
+
         // Get geolocation and country with multiple fallbacks
         let countryCode: string | null = null;
         let lat: number | null = null;
@@ -132,6 +151,7 @@ const ShortenedLinkRedirect = ({ shortLink }: ShortenedLinkRedirectProps) => {
           link_type: 'shortened_link',
           lat,
           lng,
+          hashed_ip: hashedIp, // Add hashed IP for unique visitor tracking
         };
         
         console.log('Inserting analytics data:', analyticsData);

@@ -47,31 +47,51 @@ const Trends = () => {
   const { trends } = data;
 
   // Calculate trend data
+  // Calculate proper daily averages based on time frame
+  const getTimeFrameDays = () => {
+    switch (timeFrame) {
+      case '7days': return 7;
+      case '30days': return 30;
+      case '90days': return 90;
+      default: return 30;
+    }
+  };
+
+  const timeFrameDays = getTimeFrameDays();
+  const totalClicks = trends.dailyData.reduce((sum, day) => sum + day.clicks, 0);
+  const totalViews = trends.dailyData.reduce((sum, day) => sum + day.views, 0);
+
   const clicksTrend: TrendData = {
-    total: trends.dailyData.reduce((sum, day) => sum + day.clicks, 0),
+    total: totalClicks,
     growth: 0, // Would need historical data
-    dailyAverage: Math.round(trends.dailyData.reduce((sum, day) => sum + day.clicks, 0) / trends.dailyData.length),
-    peakDay: trends.dailyData.reduce((peak, day) => day.clicks > peak.clicks ? day : peak, trends.dailyData[0])?.date || 'N/A'
+    dailyAverage: Math.round((totalClicks / timeFrameDays) * 10) / 10, // Proper daily average
+    peakDay: trends.dailyData.length > 0 
+      ? trends.dailyData.reduce((peak, day) => day.clicks > peak.clicks ? day : peak, trends.dailyData[0])?.date || 'N/A'
+      : 'N/A'
   };
 
   const viewsTrend: TrendData = {
-    total: trends.dailyData.reduce((sum, day) => sum + day.views, 0),
+    total: totalViews,
     growth: 0, // Would need historical data
-    dailyAverage: Math.round(trends.dailyData.reduce((sum, day) => sum + day.views, 0) / trends.dailyData.length),
-    peakDay: trends.dailyData.reduce((peak, day) => day.views > peak.views ? day : peak, trends.dailyData[0])?.date || 'N/A'
+    dailyAverage: Math.round((totalViews / timeFrameDays) * 10) / 10, // Proper daily average
+    peakDay: trends.dailyData.length > 0 
+      ? trends.dailyData.reduce((peak, day) => day.views > peak.views ? day : peak, trends.dailyData[0])?.date || 'N/A'
+      : 'N/A'
   };
 
   // Engagement metrics
   const engagementMetrics: EngagementMetric[] = [
     {
       metric: "Click Rate",
-      value: `${Math.round((clicksTrend.total / viewsTrend.total) * 100)}%`,
+      value: viewsTrend.total > 0 
+        ? `${Math.min(Math.round((clicksTrend.total / viewsTrend.total) * 100), 100)}%`
+        : '0%',
       trend: "up",
       change: 0
     },
     {
       metric: "Daily Average",
-      value: clicksTrend.dailyAverage.toLocaleString(),
+      value: clicksTrend.dailyAverage.toFixed(1), // Use proper daily average
       trend: "up",
       change: 0
     },

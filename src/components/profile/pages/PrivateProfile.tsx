@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Card, CardContent } from "../../ui/card";
 import { supabase } from '../../../lib/supabaseClient';
-import { FaTrash, FaCopy, FaGripVertical, FaCheck, FaTimes, FaSpinner, FaChartLine } from 'react-icons/fa';
+import { FaTrash, FaCopy, FaGripVertical, FaChartLine } from 'react-icons/fa';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "../../ui/alert-dialog";
 import LinkValidator from "../../../lib/link-validator";
 import { MoreVertical, GripVertical } from "lucide-react";
@@ -14,6 +14,8 @@ import { useProfile } from '../hooks';
 import usePerformanceOptimization from '../../../hooks/usePerformanceOptimization';
 import { linkShorteningService, ShortLink } from '../../../lib/linkShorteningService';
 import { useAuth } from '../../auth/AuthProvider';
+import { Link } from 'react-router-dom';
+import { FaPlus } from 'react-icons/fa';
 
 interface EditState {
   fullName: boolean;
@@ -37,18 +39,7 @@ const PrivateProfile = () => {
   const [toastMessage, setToastMessage] = useState('');
   const [linkReorderMode, setLinkReorderMode] = useState(false);
   const [activeLinkMenu, setActiveLinkMenu] = useState<number | null>(null);
-  const [newLink, setNewLink] = useState({ url: '', title: '', customCode: '' });
-  const [linkError, setLinkError] = useState<string | null>(null);
   const [linkToDeleteIndex, setLinkToDeleteIndex] = useState<number | null>(null);
-  const [slugAvailability, setSlugAvailability] = useState<{
-    checking: boolean;
-    available: boolean | null;
-    error: string | null;
-  }>({
-    checking: false,
-    available: null,
-    error: null,
-  });
   const [shortLinks, setShortLinks] = useState<ShortLink[]>([]);
   
   // Refs
@@ -109,47 +100,6 @@ const PrivateProfile = () => {
     is_active: link.is_active,
   }));
 
-  // Debounced slug availability checking
-  const checkSlugAvailability = useCallback(
-    async (slug: string) => {
-      if (!slug || slug.length < 3) {
-        setSlugAvailability({ checking: false, available: null, error: null });
-        return;
-      }
-
-      setSlugAvailability(prev => ({ ...prev, checking: true, error: null }));
-
-      try {
-        const result = await linkShorteningService.checkSlugAvailability(slug);
-        setSlugAvailability({
-          checking: false,
-          available: result.available,
-          error: result.error || null,
-        });
-      } catch (error) {
-        setSlugAvailability({
-          checking: false,
-          available: false,
-          error: 'Failed to check availability',
-        });
-      }
-    },
-    []
-  );
-
-  // Debounce slug checking
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      if (newLink.customCode) {
-        checkSlugAvailability(newLink.customCode);
-      } else {
-        setSlugAvailability({ checking: false, available: null, error: null });
-      }
-    }, 500);
-
-    return () => clearTimeout(timeoutId);
-  }, [newLink.customCode, checkSlugAvailability]);
-
   // Fetch user's short links on component mount
   useEffect(() => {
     const fetchShortLinks = async () => {
@@ -167,37 +117,6 @@ const PrivateProfile = () => {
     fetchShortLinks();
   }, [session?.user?.id]);
   
-  // Function to handle adding a new shortened link
-  const handleAddLink = async () => {
-    if (!newLink.url || !newLink.title) {
-      setLinkError('Please enter both URL and title.');
-      return;
-    }
-    if (shortLinks.length >= 10) {
-      setLinkError('You can only add up to 10 shortened links.');
-      return;
-    }
-    if (newLink.customCode && slugAvailability.available === false) {
-      setLinkError('Please choose a different custom slug.');
-      return;
-    }
-    setLinkError(null);
-    try {
-      const userId = await getCurrentUserId();
-      if (!userId) throw new Error('No user found');
-
-      const shortLink = await linkShorteningService.createShortLink({
-        originalUrl: newLink.url,
-        title: newLink.title,
-        customCode: newLink.customCode || undefined,
-      }, userId);
-
-      setShortLinks(prev => [shortLink, ...prev]);
-      setNewLink({ url: '', title: '', customCode: '' });
-    } catch (err: any) {
-      setLinkError(err.message);
-    }
-  };
 
   const handleDeleteLink = async () => {
     if (linkToDeleteIndex === null) return;
@@ -530,7 +449,7 @@ const PrivateProfile = () => {
           </div>
           
           <motion.div 
-            className="flex flex-col gap-2 max-w-md mx-auto mt-8"
+            className="flex flex-col gap-4 max-w-md mx-auto mt-8"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ 
@@ -538,75 +457,17 @@ const PrivateProfile = () => {
               delay: simplifiedAnimations ? 0.2 : 0.8 
             }}
           >
-            <LinkValidator url={newLink.url}>
-              {(isValid, message) => (
-                <div className="relative">
-                  <input
-                    type="text"
-                    value={newLink.url}
-                    onChange={(e) => setNewLink(prev => ({ ...prev, url: e.target.value }))}
-                    placeholder="Enter new link URL"
-                    className={`border rounded-md p-2 w-full focus:ring-[#4F46E5] focus:border-[#4F46E5] hover:border-[#4F46E5] ${!isValid && newLink.url ? "border-red-500" : ""}`}
-                  />
-                  {!isValid && newLink.url && (
-                    <span className="text-xs text-red-500">{message}</span>
-                  )}
-                </div>
-              )}
-            </LinkValidator>
-            <input
-              type="text"
-              value={newLink.title}
-              onChange={(e) => setNewLink(prev => ({ ...prev, title: e.target.value }))}
-              placeholder="Enter link title"
-              className="border rounded-md p-2 w-full focus:ring-[#4F46E5] focus:border-[#4F46E5] hover:border-[#4F46E5]"
-            />
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Custom Slug (optional)
-              </label>
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder="my-awesome-slug"
-                  value={newLink.customCode}
-                  onChange={(e) => setNewLink(prev => ({ ...prev, customCode: e.target.value }))}
-                  className={`w-full border rounded-md p-2 pr-10 focus:ring-[#4F46E5] focus:border-[#4F46E5] hover:border-[#4F46E5] ${
-                    slugAvailability.available === true
-                      ? 'border-green-300 bg-green-50'
-                      : slugAvailability.available === false
-                      ? 'border-red-300 bg-red-50'
-                      : ''
-                  }`}
-                />
-                <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                  {slugAvailability.checking ? (
-                    <FaSpinner className="animate-spin text-gray-400" size={16} />
-                  ) : slugAvailability.available === true ? (
-                    <FaCheck className="text-green-500" size={16} />
-                  ) : slugAvailability.available === false ? (
-                    <FaTimes className="text-red-500" size={16} />
-                  ) : null}
-                </div>
-              </div>
-              {slugAvailability.error && (
-                <p className="text-red-500 text-sm mt-1">{slugAvailability.error}</p>
-              )}
-              {slugAvailability.available === true && (
-                <p className="text-green-600 text-sm mt-1">✓ This slug is available!</p>
-              )}
-              <p className="text-gray-500 text-xs mt-1">
-                Use letters, numbers, and hyphens. 3-50 characters.
-              </p>
+            <div className="text-center">
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Want to add more links?</h3>
+              <p className="text-sm text-gray-600 mb-4">Use our advanced dashboard to create and manage your links with full analytics and features.</p>
+              <Link
+                to="/dashboard"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-400 via-amber-500 to-orange-400 text-white font-medium rounded-lg shadow hover:from-orange-500 hover:via-amber-500 hover:to-orange-500 transition-all duration-300"
+              >
+                <FaPlus size={16} />
+                Go to Dashboard
+              </Link>
             </div>
-            <button
-              onClick={handleAddLink}
-              disabled={!newLink.url || !newLink.title || (newLink.customCode ? slugAvailability.available === false : false)}
-              className="bg-gradient-to-r from-orange-400 via-amber-500 to-orange-400 text-white font-bold px-6 py-2 rounded-lg shadow hover:from-orange-500 hover:via-amber-500 hover:to-orange-500 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              Add More Link
-            </button>
-            {linkError && <p className="text-red-500 text-sm text-center">{linkError}</p>}
           </motion.div>
           </div>
     

@@ -1,4 +1,6 @@
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
+import { FaCrown, FaChartLine, FaRocket } from "react-icons/fa";
 
 const Upgrade = () => {
   return (
@@ -10,19 +12,47 @@ const Upgrade = () => {
     >
   <div className="bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400 text-white p-8 rounded-xl shadow-xl flex flex-col md:flex-row justify-between items-center relative overflow-hidden">
         <div className="z-10 text-center md:text-left mb-6 md:mb-0">
-          <h2 className="text-2xl font-bold text-white">Unlock Advanced Analytics</h2>
+          <div className="flex items-center justify-center md:justify-start gap-2 mb-2">
+            <FaCrown className="text-yellow-300" size={24} />
+            <h2 className="text-2xl font-bold text-white">Unlock Premium Analytics</h2>
+          </div>
           <p className="mt-2 text-white/90">Get deeper insights, exclusive features, and priority support with Premium.</p>
+          <div className="flex items-center gap-4 mt-3 text-sm text-white/80">
+            <div className="flex items-center gap-1">
+              <FaChartLine size={14} />
+              <span>Advanced Charts</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <FaRocket size={14} />
+              <span>Priority Support</span>
+            </div>
+          </div>
         </div>
-        <motion.button 
-          className="bg-white text-indigo-600 font-semibold py-3 px-6 rounded-xl hover:bg-indigo-50 transition-colors duration-300 shadow-md z-10 border border-white/30"
-          whileHover={{ 
-            scale: 1.05, 
-            boxShadow: "0 10px 25px -5px rgba(255, 255, 255, 0.3)"
-          }}
-          whileTap={{ scale: 0.95 }}
-        >
-          Upgrade Now
-        </motion.button>
+        <div className="flex flex-col sm:flex-row gap-3 z-10">
+          <Link to="/premiumdashboard">
+            <motion.button 
+              className="bg-white text-orange-600 font-semibold py-3 px-6 rounded-xl hover:bg-orange-50 transition-colors duration-300 shadow-md border border-white/30 flex items-center gap-2"
+              whileHover={{ 
+                scale: 1.05, 
+                boxShadow: "0 10px 25px -5px rgba(255, 255, 255, 0.3)"
+              }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <FaChartLine size={16} />
+              Visit Premium Dashboard
+            </motion.button>
+          </Link>
+          <motion.button 
+            className="bg-white/20 text-white font-semibold py-3 px-6 rounded-xl hover:bg-white/30 transition-colors duration-300 shadow-md border border-white/30"
+            whileHover={{ 
+              scale: 1.05, 
+              boxShadow: "0 10px 25px -5px rgba(255, 255, 255, 0.2)"
+            }}
+            whileTap={{ scale: 0.95 }}
+          >
+            Upgrade Now
+          </motion.button>
+        </div>
         
         {/* Background elements */}
         <motion.div 

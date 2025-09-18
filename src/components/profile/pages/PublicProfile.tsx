@@ -1,5 +1,5 @@
 import { Link, useParams } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FaUser, FaShare, FaEllipsisV } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
 import LoadingScreen from '../../ui/loadingScreen';
@@ -7,6 +7,7 @@ import { getSocialIcon, getPlatformName } from '../../../lib/profile-utils';
 import usePerformanceOptimization from '../../../hooks/usePerformanceOptimization';
 import { usePublicProfile } from '../hooks/usePublicProfile';
 import logo from '../../../assets/Frame.png';
+import { supabase } from '../../../lib/supabaseClient';
 
 const PublicProfile = () => {
   const { identifier } = useParams();
@@ -15,6 +16,59 @@ const PublicProfile = () => {
   const [showMenu, setShowMenu] = useState(false);
 
   console.log('PublicProfile component mounted, identifier:', identifier);
+
+  // Track profile view for analytics
+  useEffect(() => {
+    const trackProfileView = async () => {
+      if (!profile?.id) return; // Wait for profile to load
+      
+      try {
+        // Get user's IP address and hash it for unique visitor tracking
+        let viewerHash: string | null = null;
+        try {
+          // Try to get IP from geolocation API response
+          const ipResponse = await fetch('https://api.ipify.org?format=json');
+          const ipData = await ipResponse.json();
+          const userIp = ipData.ip;
+          
+          // Hash the IP address for privacy (same method as shortened links)
+          if (userIp) {
+            viewerHash = btoa(userIp).replace(/[^a-zA-Z0-9]/g, '').substring(0, 16);
+            console.log('Profile view - IP hashed for unique visitor tracking:', viewerHash);
+          }
+        } catch (ipError) {
+          console.log('Could not get IP address for profile view:', ipError);
+          // Use a fallback identifier based on user agent + timestamp
+          viewerHash = btoa(navigator.userAgent + Date.now().toString()).replace(/[^a-zA-Z0-9]/g, '').substring(0, 16);
+        }
+
+        // Track profile view
+        const profileViewData = {
+          profile_id: profile.id,
+          viewer_hash: viewerHash,
+          viewed_at: new Date().toISOString(),
+          referrer: document.referrer || null,
+        };
+        
+        console.log('Inserting profile view data:', profileViewData);
+        
+        const { data: insertedData, error: profileViewError } = await supabase
+          .from('profile_views')
+          .insert(profileViewData)
+          .select();
+          
+        if (profileViewError) {
+          console.error('Profile view insertion error:', profileViewError);
+        } else {
+          console.log('Profile view data inserted successfully:', insertedData);
+        }
+      } catch (error) {
+        console.error('Error tracking profile view:', error);
+      }
+    };
+
+    trackProfileView();
+  }, [profile?.id]); // Track when profile loads
 
   const handleLinkClick = (shortCode: string) => {
     // Navigate to the shortened link - this will trigger tracking in ShortenedLinkRedirect
