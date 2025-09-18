@@ -1,8 +1,6 @@
 import { useEffect } from 'react';
 import { supabase } from '../../../lib/supabaseClient';
 import { detectDeviceType, detectBrowser } from '../../../lib/profile-utils';
-import LoadingScreen from '../../ui/loadingScreen';
-import BoltBackground from '../../homepage/BoltBackground';
 
 interface ShortenedLink {
   id: string;
@@ -180,13 +178,23 @@ const ShortenedLinkRedirect = ({ shortLink }: ShortenedLinkRedirectProps) => {
   }, [shortLink]);
 
   return (
-    <div className="min-h-screen relative" style={{ background: 'var(--c-bg)' }}>
-      <BoltBackground />
-      <div className="relative z-10 flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <LoadingScreen />
-          <p className="text-sm text-gray-500 mt-4">If you're not redirected automatically, <a href={shortLink.original_url} className="text-orange-400 hover:underline">click here</a></p>
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50 flex items-center justify-center">
+      <div className="text-center">
+        {/* Custom Loader */}
+        <div className="relative w-16 h-16 mx-auto mb-6">
+          <div className="absolute inset-0 rounded-full border-4 border-orange-200"></div>
+          <div className="absolute inset-0 rounded-full border-4 border-orange-400 border-t-transparent animate-spin"></div>
         </div>
+        
+        {/* Redirecting Message */}
+        <h2 className="text-xl font-semibold text-gray-800 mb-2">Redirecting to the link</h2>
+        <p className="text-sm text-gray-600 mb-4">Please wait while we redirect you...</p>
+        
+        {/* Fallback Link */}
+        <p className="text-xs text-gray-500">
+          If you're not redirected automatically, 
+          <a href={shortLink.original_url} className="text-orange-400 hover:underline ml-1">click here</a>
+        </p>
       </div>
     </div>
   );

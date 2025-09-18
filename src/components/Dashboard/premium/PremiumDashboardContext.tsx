@@ -241,15 +241,14 @@ export const PremiumDashboardProvider: React.FC<PremiumDashboardProviderProps> =
       });
 
       // Debug unique visitors calculation
-      const visitorIdentifiers = analyticsData.map(item => item.hashed_ip || item.user_agent || `anonymous_${item.id}`);
+      const visitorIdentifiers = analyticsData.map(item => item.hashed_ip || `anonymous_${item.id}`);
       const uniqueVisitorSet = new Set(visitorIdentifiers.filter(id => id && id.trim() !== ''));
       
       console.log('Unique visitors debug:', {
         totalAnalytics: analyticsData.length,
         visitorIdentifiers: visitorIdentifiers.slice(0, 5), // Show first 5
         uniqueCount: uniqueVisitorSet.size,
-        hashedIpCount: analyticsData.filter(item => item.hashed_ip).length,
-        userAgentCount: analyticsData.filter(item => item.user_agent).length
+        hashedIpCount: analyticsData.filter(item => item.hashed_ip).length
       });
 
       // Calculate previous period for comparison
@@ -292,7 +291,6 @@ export const PremiumDashboardProvider: React.FC<PremiumDashboardProviderProps> =
       
       // Calculate average time (mock data for now - would need session data)
       const avgTime = '2m 34s';
-      const previousAvgTime = '2m 12s';
 
       const overview = {
         totalClicks: formatNumber(totalClicks),

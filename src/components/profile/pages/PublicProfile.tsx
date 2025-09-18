@@ -293,7 +293,10 @@ const PublicProfile = () => {
           transition={{ duration: 0.6, delay: 0.4 }}
         >
           <div className="relative w-48 h-48 mx-auto">
-            <div className="w-full h-full rounded-full overflow-hidden bg-gray-100 shadow-xl">
+            {/* White Border with Subtle Orange Glow */}
+            <div className="absolute -inset-2 rounded-full bg-gradient-to-r from-orange-400 via-orange-500 to-orange-400 blur-md opacity-40 animate-pulse"></div>
+            <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-orange-300 via-orange-400 to-orange-300 blur-sm opacity-30"></div>
+            <div className="relative w-full h-full rounded-full overflow-hidden bg-gray-100 shadow-xl border-4 border-white shadow-orange-400/30">
               {profile?.profile_picture ? (
                 <img 
                   src={profile.profile_picture} 

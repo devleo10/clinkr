@@ -20,7 +20,12 @@ const SmartRouteResolver = () => {
   useEffect(() => {
     const resolveRoute = async () => {
       console.log('Resolving route for identifier:', identifier);
-      showLoading('Resolving route...');
+      
+      // Only show loading for username resolution, not for short codes
+      const isLikelyShortCode = identifier && identifier.length > 3 && !identifier.includes(' ');
+      if (!isLikelyShortCode) {
+        showLoading('Resolving route...');
+      }
 
       if (!identifier) {
         console.log('No identifier provided');
@@ -30,7 +35,33 @@ const SmartRouteResolver = () => {
       }
 
       try {
-        // First, check if it's a username (existing profiles)
+        // If it looks like a short code, check short codes first
+        if (isLikelyShortCode) {
+          console.log('Checking if identifier is a short code...');
+          const { data: shortLink, error: shortLinkError } = await supabase
+            .from('shortened_links')
+            .select('*')
+            .eq('short_code', identifier)
+            .eq('is_active', true)
+            .single();
+
+          console.log('Short link query result:', { shortLink, shortLinkError });
+
+          if (shortLink && !shortLinkError) {
+            // Check if link has expired
+            if (shortLink.expires_at && new Date(shortLink.expires_at) < new Date()) {
+              console.log('Short link has expired');
+              setResolution({ type: 'not_found' });
+            } else {
+              console.log('Found short link, resolving as short code');
+              setResolution({ type: 'short_code', data: shortLink });
+            }
+            hideLoading();
+            return;
+          }
+        }
+
+        // Check if it's a username (existing profiles)
         console.log('Checking if identifier is a username...');
         const { data: profile, error: profileError } = await supabase
           .from('profiles')
@@ -47,28 +78,30 @@ const SmartRouteResolver = () => {
           return;
         }
 
-        // If not a username, check if it's a short code
-        console.log('Checking if identifier is a short code...');
-        const { data: shortLink, error: shortLinkError } = await supabase
-          .from('shortened_links')
-          .select('*')
-          .eq('short_code', identifier)
-          .eq('is_active', true)
-          .single();
+        // If not a username and not checked as short code yet, check short codes
+        if (!isLikelyShortCode) {
+          console.log('Not a username, checking if identifier is a short code...');
+          const { data: shortLink, error: shortLinkError } = await supabase
+            .from('shortened_links')
+            .select('*')
+            .eq('short_code', identifier)
+            .eq('is_active', true)
+            .single();
 
-        console.log('Short link query result:', { shortLink, shortLinkError });
+          console.log('Short link query result:', { shortLink, shortLinkError });
 
-        if (shortLink && !shortLinkError) {
-          // Check if link has expired
-          if (shortLink.expires_at && new Date(shortLink.expires_at) < new Date()) {
-            console.log('Short link has expired');
-            setResolution({ type: 'not_found' });
-          } else {
-            console.log('Found short link, resolving as short code');
-            setResolution({ type: 'short_code', data: shortLink });
+          if (shortLink && !shortLinkError) {
+            // Check if link has expired
+            if (shortLink.expires_at && new Date(shortLink.expires_at) < new Date()) {
+              console.log('Short link has expired');
+              setResolution({ type: 'not_found' });
+            } else {
+              console.log('Found short link, resolving as short code');
+              setResolution({ type: 'short_code', data: shortLink });
+            }
+            hideLoading();
+            return;
           }
-          hideLoading();
-          return;
         }
 
         // Neither username nor short code found

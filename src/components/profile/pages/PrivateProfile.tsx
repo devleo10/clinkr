@@ -1,9 +1,8 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Card, CardContent } from "../../ui/card";
 import { supabase } from '../../../lib/supabaseClient';
 import { FaTrash, FaCopy, FaGripVertical, FaChartLine } from 'react-icons/fa';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "../../ui/alert-dialog";
-import LinkValidator from "../../../lib/link-validator";
 import { MoreVertical, GripVertical } from "lucide-react";
 import { getSocialIcon } from '../../../lib/profile-utils';
 import { motion, Reorder } from 'framer-motion';
