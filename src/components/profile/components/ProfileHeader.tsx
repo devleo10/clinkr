@@ -2,6 +2,7 @@ import { FaUser, FaTrash, FaShare } from 'react-icons/fa';
 import { Edit } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { validateImageFile } from '../../../lib/imageCompression';
+import { removeProfilePicture } from '../../../lib/profilePictureCleanup';
 
 interface ProfileHeaderProps {
   profile: any;
@@ -87,14 +88,13 @@ const ProfileHeader = ({
                 try {
                   const userId = await getCurrentUserId();
                   if (!userId) throw new Error('No user found');
-                  const previousFilePath = new URL(profile.profile_picture as string).pathname.replace(/^\/storage\/v1\/object\/public\/user-data\//, '');
-                  await import('../../../lib/supabaseClient').then(({ supabase }) =>
-                    supabase.storage.from('user-data').remove([previousFilePath])
-                  );
-                  const { error: updateError } = await import('../../../lib/supabaseClient').then(({ supabase }) =>
-                    supabase.from('profiles').update({ profile_picture: null }).eq('id', userId)
-                  );
-                  if (updateError) throw updateError;
+                  
+                  // Use the new utility function for automatic cleanup
+                  const result = await removeProfilePicture(userId, profile.profile_picture);
+                  if (!result.success) {
+                    throw new Error(result.error || 'Failed to remove profile picture');
+                  }
+                  
                   setProfile((prev: any) => prev ? { ...prev, profile_picture: null } : null);
                 } catch (err: any) {
                   setError(err.message || 'Failed to delete profile picture.');

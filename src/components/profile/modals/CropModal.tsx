@@ -4,6 +4,7 @@ import Modal from 'react-modal';
 import { supabase } from '../../../lib/supabaseClient';
 import LogoBars from '../../ui/LogoBars';
 import { compressImageToTargetSize, validateImageFile, formatFileSize } from '../../../lib/imageCompression';
+import { updateProfilePicture } from '../../../lib/profilePictureCleanup';
 
 interface CropModalProps {
   isOpen: boolean;
@@ -90,16 +91,6 @@ const CropModal = ({
       const userId = await getCurrentUserId();
       if (!userId) throw new Error('No user found');
 
-      // Remove previous profile picture if exists
-      if (profile?.profile_picture) {
-        try {
-          const previousFilePath = new URL(profile.profile_picture).pathname.replace(/^\/storage\/v1\/object\/public\/user-data\//, '');
-          await supabase.storage.from('user-data').remove([previousFilePath]);
-        } catch (e) { 
-          console.warn('Failed to remove previous profile picture:', e);
-        }
-      }
-
       // Upload compressed image
       const filePath = `avatars/${userId}-${Date.now()}.jpg`;
       const { data, error } = await supabase.storage.from('user-data').upload(filePath, compressionResult.compressedBlob, { 
@@ -129,14 +120,10 @@ const CropModal = ({
         return;
       }
 
-      // Update profile
-      const { error: updateError } = await supabase
-        .from('profiles')
-        .update({ profile_picture: publicUrl })
-        .eq('id', userId);
-        
-      if (updateError) {
-        onError('Failed to update profile: ' + updateError.message);
+      // Update profile with automatic cleanup of old picture
+      const result = await updateProfilePicture(userId, publicUrl, profile?.profile_picture || undefined);
+      if (!result.success) {
+        onError('Failed to update profile: ' + result.error);
         setLoading(false);
         return;
       }

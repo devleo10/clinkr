@@ -6,12 +6,14 @@ interface AuthContextType {
   session: Session | null;
   loading: boolean;
   hasProfile: boolean | null;
+  refreshProfile: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType>({
   session: null,
   loading: true,
-  hasProfile: null
+  hasProfile: null,
+  refreshProfile: async () => {}
 });
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
@@ -89,8 +91,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  const refreshProfile = async () => {
+    if (session?.user?.id) {
+      // Reset the ref to force a fresh check
+      profileCheckRef.current = null;
+      await checkProfile(session.user.id);
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ session, loading, hasProfile }}>
+    <AuthContext.Provider value={{ session, loading, hasProfile, refreshProfile }}>
       {children}
     </AuthContext.Provider>
   );
