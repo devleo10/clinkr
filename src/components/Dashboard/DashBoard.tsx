@@ -84,27 +84,6 @@ const DashBoard = () => {
         
         <Navbar />
         
-        {/* Floating Premium Button */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8, x: 50 }}
-          animate={{ opacity: 1, scale: 1, x: 0 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-          className="fixed top-20 right-6 z-50"
-        >
-          <Link to="/premiumdashboard">
-            <motion.button
-              className="bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 text-white px-4 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2 font-semibold"
-              whileHover={{ 
-                scale: 1.05,
-                boxShadow: "0 20px 40px -10px rgba(255, 193, 7, 0.4)"
-              }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <FaCrown size={16} />
-              <span className="hidden sm:inline">Premium</span>
-            </motion.button>
-          </Link>
-        </motion.div>
         
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 relative z-10">
         <motion.div

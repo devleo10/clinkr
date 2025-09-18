@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  FaLink, FaCopy, FaTimes, FaSpinner, FaTag,
-  FaEye, FaEyeSlash, FaLock, FaCheck, FaPlus
+  FaTimes, FaSpinner, FaTag,
+  FaEye, FaEyeSlash, FaCheck, FaPlus
 } from 'react-icons/fa';
 import { linkShorteningService, ShortLink } from '../../lib/linkShorteningService';
 
@@ -263,7 +263,7 @@ const CreateLinkModal: React.FC<CreateLinkModalProps> = ({
                       placeholder="e.g., 'My Portfolio', 'Black Friday Sale'"
                       value={newLink.title}
                       onChange={(e) => setNewLink(prev => ({ ...prev, title: e.target.value }))}
-                      className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-orange-400 focus:border-transparent transition-colors"
+                      className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-orange-400 focus:border-transparent focus:outline-none transition-colors"
                     />
                   </div>
                   <div>
@@ -276,7 +276,7 @@ const CreateLinkModal: React.FC<CreateLinkModalProps> = ({
                       placeholder="https://your-website.com/very-long-url"
                       value={newLink.url}
                       onChange={(e) => setNewLink(prev => ({ ...prev, url: e.target.value }))}
-                      className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-orange-400 focus:border-transparent transition-colors"
+                      className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-orange-400 focus:border-transparent focus:outline-none transition-colors"
                     />
                   </div>
                 </div>
@@ -293,7 +293,7 @@ const CreateLinkModal: React.FC<CreateLinkModalProps> = ({
                       placeholder="e.g., 'my-portfolio', 'sale-2024'"
                       value={newLink.customCode}
                       onChange={(e) => setNewLink(prev => ({ ...prev, customCode: e.target.value }))}
-                      className={`w-full border rounded-lg px-4 py-3 pr-12 focus:ring-2 focus:ring-orange-400 focus:border-transparent transition-colors ${
+                      className={`w-full border rounded-lg px-4 py-3 pr-12 focus:ring-2 focus:ring-orange-400 focus:border-transparent focus:outline-none transition-colors ${
                         slugAvailability.available === true
                           ? 'border-green-300 bg-green-50'
                           : slugAvailability.available === false
@@ -369,7 +369,7 @@ const CreateLinkModal: React.FC<CreateLinkModalProps> = ({
                             type="date"
                             value={newLink.expiresAt}
                             onChange={(e) => setNewLink(prev => ({ ...prev, expiresAt: e.target.value }))}
-                            className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-orange-400 focus:border-transparent transition-colors"
+                            className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-orange-400 focus:border-transparent focus:outline-none transition-colors"
                           />
                           <p className="text-xs text-gray-500 mt-1">Link stops working after this date</p>
                         </div>
@@ -383,7 +383,7 @@ const CreateLinkModal: React.FC<CreateLinkModalProps> = ({
                             placeholder="Enter password to protect link"
                             value={newLink.password}
                             onChange={(e) => setNewLink(prev => ({ ...prev, password: e.target.value }))}
-                            className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-orange-400 focus:border-transparent transition-colors"
+                            className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-orange-400 focus:border-transparent focus:outline-none transition-colors"
                           />
                           <p className="text-xs text-gray-500 mt-1">People need this password to access the link</p>
                         </div>
@@ -421,7 +421,7 @@ const CreateLinkModal: React.FC<CreateLinkModalProps> = ({
                               e.currentTarget.value = '';
                             }
                           }}
-                          className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-orange-400 focus:border-transparent transition-colors"
+                          className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-orange-400 focus:border-transparent focus:outline-none transition-colors"
                         />
                         <p className="text-xs text-gray-500 mt-1">Tags help you organize and find your links later</p>
                       </div>
@@ -440,7 +440,7 @@ const CreateLinkModal: React.FC<CreateLinkModalProps> = ({
                               placeholder="facebook, google, email"
                               value={newLink.utm_source}
                               onChange={(e) => setNewLink(prev => ({ ...prev, utm_source: e.target.value }))}
-                              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-orange-400 focus:border-transparent transition-colors"
+                              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-orange-400 focus:border-transparent focus:outline-none transition-colors"
                             />
                           </div>
                           <div>
@@ -450,7 +450,7 @@ const CreateLinkModal: React.FC<CreateLinkModalProps> = ({
                               placeholder="social, email, ads"
                               value={newLink.utm_medium}
                               onChange={(e) => setNewLink(prev => ({ ...prev, utm_medium: e.target.value }))}
-                              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-orange-400 focus:border-transparent transition-colors"
+                              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-orange-400 focus:border-transparent focus:outline-none transition-colors"
                             />
                           </div>
                           <div>
@@ -460,7 +460,7 @@ const CreateLinkModal: React.FC<CreateLinkModalProps> = ({
                               placeholder="summer-sale, newsletter"
                               value={newLink.utm_campaign}
                               onChange={(e) => setNewLink(prev => ({ ...prev, utm_campaign: e.target.value }))}
-                              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-orange-400 focus:border-transparent transition-colors"
+                              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-orange-400 focus:border-transparent focus:outline-none transition-colors"
                             />
                           </div>
                         </div>
@@ -481,7 +481,7 @@ const CreateLinkModal: React.FC<CreateLinkModalProps> = ({
                 </button>
                 <button
                   onClick={handleCreateLink}
-                  disabled={loading || !newLink.url || !newLink.title || (newLink.customCode && slugAvailability.available === false)}
+                  disabled={Boolean(loading || !newLink.url.trim() || !newLink.title.trim() || (newLink.customCode && slugAvailability.available === false))}
                   className="px-6 py-2 bg-gradient-to-r from-orange-400 via-amber-500 to-orange-400 text-white rounded-lg hover:from-orange-500 hover:via-amber-500 hover:to-orange-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 font-medium"
                 >
                   {loading ? 'Creating...' : 'Create Link'}

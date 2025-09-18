@@ -121,7 +121,7 @@ export const DashboardDataProvider: React.FC<DashboardDataProviderProps> = ({ ch
       const [analyticsResult, shortenedLinksResult] = await Promise.all([
         supabase
           .from('link_analytics')
-          .select('id, country_code, device_type, created_at, event_type, hashed_ip, user_agent')
+          .select('id, country_code, device_type, created_at, event_type, hashed_ip')
           .eq('user_id', user.id)
           .gte('created_at', sixtyDaysAgo.toISOString())
           .order('created_at', { ascending: false }),
