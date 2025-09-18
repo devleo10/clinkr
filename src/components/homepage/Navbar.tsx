@@ -1,4 +1,4 @@
-import { useState} from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import logo from '../../assets/Frame.png';
 import { useAuth } from '../auth/AuthProvider';
@@ -7,12 +7,10 @@ import { motion } from 'framer-motion';
 const Navbar = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const navigate = useNavigate();
-  const { session } = useAuth();
-
-
+  const { session, hasProfile } = useAuth();
 
   const handleButtonClick = () => {
-    if (session) {
+    if (session && hasProfile) {
       navigate('/dashboard');
     } else {
       navigate('/getstarted');
@@ -121,7 +119,7 @@ const Navbar = () => {
           whileHover={{ scale: 1.02, y: -1 }}
           whileTap={{ scale: 0.98 }}
         >
-          {session ? 'Dashboard' : 'Get Started'}
+          {session && hasProfile ? 'Dashboard' : 'Get Started'}
         </motion.button>
         
         {/* Mobile menu button */}

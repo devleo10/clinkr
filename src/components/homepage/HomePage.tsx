@@ -10,7 +10,10 @@ import About from './About';
 import BoltBackground from './BoltBackground';
 
 const HomePage = () => {
-  const { session } = useAuth();
+  const { session, hasProfile } = useAuth();
+
+  // Determine if user should see dashboard or get started
+  const shouldShowDashboard = session && hasProfile;
 
   return (
     <div className="relative overflow-hidden min-h-screen" style={{ background: 'var(--c-bg)' }}>
@@ -87,7 +90,7 @@ const HomePage = () => {
                   whileTap={{ scale: 0.98 }}
                 >
                   <Link 
-                    to={session ? '/dashboard' : '/getstarted'}
+                    to={shouldShowDashboard ? '/dashboard' : '/getstarted'}
                     className="btn-primary inline-flex items-center gap-3 text-base font-semibold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
                   >
                     <span>Get Started Free</span>

@@ -204,11 +204,17 @@ const PrivateProfile = () => {
       const userId = await getCurrentUserId();
       if (!userId) throw new Error('No user found');
 
-      // Import the cleanup function
-      const { cleanupUserData } = await import('../../../lib/userCleanup');
+      // Import the cleanup functions
+      const { cleanupUserData, cleanupUserDataFallback } = await import('../../../lib/userCleanup');
       
-      // Use Edge Function for complete cleanup
-      const result = await cleanupUserData(userId);
+      // Try Edge Function first
+      let result = await cleanupUserData(userId);
+      
+      // If Edge Function fails, fallback to client-side cleanup
+      if (!result.success) {
+        console.warn('Edge Function cleanup failed, falling back to client-side cleanup:', result.message);
+        result = await cleanupUserDataFallback(userId);
+      }
       
       if (result.success) {
         // Redirect to homepage

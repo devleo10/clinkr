@@ -52,9 +52,40 @@ export const cleanupUserData = async (userId: string): Promise<CleanupResult> =>
       };
     }
 
-    // If cleanup was successful, sign out the user
+    // If cleanup was successful, sign out the user and clear all auth state
     if (data.success) {
-      await supabase.auth.signOut();
+      try {
+        await supabase.auth.signOut();
+        
+        // Clear all Supabase-related localStorage items
+        const keysToRemove = [];
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          if (key && (key.includes('supabase') || key.includes('sb-'))) {
+            keysToRemove.push(key);
+          }
+        }
+        keysToRemove.forEach(key => localStorage.removeItem(key));
+        
+        // Clear sessionStorage
+        sessionStorage.clear();
+        
+        // Clear any cookies (if any)
+        document.cookie.split(";").forEach(function(c) { 
+          document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
+        });
+        
+        console.log('All auth data cleared, redirecting to homepage');
+        
+        // Force a complete page reload to clear all state
+        setTimeout(() => {
+          window.location.href = '/homepage';
+        }, 100);
+      } catch (signOutError) {
+        console.error('Error signing out:', signOutError);
+        // Still redirect even if signout fails
+        window.location.href = '/homepage';
+      }
     }
 
     return data as CleanupResult;
@@ -147,8 +178,39 @@ export const cleanupUserDataFallback = async (userId: string): Promise<CleanupRe
       }
     });
 
-    // 4. Sign out the user
-    await supabase.auth.signOut();
+    // 4. Sign out the user and clear all auth state
+    try {
+      await supabase.auth.signOut();
+      
+      // Clear all Supabase-related localStorage items
+      const keysToRemove = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && (key.includes('supabase') || key.includes('sb-'))) {
+          keysToRemove.push(key);
+        }
+      }
+      keysToRemove.forEach(key => localStorage.removeItem(key));
+      
+      // Clear sessionStorage
+      sessionStorage.clear();
+      
+      // Clear any cookies (if any)
+      document.cookie.split(";").forEach(function(c) { 
+        document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
+      });
+      
+      console.log('All auth data cleared, redirecting to homepage');
+      
+      // Force a complete page reload to clear all state
+      setTimeout(() => {
+        window.location.href = '/homepage';
+      }, 100);
+    } catch (signOutError) {
+      console.error('Error signing out:', signOutError);
+      // Still redirect even if signout fails
+      window.location.href = '/homepage';
+    }
 
     return {
       success: errors.length === 0,

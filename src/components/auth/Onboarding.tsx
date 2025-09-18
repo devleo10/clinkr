@@ -37,7 +37,9 @@ const Onboarding = () => {
         const { data: { user }, error: userError } = await supabase.auth.getUser();
         
         if (userError || !user) {
-          console.error('Auth error:', userError);
+          console.log('Auth error - user not found, redirecting to signup:', userError?.message);
+          // Clear any invalid session data
+          await supabase.auth.signOut();
           navigate('/getstarted');
           return;
         }
@@ -63,7 +65,8 @@ const Onboarding = () => {
         }
       } catch (error) {
         console.error('Error checking profile:', error);
-        // On error, redirect to get started
+        // On error, clear session and redirect to get started
+        await supabase.auth.signOut();
         navigate('/getstarted');
       }
     };

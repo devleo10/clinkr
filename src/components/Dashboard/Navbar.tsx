@@ -37,11 +37,17 @@ const Navbar = () => {
       const { data: { user }, error: userError } = await supabase.auth.getUser();
       if (userError || !user) throw new Error('No user found');
       
-      // Import the cleanup function
-      const { cleanupUserData } = await import('../../lib/userCleanup');
+      // Import the cleanup functions
+      const { cleanupUserData, cleanupUserDataFallback } = await import('../../lib/userCleanup');
       
-      // Use Edge Function for complete cleanup
-      const result = await cleanupUserData(user.id);
+      // Try Edge Function first
+      let result = await cleanupUserData(user.id);
+      
+      // If Edge Function fails, fallback to client-side cleanup
+      if (!result.success) {
+        console.warn('Edge Function cleanup failed, falling back to client-side cleanup:', result.message);
+        result = await cleanupUserDataFallback(user.id);
+      }
       
       if (result.success) {
         alert('Account deleted successfully. You will be redirected to the homepage.');
