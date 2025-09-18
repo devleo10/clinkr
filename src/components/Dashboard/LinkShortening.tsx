@@ -236,7 +236,7 @@ const LinkShortening = () => {
               placeholder="https://example.com"
               value={newLink.url}
               onChange={(e) => setNewLink(prev => ({ ...prev, url: e.target.value }))}
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:border-transparent"
+              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-orange-400 focus:border-transparent"
               style={{ '--focus-ring': 'rgba(237, 123, 0, 0.3)' } as React.CSSProperties}
             />
           </div>
@@ -247,7 +247,7 @@ const LinkShortening = () => {
               placeholder="My Awesome Link"
               value={newLink.title}
               onChange={(e) => setNewLink(prev => ({ ...prev, title: e.target.value }))}
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:border-transparent"
+              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-orange-400 focus:border-transparent"
               style={{ '--focus-ring': 'rgba(237, 123, 0, 0.3)' } as React.CSSProperties}
             />
           </div>

@@ -5,7 +5,11 @@ interface DashboardData {
   totalClicks: number;
   percentageChange: number;
   topCountries: Array<{ country: string; visits: number }>;
-  deviceSplit: { mobile: number; desktop: number; tablet: number };
+  deviceSplit: {
+    mobile: number;
+    desktop: number;
+    tablet: number;
+  };
   links: Array<{ title: string; url: string; clicks: number }>;
   lastFetch: number;
 }
@@ -21,7 +25,7 @@ const DashboardDataContext = createContext<DashboardDataContextType | undefined>
 
 export const useDashboardData = () => {
   const context = useContext(DashboardDataContext);
-  if (!context) {
+  if (context === undefined) {
     throw new Error('useDashboardData must be used within a DashboardDataProvider');
   }
   return context;
@@ -36,134 +40,258 @@ export const DashboardDataProvider: React.FC<DashboardDataProviderProps> = ({ ch
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Data validation helper functions
+  const validateNumber = (value: any, fallback: number = 0): number => {
+    const num = Number(value);
+    return isNaN(num) || !isFinite(num) ? fallback : Math.max(0, num);
+  };
+
+  const validateDate = (dateString: string): Date | null => {
+    const date = new Date(dateString);
+    return isNaN(date.getTime()) ? null : date;
+  };
+
+  const calculatePercentageChange = (current: number, previous: number): number => {
+    if (previous === 0) {
+      return current > 0 ? 100 : 0;
+    }
+    const change = ((current - previous) / previous) * 100;
+    return Math.round(change * 100) / 100; // Round to 2 decimal places
+  };
+
+  const normalizeDeviceType = (deviceType: string | null | undefined): string => {
+    if (!deviceType) return 'Unknown';
+    
+    const normalized = deviceType.toLowerCase().trim();
+    
+    // Map common variations to standard types
+    if (normalized.includes('mobile') || normalized.includes('phone') || normalized.includes('android') || normalized.includes('iphone')) {
+      return 'mobile';
+    }
+    if (normalized.includes('desktop') || normalized.includes('pc') || normalized.includes('mac') || normalized.includes('windows')) {
+      return 'desktop';
+    }
+    if (normalized.includes('tablet') || normalized.includes('ipad')) {
+      return 'tablet';
+    }
+    
+    return normalized; // Return as-is if it doesn't match common patterns
+  };
+
+  const normalizeCountryCode = (countryCode: string | null | undefined): string => {
+    if (!countryCode) return 'Unknown';
+    
+    // Convert to uppercase and validate length
+    const normalized = countryCode.toUpperCase().trim();
+    if (normalized.length === 2) {
+      return normalized;
+    }
+    
+    return 'Unknown';
+  };
+
   const fetchAllData = useCallback(async () => {
     try {
       setIsLoading(true);
       setError(null);
 
-      // Get current user
+      // Get current user with proper error handling
       const { data: { user }, error: userError } = await supabase.auth.getUser();
-      if (userError) throw userError;
-      if (!user) throw new Error('No user found');
+      if (userError) {
+        console.error('User authentication error:', userError);
+        throw new Error('Authentication failed. Please log in again.');
+      }
+      if (!user) {
+        throw new Error('No user found. Please log in.');
+      }
 
-      // Calculate date ranges
+      // Calculate date ranges with proper timezone handling
       const now = new Date();
-      const thirtyDaysAgo = new Date();
-      thirtyDaysAgo.setDate(now.getDate() - 30);
-      const sixtyDaysAgo = new Date();
-      sixtyDaysAgo.setDate(now.getDate() - 60);
+      const thirtyDaysAgo = new Date(now.getTime() - (30 * 24 * 60 * 60 * 1000));
+      const sixtyDaysAgo = new Date(now.getTime() - (60 * 24 * 60 * 60 * 1000));
 
-      // Single batch query for all analytics data
-      const { data: analyticsData, error: analyticsError } = await supabase
-        .from('link_analytics')
-        .select('id, country_code, device_type, created_at')
-        .eq('user_id', user.id)
-        .gte('created_at', sixtyDaysAgo.toISOString());
+      console.log('Fetching data for user:', user.id);
+      console.log('Date range:', {
+        now: now.toISOString(),
+        thirtyDaysAgo: thirtyDaysAgo.toISOString(),
+        sixtyDaysAgo: sixtyDaysAgo.toISOString()
+      });
 
-      if (analyticsError) throw analyticsError;
+      // Parallel data fetching for better performance
+      const [analyticsResult, shortenedLinksResult] = await Promise.all([
+        supabase
+          .from('link_analytics')
+          .select('id, country_code, device_type, created_at, event_type, hashed_ip, user_agent')
+          .eq('user_id', user.id)
+          .gte('created_at', sixtyDaysAgo.toISOString())
+          .order('created_at', { ascending: false }),
+        supabase
+          .from('shortened_links')
+          .select('id, short_code, original_url, title, clicks, created_at')
+          .eq('user_id', user.id)
+          .eq('is_active', true)
+          .order('created_at', { ascending: false })
+      ]);
 
-      // Profile data is no longer needed since we use shortened_links
+      if (analyticsResult.error) {
+        console.error('Analytics fetch error:', analyticsResult.error);
+        throw new Error(`Failed to fetch analytics data: ${analyticsResult.error.message}`);
+      }
 
-      // Get shortened links data instead of profile links
-      const { data: shortenedLinksData, error: shortenedLinksError } = await supabase
-        .from('shortened_links')
-        .select('id, short_code, original_url, title, clicks')
-        .eq('user_id', user.id)
-        .eq('is_active', true);
+      if (shortenedLinksResult.error) {
+        console.error('Shortened links fetch error:', shortenedLinksResult.error);
+        throw new Error(`Failed to fetch links data: ${shortenedLinksResult.error.message}`);
+      }
 
-      if (shortenedLinksError) throw shortenedLinksError;
+      const analyticsData = analyticsResult.data || [];
+      const shortenedLinksData = shortenedLinksResult.data || [];
 
-      // Process analytics data
-      const currentPeriodData = analyticsData?.filter(item => 
-        new Date(item.created_at) >= thirtyDaysAgo
-      ) || [];
-      
-      const previousPeriodData = analyticsData?.filter(item => {
-        const date = new Date(item.created_at);
-        return date >= sixtyDaysAgo && date < thirtyDaysAgo;
-      }) || [];
+      console.log('Raw data counts:', {
+        analytics: analyticsData.length,
+        shortenedLinks: shortenedLinksData.length
+      });
 
-      // Calculate total clicks from shortened_links table (actual clicks)
-      const totalClicksFromLinks = shortenedLinksData?.reduce((sum, link) => sum + (link.clicks || 0), 0) || 0;
-      
-      // Calculate analytics events for comparison (should match total clicks)
+      // Filter analytics data by time periods with proper date validation
+      const currentPeriodData = analyticsData.filter(item => {
+        const itemDate = validateDate(item.created_at);
+        return itemDate && itemDate >= thirtyDaysAgo;
+      });
+
+      const previousPeriodData = analyticsData.filter(item => {
+        const itemDate = validateDate(item.created_at);
+        return itemDate && itemDate >= sixtyDaysAgo && itemDate < thirtyDaysAgo;
+      });
+
+      console.log('Filtered data counts:', {
+        currentPeriod: currentPeriodData.length,
+        previousPeriod: previousPeriodData.length
+      });
+
+      // Calculate total clicks from analytics data (single source of truth)
+      const totalClicksFromAnalytics = currentPeriodData.length;
+
+      // Calculate analytics events for comparison
       const currentAnalyticsEvents = currentPeriodData.length;
       const previousAnalyticsEvents = previousPeriodData.length;
-      
-      // Calculate percentage change based on analytics events
-      const percentageChange = previousAnalyticsEvents === 0 
-        ? (currentAnalyticsEvents > 0 ? 100 : 0)
-        : ((currentAnalyticsEvents - previousAnalyticsEvents) / previousAnalyticsEvents) * 100;
 
-      // Calculate top countries from analytics data
+      // Calculate percentage change with proper validation
+      const percentageChange = calculatePercentageChange(currentAnalyticsEvents, previousAnalyticsEvents);
+
+      console.log('Click calculations:', {
+        totalClicksFromAnalytics,
+        currentAnalyticsEvents,
+        previousAnalyticsEvents,
+        percentageChange
+      });
+
+      // Calculate top countries with proper normalization
       const countryVisits: Record<string, number> = {};
       currentPeriodData.forEach(item => {
-        const country = item.country_code || 'Unknown';
+        const country = normalizeCountryCode(item.country_code);
         countryVisits[country] = (countryVisits[country] || 0) + 1;
       });
+
       const topCountries = Object.entries(countryVisits)
-        .map(([country, visits]) => ({ country, visits }))
+        .map(([country, visits]) => ({ 
+          country, 
+          visits: validateNumber(visits) 
+        }))
         .sort((a, b) => b.visits - a.visits)
         .slice(0, 5);
 
-      // Calculate device split from analytics data
+      console.log('Top countries:', topCountries);
+
+      // Calculate device split with proper normalization
       const deviceCounts: Record<string, number> = {};
       currentPeriodData.forEach(item => {
-        const device = item.device_type || 'Unknown';
+        const device = normalizeDeviceType(item.device_type);
         deviceCounts[device] = (deviceCounts[device] || 0) + 1;
       });
+
       const totalDeviceCount = Object.values(deviceCounts).reduce((a, b) => a + b, 0);
+      
+      // Calculate percentages with proper rounding
       const deviceSplit = {
-        mobile: totalDeviceCount > 0 ? Math.round(((deviceCounts.mobile || 0) / totalDeviceCount) * 100) : 0,
-        desktop: totalDeviceCount > 0 ? Math.round(((deviceCounts.desktop || 0) / totalDeviceCount) * 100) : 0,
-        tablet: totalDeviceCount > 0 ? Math.round(((deviceCounts.tablet || 0) / totalDeviceCount) * 100) : 0,
+        mobile: totalDeviceCount > 0 
+          ? Math.round((validateNumber(deviceCounts.mobile) / totalDeviceCount) * 100) 
+          : 0,
+        desktop: totalDeviceCount > 0 
+          ? Math.round((validateNumber(deviceCounts.desktop) / totalDeviceCount) * 100) 
+          : 0,
+        tablet: totalDeviceCount > 0 
+          ? Math.round((validateNumber(deviceCounts.tablet) / totalDeviceCount) * 100) 
+          : 0,
       };
 
-      // Process links data
-      const links: Array<{ title: string; url: string; clicks: number }> = [];
-      if (shortenedLinksData) {
-        shortenedLinksData.forEach(link => {
-          links.push({
-            title: link.title || link.original_url,
-            url: link.original_url,
-            clicks: link.clicks || 0
-          });
-        });
+      // Ensure percentages add up to 100% (handle rounding errors)
+      const totalPercentage = deviceSplit.mobile + deviceSplit.desktop + deviceSplit.tablet;
+      if (totalPercentage !== 100 && totalDeviceCount > 0) {
+        // Adjust the largest category to make it add up to 100%
+        const largestCategory = Object.entries(deviceSplit).reduce((a, b) => 
+          deviceSplit[a[0] as keyof typeof deviceSplit] > deviceSplit[b[0] as keyof typeof deviceSplit] ? a : b
+        )[0] as keyof typeof deviceSplit;
+        
+        deviceSplit[largestCategory] += (100 - totalPercentage);
       }
 
+      console.log('Device split:', deviceSplit);
+
+      // Process links data with validation
+      const links: Array<{ title: string; url: string; clicks: number }> = [];
+      shortenedLinksData.forEach(link => {
+        if (link.title && link.original_url) {
+          links.push({
+            title: link.title.trim(),
+            url: link.original_url.trim(),
+            clicks: validateNumber(link.clicks)
+          });
+        }
+      });
+
+      // Sort links by clicks (descending)
+      links.sort((a, b) => b.clicks - a.clicks);
+
+      console.log('Processed links:', links.length);
+
+      // Create final data object with validation
       const dashboardData: DashboardData = {
-        totalClicks: totalClicksFromLinks, // Use actual clicks from shortened_links
-        percentageChange: Number(percentageChange.toFixed(1)),
+        totalClicks: validateNumber(totalClicksFromAnalytics),
+        percentageChange: validateNumber(percentageChange),
         topCountries,
         deviceSplit,
         links,
         lastFetch: Date.now()
       };
 
+      console.log('Final dashboard data:', dashboardData);
+
       setData(dashboardData);
     } catch (err: any) {
-      console.error('Error fetching dashboard data:', err);
-      setError(err.message);
+      console.error('Dashboard data fetch error:', err);
+      setError(err.message || 'Failed to load dashboard data');
+      setData(null);
     } finally {
       setIsLoading(false);
     }
   }, []);
 
+  useEffect(() => {
+    fetchAllData();
+  }, [fetchAllData]);
+
   const refetch = useCallback(async () => {
     await fetchAllData();
   }, [fetchAllData]);
 
-  // Check if data is stale (older than 5 minutes)
-  const isDataStale = !data || (Date.now() - data.lastFetch) > 300000; // 5 minutes
-
-  useEffect(() => {
-    if (isDataStale) {
-      fetchAllData();
-    }
-  }, [isDataStale, fetchAllData]);
+  const value = {
+    data,
+    isLoading,
+    error,
+    refetch
+  };
 
   return (
-    <DashboardDataContext.Provider value={{ data, isLoading, error, refetch }}>
+    <DashboardDataContext.Provider value={value}>
       {children}
     </DashboardDataContext.Provider>
   );
