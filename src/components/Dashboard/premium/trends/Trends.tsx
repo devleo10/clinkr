@@ -2,6 +2,7 @@ import { ArrowUpRight, ArrowDownRight, MousePointerClick, Eye, Clock, Filter } f
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../ui/select";
 import LoadingScreen from '../../../ui/loadingScreen';
 import { usePremiumDashboardData } from '../PremiumDashboardContext';
+import PerformanceOverTimeChart from './PerformanceOverTimeChart';
 
 interface TrendData {
   total: number;
@@ -210,13 +211,11 @@ const Trends = () => {
         </div>
       </div>
 
-      {/* Trend Charts Placeholder */}
-      <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
-        <h3 className="text-lg font-semibold mb-4">Performance Over Time</h3>
-        <div className="h-64 flex items-center justify-center bg-gray-50 rounded-lg">
-          <p className="text-gray-500">Chart visualization would go here</p>
-        </div>
-      </div>
+      {/* Performance Over Time Chart */}
+      <PerformanceOverTimeChart 
+        dailyData={trends.dailyData} 
+        timeFrame={timeFrame} 
+      />
 
       {/* Weekly and Monthly Views */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
