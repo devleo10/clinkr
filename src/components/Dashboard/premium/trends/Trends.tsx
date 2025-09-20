@@ -217,38 +217,6 @@ const Trends = () => {
         timeFrame={timeFrame} 
       />
 
-      {/* Weekly and Monthly Views */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
-          <h3 className="text-lg font-semibold mb-4">Weekly Performance</h3>
-          <div className="space-y-3">
-            {trends.weeklyData.slice(0, 4).map((week, index) => (
-              <div key={index} className="flex justify-between items-center">
-                <span className="text-sm text-gray-600">Week {week.week}</span>
-                <div className="text-right">
-                  <div className="font-semibold">{week.clicks} clicks</div>
-                  <div className="text-sm text-gray-500">{week.views} views</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
-          <h3 className="text-lg font-semibold mb-4">Monthly Performance</h3>
-          <div className="space-y-3">
-            {trends.monthlyData.slice(0, 3).map((month, index) => (
-              <div key={index} className="flex justify-between items-center">
-                <span className="text-sm text-gray-600">{month.month}</span>
-                <div className="text-right">
-                  <div className="font-semibold">{month.clicks} clicks</div>
-                  <div className="text-sm text-gray-500">{month.views} views</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
     </div>
   );
 };

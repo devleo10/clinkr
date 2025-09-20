@@ -34,8 +34,6 @@ interface PremiumDashboardData {
   // Trends data
   trends: {
     dailyData: Array<{ date: string; clicks: number; views: number }>;
-    weeklyData: Array<{ week: string; clicks: number; views: number }>;
-    monthlyData: Array<{ month: string; clicks: number; views: number }>;
   };
   
   lastFetch: number;
@@ -376,8 +374,6 @@ export const PremiumDashboardProvider: React.FC<PremiumDashboardProviderProps> =
 
       // Process Trends Data
       const dailyData: Array<{ date: string; clicks: number; views: number }> = [];
-      const weeklyData: Array<{ week: string; clicks: number; views: number }> = [];
-      const monthlyData: Array<{ month: string; clicks: number; views: number }> = [];
 
       // Group by day - use analytics data for both clicks and views
       const dailyGroups: Record<string, { clicks: number; views: number }> = {};
@@ -401,52 +397,8 @@ export const PremiumDashboardProvider: React.FC<PremiumDashboardProviderProps> =
           });
         });
 
-      // Group by week (simplified - would need proper week calculation)
-      const weeklyGroups: Record<string, { clicks: number; views: number }> = {};
-      dailyData.forEach(item => {
-        const weekStart = new Date(item.date);
-        weekStart.setDate(weekStart.getDate() - weekStart.getDay());
-        const weekKey = weekStart.toISOString().split('T')[0];
-        
-        weeklyGroups[weekKey] = (weeklyGroups[weekKey] || { clicks: 0, views: 0 });
-        weeklyGroups[weekKey].clicks += item.clicks;
-        weeklyGroups[weekKey].views += item.views;
-      });
-
-      Object.entries(weeklyGroups)
-        .sort(([a], [b]) => a.localeCompare(b))
-        .forEach(([week, data]) => {
-          weeklyData.push({
-            week,
-            clicks: validateNumber(data.clicks),
-            views: validateNumber(data.views)
-          });
-        });
-
-      // Group by month
-      const monthlyGroups: Record<string, { clicks: number; views: number }> = {};
-      dailyData.forEach(item => {
-        const monthKey = item.date.substring(0, 7); // YYYY-MM
-        
-        monthlyGroups[monthKey] = (monthlyGroups[monthKey] || { clicks: 0, views: 0 });
-        monthlyGroups[monthKey].clicks += item.clicks;
-        monthlyGroups[monthKey].views += item.views;
-      });
-
-      Object.entries(monthlyGroups)
-        .sort(([a], [b]) => a.localeCompare(b))
-        .forEach(([month, data]) => {
-          monthlyData.push({
-            month,
-            clicks: validateNumber(data.clicks),
-            views: validateNumber(data.views)
-          });
-        });
-
       const trends = {
-        dailyData,
-        weeklyData,
-        monthlyData
+        dailyData
       };
 
       // Create final data object
