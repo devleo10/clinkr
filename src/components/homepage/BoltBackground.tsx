@@ -5,7 +5,7 @@ import usePerformanceOptimization from '../../hooks/usePerformanceOptimization';
 
 const BoltBackground = () => {
   const [isVisible, setIsVisible] = useState(true);
-  const { disableBackgroundEffects, simplifiedAnimations } = usePerformanceOptimization();
+  const { simplifiedAnimations } = usePerformanceOptimization();
 
   useEffect(() => {
     const handleVisibilityChange = () => {
@@ -22,7 +22,7 @@ const BoltBackground = () => {
       <div className="absolute inset-0 gradient-mesh" />
       
       {/* Conditional animated floating elements based on performance */}
-      {isVisible && !disableBackgroundEffects && (
+      {isVisible && (
         <>
           <motion.div 
             className="absolute w-[400px] h-[400px] rounded-full opacity-20"

@@ -1,13 +1,17 @@
 import { motion } from 'framer-motion';
+import { Suspense, lazy } from 'react';
 import Navbar from './Navbar';
-import Pricing from './Pricing';
-import FAQ from './FAQ';
-import Features from './Features';
 import { Link, Route, Routes } from 'react-router-dom';
 import { useAuth } from '../auth/AuthProvider';
 import Footer from './Footer';
 import About from './About';
 import BoltBackground from './BoltBackground';
+import LoadingScreen from '../ui/loadingScreen';
+
+// Lazy load heavy homepage sections for better performance
+const Pricing = lazy(() => import('./Pricing'));
+const FAQ = lazy(() => import('./FAQ'));
+const Features = lazy(() => import('./Features'));
 
 const HomePage = () => {
   const { session, hasProfile } = useAuth();
@@ -261,17 +265,23 @@ const HomePage = () => {
           
           {/* Features Section */}
           <div className="relative z-10 py-20">
-            <Features />
+            <Suspense fallback={<LoadingScreen compact />}>
+              <Features />
+            </Suspense>
           </div>
           
           {/* Pricing Section */}
           <div id="pricing" className="relative z-10 py-20">
-            <Pricing />
+            <Suspense fallback={<LoadingScreen compact />}>
+              <Pricing />
+            </Suspense>
           </div>
           
           {/* FAQ Section */}
           <div id="faq" className="relative z-10 py-20">
-            <FAQ />
+            <Suspense fallback={<LoadingScreen compact />}>
+              <FAQ />
+            </Suspense>
           </div>
         </div>
         <Footer />

@@ -7,6 +7,7 @@ export interface UserProfile {
   bio: string;
   profile_picture: string | null;
   id: string;
+  user_id: string;
 }
 
 export function usePublicProfile(identifier: string) {
@@ -37,6 +38,7 @@ export function usePublicProfile(identifier: string) {
         
         const profile: UserProfile = {
           id: profileData.id,
+          user_id: profileData.id, // In profiles table, id is the user_id
           username: profileData.username || '',
           bio: profileData.bio || '',
           profile_picture: profileData.profile_picture,
