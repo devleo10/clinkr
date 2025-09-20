@@ -1,10 +1,6 @@
-import { useState } from 'react';
+import { useState, Suspense, lazy } from 'react';
 import { Link } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../ui/tabs";
-import Overview from './overview/Overview';
-import Geography from './geography/Geography';
-import Devices from './devices/Devices';
-import Trends from './trends/Trends';
 import { exportToPDF, exportToCSV } from '../../../lib/export-service';
 import {
   DropdownMenu,
@@ -20,6 +16,12 @@ import BoltBackground from '../../homepage/BoltBackground';
 import { FaChartLine } from 'react-icons/fa';
 import LoadingScreen from '../../ui/loadingScreen';
 import { PremiumDashboardProvider } from './PremiumDashboardContext';
+
+// Lazy load premium dashboard tabs for better performance
+const Overview = lazy(() => import('./overview/Overview'));
+const Geography = lazy(() => import('./geography/Geography'));
+const Devices = lazy(() => import('./devices/Devices'));
+const Trends = lazy(() => import('./trends/Trends'));
 
 interface TabConfig {
   value: string;
@@ -285,16 +287,24 @@ const PremiumDashBoard = () => {
                 </TabsList>
 
               <TabsContent value="overview" className="relative z-10">
-                <Overview />
+                <Suspense fallback={<LoadingScreen compact />}>
+                  <Overview />
+                </Suspense>
               </TabsContent>
               <TabsContent value="geography" className="relative z-10">
-                <Geography />
+                <Suspense fallback={<LoadingScreen compact />}>
+                  <Geography />
+                </Suspense>
               </TabsContent>
               <TabsContent value="devices" className="relative z-10">
-                <Devices />
+                <Suspense fallback={<LoadingScreen compact />}>
+                  <Devices />
+                </Suspense>
               </TabsContent>
               <TabsContent value="trends" className="relative z-10">
-                <Trends />
+                <Suspense fallback={<LoadingScreen compact />}>
+                  <Trends />
+                </Suspense>
               </TabsContent>
             </Tabs>
           </div>

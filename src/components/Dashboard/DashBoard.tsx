@@ -1,11 +1,8 @@
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, Suspense, lazy } from 'react';
 import { FaSearch, FaChartLine, FaCrown } from 'react-icons/fa';
 import { useNavigate, Link } from 'react-router-dom';
 import Navbar from './Navbar';
-import Cards from './cards/Cards';
-import LinkDatas from './LinkDatas';
-import LinkManagement from './LinkManagement';
 import { motion } from 'framer-motion';
 import Upgrade from './cards/Upgrade';
 import debounce from 'lodash/debounce';
@@ -14,6 +11,11 @@ import { useAuth } from '../auth/AuthProvider';
 import BoltBackground from '../homepage/BoltBackground';
 import LoadingScreen from '../ui/loadingScreen';
 import { DashboardDataProvider } from './DashboardDataContext';
+
+// Lazy load dashboard components for better performance
+const Cards = lazy(() => import('./cards/Cards'));
+const LinkDatas = lazy(() => import('./LinkDatas'));
+const LinkManagement = lazy(() => import('./LinkManagement'));
 
 const DashBoard = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -169,16 +171,22 @@ const DashBoard = () => {
         </motion.div>
 
         {/* Cards Grid */}
-        <Cards />
+        <Suspense fallback={<LoadingScreen compact />}>
+          <Cards />
+        </Suspense>
 
         {/* Upgrade Card */}
         <Upgrade />
 
         {/* Link Management */}
-        <LinkManagement userId={session?.user?.id || ''} />
+        <Suspense fallback={<LoadingScreen compact />}>
+          <LinkManagement userId={session?.user?.id || ''} />
+        </Suspense>
 
         {/* Link Data Table */}
-        <LinkDatas searchQuery={debouncedSearchQuery} />
+        <Suspense fallback={<LoadingScreen compact />}>
+          <LinkDatas searchQuery={debouncedSearchQuery} />
+        </Suspense>
         </div>
       </motion.div>
     </DashboardDataProvider>
