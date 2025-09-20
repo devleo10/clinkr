@@ -401,55 +401,59 @@ const PerformanceOverTimeChart: React.FC<PerformanceOverTimeChartProps> = ({
               <Star className="w-5 h-5 text-amber-500" />
             </motion.div>
           </div>
-          <div className="flex items-center gap-3">
-            <Select value={chartType} onValueChange={(value) => setChartType(value as ChartType)}>
-              <SelectTrigger className="w-[140px] bg-white/70 border-orange-200 text-gray-700">
-                <SelectValue placeholder="Chart Type" />
-              </SelectTrigger>
-              <SelectContent className="bg-white border-orange-200 text-gray-700">
-                <SelectItem value="sleek-line">✨ Sleek Line</SelectItem>
-                <SelectItem value="clean-area">📊 Clean Area</SelectItem>
-                <SelectItem value="modern-bar">📈 Modern Bar</SelectItem>
-                <SelectItem value="elegant-pie">🥧 Elegant Pie</SelectItem>
-              </SelectContent>
-            </Select>
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+            <div className="flex items-center gap-2">
+              <Select value={chartType} onValueChange={(value) => setChartType(value as ChartType)}>
+                <SelectTrigger className="w-full min-w-[120px] max-w-[160px] bg-white/70 border-orange-200 text-gray-700">
+                  <SelectValue placeholder="Chart Type" />
+                </SelectTrigger>
+                <SelectContent className="bg-white border-orange-200 text-gray-700">
+                  <SelectItem value="sleek-line">✨ Sleek Line</SelectItem>
+                  <SelectItem value="clean-area">📊 Clean Area</SelectItem>
+                  <SelectItem value="modern-bar">📈 Modern Bar</SelectItem>
+                  <SelectItem value="elegant-pie">🥧 Elegant Pie</SelectItem>
+                </SelectContent>
+              </Select>
 
-            <Select value={metricType} onValueChange={(value) => setMetricType(value as MetricType)}>
-              <SelectTrigger className="w-[140px] bg-white/70 border-orange-200 text-gray-700">
-                <SelectValue placeholder="Metric" />
-              </SelectTrigger>
-              <SelectContent className="bg-white border-orange-200 text-gray-700">
-                <SelectItem value="all">All Metrics</SelectItem>
-                <SelectItem value="clicks">Clicks</SelectItem>
-                <SelectItem value="views">Views</SelectItem>
-                <SelectItem value="conversion">Conversion Rate</SelectItem>
-              </SelectContent>
-            </Select>
-
-            <motion.button 
-              onClick={handleRefresh} 
-              className="p-2 rounded-full bg-white/70 border border-orange-200 text-orange-600 hover:bg-orange-50 hover:border-orange-300 transition-colors"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
-            </motion.button>
-            <motion.button 
-              onClick={handleExport} 
-              className="p-2 rounded-full bg-white/70 border border-orange-200 text-orange-600 hover:bg-orange-50 hover:border-orange-300 transition-colors"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <Download className="w-4 h-4" />
-            </motion.button>
-            <motion.button 
-              onClick={() => setIsExpanded(!isExpanded)} 
-              className="p-2 rounded-full bg-white/70 border border-orange-200 text-orange-600 hover:bg-orange-50 hover:border-orange-300 transition-colors"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              {isExpanded ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
-            </motion.button>
+              <Select value={metricType} onValueChange={(value) => setMetricType(value as MetricType)}>
+                <SelectTrigger className="w-full min-w-[120px] max-w-[160px] bg-white/70 border-orange-200 text-gray-700">
+                  <SelectValue placeholder="Metric" />
+                </SelectTrigger>
+                <SelectContent className="bg-white border-orange-200 text-gray-700">
+                  <SelectItem value="all">All Metrics</SelectItem>
+                  <SelectItem value="clicks">Clicks</SelectItem>
+                  <SelectItem value="views">Views</SelectItem>
+                  <SelectItem value="conversion">Conversion Rate</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div className="flex items-center gap-2">
+              <motion.button 
+                onClick={handleRefresh} 
+                className="p-2 rounded-full bg-white/70 border border-orange-200 text-orange-600 hover:bg-orange-50 hover:border-orange-300 transition-colors"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+              </motion.button>
+              <motion.button 
+                onClick={handleExport} 
+                className="p-2 rounded-full bg-white/70 border border-orange-200 text-orange-600 hover:bg-orange-50 hover:border-orange-300 transition-colors"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Download className="w-4 h-4" />
+              </motion.button>
+              <motion.button 
+                onClick={() => setIsExpanded(!isExpanded)} 
+                className="p-2 rounded-full bg-white/70 border border-orange-200 text-orange-600 hover:bg-orange-50 hover:border-orange-300 transition-colors"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                {isExpanded ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+              </motion.button>
+            </div>
           </div>
         </div>
 

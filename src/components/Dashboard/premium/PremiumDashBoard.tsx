@@ -265,7 +265,7 @@ const PremiumDashBoard = () => {
           
           <div className="relative z-10">
             <Tabs defaultValue="overview" className="w-full">
-                <TabsList className='flex justify-between items-center bg-inherit px-0 w-full max-w-full'>
+                <TabsList className='flex flex-col sm:flex-row justify-between items-stretch sm:items-center bg-inherit px-0 w-full max-w-full gap-2 sm:gap-0'>
                 {tabs.map(tab => (
                   <TabsTrigger 
                   key={tab.value}
@@ -276,7 +276,7 @@ const PremiumDashBoard = () => {
                     className="absolute inset-0 bg-gradient-to-r from-orange-50 to-orange-100 opacity-0 group-hover:opacity-100 group-data-[state=active]:opacity-0 rounded-lg transition-opacity"
                     initial={false}
                   />
-                  <span className="flex items-center gap-1.5 sm:gap-1.5 relative z-10 justify-center flex-col sm:flex-row">
+                  <span className="flex items-center gap-1.5 sm:gap-1.5 relative z-10 justify-center flex-row">
                     <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={tab.icon} />
                     </svg>
