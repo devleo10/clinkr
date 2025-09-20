@@ -1,10 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense, lazy } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../../../lib/supabaseClient';
-import PublicProfile from './PublicProfile';
 import ShortenedLinkRedirect from './ShortenedLinkRedirect';
 import { useLoading } from '../../../contexts/LoadingContext';
 import BoltBackground from '../../homepage/BoltBackground';
+import LoadingScreen from '../../ui/loadingScreen';
+
+// Lazy load profile components for better performance
+const PublicProfile = lazy(() => import('./PublicProfile'));
 
 interface RouteResolution {
   type: 'username' | 'short_code' | 'not_found';
@@ -140,7 +143,11 @@ const SmartRouteResolver = () => {
 
   if (resolution?.type === 'username') {
     console.log('Found profile, rendering PublicProfile for:', resolution.data.username);
-    return <PublicProfile />;
+    return (
+      <Suspense fallback={<LoadingScreen compact />}>
+        <PublicProfile />
+      </Suspense>
+    );
   }
 
   if (resolution?.type === 'short_code') {

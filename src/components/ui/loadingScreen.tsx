@@ -30,9 +30,9 @@ const LoadingScreen = ({ compact = false }: Props) => {
       <div className="inline-flex items-center gap-3 min-w-[96px] min-h-[36px] justify-center" role="status" aria-live="polite">
         <span className="sr-only">Loading</span>
         <div className="flex items-center justify-center" aria-hidden="true">
-          <LogoBars size={28} color="#FB923C" reducedMotion={reducedMotion} />
+          <LogoBars size={28} color="#ED7B00" reducedMotion={reducedMotion} />
         </div>
-        <div className="text-sm font-medium text-[rgba(var(--foreground),0.9)]">
+        <div className="text-lg lg:text-xl leading-relaxed font-medium text-gray-700" style={{ fontFamily: "'Space Grotesk', 'Poppins', sans-serif" }}>
           Loading...
         </div>
       </div>
@@ -57,21 +57,21 @@ const LoadingScreen = ({ compact = false }: Props) => {
           {/* Brand logo bars used as the main loader in full screen */}
           <span className="sr-only">Loading</span>
           <div className="flex items-center justify-center p-2">
-            <LogoBars size={96} color="#FB923C" reducedMotion={reducedMotion} />
+            <LogoBars size={96} color="#ED7B00" reducedMotion={reducedMotion} />
           </div>
 
-          {/* Enhanced text with glow effect */}
+          {/* Enhanced text with marketing-style styling */}
           <motion.div
-            className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-orange-600 via-amber-600 to-orange-700 relative"
+            className="text-lg lg:text-xl leading-relaxed font-medium text-gray-700 relative"
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            style={{
-              filter: 'drop-shadow(0 2px 4px rgba(251, 146, 60, 0.3))',
+            style={{ 
+              fontFamily: "'Space Grotesk', 'Poppins', sans-serif"
             }}
           >
             <motion.div
-              className="absolute inset-0 bg-gradient-to-r from-orange-600 via-amber-600 to-orange-700 bg-clip-text text-transparent"
+              className="absolute inset-0 text-gray-600"
               animate={{ opacity: [0.7, 1, 0.7] }}
               transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
             >
@@ -83,15 +83,12 @@ const LoadingScreen = ({ compact = false }: Props) => {
             </motion.span>
           </motion.div>
 
-          {/* Enhanced progress bar with glow */}
+          {/* Enhanced progress bar with orange styling */}
           <div className="w-64 h-2 bg-orange-100 rounded-full overflow-hidden shadow-inner relative">
             <motion.div
-              className="h-full bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600 rounded-full relative"
+              className="h-full bg-gradient-to-r from-orange-500 via-orange-600 to-orange-500 rounded-full relative"
               animate={{ x: ['-100%', '100%'] }}
               transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
-              style={{
-                filter: 'drop-shadow(0 0 6px rgba(251, 146, 60, 0.6))',
-              }}
             />
             <motion.div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent rounded-full" animate={{ x: ['-100%', '100%'] }} transition={{ repeat: Infinity, duration: 2.2, ease: 'easeInOut' }} />
           </div>

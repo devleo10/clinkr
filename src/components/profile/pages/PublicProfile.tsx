@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { FaUser, FaShare, FaEllipsisV } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
 import LoadingScreen from '../../ui/loadingScreen';
-import { getSocialIcon, getPlatformName } from '../../../lib/profile-utils';
+import { getSocialIcon, getPlatformName, detectDeviceType, detectBrowser } from '../../../lib/profile-utils';
 import usePerformanceOptimization from '../../../hooks/usePerformanceOptimization';
 import { usePublicProfile } from '../hooks/usePublicProfile';
 import logo from '../../../assets/Frame.png';
@@ -20,8 +20,15 @@ const PublicProfile = () => {
   // Track profile view for analytics
   useEffect(() => {
     const trackProfileView = async () => {
-      if (!profile?.id) return; // Wait for profile to load
+      console.log('Profile view tracking useEffect triggered');
+      console.log('Profile data:', { id: profile?.id, username: profile?.username });
       
+      if (!profile?.id) {
+        console.log('No profile ID available, skipping tracking');
+        return; // Wait for profile to load
+      }
+      
+      console.log('Starting profile view tracking...');
       try {
         // Get user's IP address and hash it for unique visitor tracking
         let viewerHash: string | null = null;
@@ -42,25 +49,59 @@ const PublicProfile = () => {
           viewerHash = btoa(navigator.userAgent + Date.now().toString()).replace(/[^a-zA-Z0-9]/g, '').substring(0, 16);
         }
 
-        // Track profile view
+        // Get device and browser info for analytics
+        const deviceType = detectDeviceType();
+        const browser = detectBrowser();
+        
+        // Get geolocation for analytics
+        let countryCode: string | null = null;
+        let lat: number | null = null;
+        let lng: number | null = null;
+        
+        try {
+          const geoResponse = await fetch('https://ipapi.co/json/');
+          const geoData = await geoResponse.json();
+          countryCode = geoData.country_code || null;
+          lat = geoData.latitude || null;
+          lng = geoData.longitude || null;
+        } catch (geoError) {
+          console.log('Could not get geolocation for profile view:', geoError);
+        }
+
+        // Track profile view in link_analytics (consolidated tracking)
         const profileViewData = {
-          profile_id: profile.id,
-          viewer_hash: viewerHash,
-          viewed_at: new Date().toISOString(),
+          user_id: profile.id, // Use profile.id as user_id (in profiles table, id is the user_id)
+          event_type: 'view',
+          link_type: 'profile_link',
+          link_url: window.location.href, // Profile page URL
+          hashed_ip: viewerHash,
+          device_type: deviceType,
+          browser: browser,
+          country_code: countryCode,
+          lat: lat,
+          lng: lng,
           referrer: document.referrer || null,
+          created_at: new Date().toISOString(),
         };
         
-        console.log('Inserting profile view data:', profileViewData);
+        console.log('Inserting profile view analytics:', profileViewData);
+        console.log('Profile data available:', { id: profile.id, username: profile.username });
         
-        const { data: insertedData, error: profileViewError } = await supabase
-          .from('profile_views')
+        const { data: insertedData, error: analyticsError } = await supabase
+          .from('link_analytics')
           .insert(profileViewData)
           .select();
           
-        if (profileViewError) {
-          console.error('Profile view insertion error:', profileViewError);
+        if (analyticsError) {
+          console.error('Profile view analytics insertion error:', analyticsError);
+          console.error('Error details:', {
+            message: analyticsError.message,
+            details: analyticsError.details,
+            hint: analyticsError.hint,
+            code: analyticsError.code
+          });
         } else {
-          console.log('Profile view data inserted successfully:', insertedData);
+          console.log('Profile view analytics inserted successfully:', insertedData);
         }
       } catch (error) {
         console.error('Error tracking profile view:', error);
@@ -70,9 +111,15 @@ const PublicProfile = () => {
     trackProfileView();
   }, [profile?.id]); // Track when profile loads
 
-  const handleLinkClick = (shortCode: string) => {
-    // Navigate to the shortened link - this will trigger tracking in ShortenedLinkRedirect
-    window.open(`/${shortCode}`, '_blank');
+  const handleLinkClick = async (shortCode: string) => {
+    try {
+      // Navigate to the shortened link - this will trigger tracking in ShortenedLinkRedirect
+      window.open(`/${shortCode}`, '_blank');
+    } catch (error) {
+      console.error('Error opening link:', error);
+      // Still navigate even if there's an error
+      window.open(`/${shortCode}`, '_blank');
+    }
   };
 
   const handleCopyProfileUrl = () => {
