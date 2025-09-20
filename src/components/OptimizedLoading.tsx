@@ -24,7 +24,7 @@ const OptimizedLoading: React.FC<OptimizedLoadingProps> = ({
       transition={{ duration: 0.2 }}
     >
       <div className="relative">
-        {/* Spinning ring */}
+        {/* Spinning ring with orange styling */}
         <motion.div
           className="w-8 h-8 border-3 border-orange-200 border-t-orange-600 rounded-full"
           animate={{ rotate: 360 }}
@@ -35,7 +35,7 @@ const OptimizedLoading: React.FC<OptimizedLoadingProps> = ({
           }}
         />
         
-        {/* Pulse effect */}
+        {/* Pulse effect with orange styling */}
         <motion.div
           className="absolute inset-0 w-8 h-8 border-3 border-orange-300 rounded-full"
           animate={{ 
@@ -52,10 +52,11 @@ const OptimizedLoading: React.FC<OptimizedLoadingProps> = ({
       
       {!compact && (
         <motion.p 
-          className="mt-4 text-sm text-gray-600 font-medium"
+          className="mt-4 text-lg lg:text-xl leading-relaxed font-medium text-gray-700"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
+          style={{ fontFamily: "'Space Grotesk', 'Poppins', sans-serif" }}
         >
           {message}
         </motion.p>

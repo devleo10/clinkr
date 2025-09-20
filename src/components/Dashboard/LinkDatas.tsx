@@ -82,6 +82,20 @@ const LinkDatas: React.FC<LinkDatasProps> = ({ searchQuery }) => {
       {/* Animated accent */}
       <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-600 via-amber-500 to-orange-500" />
       
+      {/* Header */}
+      <div className="relative z-10 mb-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-xl font-bold text-black mb-1">Shortened Links</h2>
+            <p className="text-sm text-gray-600">Your custom short links and their click statistics</p>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+            <span className="text-xs text-gray-600 font-medium">{filteredLinks.length} links</span>
+          </div>
+        </div>
+      </div>
+      
       {links.length === 0 ? (
         <div className="text-center py-8 relative z-10">
           <p className="text-gray-500 text-sm">No links to display yet</p>

@@ -31,6 +31,18 @@ const TotalClicks = () => {
       </div>
       <div className="relative z-10">
         <p className="text-sm text-black font-medium">Last 30 Days</p>
+        {!isLoading && data && (
+            <div className="mt-2 flex flex-wrap gap-3 text-xs text-gray-600">
+              <span className="flex items-center gap-1">
+                <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                Views: {(data.profileViews || 0).toLocaleString()}
+              </span>
+              <span className="flex items-center gap-1">
+                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                Short: {(data.shortenedLinkClicks || 0).toLocaleString()}
+              </span>
+            </div>
+        )}
       </div>
     </div>
   );

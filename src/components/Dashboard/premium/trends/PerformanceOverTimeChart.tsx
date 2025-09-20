@@ -36,20 +36,24 @@ interface PerformanceOverTimeChartProps {
   timeFrame: string;
 }
 
-type ChartType = 'line' | 'area' | 'bar' | 'pie' | 'gradient-bar' | 'gradient-area';
+type ChartType = 'sleek-line' | 'clean-area' | 'modern-bar' | 'elegant-pie';
 type MetricType = 'clicks' | 'views' | 'conversion' | 'all';
 
 const PerformanceOverTimeChart: React.FC<PerformanceOverTimeChartProps> = ({ 
   dailyData, 
   timeFrame 
 }) => {
-  const [chartType, setChartType] = useState<ChartType>('gradient-area');
+  const [chartType, setChartType] = useState<ChartType>('sleek-line');
   const [metricType, setMetricType] = useState<MetricType>('all');
   const [isExpanded, setIsExpanded] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
-  // Process data for charts with enhanced formatting
+  // Process data for charts
   const chartData = useMemo(() => {
+    if (!dailyData || dailyData.length === 0) {
+      return [];
+    }
+    
     return dailyData.map(item => ({
       ...item,
       conversion: item.views > 0 ? (item.clicks / item.views) * 100 : 0,
@@ -58,48 +62,6 @@ const PerformanceOverTimeChart: React.FC<PerformanceOverTimeChartProps> = ({
     }));
   }, [dailyData]);
 
-  // EvilCharts-inspired color schemes
-  // const colors = {
-  //   clicks: '#ED7B00',      // Primary orange
-  //   views: '#FCBB1F',        // Amber
-  //   conversion: '#F59E0B',   // Orange-500
-  //   uniqueVisitors: '#D97706' // Orange-600
-  // };
-
-  // Gradient definitions for EvilCharts-style effects
-  // const gradients = {
-  //   clicks: {
-  //     id: 'clicksGradient',
-  //     type: 'linear',
-  //     x1: 0, y1: 0, x2: 0, y2: 1,
-  //     stops: [
-  //       { offset: '0%', stopColor: '#ED7B00', stopOpacity: 0.8 },
-  //       { offset: '50%', stopColor: '#F59E0B', stopOpacity: 0.6 },
-  //       { offset: '100%', stopColor: '#D97706', stopOpacity: 0.2 }
-  //     ]
-  //   },
-  //   views: {
-  //     id: 'viewsGradient',
-  //     type: 'linear',
-  //     x1: 0, y1: 0, x2: 0, y2: 1,
-  //     stops: [
-  //       { offset: '0%', stopColor: '#FCBB1F', stopOpacity: 0.8 },
-  //       { offset: '50%', stopColor: '#F59E0B', stopOpacity: 0.6 },
-  //       { offset: '100%', stopColor: '#D97706', stopOpacity: 0.2 }
-  //     ]
-  //   },
-  //   combined: {
-  //     id: 'combinedGradient',
-  //     type: 'linear',
-  //     x1: 0, y1: 0, x2: 0, y2: 1,
-  //     stops: [
-  //       { offset: '0%', stopColor: '#ED7B00', stopOpacity: 0.9 },
-  //       { offset: '30%', stopColor: '#FCBB1F', stopOpacity: 0.7 },
-  //       { offset: '70%', stopColor: '#F59E0B', stopOpacity: 0.5 },
-  //       { offset: '100%', stopColor: '#D97706', stopOpacity: 0.1 }
-  //     ]
-  //   }
-  // };
 
   // Enhanced custom tooltip with EvilCharts styling
   const CustomTooltip = ({ active, payload, label }: any) => {
@@ -169,47 +131,53 @@ const PerformanceOverTimeChart: React.FC<PerformanceOverTimeChartProps> = ({
     console.log('Exporting chart data...');
   };
 
-  // Render chart based on type with EvilCharts-inspired designs
+  // Cool clean chart design with orange/amber palette
   const renderChart = () => {
     const commonProps = {
       data: chartData,
-      margin: { top: 20, right: 30, left: 20, bottom: 5 }
+      margin: { top: 20, right: 30, left: 30, bottom: 80 }
     };
 
     switch (chartType) {
-      case 'line':
+      case 'sleek-line':
         return (
           <ResponsiveContainer width="100%" height="100%">
             <LineChart {...commonProps}>
               <defs>
-                <linearGradient id="lineGradient" x1="0" y1="0" x2="1" y2="0">
-                  <stop offset="0%" stopColor="#ED7B00" stopOpacity={0.8}/>
-                  <stop offset="50%" stopColor="#FCBB1F" stopOpacity={0.6}/>
-                  <stop offset="100%" stopColor="#F59E0B" stopOpacity={0.4}/>
+                <linearGradient id="lineGradient1" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stopColor="#ED7B00" stopOpacity={1}/>
+                  <stop offset="100%" stopColor="#F59E0B" stopOpacity={0.8}/>
+                </linearGradient>
+                <linearGradient id="lineGradient2" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stopColor="#FCBB1F" stopOpacity={1}/>
+                  <stop offset="100%" stopColor="#F59E0B" stopOpacity={0.8}/>
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" opacity={0.3} />
+              <CartesianGrid strokeDasharray="1 3" stroke="#f1f5f9" strokeWidth={1} />
               <XAxis 
                 dataKey="formattedDate" 
-                angle={-45} 
-                textAnchor="end" 
-                height={60} 
-                stroke="#555"
-                style={{ fontSize: '12px' }}
-                tickLine={false}
                 axisLine={false}
+                tickLine={false}
+                tick={{ fill: '#64748b', fontSize: 12 }}
+                height={60}
+                interval={0}
               />
-              <YAxis stroke="#555" style={{ fontSize: '12px' }} tickLine={false} axisLine={false} />
+              <YAxis 
+                axisLine={false}
+                tickLine={false}
+                tick={{ fill: '#64748b', fontSize: 12 }}
+                width={50}
+              />
               <Tooltip content={<CustomTooltip />} />
               <Legend />
               {metricType === 'all' || metricType === 'clicks' ? (
                 <Line 
                   type="monotone" 
                   dataKey="clicks" 
-                  stroke="url(#lineGradient)" 
-                  strokeWidth={4}
-                  dot={{ fill: '#ED7B00', strokeWidth: 3, r: 6 }}
-                  activeDot={{ r: 8, stroke: '#ED7B00', strokeWidth: 3, fill: '#fff' }}
+                  stroke="url(#lineGradient1)" 
+                  strokeWidth={3}
+                  dot={{ fill: '#ED7B00', strokeWidth: 0, r: 4 }}
+                  activeDot={{ r: 6, stroke: '#ED7B00', strokeWidth: 2, fill: '#fff' }}
                   name="Clicks"
                 />
               ) : null}
@@ -217,51 +185,46 @@ const PerformanceOverTimeChart: React.FC<PerformanceOverTimeChartProps> = ({
                 <Line 
                   type="monotone" 
                   dataKey="views" 
-                  stroke="#FCBB1F" 
-                  strokeWidth={4}
-                  dot={{ fill: '#FCBB1F', strokeWidth: 3, r: 6 }}
-                  activeDot={{ r: 8, stroke: '#FCBB1F', strokeWidth: 3, fill: '#fff' }}
+                  stroke="url(#lineGradient2)" 
+                  strokeWidth={3}
+                  dot={{ fill: '#FCBB1F', strokeWidth: 0, r: 4 }}
+                  activeDot={{ r: 6, stroke: '#FCBB1F', strokeWidth: 2, fill: '#fff' }}
                   name="Views"
-                />
-              ) : null}
-              {metricType === 'conversion' ? (
-                <Line 
-                  type="monotone" 
-                  dataKey="conversion" 
-                  stroke="#F59E0B" 
-                  strokeWidth={4}
-                  dot={{ fill: '#F59E0B', strokeWidth: 3, r: 6 }}
-                  activeDot={{ r: 8, stroke: '#F59E0B', strokeWidth: 3, fill: '#fff' }}
-                  name="Conversion"
                 />
               ) : null}
             </LineChart>
           </ResponsiveContainer>
         );
 
-      case 'area':
+      case 'clean-area':
         return (
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart {...commonProps}>
               <defs>
-                <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#ED7B00" stopOpacity={0.8}/>
-                  <stop offset="50%" stopColor="#FCBB1F" stopOpacity={0.6}/>
-                  <stop offset="95%" stopColor="#F59E0B" stopOpacity={0.2}/>
+                <linearGradient id="areaGradient1" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#ED7B00" stopOpacity={0.4}/>
+                  <stop offset="100%" stopColor="#ED7B00" stopOpacity={0.05}/>
+                </linearGradient>
+                <linearGradient id="areaGradient2" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#FCBB1F" stopOpacity={0.4}/>
+                  <stop offset="100%" stopColor="#FCBB1F" stopOpacity={0.05}/>
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" opacity={0.3} />
+              <CartesianGrid strokeDasharray="1 3" stroke="#f1f5f9" strokeWidth={1} />
               <XAxis 
                 dataKey="formattedDate" 
-                angle={-45} 
-                textAnchor="end" 
-                height={60} 
-                stroke="#555"
-                style={{ fontSize: '12px' }}
-                tickLine={false}
                 axisLine={false}
+                tickLine={false}
+                tick={{ fill: '#64748b', fontSize: 12 }}
+                height={60}
+                interval={0}
               />
-              <YAxis stroke="#555" style={{ fontSize: '12px' }} tickLine={false} axisLine={false} />
+              <YAxis 
+                axisLine={false}
+                tickLine={false}
+                tick={{ fill: '#64748b', fontSize: 12 }}
+                width={50}
+              />
               <Tooltip content={<CustomTooltip />} />
               <Legend />
               {metricType === 'all' || metricType === 'clicks' ? (
@@ -269,9 +232,8 @@ const PerformanceOverTimeChart: React.FC<PerformanceOverTimeChartProps> = ({
                   type="monotone" 
                   dataKey="clicks" 
                   stroke="#ED7B00" 
-                  fillOpacity={1} 
-                  fill="url(#areaGradient)" 
-                  strokeWidth={3}
+                  fill="url(#areaGradient1)" 
+                  strokeWidth={2}
                   name="Clicks"
                 />
               ) : null}
@@ -280,9 +242,8 @@ const PerformanceOverTimeChart: React.FC<PerformanceOverTimeChartProps> = ({
                   type="monotone" 
                   dataKey="views" 
                   stroke="#FCBB1F" 
-                  fillOpacity={1} 
-                  fill="#FCBB1F" 
-                  strokeWidth={3}
+                  fill="url(#areaGradient2)" 
+                  strokeWidth={2}
                   name="Views"
                 />
               ) : null}
@@ -290,131 +251,61 @@ const PerformanceOverTimeChart: React.FC<PerformanceOverTimeChartProps> = ({
           </ResponsiveContainer>
         );
 
-      case 'gradient-area':
+      case 'modern-bar':
         return (
           <ResponsiveContainer width="100%" height="100%">
-            <AreaChart {...commonProps}>
+            <BarChart {...commonProps}>
               <defs>
-                <linearGradient id="gradientArea" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#ED7B00" stopOpacity={0.9}/>
-                  <stop offset="30%" stopColor="#FCBB1F" stopOpacity={0.7}/>
-                  <stop offset="70%" stopColor="#F59E0B" stopOpacity={0.5}/>
-                  <stop offset="100%" stopColor="#D97706" stopOpacity={0.1}/>
-                </linearGradient>
-                <linearGradient id="gradientStroke" x1="0" y1="0" x2="1" y2="0">
+                <linearGradient id="barGradient1" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="0%" stopColor="#ED7B00"/>
-                  <stop offset="50%" stopColor="#FCBB1F"/>
+                  <stop offset="100%" stopColor="#F59E0B"/>
+                </linearGradient>
+                <linearGradient id="barGradient2" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#FCBB1F"/>
                   <stop offset="100%" stopColor="#F59E0B"/>
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" opacity={0.2} />
+              <CartesianGrid strokeDasharray="1 3" stroke="#f1f5f9" strokeWidth={1} />
               <XAxis 
                 dataKey="formattedDate" 
-                angle={-45} 
-                textAnchor="end" 
-                height={60} 
-                stroke="#555"
-                style={{ fontSize: '12px' }}
-                tickLine={false}
                 axisLine={false}
+                tickLine={false}
+                tick={{ fill: '#64748b', fontSize: 12 }}
+                height={60}
+                interval={0}
               />
-              <YAxis stroke="#555" style={{ fontSize: '12px' }} tickLine={false} axisLine={false} />
+              <YAxis 
+                axisLine={false}
+                tickLine={false}
+                tick={{ fill: '#64748b', fontSize: 12 }}
+                width={50}
+              />
               <Tooltip content={<CustomTooltip />} />
               <Legend />
               {metricType === 'all' || metricType === 'clicks' ? (
-                <Area 
-                  type="monotone" 
+                <Bar 
                   dataKey="clicks" 
-                  stroke="url(#gradientStroke)" 
-                  fillOpacity={1} 
-                  fill="url(#gradientArea)" 
-                  strokeWidth={4}
+                  fill="url(#barGradient1)" 
+                  radius={[4, 4, 0, 0]} 
                   name="Clicks"
                 />
               ) : null}
               {metricType === 'all' || metricType === 'views' ? (
-                <Area 
-                  type="monotone" 
+                <Bar 
                   dataKey="views" 
-                  stroke="#FCBB1F" 
-                  fillOpacity={0.6} 
-                  fill="#FCBB1F" 
-                  strokeWidth={4}
+                  fill="url(#barGradient2)" 
+                  radius={[4, 4, 0, 0]} 
                   name="Views"
                 />
               ) : null}
-            </AreaChart>
-          </ResponsiveContainer>
-        );
-
-      case 'bar':
-        return (
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart {...commonProps}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" opacity={0.3} />
-              <XAxis 
-                dataKey="formattedDate" 
-                angle={-45} 
-                textAnchor="end" 
-                height={60} 
-                stroke="#555"
-                style={{ fontSize: '12px' }}
-                tickLine={false}
-                axisLine={false}
-              />
-              <YAxis stroke="#555" style={{ fontSize: '12px' }} tickLine={false} axisLine={false} />
-              <Tooltip content={<CustomTooltip />} />
-              <Legend />
-              {metricType === 'all' || metricType === 'clicks' ? (
-                <Bar dataKey="clicks" fill="#ED7B00" radius={[4, 4, 0, 0]} name="Clicks" />
-              ) : null}
-              {metricType === 'all' || metricType === 'views' ? (
-                <Bar dataKey="views" fill="#FCBB1F" radius={[4, 4, 0, 0]} name="Views" />
-              ) : null}
             </BarChart>
           </ResponsiveContainer>
         );
 
-      case 'gradient-bar':
-        return (
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart {...commonProps}>
-              <defs>
-                <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#ED7B00" stopOpacity={0.9}/>
-                  <stop offset="50%" stopColor="#FCBB1F" stopOpacity={0.7}/>
-                  <stop offset="100%" stopColor="#F59E0B" stopOpacity={0.5}/>
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" opacity={0.2} />
-              <XAxis 
-                dataKey="formattedDate" 
-                angle={-45} 
-                textAnchor="end" 
-                height={60} 
-                stroke="#555"
-                style={{ fontSize: '12px' }}
-                tickLine={false}
-                axisLine={false}
-              />
-              <YAxis stroke="#555" style={{ fontSize: '12px' }} tickLine={false} axisLine={false} />
-              <Tooltip content={<CustomTooltip />} />
-              <Legend />
-              {metricType === 'all' || metricType === 'clicks' ? (
-                <Bar dataKey="clicks" fill="url(#barGradient)" radius={[8, 8, 0, 0]} name="Clicks" />
-              ) : null}
-              {metricType === 'all' || metricType === 'views' ? (
-                <Bar dataKey="views" fill="#FCBB1F" radius={[8, 8, 0, 0]} name="Views" />
-              ) : null}
-            </BarChart>
-          </ResponsiveContainer>
-        );
-
-      case 'pie':
+      case 'elegant-pie':
         const pieData = [
           { name: 'Clicks', value: chartData.reduce((sum, item) => sum + item.clicks, 0), color: '#ED7B00' },
           { name: 'Views', value: chartData.reduce((sum, item) => sum + item.views, 0), color: '#FCBB1F' },
-          { name: 'Conversion', value: chartData.reduce((sum, item) => sum + item.conversion, 0), color: '#F59E0B' },
         ].filter(item => item.value > 0);
 
         return (
@@ -424,10 +315,9 @@ const PerformanceOverTimeChart: React.FC<PerformanceOverTimeChartProps> = ({
                 data={pieData}
                 cx="50%"
                 cy="50%"
-                labelLine={false}
-                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                innerRadius={60}
                 outerRadius={120}
-                fill="#8884d8"
+                paddingAngle={2}
                 dataKey="value"
               >
                 {pieData.map((entry, index) => (
@@ -435,6 +325,12 @@ const PerformanceOverTimeChart: React.FC<PerformanceOverTimeChartProps> = ({
                 ))}
               </Pie>
               <Tooltip content={<CustomTooltip />} />
+              <Legend 
+                verticalAlign="bottom" 
+                height={36}
+                iconType="circle"
+                wrapperStyle={{ fontSize: '14px' }}
+              />
             </PieChart>
           </ResponsiveContainer>
         );
@@ -495,9 +391,9 @@ const PerformanceOverTimeChart: React.FC<PerformanceOverTimeChartProps> = ({
             >
               <Crown className="w-7 h-7 text-orange-600" />
             </motion.div>
-            <h3 className="text-2xl font-bold bg-gradient-to-r from-orange-600 via-amber-600 to-orange-500 bg-clip-text text-transparent">
-              Performance Analytics
-            </h3>
+                <h3 className="text-2xl font-bold text-gray-800">
+                  Performance Analytics
+                </h3>
             <motion.div
               animate={{ scale: [1, 1.2, 1], rotate: [0, 180, 360] }}
               transition={{ duration: 4, repeat: Infinity }}
@@ -511,12 +407,10 @@ const PerformanceOverTimeChart: React.FC<PerformanceOverTimeChartProps> = ({
                 <SelectValue placeholder="Chart Type" />
               </SelectTrigger>
               <SelectContent className="bg-white border-orange-200 text-gray-700">
-                <SelectItem value="line">Line Chart</SelectItem>
-                <SelectItem value="area">Area Chart</SelectItem>
-                <SelectItem value="gradient-area">Gradient Area</SelectItem>
-                <SelectItem value="bar">Bar Chart</SelectItem>
-                <SelectItem value="gradient-bar">Gradient Bar</SelectItem>
-                <SelectItem value="pie">Pie Chart</SelectItem>
+                <SelectItem value="sleek-line">✨ Sleek Line</SelectItem>
+                <SelectItem value="clean-area">📊 Clean Area</SelectItem>
+                <SelectItem value="modern-bar">📈 Modern Bar</SelectItem>
+                <SelectItem value="elegant-pie">🥧 Elegant Pie</SelectItem>
               </SelectContent>
             </Select>
 
@@ -573,8 +467,8 @@ const PerformanceOverTimeChart: React.FC<PerformanceOverTimeChartProps> = ({
             <Flame className="w-5 h-5 flex-shrink-0 text-orange-500" />
           </motion.div>
           <div>
-            <p className="font-bold text-orange-700">EvilCharts-Inspired Analytics for {timeFrame}:</p>
-            <p>Experience premium chart designs with smooth gradients, interactive tooltips, and modern animations!</p>
+            <p className="font-bold text-orange-700">Performance Analytics for {timeFrame}:</p>
+            <p>Track your link performance with professional charts.</p>
           </div>
         </motion.div>
 

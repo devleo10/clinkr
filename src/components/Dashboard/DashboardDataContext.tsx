@@ -3,6 +3,8 @@ import { supabase } from '../../lib/supabaseClient';
 
 interface DashboardData {
   totalClicks: number;
+  shortenedLinkClicks: number;
+  profileViews: number;
   percentageChange: number;
   topCountries: Array<{ country: string; visits: number }>;
   deviceSplit: {
@@ -121,7 +123,7 @@ export const DashboardDataProvider: React.FC<DashboardDataProviderProps> = ({ ch
       const [analyticsResult, shortenedLinksResult] = await Promise.all([
         supabase
           .from('link_analytics')
-          .select('id, country_code, device_type, created_at, event_type, hashed_ip')
+          .select('id, country_code, device_type, created_at, event_type, hashed_ip, link_type')
           .eq('user_id', user.id)
           .gte('created_at', sixtyDaysAgo.toISOString())
           .order('created_at', { ascending: false }),
@@ -167,8 +169,17 @@ export const DashboardDataProvider: React.FC<DashboardDataProviderProps> = ({ ch
         previousPeriod: previousPeriodData.length
       });
 
-      // Calculate total clicks from analytics data (single source of truth)
-      const totalClicksFromAnalytics = currentPeriodData.length;
+      // Get shortened link clicks from analytics
+      const shortenedLinkClicks = currentPeriodData.filter(item => 
+        item.event_type === 'click' && item.link_type === 'shortened_link'
+      ).length;
+      
+      // Count profile views separately (for display purposes)
+      const profileViews = currentPeriodData.filter(item => 
+        item.event_type === 'view' && item.link_type === 'profile_link'
+      ).length;
+      
+      const totalClicksFromAnalytics = shortenedLinkClicks;
 
       // Calculate analytics events for comparison
       const currentAnalyticsEvents = currentPeriodData.length;
@@ -178,6 +189,7 @@ export const DashboardDataProvider: React.FC<DashboardDataProviderProps> = ({ ch
       const percentageChange = calculatePercentageChange(currentAnalyticsEvents, previousAnalyticsEvents);
 
       console.log('Click calculations:', {
+        shortenedLinkClicks,
         totalClicksFromAnalytics,
         currentAnalyticsEvents,
         previousAnalyticsEvents,
@@ -256,6 +268,8 @@ export const DashboardDataProvider: React.FC<DashboardDataProviderProps> = ({ ch
       // Create final data object with validation
       const dashboardData: DashboardData = {
         totalClicks: validateNumber(totalClicksFromAnalytics),
+        shortenedLinkClicks: validateNumber(shortenedLinkClicks),
+        profileViews: validateNumber(profileViews),
         percentageChange: validateNumber(percentageChange),
         topCountries,
         deviceSplit,
