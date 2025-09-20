@@ -1,153 +1,175 @@
 import React, { useState, useMemo } from 'react';
 import {
+  BarChart,
+  Bar,
   LineChart,
   Line,
+  AreaChart,
+  Area,
+  PieChart,
+  Pie,
+  Cell,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
   Legend,
-  ResponsiveContainer,
-  AreaChart,
-  Area,
-  BarChart,
-  Bar,
-  PieChart,
-  Pie,
-  Cell
+  ResponsiveContainer
 } from 'recharts';
 import { motion } from 'framer-motion';
 import { 
-  TrendingUp, 
-  BarChart3, 
-  PieChart as PieChartIcon, 
-  Activity,
-  Calendar,
-  Filter
+  Download,
+  RefreshCw,
+  Maximize2,
+  Minimize2,
+  Target,
+  Eye,
+  MousePointerClick,
+  Flame,
+  Star,
+  Crown
 } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../ui/select';
-
-interface ChartData {
-  date: string;
-  clicks: number;
-  views: number;
-  conversionRate: number;
-  uniqueVisitors: number;
-}
 
 interface PerformanceOverTimeChartProps {
   dailyData: Array<{ date: string; clicks: number; views: number }>;
   timeFrame: string;
 }
 
-type ChartType = 'line' | 'area' | 'bar' | 'pie';
+type ChartType = 'line' | 'area' | 'bar' | 'pie' | 'gradient-bar' | 'gradient-area';
 type MetricType = 'clicks' | 'views' | 'conversion' | 'all';
 
 const PerformanceOverTimeChart: React.FC<PerformanceOverTimeChartProps> = ({ 
   dailyData, 
   timeFrame 
 }) => {
-  const [chartType, setChartType] = useState<ChartType>('area');
+  const [chartType, setChartType] = useState<ChartType>('gradient-area');
   const [metricType, setMetricType] = useState<MetricType>('all');
-  const [showComparison, setShowComparison] = useState(true);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
-  // Process data for charts
+  // Process data for charts with enhanced formatting
   const chartData = useMemo(() => {
     return dailyData.map(item => ({
       ...item,
-      conversionRate: item.views > 0 ? Math.round((item.clicks / item.views) * 100) : 0,
-      uniqueVisitors: Math.round(item.clicks * 0.8), // Mock data - would need actual unique visitor tracking
-      formattedDate: formatDateForDisplay(item.date, timeFrame)
+      conversion: item.views > 0 ? (item.clicks / item.views) * 100 : 0,
+      uniqueVisitors: Math.floor(item.views * 0.7 + item.clicks * 0.3),
+      formattedDate: new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
     }));
-  }, [dailyData, timeFrame]);
+  }, [dailyData]);
 
-  // Calculate summary statistics
-  const summaryStats = useMemo(() => {
-    const totalClicks = chartData.reduce((sum, item) => sum + item.clicks, 0);
-    const totalViews = chartData.reduce((sum, item) => sum + item.views, 0);
-    const avgConversionRate = totalViews > 0 ? (totalClicks / totalViews) * 100 : 0;
-    const peakDay = chartData.reduce((peak, item) => 
-      item.clicks > peak.clicks ? item : peak, chartData[0] || { clicks: 0 }
-    );
+  // EvilCharts-inspired color schemes
+  // const colors = {
+  //   clicks: '#ED7B00',      // Primary orange
+  //   views: '#FCBB1F',        // Amber
+  //   conversion: '#F59E0B',   // Orange-500
+  //   uniqueVisitors: '#D97706' // Orange-600
+  // };
 
-    return {
-      totalClicks,
-      totalViews,
-      avgConversionRate: Math.round(avgConversionRate * 10) / 10,
-      peakDay: peakDay.formattedDate || 'N/A',
-      peakClicks: peakDay.clicks || 0,
-      trend: calculateTrend(chartData)
-    };
-  }, [chartData]);
+  // Gradient definitions for EvilCharts-style effects
+  // const gradients = {
+  //   clicks: {
+  //     id: 'clicksGradient',
+  //     type: 'linear',
+  //     x1: 0, y1: 0, x2: 0, y2: 1,
+  //     stops: [
+  //       { offset: '0%', stopColor: '#ED7B00', stopOpacity: 0.8 },
+  //       { offset: '50%', stopColor: '#F59E0B', stopOpacity: 0.6 },
+  //       { offset: '100%', stopColor: '#D97706', stopOpacity: 0.2 }
+  //     ]
+  //   },
+  //   views: {
+  //     id: 'viewsGradient',
+  //     type: 'linear',
+  //     x1: 0, y1: 0, x2: 0, y2: 1,
+  //     stops: [
+  //       { offset: '0%', stopColor: '#FCBB1F', stopOpacity: 0.8 },
+  //       { offset: '50%', stopColor: '#F59E0B', stopOpacity: 0.6 },
+  //       { offset: '100%', stopColor: '#D97706', stopOpacity: 0.2 }
+  //     ]
+  //   },
+  //   combined: {
+  //     id: 'combinedGradient',
+  //     type: 'linear',
+  //     x1: 0, y1: 0, x2: 0, y2: 1,
+  //     stops: [
+  //       { offset: '0%', stopColor: '#ED7B00', stopOpacity: 0.9 },
+  //       { offset: '30%', stopColor: '#FCBB1F', stopOpacity: 0.7 },
+  //       { offset: '70%', stopColor: '#F59E0B', stopOpacity: 0.5 },
+  //       { offset: '100%', stopColor: '#D97706', stopOpacity: 0.1 }
+  //     ]
+  //   }
+  // };
 
-  // Color schemes
-  const colors = {
-    clicks: '#3B82F6',
-    views: '#10B981',
-    conversion: '#F59E0B',
-    uniqueVisitors: '#8B5CF6'
-  };
-
-  const pieColors = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6'];
-
-  // Custom tooltip component
+  // Enhanced custom tooltip with EvilCharts styling
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-white/95 backdrop-blur-sm border border-gray-200 rounded-lg p-4 shadow-lg">
-          <p className="font-semibold text-gray-900 mb-2">{label}</p>
-          {payload.map((entry: any, index: number) => (
-            <div key={index} className="flex items-center space-x-2 mb-1">
-              <div 
-                className="w-3 h-3 rounded-full" 
-                style={{ backgroundColor: entry.color }}
-              />
-              <span className="text-sm text-gray-600">{entry.dataKey}:</span>
-              <span className="text-sm font-semibold text-gray-900">
-                {entry.dataKey === 'conversionRate' ? `${entry.value}%` : entry.value.toLocaleString()}
-              </span>
-            </div>
-          ))}
-        </div>
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95, y: 10 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.95, y: 10 }}
+          transition={{ duration: 0.2 }}
+          className="bg-white/95 backdrop-blur-xl p-4 rounded-xl shadow-2xl border border-white/30 text-sm text-gray-800 min-w-[200px]"
+        >
+          <div className="flex items-center gap-2 mb-2">
+            <Crown className="w-4 h-4 text-orange-500" />
+            <p className="font-bold text-orange-600">{label}</p>
+          </div>
+          <div className="space-y-2">
+            {payload.map((entry: any, index: number) => (
+              <motion.div 
+                key={`item-${index}`} 
+                className="flex justify-between items-center p-2 rounded-lg bg-gradient-to-r from-orange-50 to-amber-50"
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.1 }}
+              >
+                <div className="flex items-center gap-2">
+                  <div 
+                    className="w-3 h-3 rounded-full shadow-sm" 
+                    style={{ backgroundColor: entry.color }}
+                  />
+                  <span className="font-medium text-gray-700">{entry.name}:</span>
+                </div>
+                <span className="font-bold text-gray-900">
+                  {entry.value.toFixed(2)}{entry.name === 'Conversion' ? '%' : ''}
+                </span>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
       );
     }
     return null;
   };
 
-  // Format date based on time frame
-  function formatDateForDisplay(dateStr: string, timeFrame: string): string {
-    const date = new Date(dateStr);
-    
-    switch (timeFrame) {
-      case '7days':
-        return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-      case '30days':
-        return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-      case '90days':
-        return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-      default:
-        return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-    }
-  }
+  // Calculate trend for a given metric
+  const calculateTrend = (data: any[], key: MetricType) => {
+    if (data.length < 2) return 0;
+    const latest = data[data.length - 1][key];
+    const previous = data[data.length - 2][key];
+    if (previous === 0) return latest > 0 ? 100 : 0;
+    return ((latest - previous) / previous) * 100;
+  };
 
-  // Calculate trend direction
-  function calculateTrend(data: any[]): 'up' | 'down' | 'stable' {
-    if (data.length < 2) return 'stable';
-    
-    const firstHalf = data.slice(0, Math.floor(data.length / 2));
-    const secondHalf = data.slice(Math.floor(data.length / 2));
-    
-    const firstAvg = firstHalf.reduce((sum, item) => sum + item.clicks, 0) / firstHalf.length;
-    const secondAvg = secondHalf.reduce((sum, item) => sum + item.clicks, 0) / secondHalf.length;
-    
-    const change = ((secondAvg - firstAvg) / firstAvg) * 100;
-    
-    if (change > 5) return 'up';
-    if (change < -5) return 'down';
-    return 'stable';
-  }
+  const trendClicks = useMemo(() => calculateTrend(chartData, 'clicks'), [chartData]);
+  const trendViews = useMemo(() => calculateTrend(chartData, 'views'), [chartData]);
+  const trendConversion = useMemo(() => calculateTrend(chartData, 'conversion'), [chartData]);
 
-  // Render chart based on type
+  const handleRefresh = () => {
+    setIsRefreshing(true);
+    setTimeout(() => {
+      console.log('Refreshing data...');
+      setIsRefreshing(false);
+    }, 1500);
+  };
+
+  const handleExport = () => {
+    console.log('Exporting chart data...');
+  };
+
+  // Render chart based on type with EvilCharts-inspired designs
   const renderChart = () => {
     const commonProps = {
       data: chartData,
@@ -157,314 +179,499 @@ const PerformanceOverTimeChart: React.FC<PerformanceOverTimeChartProps> = ({
     switch (chartType) {
       case 'line':
         return (
-          <LineChart {...commonProps}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
-            <XAxis 
-              dataKey="formattedDate" 
-              stroke="#6B7280"
-              fontSize={12}
-              tickLine={false}
-              axisLine={false}
-            />
-            <YAxis 
-              stroke="#6B7280"
-              fontSize={12}
-              tickLine={false}
-              axisLine={false}
-            />
-            <Tooltip content={<CustomTooltip />} />
-            <Legend />
-            {metricType === 'all' || metricType === 'clicks' ? (
-              <Line 
-                type="monotone" 
-                dataKey="clicks" 
-                stroke={colors.clicks} 
-                strokeWidth={3}
-                dot={{ fill: colors.clicks, strokeWidth: 2, r: 4 }}
-                activeDot={{ r: 6, stroke: colors.clicks, strokeWidth: 2 }}
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart {...commonProps}>
+              <defs>
+                <linearGradient id="lineGradient" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stopColor="#ED7B00" stopOpacity={0.8}/>
+                  <stop offset="50%" stopColor="#FCBB1F" stopOpacity={0.6}/>
+                  <stop offset="100%" stopColor="#F59E0B" stopOpacity={0.4}/>
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" opacity={0.3} />
+              <XAxis 
+                dataKey="formattedDate" 
+                angle={-45} 
+                textAnchor="end" 
+                height={60} 
+                stroke="#555"
+                style={{ fontSize: '12px' }}
+                tickLine={false}
+                axisLine={false}
               />
-            ) : null}
-            {metricType === 'all' || metricType === 'views' ? (
-              <Line 
-                type="monotone" 
-                dataKey="views" 
-                stroke={colors.views} 
-                strokeWidth={3}
-                dot={{ fill: colors.views, strokeWidth: 2, r: 4 }}
-                activeDot={{ r: 6, stroke: colors.views, strokeWidth: 2 }}
-              />
-            ) : null}
-            {metricType === 'conversion' ? (
-              <Line 
-                type="monotone" 
-                dataKey="conversionRate" 
-                stroke={colors.conversion} 
-                strokeWidth={3}
-                dot={{ fill: colors.conversion, strokeWidth: 2, r: 4 }}
-                activeDot={{ r: 6, stroke: colors.conversion, strokeWidth: 2 }}
-              />
-            ) : null}
-          </LineChart>
+              <YAxis stroke="#555" style={{ fontSize: '12px' }} tickLine={false} axisLine={false} />
+              <Tooltip content={<CustomTooltip />} />
+              <Legend />
+              {metricType === 'all' || metricType === 'clicks' ? (
+                <Line 
+                  type="monotone" 
+                  dataKey="clicks" 
+                  stroke="url(#lineGradient)" 
+                  strokeWidth={4}
+                  dot={{ fill: '#ED7B00', strokeWidth: 3, r: 6 }}
+                  activeDot={{ r: 8, stroke: '#ED7B00', strokeWidth: 3, fill: '#fff' }}
+                  name="Clicks"
+                />
+              ) : null}
+              {metricType === 'all' || metricType === 'views' ? (
+                <Line 
+                  type="monotone" 
+                  dataKey="views" 
+                  stroke="#FCBB1F" 
+                  strokeWidth={4}
+                  dot={{ fill: '#FCBB1F', strokeWidth: 3, r: 6 }}
+                  activeDot={{ r: 8, stroke: '#FCBB1F', strokeWidth: 3, fill: '#fff' }}
+                  name="Views"
+                />
+              ) : null}
+              {metricType === 'conversion' ? (
+                <Line 
+                  type="monotone" 
+                  dataKey="conversion" 
+                  stroke="#F59E0B" 
+                  strokeWidth={4}
+                  dot={{ fill: '#F59E0B', strokeWidth: 3, r: 6 }}
+                  activeDot={{ r: 8, stroke: '#F59E0B', strokeWidth: 3, fill: '#fff' }}
+                  name="Conversion"
+                />
+              ) : null}
+            </LineChart>
+          </ResponsiveContainer>
         );
 
       case 'area':
         return (
-          <AreaChart {...commonProps}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
-            <XAxis 
-              dataKey="formattedDate" 
-              stroke="#6B7280"
-              fontSize={12}
-              tickLine={false}
-              axisLine={false}
-            />
-            <YAxis 
-              stroke="#6B7280"
-              fontSize={12}
-              tickLine={false}
-              axisLine={false}
-            />
-            <Tooltip content={<CustomTooltip />} />
-            <Legend />
-            {metricType === 'all' || metricType === 'clicks' ? (
-              <Area 
-                type="monotone" 
-                dataKey="clicks" 
-                stackId="1"
-                stroke={colors.clicks} 
-                fill={colors.clicks}
-                fillOpacity={0.6}
-                strokeWidth={2}
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart {...commonProps}>
+              <defs>
+                <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#ED7B00" stopOpacity={0.8}/>
+                  <stop offset="50%" stopColor="#FCBB1F" stopOpacity={0.6}/>
+                  <stop offset="95%" stopColor="#F59E0B" stopOpacity={0.2}/>
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" opacity={0.3} />
+              <XAxis 
+                dataKey="formattedDate" 
+                angle={-45} 
+                textAnchor="end" 
+                height={60} 
+                stroke="#555"
+                style={{ fontSize: '12px' }}
+                tickLine={false}
+                axisLine={false}
               />
-            ) : null}
-            {metricType === 'all' || metricType === 'views' ? (
-              <Area 
-                type="monotone" 
-                dataKey="views" 
-                stackId="2"
-                stroke={colors.views} 
-                fill={colors.views}
-                fillOpacity={0.6}
-                strokeWidth={2}
+              <YAxis stroke="#555" style={{ fontSize: '12px' }} tickLine={false} axisLine={false} />
+              <Tooltip content={<CustomTooltip />} />
+              <Legend />
+              {metricType === 'all' || metricType === 'clicks' ? (
+                <Area 
+                  type="monotone" 
+                  dataKey="clicks" 
+                  stroke="#ED7B00" 
+                  fillOpacity={1} 
+                  fill="url(#areaGradient)" 
+                  strokeWidth={3}
+                  name="Clicks"
+                />
+              ) : null}
+              {metricType === 'all' || metricType === 'views' ? (
+                <Area 
+                  type="monotone" 
+                  dataKey="views" 
+                  stroke="#FCBB1F" 
+                  fillOpacity={1} 
+                  fill="#FCBB1F" 
+                  strokeWidth={3}
+                  name="Views"
+                />
+              ) : null}
+            </AreaChart>
+          </ResponsiveContainer>
+        );
+
+      case 'gradient-area':
+        return (
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart {...commonProps}>
+              <defs>
+                <linearGradient id="gradientArea" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#ED7B00" stopOpacity={0.9}/>
+                  <stop offset="30%" stopColor="#FCBB1F" stopOpacity={0.7}/>
+                  <stop offset="70%" stopColor="#F59E0B" stopOpacity={0.5}/>
+                  <stop offset="100%" stopColor="#D97706" stopOpacity={0.1}/>
+                </linearGradient>
+                <linearGradient id="gradientStroke" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stopColor="#ED7B00"/>
+                  <stop offset="50%" stopColor="#FCBB1F"/>
+                  <stop offset="100%" stopColor="#F59E0B"/>
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" opacity={0.2} />
+              <XAxis 
+                dataKey="formattedDate" 
+                angle={-45} 
+                textAnchor="end" 
+                height={60} 
+                stroke="#555"
+                style={{ fontSize: '12px' }}
+                tickLine={false}
+                axisLine={false}
               />
-            ) : null}
-            {metricType === 'conversion' ? (
-              <Area 
-                type="monotone" 
-                dataKey="conversionRate" 
-                stroke={colors.conversion} 
-                fill={colors.conversion}
-                fillOpacity={0.6}
-                strokeWidth={2}
-              />
-            ) : null}
-          </AreaChart>
+              <YAxis stroke="#555" style={{ fontSize: '12px' }} tickLine={false} axisLine={false} />
+              <Tooltip content={<CustomTooltip />} />
+              <Legend />
+              {metricType === 'all' || metricType === 'clicks' ? (
+                <Area 
+                  type="monotone" 
+                  dataKey="clicks" 
+                  stroke="url(#gradientStroke)" 
+                  fillOpacity={1} 
+                  fill="url(#gradientArea)" 
+                  strokeWidth={4}
+                  name="Clicks"
+                />
+              ) : null}
+              {metricType === 'all' || metricType === 'views' ? (
+                <Area 
+                  type="monotone" 
+                  dataKey="views" 
+                  stroke="#FCBB1F" 
+                  fillOpacity={0.6} 
+                  fill="#FCBB1F" 
+                  strokeWidth={4}
+                  name="Views"
+                />
+              ) : null}
+            </AreaChart>
+          </ResponsiveContainer>
         );
 
       case 'bar':
         return (
-          <BarChart {...commonProps}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
-            <XAxis 
-              dataKey="formattedDate" 
-              stroke="#6B7280"
-              fontSize={12}
-              tickLine={false}
-              axisLine={false}
-            />
-            <YAxis 
-              stroke="#6B7280"
-              fontSize={12}
-              tickLine={false}
-              axisLine={false}
-            />
-            <Tooltip content={<CustomTooltip />} />
-            <Legend />
-            {metricType === 'all' || metricType === 'clicks' ? (
-              <Bar dataKey="clicks" fill={colors.clicks} radius={[4, 4, 0, 0]} />
-            ) : null}
-            {metricType === 'all' || metricType === 'views' ? (
-              <Bar dataKey="views" fill={colors.views} radius={[4, 4, 0, 0]} />
-            ) : null}
-            {metricType === 'conversion' ? (
-              <Bar dataKey="conversionRate" fill={colors.conversion} radius={[4, 4, 0, 0]} />
-            ) : null}
-          </BarChart>
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart {...commonProps}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" opacity={0.3} />
+              <XAxis 
+                dataKey="formattedDate" 
+                angle={-45} 
+                textAnchor="end" 
+                height={60} 
+                stroke="#555"
+                style={{ fontSize: '12px' }}
+                tickLine={false}
+                axisLine={false}
+              />
+              <YAxis stroke="#555" style={{ fontSize: '12px' }} tickLine={false} axisLine={false} />
+              <Tooltip content={<CustomTooltip />} />
+              <Legend />
+              {metricType === 'all' || metricType === 'clicks' ? (
+                <Bar dataKey="clicks" fill="#ED7B00" radius={[4, 4, 0, 0]} name="Clicks" />
+              ) : null}
+              {metricType === 'all' || metricType === 'views' ? (
+                <Bar dataKey="views" fill="#FCBB1F" radius={[4, 4, 0, 0]} name="Views" />
+              ) : null}
+            </BarChart>
+          </ResponsiveContainer>
+        );
+
+      case 'gradient-bar':
+        return (
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart {...commonProps}>
+              <defs>
+                <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#ED7B00" stopOpacity={0.9}/>
+                  <stop offset="50%" stopColor="#FCBB1F" stopOpacity={0.7}/>
+                  <stop offset="100%" stopColor="#F59E0B" stopOpacity={0.5}/>
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" opacity={0.2} />
+              <XAxis 
+                dataKey="formattedDate" 
+                angle={-45} 
+                textAnchor="end" 
+                height={60} 
+                stroke="#555"
+                style={{ fontSize: '12px' }}
+                tickLine={false}
+                axisLine={false}
+              />
+              <YAxis stroke="#555" style={{ fontSize: '12px' }} tickLine={false} axisLine={false} />
+              <Tooltip content={<CustomTooltip />} />
+              <Legend />
+              {metricType === 'all' || metricType === 'clicks' ? (
+                <Bar dataKey="clicks" fill="url(#barGradient)" radius={[8, 8, 0, 0]} name="Clicks" />
+              ) : null}
+              {metricType === 'all' || metricType === 'views' ? (
+                <Bar dataKey="views" fill="#FCBB1F" radius={[8, 8, 0, 0]} name="Views" />
+              ) : null}
+            </BarChart>
+          </ResponsiveContainer>
         );
 
       case 'pie':
         const pieData = [
-          { name: 'Clicks', value: summaryStats.totalClicks, color: colors.clicks },
-          { name: 'Views', value: summaryStats.totalViews, color: colors.views },
-          { name: 'Conversion Rate', value: summaryStats.avgConversionRate, color: colors.conversion }
-        ];
-        
+          { name: 'Clicks', value: chartData.reduce((sum, item) => sum + item.clicks, 0), color: '#ED7B00' },
+          { name: 'Views', value: chartData.reduce((sum, item) => sum + item.views, 0), color: '#FCBB1F' },
+          { name: 'Conversion', value: chartData.reduce((sum, item) => sum + item.conversion, 0), color: '#F59E0B' },
+        ].filter(item => item.value > 0);
+
         return (
-          <PieChart>
-            <Pie
-              data={pieData}
-              cx="50%"
-              cy="50%"
-              labelLine={false}
-              label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-              outerRadius={120}
-              fill="#8884d8"
-              dataKey="value"
-            >
-              {pieData.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={entry.color} />
-              ))}
-            </Pie>
-            <Tooltip />
-          </PieChart>
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart>
+              <Pie
+                data={pieData}
+                cx="50%"
+                cy="50%"
+                labelLine={false}
+                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                outerRadius={120}
+                fill="#8884d8"
+                dataKey="value"
+              >
+                {pieData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.color} />
+                ))}
+              </Pie>
+              <Tooltip content={<CustomTooltip />} />
+            </PieChart>
+          </ResponsiveContainer>
         );
 
       default:
-        return null;
+        return <div>Chart type not supported</div>;
     }
   };
 
   if (!chartData || chartData.length === 0) {
     return (
-      <div className="bg-white/80 backdrop-blur-md border border-white/30 rounded-xl p-8 shadow-md">
-        <div className="text-center">
-          <Activity className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">No Performance Data</h3>
-          <p className="text-gray-500">Start sharing your links to see performance trends over time</p>
+      <motion.div 
+        className="glass-card bg-white/80 backdrop-blur-md border border-white/30 rounded-xl p-8 shadow-md relative overflow-hidden"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-white to-white opacity-70" />
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-600 via-orange-500 to-orange-400" />
+        <div className="flex flex-col items-center justify-center h-full text-gray-500">
+          <Flame className="w-12 h-12 mb-4 text-orange-400" />
+          <p className="text-lg font-semibold">No data available for this period.</p>
+          <p className="text-sm">Try adjusting the time frame or check your link activity.</p>
         </div>
-      </div>
+      </motion.div>
     );
   }
 
   return (
     <motion.div 
-      className="bg-white/80 backdrop-blur-md border border-white/30 rounded-xl shadow-md overflow-hidden"
+      className="glass-card bg-white/80 backdrop-blur-md border border-white/30 rounded-xl shadow-md overflow-hidden relative"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
     >
-      {/* Header with controls */}
-      <div className="p-6 border-b border-gray-200/50">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div>
-            <h3 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
-              <TrendingUp className="w-5 h-5 text-orange-500" />
-              Performance Over Time
+      {/* EvilCharts-inspired gradient background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-white to-amber-50 opacity-70" />
+      
+      {/* Animated accent line with gradient */}
+      <motion.div 
+        className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400"
+        initial={{ scaleX: 0 }}
+        animate={{ scaleX: 1 }}
+        transition={{ duration: 0.8, delay: 0.2 }}
+      />
+
+      {/* Corner decorations with EvilCharts style */}
+      <div className="absolute top-0 left-0 w-20 h-20 border-t-4 border-l-4 border-orange-300 opacity-40 rounded-tl-xl" />
+      <div className="absolute bottom-0 right-0 w-20 h-20 border-b-4 border-r-4 border-amber-300 opacity-40 rounded-br-xl" />
+
+      <div className="p-6 relative z-10">
+        {/* Header with EvilCharts-inspired styling */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+          <div className="flex items-center gap-3">
+            <motion.div
+              animate={{ rotate: [0, 15, -15, 0] }}
+              transition={{ duration: 3, repeat: Infinity, repeatDelay: 2 }}
+            >
+              <Crown className="w-7 h-7 text-orange-600" />
+            </motion.div>
+            <h3 className="text-2xl font-bold bg-gradient-to-r from-orange-600 via-amber-600 to-orange-500 bg-clip-text text-transparent">
+              Performance Analytics
             </h3>
-            <p className="text-sm text-gray-600 mt-1">
-              Track your link performance across different time periods
-            </p>
+            <motion.div
+              animate={{ scale: [1, 1.2, 1], rotate: [0, 180, 360] }}
+              transition={{ duration: 4, repeat: Infinity }}
+            >
+              <Star className="w-5 h-5 text-amber-500" />
+            </motion.div>
           </div>
-          
-          <div className="flex flex-wrap items-center gap-3">
-            {/* Chart Type Selector */}
-            <Select value={chartType} onValueChange={(value: ChartType) => setChartType(value)}>
-              <SelectTrigger className="w-[120px]">
-                <SelectValue />
+          <div className="flex items-center gap-3">
+            <Select value={chartType} onValueChange={(value) => setChartType(value as ChartType)}>
+              <SelectTrigger className="w-[140px] bg-white/70 border-orange-200 text-gray-700">
+                <SelectValue placeholder="Chart Type" />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="area">
-                  <div className="flex items-center gap-2">
-                    <Activity className="w-4 h-4" />
-                    Area
-                  </div>
-                </SelectItem>
-                <SelectItem value="line">
-                  <div className="flex items-center gap-2">
-                    <TrendingUp className="w-4 h-4" />
-                    Line
-                  </div>
-                </SelectItem>
-                <SelectItem value="bar">
-                  <div className="flex items-center gap-2">
-                    <BarChart3 className="w-4 h-4" />
-                    Bar
-                  </div>
-                </SelectItem>
-                <SelectItem value="pie">
-                  <div className="flex items-center gap-2">
-                    <PieChartIcon className="w-4 h-4" />
-                    Pie
-                  </div>
-                </SelectItem>
+              <SelectContent className="bg-white border-orange-200 text-gray-700">
+                <SelectItem value="line">Line Chart</SelectItem>
+                <SelectItem value="area">Area Chart</SelectItem>
+                <SelectItem value="gradient-area">Gradient Area</SelectItem>
+                <SelectItem value="bar">Bar Chart</SelectItem>
+                <SelectItem value="gradient-bar">Gradient Bar</SelectItem>
+                <SelectItem value="pie">Pie Chart</SelectItem>
               </SelectContent>
             </Select>
 
-            {/* Metric Type Selector */}
-            <Select value={metricType} onValueChange={(value: MetricType) => setMetricType(value)}>
-              <SelectTrigger className="w-[140px]">
-                <SelectValue />
+            <Select value={metricType} onValueChange={(value) => setMetricType(value as MetricType)}>
+              <SelectTrigger className="w-[140px] bg-white/70 border-orange-200 text-gray-700">
+                <SelectValue placeholder="Metric" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-white border-orange-200 text-gray-700">
                 <SelectItem value="all">All Metrics</SelectItem>
-                <SelectItem value="clicks">Clicks Only</SelectItem>
-                <SelectItem value="views">Views Only</SelectItem>
+                <SelectItem value="clicks">Clicks</SelectItem>
+                <SelectItem value="views">Views</SelectItem>
                 <SelectItem value="conversion">Conversion Rate</SelectItem>
               </SelectContent>
             </Select>
+
+            <motion.button 
+              onClick={handleRefresh} 
+              className="p-2 rounded-full bg-white/70 border border-orange-200 text-orange-600 hover:bg-orange-50 hover:border-orange-300 transition-colors"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+            </motion.button>
+            <motion.button 
+              onClick={handleExport} 
+              className="p-2 rounded-full bg-white/70 border border-orange-200 text-orange-600 hover:bg-orange-50 hover:border-orange-300 transition-colors"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <Download className="w-4 h-4" />
+            </motion.button>
+            <motion.button 
+              onClick={() => setIsExpanded(!isExpanded)} 
+              className="p-2 rounded-full bg-white/70 border border-orange-200 text-orange-600 hover:bg-orange-50 hover:border-orange-300 transition-colors"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              {isExpanded ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+            </motion.button>
           </div>
+        </div>
+
+        {/* EvilCharts-inspired info panel */}
+        <motion.div 
+          className="bg-gradient-to-r from-orange-50/80 to-amber-50/80 border border-orange-200 text-orange-800 p-4 rounded-xl text-sm flex items-start gap-3 mb-6 backdrop-blur-sm"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+        >
+          <motion.div
+            animate={{ rotate: [0, 360] }}
+            transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+          >
+            <Flame className="w-5 h-5 flex-shrink-0 text-orange-500" />
+          </motion.div>
+          <div>
+            <p className="font-bold text-orange-700">EvilCharts-Inspired Analytics for {timeFrame}:</p>
+            <p>Experience premium chart designs with smooth gradients, interactive tooltips, and modern animations!</p>
+          </div>
+        </motion.div>
+
+        {/* Enhanced summary statistics */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+          <motion.div 
+            className="flex items-center gap-3 bg-gradient-to-r from-orange-50 to-orange-100 p-4 rounded-xl shadow-sm border border-orange-200"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.4 }}
+            whileHover={{ scale: 1.02, y: -2 }}
+          >
+            <motion.div
+              animate={{ scale: [1, 1.1, 1], rotate: [0, 5, -5, 0] }}
+              transition={{ duration: 3, repeat: Infinity }}
+            >
+              <MousePointerClick className="w-6 h-6 text-orange-500" />
+            </motion.div>
+            <div>
+              <p className="text-sm text-gray-600 font-medium">Total Clicks</p>
+              <p className="font-bold text-xl text-gray-800">{chartData.reduce((sum, item) => sum + item.clicks, 0).toLocaleString()}</p>
+            </div>
+          </motion.div>
+          <motion.div 
+            className="flex items-center gap-3 bg-gradient-to-r from-amber-50 to-amber-100 p-4 rounded-xl shadow-sm border border-amber-200"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+            whileHover={{ scale: 1.02, y: -2 }}
+          >
+            <motion.div
+              animate={{ scale: [1, 1.1, 1], rotate: [0, -5, 5, 0] }}
+              transition={{ duration: 3, repeat: Infinity, delay: 0.5 }}
+            >
+              <Eye className="w-6 h-6 text-amber-500" />
+            </motion.div>
+            <div>
+              <p className="text-sm text-gray-600 font-medium">Total Views</p>
+              <p className="font-bold text-xl text-gray-800">{chartData.reduce((sum, item) => sum + item.views, 0).toLocaleString()}</p>
+            </div>
+          </motion.div>
+          <motion.div 
+            className="flex items-center gap-3 bg-gradient-to-r from-orange-100 to-orange-200 p-4 rounded-xl shadow-sm border border-orange-300"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.6 }}
+            whileHover={{ scale: 1.02, y: -2 }}
+          >
+            <motion.div
+              animate={{ scale: [1, 1.1, 1], rotate: [0, 10, -10, 0] }}
+              transition={{ duration: 3, repeat: Infinity, delay: 1 }}
+            >
+              <Target className="w-6 h-6 text-orange-700" />
+            </motion.div>
+            <div>
+              <p className="text-sm text-gray-600 font-medium">Conversion Rate</p>
+              <p className="font-bold text-xl text-gray-800">
+                {(chartData.reduce((sum, item) => sum + item.conversion, 0) / chartData.length).toFixed(2)}%
+              </p>
+            </div>
+          </motion.div>
+        </div>
+
+        <div className={`w-full ${isExpanded ? 'h-96' : 'h-80'}`}>
+          {renderChart()}
         </div>
       </div>
 
-      {/* Summary Stats */}
-      <div className="p-6 border-b border-gray-200/50">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="text-center">
-            <div className="text-2xl font-bold text-blue-600">{summaryStats.totalClicks.toLocaleString()}</div>
-            <div className="text-sm text-gray-600">Total Clicks</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl font-bold text-green-600">{summaryStats.totalViews.toLocaleString()}</div>
-            <div className="text-sm text-gray-600">Total Views</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl font-bold text-amber-600">{summaryStats.avgConversionRate}%</div>
-            <div className="text-sm text-gray-600">Avg Conversion</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl font-bold text-purple-600">{summaryStats.peakClicks}</div>
-            <div className="text-sm text-gray-600">Peak Day</div>
-          </div>
-        </div>
-      </div>
-
-      {/* Chart */}
-      <div className="p-6">
-        <div className="h-80 w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            {renderChart()}
-          </ResponsiveContainer>
-        </div>
-      </div>
-
-      {/* Trend Indicator */}
-      <div className="px-6 pb-6">
-        <div className="flex items-center justify-center gap-2 text-sm">
-          <span className="text-gray-600">Overall Trend:</span>
-          <div className={`flex items-center gap-1 px-2 py-1 rounded-full ${
-            summaryStats.trend === 'up' ? 'bg-green-100 text-green-700' :
-            summaryStats.trend === 'down' ? 'bg-red-100 text-red-700' :
-            'bg-gray-100 text-gray-700'
-          }`}>
-            {summaryStats.trend === 'up' ? (
-              <>
-                <TrendingUp className="w-4 h-4" />
-                <span>Growing</span>
-              </>
-            ) : summaryStats.trend === 'down' ? (
-              <>
-                <TrendingUp className="w-4 h-4 rotate-180" />
-                <span>Declining</span>
-              </>
-            ) : (
-              <>
-                <Activity className="w-4 h-4" />
-                <span>Stable</span>
-              </>
-            )}
-          </div>
-        </div>
-      </div>
+      {/* Enhanced trend indicator with EvilCharts styling */}
+      <motion.div 
+        className="absolute bottom-0 left-0 right-0 bg-gradient-to-r from-orange-100/60 to-amber-100/60 border-t border-orange-200 p-4 text-sm text-gray-700 flex justify-around items-center backdrop-blur-sm"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.7 }}
+      >
+        <motion.div 
+          className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/50"
+          whileHover={{ scale: 1.05, backgroundColor: 'rgba(255, 255, 255, 0.8)' }}
+        >
+          <MousePointerClick className="w-4 h-4 text-orange-500" />
+          Clicks: <span className={`font-bold ${trendClicks >= 0 ? 'text-green-600' : 'text-red-600'}`}>{trendClicks.toFixed(2)}%</span>
+        </motion.div>
+        <motion.div 
+          className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/50"
+          whileHover={{ scale: 1.05, backgroundColor: 'rgba(255, 255, 255, 0.8)' }}
+        >
+          <Eye className="w-4 h-4 text-amber-500" />
+          Views: <span className={`font-bold ${trendViews >= 0 ? 'text-green-600' : 'text-red-600'}`}>{trendViews.toFixed(2)}%</span>
+        </motion.div>
+        <motion.div 
+          className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/50"
+          whileHover={{ scale: 1.05, backgroundColor: 'rgba(255, 255, 255, 0.8)' }}
+        >
+          <Target className="w-4 h-4 text-orange-700" />
+          Conversion: <span className={`font-bold ${trendConversion >= 0 ? 'text-green-600' : 'text-red-600'}`}>{trendConversion.toFixed(2)}%</span>
+        </motion.div>
+      </motion.div>
     </motion.div>
   );
 };
