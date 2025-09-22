@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence, Transition } from 'framer-motion';
-import { ChevronLeft, ChevronRight, Play, Pause, Monitor, Smartphone } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Play, Pause } from 'lucide-react';
 import { memo } from 'react';
 
 interface ScreenshotData {
