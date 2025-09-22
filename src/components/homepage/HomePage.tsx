@@ -7,6 +7,7 @@ import Footer from './Footer';
 import About from './About';
 import BoltBackground from './BoltBackground';
 import LoadingScreen from '../ui/loadingScreen';
+import ScreenshotCarousel from './ScreenshotCarousel';
 
 // Lazy load heavy homepage sections for better performance
 const Pricing = lazy(() => import('./Pricing'));
@@ -141,125 +142,14 @@ const HomePage = () => {
               </motion.div>
             </motion.div>
             
-            {/* Right Container - Analytics Preview */}
+            {/* Right Container - Screenshot Carousel */}
             <motion.div 
               className="flex-1 relative order-1 lg:order-2 w-full lg:w-auto"
               initial={{ opacity: 0, x: 60 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, delay: 0.2, ease: [0.4, 0, 0.2, 1] }}
             >
-              <div className="relative">
-                {/* Glass card with preview */}
-                <motion.div 
-                  className="glass-card p-8 rounded-3xl relative overflow-hidden"
-                  style={{ minHeight: '500px' }}
-                  whileHover={{ scale: 1.02 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  {/* Header */}
-                  <div className="flex items-center justify-between mb-6">
-                    <div>
-                      <h3 className="text-lg font-semibold text-black">Analytics Dashboard</h3>
-                      <p className="text-sm text-gray-600">Live preview</p>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 rounded-full animate-glow-pulse" style={{ backgroundColor: '#ED7B00' }}></div>
-                      <span className="text-xs font-medium" style={{ color: '#B73D00' }}>Live</span>
-                    </div>
-                  </div>
-                  
-                  {/* Stats Grid */}
-                  <div className="grid grid-cols-2 gap-4 mb-6">
-                    <motion.div 
-                      className="surface-card p-4 rounded-xl"
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 1.4, duration: 0.6 }}
-                    >
-                      <div className="text-2xl font-bold text-black">2,847</div>
-                      <div className="text-sm text-gray-600">Total Clicks</div>
-                      <div className="text-xs mt-1 text-green-600">+12.5% this week</div>
-                    </motion.div>
-                    
-                    <motion.div 
-                      className="surface-card p-4 rounded-xl"
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 1.6, duration: 0.6 }}
-                    >
-                      <div className="text-2xl font-bold text-black">156</div>
-                      <div className="text-sm text-gray-600">Countries</div>
-                      <div className="text-xs mt-1 text-green-600">+8 new</div>
-                    </motion.div>
-                  </div>
-                  
-                  {/* Chart placeholder */}
-                  <motion.div 
-                    className="surface-card p-6 rounded-xl mb-4"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 1.8, duration: 0.6 }}
-                  >
-                    <div className="flex items-center justify-between mb-4">
-                      <h4 className="font-medium text-black">Click Trends</h4>
-                      <div className="text-xs px-2 py-1 rounded-full text-white" style={{ backgroundColor: '#ED7B00' }}>
-                        Last 7 days
-                      </div>
-                    </div>
-                    <div className="h-24 rounded-lg flex items-end justify-between px-2" style={{ backgroundColor: 'var(--c-bg)' }}>
-                      {[40, 65, 45, 80, 55, 90, 70].map((height, i) => (
-                        <motion.div
-                          key={i}
-                          className="rounded-t-sm"
-                          style={{ 
-                            width: '12px',
-                            height: `${height}%`,
-                            backgroundColor: 'var(--c-accent)',
-                            opacity: 0.8
-                          }}
-                          initial={{ height: 0 }}
-                          animate={{ height: `${height}%` }}
-                          transition={{ delay: 2 + i * 0.1, duration: 0.5 }}
-                        />
-                      ))}
-                    </div>
-                  </motion.div>
-                  
-                  {/* Device breakdown */}
-                  <motion.div 
-                    className="grid grid-cols-3 gap-3"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 2.2, duration: 0.6 }}
-                  >
-                    {[
-                      { device: 'Mobile', percentage: 68, color: 'var(--c-accent)' },
-                      { device: 'Desktop', percentage: 24, color: 'var(--c-positive)' },
-                      { device: 'Tablet', percentage: 8, color: 'var(--c-info)' }
-                    ].map((item, i) => (
-                      <div key={i} className="text-center">
-                        <div className="text-sm font-medium" style={{ color: 'var(--c-text)' }}>{item.percentage}%</div>
-                        <div className="text-xs" style={{ color: 'var(--c-text-dim)' }}>{item.device}</div>
-                        <div 
-                          className="h-1 rounded-full mt-1" 
-                          style={{ backgroundColor: item.color, opacity: 0.6 }}
-                        />
-                      </div>
-                    ))}
-                  </motion.div>
-                </motion.div>
-                
-                {/* Floating elements */}
-                <motion.div 
-                  className="absolute -top-4 -right-4 w-16 h-16 rounded-xl glass-card flex items-center justify-center"
-                  animate={{ y: [0, -8, 0] }}
-                  transition={{ duration: 3, repeat: Infinity }}
-                >
-                  <svg className="w-8 h-8" style={{ color: 'var(--c-accent)' }} fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                  </svg>
-                </motion.div>
-              </div>
+              <ScreenshotCarousel />
             </motion.div>
           </div>
           
