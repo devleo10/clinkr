@@ -4,6 +4,7 @@ import { AuthProvider } from "./components/auth/AuthProvider";
 import { LoadingProvider } from "./contexts/LoadingContext";
 import GlobalLoadingOverlay from "./components/GlobalLoadingOverlay";
 import SuspenseFallback from "./components/SuspenseFallback";
+import ErrorBoundary from "./components/ErrorBoundary";
 import { Analytics } from "@vercel/analytics/react";
 
 // Lazy load components for better performance
@@ -22,7 +23,7 @@ const About = lazy(() => import("./components/homepage/About"));
 const AuthPages = lazy(() => import("./components/auth/AuthPages"));
 
 function App() {
-  <Analytics />;
+  // Ensure Analytics is rendered inside the JSX tree
   const router = createBrowserRouter([
     {
       path: "/",
@@ -58,9 +59,11 @@ function App() {
       path: "/dashboard",
       element: (
         <ProtectedRoute requireAuth={true} requireProfile={true}>
-          <Suspense fallback={<SuspenseFallback />}>
-            <DashBoard />
-          </Suspense>
+          <ErrorBoundary>
+            <Suspense fallback={<SuspenseFallback />}>
+              <DashBoard />
+            </Suspense>
+          </ErrorBoundary>
         </ProtectedRoute>
       ),
     },
@@ -78,9 +81,11 @@ function App() {
       path: "/premiumdashboard",
       element: (
         <ProtectedRoute requireAuth={true} requireProfile={true}>
-          <Suspense fallback={<SuspenseFallback />}>
-            <PremiumDashBoard />
-          </Suspense>
+          <ErrorBoundary>
+            <Suspense fallback={<SuspenseFallback />}>
+              <PremiumDashBoard />
+            </Suspense>
+          </ErrorBoundary>
         </ProtectedRoute>
       ),
     },
@@ -138,6 +143,7 @@ function App() {
     <AuthProvider>
       <LoadingProvider>
         <RouterProvider router={router} />
+        <Analytics />
         <GlobalLoadingOverlay />
       </LoadingProvider>
     </AuthProvider>
