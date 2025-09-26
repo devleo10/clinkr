@@ -249,39 +249,43 @@ export const PremiumDashboardProvider: React.FC<PremiumDashboardProviderProps> =
         hashedIpCount: analyticsData.filter(item => item.hashed_ip).length
       });
 
-      // Calculate previous period for comparison
-      const previousStartDate = new Date(startDate.getTime() - (startDate.getTime() - now.getTime()));
-      const previousAnalyticsData = analyticsData.filter(item => {
-        const itemDate = validateDate(item.created_at);
-        return itemDate && itemDate < startDate && itemDate >= previousStartDate;
-      });
-
-      const previousProfileViewsData = profileViewsData.filter(item => {
-        const itemDate = validateDate(item.viewed_at);
-        return itemDate && itemDate < startDate && itemDate >= previousStartDate;
-      });
-
-      // Process Overview Data
-      // Use analytics data as single source of truth for consistency
-      const totalClicks = analyticsData.length; // Each analytics event = 1 click
-      const previousTotalClicks = previousAnalyticsData.length;
+      // Calculate previous period for comparison - FIXED LOGIC
+      const periodDuration = now.getTime() - startDate.getTime();
+      const previousStartDate = new Date(startDate.getTime() - periodDuration);
+      const previousEndDate = startDate;
       
-      // Calculate unique visitors from profile views data - use viewer_hash
-      const uniqueProfileVisitors = new Set(
-        profileViewsData
-          .map(item => item.viewer_hash || `anonymous_profile_${item.id}`)
+      // Fetch previous period data separately
+      const previousAnalyticsResult = await supabase
+        .from('link_analytics')
+        .select('*')
+        .eq('user_id', user.id)
+        .gte('created_at', previousStartDate.toISOString())
+        .lt('created_at', previousEndDate.toISOString())
+        .order('created_at', { ascending: false });
+
+      const previousAnalyticsData = validateAnalyticsData(previousAnalyticsResult.data || []);
+
+      // Process Overview Data - FIXED LOGIC
+      // Calculate clicks from analytics data (only click events)
+      const totalClicks = analyticsData.filter(item => item.event_type === 'click').length;
+      const previousTotalClicks = previousAnalyticsData.filter(item => item.event_type === 'click').length;
+      
+      // Calculate views from analytics data (only view events)
+      const totalViews = analyticsData.filter(item => item.event_type === 'view').length;
+      const previousTotalViews = previousAnalyticsData.filter(item => item.event_type === 'view').length;
+      
+      // Calculate unique visitors from analytics data using hashed_ip or fallback
+      const uniqueVisitors = new Set(
+        analyticsData
+          .map(item => item.hashed_ip || `anonymous_${item.id}`)
           .filter(identifier => identifier && identifier.trim() !== '')
       ).size;
       
-      const previousUniqueProfileVisitors = new Set(
-        previousProfileViewsData
-          .map(item => item.viewer_hash || `anonymous_profile_${item.id}`)
+      const previousUniqueVisitors = new Set(
+        previousAnalyticsData
+          .map(item => item.hashed_ip || `anonymous_${item.id}`)
           .filter(identifier => identifier && identifier.trim() !== '')
       ).size;
-      
-      // Calculate total views from analytics data (not profile views)
-      const totalViews = analyticsData.length;
-      const previousTotalViews = previousAnalyticsData.length;
       
       // Calculate conversion rate (clicks per view) - CAP AT 100%
       const conversionRate = totalViews > 0 ? Math.min((totalClicks / totalViews) * 100, 100) : 0;
@@ -292,13 +296,13 @@ export const PremiumDashboardProvider: React.FC<PremiumDashboardProviderProps> =
 
       const overview = {
         totalClicks: formatNumber(totalClicks),
-        uniqueVisitors: formatNumber(uniqueProfileVisitors),
+        uniqueVisitors: formatNumber(uniqueVisitors),
         conversionRate: formatPercentage(conversionRate),
         avgTime,
         totalViews: formatNumber(totalViews),
         changes: {
           clicks: calculatePercentageChange(totalClicks, previousTotalClicks),
-          visitors: calculatePercentageChange(uniqueProfileVisitors, previousUniqueProfileVisitors),
+          visitors: calculatePercentageChange(uniqueVisitors, previousUniqueVisitors),
           conversion: calculatePercentageChange(conversionRate, previousConversionRate),
           time: '+10.0%', // Mock data
           views: calculatePercentageChange(totalViews, previousTotalViews)
@@ -378,12 +382,20 @@ export const PremiumDashboardProvider: React.FC<PremiumDashboardProviderProps> =
       // Group by day - use analytics data for both clicks and views
       const dailyGroups: Record<string, { clicks: number; views: number }> = {};
       
-      // Count analytics events as both clicks and views (since each analytics event represents a click)
+      // FIXED: Properly distinguish between clicks and views based on event_type
       analyticsData.forEach(item => {
         const date = item.created_at.split('T')[0];
         dailyGroups[date] = (dailyGroups[date] || { clicks: 0, views: 0 });
-        dailyGroups[date].clicks++;
-        dailyGroups[date].views++; // Each analytics event is also a view
+        
+        // Only count as click if it's actually a click event
+        if (item.event_type === 'click') {
+          dailyGroups[date].clicks++;
+        }
+        
+        // Only count as view if it's actually a view event
+        if (item.event_type === 'view') {
+          dailyGroups[date].views++;
+        }
       });
 
       // Convert to arrays and sort by date
