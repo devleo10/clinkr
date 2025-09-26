@@ -178,7 +178,7 @@ const ShortenedLinkRedirect = ({ shortLink }: ShortenedLinkRedirectProps) => {
         
         console.log('Inserting analytics data:', analyticsData);
         
-        const { data: insertedData, error: analyticsError } = await supabase
+        const { error: analyticsError } = await supabase
           .from('link_analytics')
           .insert(analyticsData)
           .select();
