@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { supabase } from '../../../lib/supabaseClient';
 import { detectDeviceType, detectBrowser } from '../../../lib/profile-utils';
 
@@ -17,8 +17,24 @@ interface ShortenedLinkRedirectProps {
 }
 
 const ShortenedLinkRedirect = ({ shortLink }: ShortenedLinkRedirectProps) => {
+  const hasTrackedRef = useRef(false);
+  const trackingIdRef = useRef<string | null>(null);
+
   useEffect(() => {
     const trackClick = async () => {
+      // Prevent double tracking (React StrictMode safe)
+      if (hasTrackedRef.current) {
+        console.log('Click already tracked, skipping...');
+        return;
+      }
+      
+      // Generate unique tracking ID for this click
+      const trackingId = `${shortLink.id}-${Date.now()}-${Math.random()}`;
+      trackingIdRef.current = trackingId;
+      hasTrackedRef.current = true;
+      
+      console.log('Starting click tracking with ID:', trackingId);
+      
       try {
         const deviceType = detectDeviceType();
         const browser = detectBrowser();
@@ -131,11 +147,18 @@ const ShortenedLinkRedirect = ({ shortLink }: ShortenedLinkRedirectProps) => {
           console.log('Using fallback coordinates for India:', { lat, lng, countryCode });
         }
 
-        // Update click count
-        await supabase
+        // Update click count with atomic increment
+        console.log('Updating click count for link:', shortLink.id, 'from', shortLink.clicks, 'to', shortLink.clicks + 1);
+        const { error: updateError } = await supabase
           .from('shortened_links')
           .update({ clicks: shortLink.clicks + 1 })
           .eq('id', shortLink.id);
+          
+        if (updateError) {
+          console.error('Click count update error:', updateError);
+        } else {
+          console.log('Click count updated successfully');
+        }
 
         // Track analytics
         const analyticsData = {
@@ -149,7 +172,8 @@ const ShortenedLinkRedirect = ({ shortLink }: ShortenedLinkRedirectProps) => {
           link_type: 'shortened_link',
           lat,
           lng,
-          hashed_ip: hashedIp, // Add hashed IP for unique visitor tracking
+          hashed_ip: hashedIp,
+          tracking_id: trackingIdRef.current, // Add tracking ID for debugging
         };
         
         console.log('Inserting analytics data:', analyticsData);
@@ -162,7 +186,7 @@ const ShortenedLinkRedirect = ({ shortLink }: ShortenedLinkRedirectProps) => {
         if (analyticsError) {
           console.error('Analytics insertion error:', analyticsError);
         } else {
-          console.log('Analytics data inserted successfully:', insertedData);
+          console.log('Analytics data inserted successfully with tracking ID:', trackingIdRef.current);
         }
 
         // Redirect to original URL

@@ -117,8 +117,7 @@ const PublicProfile = () => {
       window.open(`/${shortCode}`, '_blank');
     } catch (error) {
       console.error('Error opening link:', error);
-      // Still navigate even if there's an error
-      window.open(`/${shortCode}`, '_blank');
+      // Don't call window.open again in catch block to avoid double tracking
     }
   };
 
