@@ -9,7 +9,6 @@ interface ScreenshotData {
   title: string;
   description: string;
   type: 'dashboard' | 'premium';
-  device: 'desktop' | 'mobile';
 }
 
 interface AnimationConfig {
@@ -120,40 +119,35 @@ const ScreenshotCarousel = () => {
       image: '/src/assets/sc1.png',
       title: 'Analytics Dashboard',
       description: 'Real-time click tracking and insights',
-      type: 'dashboard',
-      device: 'desktop'
+      type: 'dashboard'
     },
     {
       id: 2,
       image: '/src/assets/sc2.png',
       title: 'Link Management',
       description: 'Organize and customize your links',
-      type: 'dashboard',
-      device: 'desktop'
+      type: 'dashboard'
     },
     {
       id: 3,
       image: '/src/assets/sc3.png',
       title: 'Geographic Analytics',
       description: 'See where your audience is located',
-      type: 'premium',
-      device: 'desktop'
+      type: 'premium'
     },
     {
       id: 4,
       image: '/src/assets/sc4.png',
       title: 'Device Analytics',
       description: 'Understand your audience\'s devices',
-      type: 'premium',
-      device: 'mobile'
+      type: 'premium'
     },
     {
       id: 5,
       image: '/src/assets/sc5.png',
       title: 'Export Reports',
       description: 'Download detailed analytics reports',
-      type: 'premium',
-      device: 'desktop'
+      type: 'premium'
     }
   ];
 
@@ -223,18 +217,12 @@ const ScreenshotCarousel = () => {
                 {...animationConfig.slide}
                 className="relative"
               >
-                {/* Device Mockup Frame */}
-                <div className={`relative mx-auto ${currentScreenshot.device === 'desktop' ? 'w-full max-w-sm sm:max-w-md lg:max-w-lg' : 'w-48 sm:w-56 lg:w-64'}`}>
-                  {/* Device Frame */}
-                  <div className={`relative rounded-lg sm:rounded-xl overflow-hidden shadow-sm ${
-                    currentScreenshot.device === 'desktop' 
-                      ? 'bg-gray-200 p-0.5 sm:p-1' 
-                      : 'bg-gray-200 p-1 sm:p-1.5'
-                  }`}>
+                {/* Desktop Device Mockup Frame */}
+                <div className="relative mx-auto w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg">
+                  {/* Desktop Frame */}
+                  <div className="relative rounded-lg sm:rounded-xl overflow-hidden shadow-sm bg-gray-200 p-0.5 sm:p-1">
                     {/* Screen */}
-                    <div className={`bg-white rounded-md sm:rounded-lg overflow-hidden ${
-                      currentScreenshot.device === 'desktop' ? 'aspect-video' : 'aspect-[9/16]'
-                    }`}>
+                    <div className="bg-white rounded-md sm:rounded-lg overflow-hidden aspect-video">
                       <img
                         src={currentScreenshot.image}
                         alt={currentScreenshot.title}
@@ -243,10 +231,8 @@ const ScreenshotCarousel = () => {
                     </div>
                   </div>
                   
-                  {/* Device Details */}
-                  {currentScreenshot.device === 'desktop' && (
-                    <div className="absolute -bottom-0.5 sm:-bottom-1 left-1/2 transform -translate-x-1/2 w-8 sm:w-12 h-0.5 bg-gray-300 rounded-full"></div>
-                  )}
+                  {/* Desktop Stand */}
+                  <div className="absolute -bottom-0.5 sm:-bottom-1 left-1/2 transform -translate-x-1/2 w-8 sm:w-12 h-0.5 bg-gray-300 rounded-full"></div>
                 </div>
               </motion.div>
             </AnimatePresence>
