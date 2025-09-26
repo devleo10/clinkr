@@ -127,7 +127,7 @@ const EnhancedMarker = React.memo(({
   );
 });
 
-const Geography = () => {
+const Geography = React.memo(() => {
   const { data, isLoading, timeFrame, setTimeFrame } = usePremiumDashboardData();
   const [deviceFilter, setDeviceFilter] = React.useState<string>('all');
 
@@ -385,6 +385,6 @@ const Geography = () => {
       </div>
     </div>
   );
-};
+});
 
 export default Geography;

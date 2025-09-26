@@ -1,8 +1,9 @@
+import React from 'react'
 import { StatsGrid } from './StatsGrid'
 import { usePremiumDashboardData } from '../PremiumDashboardContext'
 import LoadingScreen from '../../../ui/loadingScreen'
 
-const Overview = () => {
+const Overview = React.memo(() => {
   const { data, isLoading } = usePremiumDashboardData();
 
   if (isLoading) {
@@ -39,6 +40,6 @@ const Overview = () => {
       />
     </div>
   );
-};
+});
 
 export default Overview;

@@ -1,10 +1,11 @@
+import React from "react";
 import { DeviceStatRow } from "../DeviceStatRow";
 import { BrowserStatRow } from "../BrowserStatRow";
 import { Laptop, Smartphone, Tablet } from "lucide-react";
 import { usePremiumDashboardData } from '../PremiumDashboardContext';
 import LoadingScreen from '../../../ui/loadingScreen';
 
-const Devices = () => {
+const Devices = React.memo(() => {
   const { data, isLoading } = usePremiumDashboardData();
 
   if (isLoading) {
@@ -196,6 +197,6 @@ const Devices = () => {
       </div>
     </div>
   );
-};
+});
 
 export default Devices;

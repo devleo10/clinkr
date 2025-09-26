@@ -1,3 +1,4 @@
+import React from "react";
 import { ArrowUpRight, ArrowDownRight, MousePointerClick, Eye, Clock, Filter } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../ui/select";
 import LoadingScreen from '../../../ui/loadingScreen';
@@ -19,7 +20,7 @@ interface EngagementMetric {
   change: number;
 }
 
-const Trends = () => {
+const Trends = React.memo(() => {
   const { data, isLoading, timeFrame, setTimeFrame } = usePremiumDashboardData();
 
   if (isLoading) {
@@ -219,6 +220,6 @@ const Trends = () => {
 
     </div>
   );
-};
+});
 
 export default Trends;
