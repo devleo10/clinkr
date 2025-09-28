@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Card, CardContent } from "../../ui/card";
 import { supabase } from '../../../lib/supabaseClient';
+import { toast } from 'react-hot-toast';
 import { FaTrash, FaCopy, FaGripVertical, FaChartLine } from 'react-icons/fa';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "../../ui/alert-dialog";
 import { MoreVertical, GripVertical } from "lucide-react";
@@ -144,7 +145,7 @@ const PrivateProfile = () => {
         if (toastTimeout.current) clearTimeout(toastTimeout.current);
         toastTimeout.current = setTimeout(() => setShowToast(false), 2000);
       }).catch(() => {
-        alert('Failed to copy link');
+        toast.error('Failed to copy link');
       });
     }
   }; // Updated URL construction

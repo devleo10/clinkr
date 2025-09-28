@@ -1,7 +1,7 @@
 import { useDashboardData } from '../DashboardDataContext';
 
 const TotalClicks = () => {
-  const { data, isLoading } = useDashboardData();
+  const { data, isLoading, error } = useDashboardData();
 
   return (
     <div 
@@ -24,6 +24,8 @@ const TotalClicks = () => {
         <h1 className="text-4xl font-extrabold text-black">
           {isLoading ? (
             <span className="animate-pulse">...</span>
+          ) : error ? (
+            <span className="text-red-500 text-xl">Error</span>
           ) : (
             (data?.totalClicks || 0).toLocaleString()
           )}
