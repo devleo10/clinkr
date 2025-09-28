@@ -6,14 +6,11 @@ import { motion } from 'framer-motion';
 const Pricing = () => {
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col items-center justify-center relative">
-      {/* Background decoration */}
-      <div 
-        className="absolute inset-0 bg-gradient-to-br from-orange-50/40 via-transparent to-amber-50/30 rounded-2xl"
-      />
+      {/* Background decoration - removed solid orange background */}
       <div 
         className="flex flex-col justify-center items-center text-center mb-12 relative z-10"
       >
-        <h1 className="text-2xl md:text-4xl font-extrabold text-transparent bg-clip-text drop-shadow-sm tracking-tight mb-3" style={{ background: 'linear-gradient(to right, #ED7B00, #E66426, #ED7B00)' }}>Choose Your Perfect Plan</h1>
+        <h1 className="text-2xl md:text-4xl font-extrabold bg-gradient-to-r from-orange-500 via-orange-600 to-orange-500 bg-clip-text text-transparent drop-shadow-sm tracking-tight mb-3">Choose Your Perfect Plan</h1>
         <p className="text-gray-800 text-base font-semibold">Start Free, Upgrade when you need more</p>
       </div>
       
