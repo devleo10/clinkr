@@ -2,7 +2,7 @@ import { FaLaptop, FaMobileAlt } from 'react-icons/fa';
 import { useDashboardData } from '../DashboardDataContext';
 
 const DeviceSplit = () => {
-  const { data, isLoading } = useDashboardData();
+  const { data, isLoading, error } = useDashboardData();
 
   const deviceData = data?.deviceSplit || { mobile: 0, desktop: 0, tablet: 0 };
 
@@ -33,6 +33,8 @@ const DeviceSplit = () => {
           <p className="font-bold text-2xl bg-clip-text text-transparent bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400">
             {isLoading ? (
               <span className="animate-pulse">...</span>
+            ) : error ? (
+              <span className="text-red-500 text-lg">--</span>
             ) : (
               `${deviceData.mobile}%`
             )}
@@ -46,6 +48,8 @@ const DeviceSplit = () => {
           <p className="font-bold text-2xl bg-clip-text text-transparent bg-gradient-to-r from-orange-600 via-amber-500 to-orange-400">
             {isLoading ? (
               <span className="animate-pulse">...</span>
+            ) : error ? (
+              <span className="text-red-500 text-lg">--</span>
             ) : (
               `${deviceData.desktop}%`
             )}

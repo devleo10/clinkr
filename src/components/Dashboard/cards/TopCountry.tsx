@@ -3,7 +3,7 @@ import { useDashboardData } from '../DashboardDataContext';
 import { filterAndSortCountries } from '../../../lib/countryUtils';
 
 const TopCountry = () => {
-  const { data, isLoading } = useDashboardData();
+  const { data, isLoading, error } = useDashboardData();
 
   // Process and validate country data
   const processedCountries = data?.topCountries ? filterAndSortCountries(data.topCountries) : [];
