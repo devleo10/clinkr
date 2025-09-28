@@ -166,8 +166,7 @@ const FAQ = () => {
         
         <div className="relative z-10 text-center">
           <motion.h1 
-          className="text-3xl md:text-4xl font-black text-center mb-3 text-transparent bg-clip-text drop-shadow-sm tracking-tight"
-          style={{ background: 'linear-gradient(to right, #B73D00, #ED7B00, #E66426)' }}
+          className="text-3xl md:text-4xl font-black text-center mb-3 bg-gradient-to-r from-orange-800 via-orange-500 to-orange-600 bg-clip-text text-transparent drop-shadow-sm tracking-tight"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
