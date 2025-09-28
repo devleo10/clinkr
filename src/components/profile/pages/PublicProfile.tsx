@@ -8,6 +8,7 @@ import usePerformanceOptimization from '../../../hooks/usePerformanceOptimizatio
 import { usePublicProfile } from '../hooks/usePublicProfile';
 import logo from '../../../assets/Frame.png';
 import { supabase } from '../../../lib/supabaseClient';
+import { toast } from 'react-hot-toast';
 
 const PublicProfile = () => {
   const { identifier } = useParams();
@@ -124,13 +125,18 @@ const PublicProfile = () => {
   const handleCopyProfileUrl = () => {
     const profileUrl = window.location.href;
     navigator.clipboard.writeText(profileUrl).then(() => {
-      alert('Profile URL copied to clipboard!');
+      toast.success('Profile URL copied to clipboard!');
+    }).catch(() => {
+      toast.error('Failed to copy URL to clipboard');
     });
   };
 
   const handleContactUser = () => {
-    // For now, just show an alert. In the future, this could open a contact form or email
-    alert('Contact feature coming soon!');
+    // For now, just show a toast. In the future, this could open a contact form or email
+    toast('Contact feature coming soon!', {
+      icon: '🚀',
+      duration: 3000,
+    });
   };
 
   const handleShareProfile = async () => {
@@ -144,7 +150,7 @@ const PublicProfile = () => {
         });
       } else {
         await navigator.clipboard.writeText(profileUrl);
-        alert('Profile URL copied to clipboard!');
+        toast.success('Profile URL copied to clipboard!');
       }
     } catch (err) {
       console.error('Failed to share profile:', err);

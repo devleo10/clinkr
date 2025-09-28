@@ -8,6 +8,7 @@ import BoltBackground from "../homepage/BoltBackground";
 import Footer from "../homepage/Footer";
 import LoadingScreen from "../ui/loadingScreen";
 import { compressImageToTargetSize, validateImageFile, formatFileSize } from "../../lib/imageCompression";
+import { toast } from 'react-hot-toast';
 
 const Onboarding = () => {
   const navigate = useNavigate();
@@ -176,7 +177,7 @@ const Onboarding = () => {
       // Validate the image file first
       const validation = validateImageFile(file, 10); // 10MB max
       if (!validation.isValid) {
-        alert(validation.error || 'Invalid image file');
+        toast.error(validation.error || 'Invalid image file');
         return;
       }
 
@@ -219,7 +220,7 @@ const Onboarding = () => {
         'dashboard', 'premiumdashboard', 'admin', 'login', 'signup','getstarted', 'profile', 'settings', 'api', 'publicprofile', 'privateprofile', 'homepage', 'about', 'contact', 'terms', 'privacy', 'faq', 'features', 'pricing', 'logout', 'user', 'users', 'static', 'assets', 'vercel', 'next', 'app', 'src', 'components', 'lib', 'publicprofile', 'clinkr',
       ];
       if (reservedUsernames.includes(formData.username.trim().toLowerCase())) {
-        alert('This username is reserved. Please choose another one.');
+        toast.error('This username is reserved. Please choose another one.');
         setIsLoading(false);
         return;
       }
@@ -232,7 +233,7 @@ const Onboarding = () => {
         .single();
   
       if (existingUser) {
-        alert('Username already taken. Please choose another one.');
+        toast.error('Username already taken. Please choose another one.');
         setIsLoading(false);
         return;
       }
@@ -267,7 +268,7 @@ const Onboarding = () => {
             
           finalProfilePictureUrl = publicUrl;
         } catch (err: any) {
-          alert('Failed to upload profile picture: ' + err.message);
+          toast.error('Failed to upload profile picture: ' + err.message);
           setIsLoading(false);
           setIsUploadingPicture(false);
           return;
@@ -308,7 +309,7 @@ const Onboarding = () => {
       }
     } catch (error: any) {
       console.error('Submission failed:', error);
-      alert(`Error: ${error.message}`);
+      toast.error(`Error: ${error.message}`);
     } finally {
       setIsLoading(false);
     }
