@@ -1,7 +1,7 @@
 import { useDashboardData } from '../DashboardDataContext';
 
 const ProfileViews = () => {
-  const { data, isLoading } = useDashboardData();
+  const { data, isLoading, error } = useDashboardData();
 
   return (
     <div 
