@@ -6,6 +6,7 @@ import GlobalLoadingOverlay from "./components/GlobalLoadingOverlay";
 import SuspenseFallback from "./components/SuspenseFallback";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { Analytics } from "@vercel/analytics/react";
+import { Toaster } from 'react-hot-toast';
 
 // Lazy load components for better performance
 const DashBoard = lazy(() => import("./components/Dashboard/DashBoard"));
@@ -145,6 +146,30 @@ function App() {
         <RouterProvider router={router} />
         <Analytics />
         <GlobalLoadingOverlay />
+        <Toaster 
+          position="top-right"
+          toastOptions={{
+            duration: 4000,
+            style: {
+              background: 'var(--c-surface)',
+              color: 'var(--c-text)',
+              borderRadius: '8px',
+              border: '1px solid var(--c-border)',
+            },
+            success: {
+              style: {
+                background: '#10b981',
+                color: 'white',
+              },
+            },
+            error: {
+              style: {
+                background: '#ef4444',
+                color: 'white',
+              },
+            },
+          }}
+        />
       </LoadingProvider>
     </AuthProvider>
   );

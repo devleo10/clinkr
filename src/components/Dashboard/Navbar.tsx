@@ -2,6 +2,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import logo from '../../assets/Frame.png';
 import { motion } from 'framer-motion';
 import { supabase } from '../../lib/supabaseClient';
+import { toast } from 'react-hot-toast';
 import { useState, useRef, useEffect } from 'react';
 import { FaEllipsisV, FaUser, FaSignOutAlt, FaTrash } from 'react-icons/fa';
 
@@ -50,17 +51,17 @@ const Navbar = () => {
       }
       
       if (result.success) {
-        alert('Account deleted successfully. You will be redirected to the homepage.');
+        toast.success('Account deleted successfully. You will be redirected to the homepage.');
         // Navigate to homepage
         navigate('/homepage');
       } else {
         console.error('Account deletion failed:', result.errors);
-        alert(`Account deletion failed: ${result.message}. Please contact support if you continue to experience issues.`);
+        toast.error(`Account deletion failed: ${result.message}. Please contact support if you continue to experience issues.`);
       }
       
     } catch (error: any) {
       console.error('Error deleting account:', error);
-      alert('Failed to delete account: ' + error.message);
+      toast.error('Failed to delete account: ' + error.message);
     }
   };
 
@@ -82,12 +83,12 @@ const Navbar = () => {
         
       if (deleteError) throw deleteError;
       
-      alert('All links have been deleted');
+      toast.success('All links have been deleted');
       // Refresh the page to update the dashboard
       window.location.reload();
     } catch (error) {
       console.error('Clear links error:', error);
-      alert('Failed to delete links. Please try again.');
+      toast.error('Failed to delete links. Please try again.');
     }
   };
 
