@@ -47,7 +47,7 @@ const Navbar = () => {
       initial={{ y: -20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
-      className={`w-full flex items-center justify-between px-6 sm:px-8 py-4 relative z-20 transition-all duration-300 'bg-transparent'
+      className={`w-full flex items-center justify-between px-6 sm:px-8 py-6 relative z-20 transition-all duration-300 'bg-transparent'
       }`}
     >
       {/* Logo and brand section */}
@@ -56,14 +56,14 @@ const Navbar = () => {
           <motion.img 
             src={logo} 
             alt="Clinkr Logo" 
-            className="w-8 h-8 sm:w-9 sm:h-9" 
+            className="w-10 h-10 sm:w-12 sm:h-12" 
             whileHover={{ scale: 1.1, rotate: 5 }}
             transition={{ duration: 0.2 }}
           />
         </Link>
         <Link to="/" className="group">
           <motion.h1 
-            className="text-xl sm:text-2xl font-bold text-gradient group-hover:scale-105 transition-transform duration-200"
+            className="text-2xl sm:text-3xl font-bold text-gradient group-hover:scale-105 transition-transform duration-200"
             whileHover={{ scale: 1.05 }}
           >
             Clinkr
@@ -75,25 +75,25 @@ const Navbar = () => {
       <div className="hidden lg:flex items-center space-x-8">
         <motion.button 
           onClick={() => navigateToSection('features')} 
-          className="text-sm font-medium hover:scale-105 transition-all duration-200 focus-ring text-gray-600 hover:text-[#ED7B00]"
+          className="text-base font-medium hover:scale-105 transition-all duration-200 focus-ring text-gray-600 hover:text-[#ED7B00]"
         >
           Features
         </motion.button>
         <motion.button 
           onClick={() => navigateToSection('pricing')} 
-          className="text-sm font-medium hover:scale-105 transition-all duration-200 focus-ring text-gray-600 hover:text-[#ED7B00]"
+          className="text-base font-medium hover:scale-105 transition-all duration-200 focus-ring text-gray-600 hover:text-[#ED7B00]"
         >
           Pricing
         </motion.button>
         <motion.button 
           onClick={() => navigateToSection('faq')}
-          className="text-sm font-medium hover:scale-105 transition-all duration-200 focus-ring text-gray-600 hover:text-[#ED7B00]"
+          className="text-base font-medium hover:scale-105 transition-all duration-200 focus-ring text-gray-600 hover:text-[#ED7B00]"
         >
           FAQ
         </motion.button>
         <Link 
           to="/about"
-          className="text-sm font-medium hover:scale-105 transition-all duration-200 focus-ring text-gray-600 hover:text-[#ED7B00]"
+          className="text-base font-medium hover:scale-105 transition-all duration-200 focus-ring text-gray-600 hover:text-[#ED7B00]"
         >
           About
         </Link>
@@ -113,7 +113,7 @@ const Navbar = () => {
         )}
         
         <motion.button
-          className="btn-primary text-sm font-semibold px-5 py-2.5 rounded-lg"
+          className="btn-primary text-base font-semibold px-6 py-3 rounded-lg"
           onClick={handleButtonClick}
           type="button"
           whileHover={{ scale: 1.02, y: -1 }}

@@ -193,7 +193,7 @@ const ScreenshotCarousel = () => {
         transition={{ duration: 0.2 }}
       >
         {/* Device Frame */}
-        <div className="relative p-3 sm:p-4 lg:p-6">
+        <div className="relative p-2 sm:p-3 lg:p-4">
           {/* Device Header */}
           <div className="flex items-center justify-end mb-3 sm:mb-4">
             {/* Play/Pause Button */}

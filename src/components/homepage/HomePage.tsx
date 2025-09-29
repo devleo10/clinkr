@@ -28,11 +28,11 @@ const HomePage = () => {
         <Routes>
           <Route path="/about" element={<About />} />
         </Routes>
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 h-full">
-          <div className="flex flex-col w-full lg:flex-row items-center justify-between py-20 lg:py-32 gap-16 lg:gap-24">
+        <div className="max-w-[88rem] mx-auto px-4 sm:px-6 lg:px-8 h-full">
+           <div className="flex flex-col w-full lg:flex-row items-center justify-center py-16 lg:py-24 gap-8 lg:gap-16">
             {/* Left Container - Hero text */}
-            <motion.div 
-              className="flex-1 order-2 lg:order-1 text-center lg:text-left max-w-2xl relative"
+             <motion.div 
+               className="flex-1 order-2 lg:order-1 text-center lg:text-left relative"
               initial={{ opacity: 0, x: -60 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
@@ -85,7 +85,7 @@ const HomePage = () => {
               </div>
               
               <motion.div 
-                className="flex flex-col sm:flex-row gap-4 pt-12 justify-center lg:justify-start"
+                className="flex flex-col sm:flex-row gap-4 pt-8 justify-center lg:justify-start"
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 1.0, duration: 0.8 }}
@@ -96,7 +96,7 @@ const HomePage = () => {
                 >
                   <Link 
                     to={shouldShowDashboard ? '/dashboard' : '/getstarted'}
-                    className="btn-primary inline-flex items-center gap-3 text-base font-semibold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+                    className="btn-primary inline-flex items-center gap-3 text-lg font-semibold px-10 py-5 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
                   >
                     <span>Get Started Free</span>
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -109,7 +109,7 @@ const HomePage = () => {
                   whileHover={{ scale: 1.02, y: -2 }}
                   whileTap={{ scale: 0.98 }}
                 >
-                  <button className="btn-secondary inline-flex items-center gap-3 text-base font-semibold px-8 py-4 rounded-xl">
+                  <button className="btn-secondary inline-flex items-center gap-3 text-lg font-semibold px-10 py-5 rounded-xl">
                     <div className="flex justify-center items-center w-6 h-6 rounded-full bg-current/10">
                       <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M8 5v14l11-7z"/>
@@ -122,7 +122,7 @@ const HomePage = () => {
               
               {/* Trust indicators */}
               <motion.div 
-                className="flex items-center gap-6 pt-8 justify-center lg:justify-start text-sm text-gray-600"
+                className="flex items-center gap-6 pt-8 justify-center lg:justify-start text-base text-gray-600"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 1.2, duration: 0.8 }}
