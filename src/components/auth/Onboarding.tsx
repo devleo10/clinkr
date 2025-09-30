@@ -52,13 +52,13 @@ const Onboarding = () => {
           .from('profiles')
           .select('username')
           .eq('id', user.id)
-          .single();
+          .maybeSingle();
 
         if (error) {
-          if (error.code !== 'PGRST116') { // PGRST116 is the "not found" error code
+          // Treat RLS/Not Found as no profile yet; don't break onboarding
+          if (!['PGRST116', '42501', 'PGRST301'].includes((error as any).code)) {
             console.error('Error checking profile:', error);
           }
-          // Profile doesn't exist, stay on onboarding
           return;
         }
 
@@ -250,11 +250,12 @@ const Onboarding = () => {
           console.log(`Image compressed: ${formatFileSize(compressionResult.originalSize)} → ${formatFileSize(compressionResult.compressedSize)} (${compressionResult.compressionRatio.toFixed(1)}% reduction)`);
           
           const fileName = `${user.id}-${Math.random().toString(36).substring(7)}.jpg`;
+          const storagePath = `${user.id}/${fileName}`;
           
           // Upload the compressed file
           const { error: uploadError } = await supabase.storage
             .from('user-data')
-            .upload(fileName, compressionResult.compressedBlob, {
+            .upload(storagePath, compressionResult.compressedBlob, {
               cacheControl: '3600',
               upsert: false
             });
@@ -264,7 +265,7 @@ const Onboarding = () => {
           // Get public URL
           const { data: { publicUrl } } = supabase.storage
             .from('user-data')
-            .getPublicUrl(fileName);
+            .getPublicUrl(storagePath);
             
           finalProfilePictureUrl = publicUrl;
         } catch (err: any) {

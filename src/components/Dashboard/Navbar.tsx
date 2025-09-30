@@ -13,6 +13,41 @@ const Navbar = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  // Toast-based confirmation (non-blocking alert replacement)
+  const confirmWithToast = (message: string): Promise<boolean> => {
+    return new Promise((resolve) => {
+      const id = toast.custom((t) => (
+        <div className={`max-w-sm w-full bg-white/95 backdrop-blur-md border rounded-xl shadow-xl p-4 ${t.visible ? 'animate-enter' : 'animate-leave'}`} style={{ borderColor: 'rgba(237,123,0,0.25)' }}>
+          <div className="flex items-start gap-3">
+            <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: 'rgba(237,123,0,0.1)', color: '#ED7B00' }}>
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01M5.07 19h13.86A2 2 0 0021 17.93L13.41 4.93a2 2 0 00-3.52 0L3 17.93A2 2 0 005.07 19z"/></svg>
+            </div>
+            <div className="flex-1">
+              <p className="text-sm text-gray-800 font-semibold">Confirm Action</p>
+              <p className="text-xs text-gray-600 mt-1">{message}</p>
+              <div className="mt-3 flex items-center gap-2">
+                <button
+                  onClick={() => { toast.dismiss(id); resolve(true); }}
+                  className="px-3 py-1.5 rounded-lg text-white text-xs font-semibold shadow"
+                  style={{ background: 'linear-gradient(90deg, #ED7B00, #E66426)' }}
+                >
+                  Confirm
+                </button>
+                <button
+                  onClick={() => { toast.dismiss(id); resolve(false); }}
+                  className="px-3 py-1.5 rounded-lg text-xs font-semibold border"
+                  style={{ borderColor: 'rgba(237,123,0,0.25)', color: '#ED7B00', background: 'white' }}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      ), { duration: 60000 });
+    });
+  };
+
   const handleProfileClick = () => {
     navigate('/privateprofile');
   };
@@ -27,10 +62,7 @@ const Navbar = () => {
   };
 
   const handleDeleteAccount = async () => {
-    const confirmed = window.confirm(
-      'Are you sure you want to delete your account? This action cannot be undone and will permanently delete all your data, links, and profile.'
-    );
-    
+    const confirmed = await confirmWithToast('This will permanently delete your account, links, analytics and profile.');
     if (!confirmed) return;
     
     try {
@@ -66,10 +98,7 @@ const Navbar = () => {
   };
 
   const handleClearAllLinks = async () => {
-    const confirmed = window.confirm(
-      'Are you sure you want to delete all your shortened links? This action cannot be undone.'
-    );
-    
+    const confirmed = await confirmWithToast('This will delete all your shortened links permanently.');
     if (!confirmed) return;
     
     try {
