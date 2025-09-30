@@ -6,7 +6,7 @@ import { usePremiumDashboardData } from '../PremiumDashboardContext';
 import LoadingScreen from '../../../ui/loadingScreen';
 
 const Devices = React.memo(() => {
-  const { data, isLoading, error } = usePremiumDashboardData();
+  const { data, isLoading, error, timeFrame } = usePremiumDashboardData();
 
   if (isLoading) {
     return (
@@ -53,41 +53,39 @@ const Devices = React.memo(() => {
 
   const { deviceStats, browserStats } = data.devices;
 
+  // Prefer aggregated deviceStats from context (RPC). Fallback to zeroes.
+  const totalCount = deviceStats.reduce((sum, d) => sum + (d.count || 0), 0);
+  const getPct = (label: string) => {
+    const match = deviceStats.find(d => (d.type || '').toLowerCase() === label.toLowerCase());
+    const count = match?.count || 0;
+    return totalCount > 0 ? Math.round((count / totalCount) * 100) : 0;
+  };
+
   // Process device data for display
   const deviceData = [
     { 
       icon: <Laptop size={20} />, 
       label: "Desktop", 
-      percentage: deviceStats.find(d => d.type === 'desktop')?.percentage || 0 
+      percentage: getPct('Desktop') 
     },
     { 
       icon: <Smartphone size={20} />, 
       label: "Mobile", 
-      percentage: deviceStats.find(d => d.type === 'mobile')?.percentage || 0 
+      percentage: getPct('Mobile') 
     },
     { 
       icon: <Tablet size={20} />, 
       label: "Tablet", 
-      percentage: deviceStats.find(d => d.type === 'tablet')?.percentage || 0 
+      percentage: getPct('Tablet') 
     }
   ];
 
   const totalDevices = {
-    count: deviceStats.reduce((sum, device) => sum + device.count, 0),
+    count: totalCount,
     growth: 0, // Would need historical data to calculate
-    topDevice: deviceStats[0]?.type || "Desktop",
-    topDevicePercentage: deviceStats[0]?.percentage || 0
+    topDevice: ['Desktop','Mobile','Tablet'].sort((a, b) => getPct(b) - getPct(a))[0] || 'Desktop',
+    topDevicePercentage: Math.max(getPct('Desktop'), getPct('Mobile'), getPct('Tablet'))
   };
-
-  const deviceTrends = deviceStats.map(device => ({
-    icon: device.type === 'desktop' ? <Laptop size={16} /> : 
-          device.type === 'mobile' ? <Smartphone size={16} /> : 
-          <Tablet size={16} />,
-    name: device.type.charAt(0).toUpperCase() + device.type.slice(1),
-    users: device.count,
-    trend: "up" as const,
-    change: 0 // Would need historical data
-  }));
 
   const browserData = browserStats.slice(0, 4).map(browser => ({
     name: browser.browser,
@@ -121,7 +119,10 @@ const Devices = React.memo(() => {
       {/* Device Overview */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
-          <h3 className="text-lg font-semibold mb-4">Device Distribution</h3>
+          <div className="flex items-center justify-between mb-2">
+            <h3 className="text-lg font-semibold">Device Distribution</h3>
+            <span className="text-xs text-gray-600">{timeFrame === '7days' ? 'Last 7 Days' : timeFrame === '90days' ? 'Last 90 Days' : 'Last 30 Days'}</span>
+          </div>
           <div className="space-y-4">
             {deviceData.map((device) => (
               <DeviceStatRow
@@ -134,29 +135,16 @@ const Devices = React.memo(() => {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
-          <h3 className="text-lg font-semibold mb-4">Device Trends</h3>
-          <div className="space-y-4">
-            {deviceTrends.map((trend) => (
-              <div key={trend.name} className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  {trend.icon}
-                  <span className="font-medium">{trend.name}</span>
-                </div>
-                <div className="text-right">
-                  <div className="font-semibold">{trend.users.toLocaleString()}</div>
-                  <div className="text-sm text-gray-500">users</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+        
       </div>
 
       {/* Browser Overview */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
-          <h3 className="text-lg font-semibold mb-4">Browser Distribution</h3>
+          <div className="flex items-center justify-between mb-2">
+            <h3 className="text-lg font-semibold">Browser Distribution</h3>
+            <span className="text-xs text-gray-600">{timeFrame === '7days' ? 'Last 7 Days' : timeFrame === '90days' ? 'Last 90 Days' : 'Last 30 Days'}</span>
+          </div>
           <div className="space-y-4">
             {browserData.map((browser) => (
               <BrowserStatRow
@@ -170,23 +158,7 @@ const Devices = React.memo(() => {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
-          <h3 className="text-lg font-semibold mb-4">Browser Statistics</h3>
-          <div className="space-y-4">
-            <div className="flex justify-between items-center">
-              <span className="text-gray-600">Total Sessions</span>
-              <span className="font-semibold">{browserStatsData.totalSessions.toLocaleString()}</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-gray-600">Top Browser</span>
-              <span className="font-semibold">{browserStatsData.topBrowser}</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-gray-600">Market Share</span>
-              <span className="font-semibold">{browserStatsData.topBrowserPercentage}%</span>
-            </div>
-          </div>
-        </div>
+        
       </div>
 
       {/* Smart Insights */}

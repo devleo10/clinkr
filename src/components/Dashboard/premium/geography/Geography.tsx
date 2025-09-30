@@ -8,6 +8,22 @@ import { usePremiumDashboardData } from '../PremiumDashboardContext';
 import { formatCountryData } from '../../../../lib/countryUtils';
 import ErrorBoundary from '../../../ErrorBoundary';
 
+// Local normalization to match PremiumDashboardContext logic
+const normalizeDeviceTypeLocal = (deviceType: string | null | undefined): string => {
+  if (!deviceType) return 'Unknown';
+  const normalized = deviceType.toLowerCase().trim();
+  if (normalized.includes('mobile') || normalized.includes('phone') || normalized.includes('android') || normalized.includes('iphone')) {
+    return 'Mobile';
+  }
+  if (normalized.includes('desktop') || normalized.includes('pc') || normalized.includes('mac') || normalized.includes('windows')) {
+    return 'Desktop';
+  }
+  if (normalized.includes('tablet') || normalized.includes('ipad')) {
+    return 'Tablet';
+  }
+  return normalized.charAt(0).toUpperCase() + normalized.slice(1);
+};
+
 // Custom CSS for enhanced popup styling
 const popupStyles = `
   .custom-popup .leaflet-popup-content-wrapper {
@@ -138,7 +154,8 @@ const Geography = React.memo(() => {
   const filteredData = useMemo(() => {
     if (!analyticsData) return [];
     if (deviceFilter === 'all') return analyticsData;
-    return analyticsData.filter(item => item.device_type === deviceFilter);
+    // Use normalized device type to match context logic
+    return analyticsData.filter(item => normalizeDeviceTypeLocal(item.device_type) === normalizeDeviceTypeLocal(deviceFilter));
   }, [analyticsData, deviceFilter]);
 
   // Group data by location and count clicks
@@ -204,14 +221,9 @@ const Geography = React.memo(() => {
     <div className="space-y-8" style={{ willChange: 'transform' }}>
       {/* Header with Controls */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-100 to-amber-100 flex items-center justify-center shadow-sm">
-            <MapPin className="w-5 h-5 text-orange-600" />
-          </div>
-          <div>
-            <h2 className="text-2xl font-bold text-gray-800">Geographic Analytics</h2>
-            <p className="text-sm text-gray-600">Track visitor locations and engagement</p>
-          </div>
+        <div className="text-xs text-gray-600 flex items-center gap-2">
+          <div className="w-2 h-2 rounded-full" style={{ background: '#ED7B00' }} />
+          <span>Showing: {timeFrame === '7days' ? 'Last 7 Days' : timeFrame === '90days' ? 'Last 90 Days' : 'Last 30 Days'}</span>
         </div>
 
         <div className="flex gap-3">
@@ -352,25 +364,25 @@ const Geography = React.memo(() => {
             </div>
             
             <div className="space-y-3">
-              {data.devices.deviceStats.slice(0, 3).map((device) => {
+              {['Desktop', 'Mobile', 'Tablet'].map((deviceType) => {
                 // Calculate percentage based on filtered data for this specific device type
                 const filteredDeviceCount = filteredData.filter(item => {
-                  const normalizedDevice = item.device_type?.toLowerCase() || 'unknown';
-                  return normalizedDevice === device.type;
+                  const normalizedDevice = normalizeDeviceTypeLocal(item.device_type);
+                  return normalizedDevice === deviceType;
                 }).length;
                 
                 const totalFilteredCount = filteredData.length;
                 const calculatedPercentage = totalFilteredCount > 0 ? Math.round((filteredDeviceCount / totalFilteredCount) * 100) : 0;
                 
                 return (
-                  <div key={device.type} className="flex items-center justify-between p-4 rounded-lg bg-gray-50/50 hover:bg-gray-100/50 transition-colors">
+                  <div key={deviceType} className="flex items-center justify-between p-4 rounded-lg bg-gray-50/50 hover:bg-gray-100/50 transition-colors">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-100 to-amber-100 flex items-center justify-center shadow-sm">
-                        {device.type === 'mobile' && <Smartphone className="w-5 h-5 text-orange-600" />}
-                        {device.type === 'desktop' && <Laptop className="w-5 h-5 text-orange-600" />}
-                        {device.type === 'tablet' && <Smartphone className="w-5 h-5 text-orange-600" />}
+                        {deviceType === 'Mobile' && <Smartphone className="w-5 h-5 text-orange-600" />}
+                        {deviceType === 'Desktop' && <Laptop className="w-5 h-5 text-orange-600" />}
+                        {deviceType === 'Tablet' && <Smartphone className="w-5 h-5 text-orange-600" />}
                       </div>
-                      <span className="font-semibold capitalize text-gray-800">{device.type}</span>
+                      <span className="font-semibold capitalize text-gray-800">{deviceType}</span>
                     </div>
                     <div className="text-right">
                       <div className="font-bold text-gray-800">{filteredDeviceCount.toLocaleString()}</div>
