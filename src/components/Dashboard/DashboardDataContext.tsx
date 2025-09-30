@@ -119,8 +119,8 @@ export const DashboardDataProvider: React.FC<DashboardDataProviderProps> = ({ ch
         sixtyDaysAgo: sixtyDaysAgo.toISOString()
       });
 
-      // Parallel data fetching for better performance
-      const [analyticsResult, shortenedLinksResult] = await Promise.all([
+      // Parallel data fetching + RPC aggregation
+      const [analyticsResult, shortenedLinksResult, rpcOverview, rpcDevices, rpcCountry] = await Promise.all([
         supabase
           .from('link_analytics')
           .select('id, country_code, device_type, created_at, event_type, hashed_ip, link_type')
@@ -132,7 +132,10 @@ export const DashboardDataProvider: React.FC<DashboardDataProviderProps> = ({ ch
           .select('id, short_code, original_url, title, clicks, created_at')
           .eq('user_id', user.id)
           .eq('is_active', true)
-          .order('created_at', { ascending: false })
+          .order('created_at', { ascending: false }),
+        supabase.rpc('get_overview_metrics', { p_user_id: user.id, p_start_date: thirtyDaysAgo.toISOString() }),
+        supabase.rpc('get_device_stats', { p_user_id: user.id, p_start_date: thirtyDaysAgo.toISOString() }),
+        supabase.rpc('get_country_stats', { p_user_id: user.id, p_start_date: thirtyDaysAgo.toISOString() })
       ]);
 
       if (analyticsResult.error) {
@@ -169,16 +172,23 @@ export const DashboardDataProvider: React.FC<DashboardDataProviderProps> = ({ ch
         previousPeriod: previousPeriodData.length
       });
 
-      // Get shortened link clicks from analytics
-      const shortenedLinkClicks = currentPeriodData.filter(item => 
-        item.event_type === 'click' && item.link_type === 'shortened_link'
-      ).length;
-      
-      // Count profile views separately (for display purposes)
-      const profileViews = currentPeriodData.filter(item => 
-        item.event_type === 'view' && item.link_type === 'profile_link'
-      ).length;
-      
+      // Overview via RPC with fallback
+      let shortenedLinkClicks = 0;
+      let profileViews = 0;
+      if (!rpcOverview.error && rpcOverview.data) {
+        const rows = Array.isArray(rpcOverview.data) ? rpcOverview.data : [rpcOverview.data];
+        const o = rows[0] || {};
+        shortenedLinkClicks = Number((o as any).total_clicks) || 0;
+        profileViews = Number((o as any).total_views) || 0; // treat views as proxy for profile views
+      } else {
+        shortenedLinkClicks = currentPeriodData.filter(item => 
+          item.event_type === 'click' && item.link_type === 'shortened_link'
+        ).length;
+        profileViews = currentPeriodData.filter(item => 
+          item.event_type === 'view' && item.link_type === 'profile_link'
+        ).length;
+      }
+
       const totalClicksFromAnalytics = shortenedLinkClicks;
 
       // Calculate analytics events for comparison
@@ -196,48 +206,55 @@ export const DashboardDataProvider: React.FC<DashboardDataProviderProps> = ({ ch
         percentageChange
       });
 
-      // Calculate top countries with proper normalization
-      const countryVisits: Record<string, number> = {};
-      currentPeriodData.forEach(item => {
-        const country = normalizeCountryCode(item.country_code);
-        countryVisits[country] = (countryVisits[country] || 0) + 1;
-      });
-
-      const topCountries = Object.entries(countryVisits)
-        .map(([country, visits]) => ({ 
-          country, 
-          visits: validateNumber(visits) 
-        }))
-        .sort((a, b) => b.visits - a.visits)
-        .slice(0, 5);
+      // Top countries via RPC with fallback
+      let topCountries: Array<{ country: string; visits: number }> = [];
+      if (!rpcCountry.error && rpcCountry.data) {
+        topCountries = (rpcCountry.data as any[])
+          .map(r => ({ country: normalizeCountryCode(r.country_code || 'Unknown'), visits: validateNumber(r.visits) }))
+          .sort((a, b) => b.visits - a.visits)
+          .slice(0, 5);
+      } else {
+        const countryVisits: Record<string, number> = {};
+        currentPeriodData.forEach(item => {
+          const country = normalizeCountryCode(item.country_code);
+          countryVisits[country] = (countryVisits[country] || 0) + 1;
+        });
+        topCountries = Object.entries(countryVisits)
+          .map(([country, visits]) => ({ country, visits: validateNumber(visits) }))
+          .sort((a, b) => b.visits - a.visits)
+          .slice(0, 5);
+      }
 
       console.log('Top countries:', topCountries);
 
-      // Calculate device split with proper normalization
-      const deviceCounts: Record<string, number> = {};
-      currentPeriodData.forEach(item => {
-        const device = normalizeDeviceType(item.device_type);
-        deviceCounts[device] = (deviceCounts[device] || 0) + 1;
-      });
-
-      const totalDeviceCount = Object.values(deviceCounts).reduce((a, b) => a + b, 0);
-      
-      // Calculate percentages with proper rounding
-      const deviceSplit = {
-        mobile: totalDeviceCount > 0 
-          ? Math.round((validateNumber(deviceCounts.mobile) / totalDeviceCount) * 100) 
-          : 0,
-        desktop: totalDeviceCount > 0 
-          ? Math.round((validateNumber(deviceCounts.desktop) / totalDeviceCount) * 100) 
-          : 0,
-        tablet: totalDeviceCount > 0 
-          ? Math.round((validateNumber(deviceCounts.tablet) / totalDeviceCount) * 100) 
-          : 0,
-      };
+      // Device split via RPC with fallback
+      let deviceSplit = { mobile: 0, desktop: 0, tablet: 0 } as { mobile: number; desktop: number; tablet: number };
+      if (!rpcDevices.error && rpcDevices.data) {
+        const rows = rpcDevices.data as any[];
+        const total = rows.reduce((s, r) => s + Number(r.device_count || 0), 0);
+        const pct = (label: string) => total > 0 ? Math.round(((rows.find(r => (r.device_type || '').toLowerCase() === label)?.device_count || 0) / total) * 100) : 0;
+        deviceSplit = {
+          mobile: pct('mobile'),
+          desktop: pct('desktop'),
+          tablet: pct('tablet')
+        };
+      } else {
+        const deviceCounts: Record<string, number> = {};
+        currentPeriodData.forEach(item => {
+          const device = normalizeDeviceType(item.device_type);
+          deviceCounts[device] = (deviceCounts[device] || 0) + 1;
+        });
+        const total = Object.values(deviceCounts).reduce((a, b) => a + b, 0);
+        deviceSplit = {
+          mobile: total > 0 ? Math.round((validateNumber(deviceCounts.mobile) / total) * 100) : 0,
+          desktop: total > 0 ? Math.round((validateNumber(deviceCounts.desktop) / total) * 100) : 0,
+          tablet: total > 0 ? Math.round((validateNumber(deviceCounts.tablet) / total) * 100) : 0,
+        };
+      }
 
       // Ensure percentages add up to 100% (handle rounding errors)
       const totalPercentage = deviceSplit.mobile + deviceSplit.desktop + deviceSplit.tablet;
-      if (totalPercentage !== 100 && totalDeviceCount > 0) {
+      if (totalPercentage !== 100 && (deviceSplit.mobile + deviceSplit.desktop + deviceSplit.tablet) > 0) {
         // Adjust the largest category to make it add up to 100%
         const largestCategory = Object.entries(deviceSplit).reduce((a, b) => 
           deviceSplit[a[0] as keyof typeof deviceSplit] > deviceSplit[b[0] as keyof typeof deviceSplit] ? a : b

@@ -36,6 +36,12 @@ interface PremiumDashboardData {
     dailyData: Array<{ date: string; clicks: number; views: number }>;
   };
   
+  // Conversions (new)
+  conversions?: {
+    totalConversions: number;
+    byType: Array<{ event_type: string; count: number; percentage: number }>;
+  };
+  
   lastFetch: number;
 }
 
@@ -191,8 +197,8 @@ export const PremiumDashboardProvider: React.FC<PremiumDashboardProviderProps> =
       console.log('Premium Dashboard - Fetching data for user:', user.id);
       console.log('Time frame:', timeFrame, 'Start date:', startDateStr);
 
-      // Batch fetch all analytics data with proper error handling
-      const [analyticsResult, profileViewsResult, shortenedLinksResult] = await Promise.all([
+      // Batch fetch: minimal rows + RPC aggregates (DB-side)
+      const [analyticsResult, profileViewsResult, shortenedLinksResult, conversionsResult, rpcOverview, rpcDevices, rpcBrowsers, rpcTrends, rpcCountryStats, rpcHeatmap, rpcGeoPoints] = await Promise.all([
         supabase
           .from('link_analytics')
           .select('*')
@@ -210,7 +216,21 @@ export const PremiumDashboardProvider: React.FC<PremiumDashboardProviderProps> =
           .select('id, clicks, created_at')
           .eq('user_id', user.id)
           .eq('is_active', true)
-          .gte('created_at', startDateStr)
+          .gte('created_at', startDateStr),
+        supabase
+          .from('conversion_events')
+          .select('*')
+          .eq('user_id', user.id)
+          .gte('created_at', startDateStr),
+        // RPC functions (create in DB per analytics.md)
+        supabase.rpc('get_overview_metrics', { p_user_id: user.id, p_start_date: startDateStr }),
+        supabase.rpc('get_device_stats', { p_user_id: user.id, p_start_date: startDateStr }),
+        supabase.rpc('get_browser_stats', { p_user_id: user.id, p_start_date: startDateStr }),
+        supabase.rpc('get_daily_trends', { p_user_id: user.id, p_start_date: startDateStr }),
+        // New RPCs for geography
+        supabase.rpc('get_country_stats', { p_user_id: user.id, p_start_date: startDateStr }),
+        supabase.rpc('get_heatmap_data', { p_user_id: user.id, p_start_date: startDateStr }),
+        supabase.rpc('get_geography_points', { p_user_id: user.id, p_start_date: startDateStr })
       ]);
 
       if (analyticsResult.error) {
@@ -227,15 +247,21 @@ export const PremiumDashboardProvider: React.FC<PremiumDashboardProviderProps> =
         console.error('Shortened links fetch error:', shortenedLinksResult.error);
         throw new Error(`Failed to fetch links data: ${shortenedLinksResult.error.message}`);
       }
+      if (conversionsResult.error) {
+        console.error('Conversions fetch error:', conversionsResult.error);
+        throw new Error(`Failed to fetch conversion events: ${conversionsResult.error.message}`);
+      }
 
       const analyticsData = validateAnalyticsData(analyticsResult.data || []);
       const profileViewsData = profileViewsResult.data || [];
       const shortenedLinksData = shortenedLinksResult.data || [];
+      const conversionEvents = conversionsResult.data || [];
 
       console.log('Premium Dashboard - Raw data counts:', {
         analytics: analyticsData.length,
         profileViews: profileViewsData.length,
-        shortenedLinks: shortenedLinksData.length
+        shortenedLinks: shortenedLinksData.length,
+        conversions: conversionEvents.length
       });
 
       // Debug unique visitors calculation
@@ -264,35 +290,54 @@ export const PremiumDashboardProvider: React.FC<PremiumDashboardProviderProps> =
         .order('created_at', { ascending: false });
 
       const previousAnalyticsData = validateAnalyticsData(previousAnalyticsResult.data || []);
+      // Also fetch previous conversions for accurate conversion rate comparison
+      const prevConversionsRes = await supabase
+        .from('conversion_events')
+        .select('id')
+        .eq('user_id', user.id)
+        .gte('created_at', previousStartDate.toISOString())
+        .lt('created_at', previousEndDate.toISOString());
+      const previousConversionsCountFromTable = (prevConversionsRes.error ? 0 : (prevConversionsRes.data || []).length) as number;
+      const previousConversionsCountFromAnalytics = previousAnalyticsData.filter(item => item.event_type === 'conversion').length;
+      const previousConversionsCount = previousConversionsCountFromTable > 0 ? previousConversionsCountFromTable : previousConversionsCountFromAnalytics;
 
-      // Process Overview Data - FIXED LOGIC
-      // Calculate clicks from analytics data (only click events)
-      const totalClicks = analyticsData.filter(item => item.event_type === 'click').length;
-      const previousTotalClicks = previousAnalyticsData.filter(item => item.event_type === 'click').length;
-      
-      // Calculate views from analytics data (only view events)
-      const totalViews = analyticsData.filter(item => item.event_type === 'view').length;
-      const previousTotalViews = previousAnalyticsData.filter(item => item.event_type === 'view').length;
-      
-      // Calculate unique visitors from analytics data using hashed_ip or fallback
-      const uniqueVisitors = new Set(
-        analyticsData
-          .map(item => item.hashed_ip || `anonymous_${item.id}`)
-          .filter(identifier => identifier && identifier.trim() !== '')
+      // Prefer RPC overview (DB aggregation). Fallback to client calc if RPC fails
+      let totalClicks = 0;
+      let previousTotalClicks = previousAnalyticsData.filter(item => item.event_type === 'click').length;
+      let totalViews = 0;
+      let previousTotalViews = previousAnalyticsData.filter(item => item.event_type === 'view').length;
+      let uniqueVisitors = 0;
+      let previousUniqueVisitors = new Set(
+        previousAnalyticsData.map(item => item.hashed_ip || `anonymous_${item.id}`).filter(Boolean)
       ).size;
-      
-      const previousUniqueVisitors = new Set(
-        previousAnalyticsData
-          .map(item => item.hashed_ip || `anonymous_${item.id}`)
-          .filter(identifier => identifier && identifier.trim() !== '')
-      ).size;
-      
-      // Calculate conversion rate (clicks per view) - CAP AT 100%
-      const conversionRate = totalViews > 0 ? Math.min((totalClicks / totalViews) * 100, 100) : 0;
-      const previousConversionRate = previousTotalViews > 0 ? Math.min((previousTotalClicks / previousTotalViews) * 100, 100) : 0;
-      
-      // Calculate average time (mock data for now - would need session data)
-      const avgTime = '2m 34s';
+      let avgSeconds = 0;
+      if (!rpcOverview.error && rpcOverview.data) {
+        const rows = Array.isArray(rpcOverview.data) ? rpcOverview.data : [rpcOverview.data];
+        const o = rows[0] || {};
+        totalClicks = Number((o as any).total_clicks) || 0;
+        totalViews = Number((o as any).total_views) || 0;
+        uniqueVisitors = Number((o as any).unique_visitors) || 0;
+        avgSeconds = Number((o as any).avg_time_seconds) || 0;
+      } else {
+        totalClicks = analyticsData.filter(item => item.event_type === 'click').length;
+        totalViews = analyticsData.filter(item => item.event_type === 'view').length;
+        uniqueVisitors = new Set(
+          analyticsData.map(item => item.hashed_ip || `anonymous_${item.id}`).filter(Boolean)
+        ).size;
+        const durations = analyticsData
+          .map(item => Number(item.duration_seconds))
+          .filter(v => Number.isFinite(v) && v > 0);
+        avgSeconds = durations.length > 0 ? Math.round(durations.reduce((a, b) => a + b, 0) / durations.length) : 0;
+      }
+      const minutes = Math.floor(avgSeconds / 60);
+      const seconds = avgSeconds % 60;
+      const avgTime = avgSeconds > 0 ? `${minutes}m ${seconds}s` : '—';
+      // Conversion rate: prefer conversion_events; fallback to analytics rows with event_type='conversion'
+      const conversionsCountFromTable = (conversionEvents || []).length;
+      const conversionsCountFromAnalytics = analyticsData.filter(item => item.event_type === 'conversion').length;
+      const conversionsCount = conversionsCountFromTable > 0 ? conversionsCountFromTable : conversionsCountFromAnalytics;
+      const conversionRate = totalViews > 0 ? Math.min((conversionsCount / totalViews) * 100, 100) : 0;
+      const previousConversionRate = previousTotalViews > 0 ? Math.min((previousConversionsCount / previousTotalViews) * 100, 100) : 0;
 
       const overview = {
         totalClicks: formatNumber(totalClicks),
@@ -309,109 +354,153 @@ export const PremiumDashboardProvider: React.FC<PremiumDashboardProviderProps> =
         }
       };
 
-      // Process Geography Data
-      const countryCounts: Record<string, number> = {};
-      const heatmapData: Array<[number, number, number]> = [];
-      
-      analyticsData.forEach(item => {
-        const country = normalizeCountryCode(item.country_code);
-        countryCounts[country] = (countryCounts[country] || 0) + 1;
-        
-        // Add to heatmap if we have coordinates
-        if (item.lat && item.lng) {
-          heatmapData.push([validateNumber(item.lat), validateNumber(item.lng), 1]);
-        }
-      });
+      // Geography via RPCs with fallback
+      let countryStats: Array<{ country: string; visits: number; percentage: number }> = [];
+      let heatmapData: Array<[number, number, number]> = [];
+      let geoPoints: Array<any> = [];
+      if (!rpcCountryStats.error && rpcCountryStats.data) {
+        const rows = rpcCountryStats.data as any[];
+        const total = rows.reduce((s, r) => s + Number(r.visits || 0), 0);
+        countryStats = rows.map(r => ({
+          country: normalizeCountryCode(r.country_code || 'Unknown'),
+          visits: validateNumber(r.visits),
+          percentage: total > 0 ? Math.round((Number(r.visits) / total) * 100) : 0
+        })).sort((a, b) => b.visits - a.visits).slice(0, 10);
+      } else {
+        const countryCounts: Record<string, number> = {};
+        analyticsData.forEach(item => {
+          const country = normalizeCountryCode(item.country_code);
+          countryCounts[country] = (countryCounts[country] || 0) + 1;
+        });
+        const total = Object.values(countryCounts).reduce((a, b) => a + b, 0);
+        countryStats = Object.entries(countryCounts)
+          .map(([country, visits]) => ({
+            country,
+            visits: validateNumber(visits),
+            percentage: total > 0 ? Math.round((visits / total) * 100) : 0
+          }))
+          .sort((a, b) => b.visits - a.visits)
+          .slice(0, 10);
+      }
 
-      const totalCountryVisits = Object.values(countryCounts).reduce((a, b) => a + b, 0);
-      const countryStats = Object.entries(countryCounts)
-        .map(([country, visits]) => ({
-          country,
-          visits: validateNumber(visits),
-          percentage: totalCountryVisits > 0 ? Math.round((visits / totalCountryVisits) * 100) : 0
-        }))
-        .sort((a, b) => b.visits - a.visits)
-        .slice(0, 10);
+      if (!rpcHeatmap.error && rpcHeatmap.data) {
+        heatmapData = (rpcHeatmap.data as any[]).map(r => [validateNumber(r.lat), validateNumber(r.lng), validateNumber(r.intensity || 1)]) as Array<[number, number, number]>;
+      } else {
+        analyticsData.forEach(item => {
+          if (item.lat && item.lng) {
+            heatmapData.push([validateNumber(item.lat), validateNumber(item.lng), 1]);
+          }
+        });
+      }
+
+      if (!rpcGeoPoints.error && rpcGeoPoints.data) {
+        geoPoints = rpcGeoPoints.data as any[];
+      } else {
+        geoPoints = analyticsData.slice(0, 100);
+      }
 
       const geography = {
         heatmapData,
         countryStats,
-        analyticsData: analyticsData.slice(0, 100) // Limit for performance
+        analyticsData: geoPoints
       };
 
-      // Process Devices Data
-      const deviceCounts: Record<string, number> = {};
-      const browserCounts: Record<string, number> = {};
-      
-      analyticsData.forEach(item => {
-        const device = normalizeDeviceType(item.device_type);
-        const browser = normalizeBrowser(item.browser);
-        
-        deviceCounts[device] = (deviceCounts[device] || 0) + 1;
-        browserCounts[browser] = (browserCounts[browser] || 0) + 1;
-      });
-
-      const totalDevices = Object.values(deviceCounts).reduce((a, b) => a + b, 0);
-      const totalBrowsers = Object.values(browserCounts).reduce((a, b) => a + b, 0);
-
-      const deviceStats = Object.entries(deviceCounts)
-        .map(([type, count]) => ({
+      // Devices & Browsers via RPC with fallback
+      let deviceStats: Array<{ type: string; count: number; percentage: number }> = [];
+      let browserStats: Array<{ browser: string; count: number; percentage: number }> = [];
+      if (!rpcDevices.error && rpcDevices.data) {
+        const rows = (rpcDevices.data as any[]) || [];
+        const total = rows.reduce((s, r) => s + Number(r.device_count || 0), 0);
+        deviceStats = rows.map(r => ({
+          type: String(r.device_type || 'Unknown'),
+          count: validateNumber(r.device_count),
+          percentage: total > 0 ? Math.round((Number(r.device_count) / total) * 100) : 0
+        }));
+      } else {
+        const counts: Record<string, number> = {};
+        analyticsData.forEach(item => {
+          const device = normalizeDeviceType(item.device_type);
+          counts[device] = (counts[device] || 0) + 1;
+        });
+        const total = Object.values(counts).reduce((a, b) => a + b, 0);
+        deviceStats = Object.entries(counts).map(([type, count]) => ({
           type,
           count: validateNumber(count),
-          percentage: totalDevices > 0 ? Math.round((count / totalDevices) * 100) : 0
-        }))
-        .sort((a, b) => b.count - a.count);
-
-      const browserStats = Object.entries(browserCounts)
-        .map(([browser, count]) => ({
+          percentage: total > 0 ? Math.round((Number(count) / total) * 100) : 0
+        }));
+      }
+      if (!rpcBrowsers.error && rpcBrowsers.data) {
+        const rows = (rpcBrowsers.data as any[]) || [];
+        const total = rows.reduce((s, r) => s + Number(r.browser_count || 0), 0);
+        browserStats = rows.map(r => ({
+          browser: String(r.browser || 'Unknown'),
+          count: validateNumber(r.browser_count),
+          percentage: total > 0 ? Math.round((Number(r.browser_count) / total) * 100) : 0
+        })).slice(0, 10);
+      } else {
+        const counts: Record<string, number> = {};
+        analyticsData.forEach(item => {
+          const b = normalizeBrowser(item.browser);
+          counts[b] = (counts[b] || 0) + 1;
+        });
+        const total = Object.values(counts).reduce((a, b) => a + b, 0);
+        browserStats = Object.entries(counts).map(([browser, count]) => ({
           browser,
           count: validateNumber(count),
-          percentage: totalBrowsers > 0 ? Math.round((count / totalBrowsers) * 100) : 0
-        }))
-        .sort((a, b) => b.count - a.count)
-        .slice(0, 10);
+          percentage: total > 0 ? Math.round((Number(count) / total) * 100) : 0
+        })).sort((a, b) => b.count - a.count).slice(0, 10);
+      }
 
       const devices = {
         deviceStats,
         browserStats
       };
 
-      // Process Trends Data
-      const dailyData: Array<{ date: string; clicks: number; views: number }> = [];
-
-      // Group by day - use analytics data for both clicks and views
-      const dailyGroups: Record<string, { clicks: number; views: number }> = {};
-      
-      // FIXED: Properly distinguish between clicks and views based on event_type
-      analyticsData.forEach(item => {
-        const date = item.created_at.split('T')[0];
-        dailyGroups[date] = (dailyGroups[date] || { clicks: 0, views: 0 });
-        
-        // Only count as click if it's actually a click event
-        if (item.event_type === 'click') {
-          dailyGroups[date].clicks++;
-        }
-        
-        // Only count as view if it's actually a view event
-        if (item.event_type === 'view') {
-          dailyGroups[date].views++;
-        }
-      });
-
-      // Convert to arrays and sort by date
-      Object.entries(dailyGroups)
-        .sort(([a], [b]) => a.localeCompare(b))
-        .forEach(([date, data]) => {
-          dailyData.push({
-            date,
-            clicks: validateNumber(data.clicks),
-            views: validateNumber(data.views)
-          });
+      // Trends via RPC with fallback
+      let dailyData: Array<{ date: string; clicks: number; views: number }> = [];
+      if (!rpcTrends.error && rpcTrends.data) {
+        dailyData = (rpcTrends.data as any[]).map(row => ({
+          date: row.day,
+          clicks: validateNumber(row.clicks),
+          views: validateNumber(row.views)
+        }));
+      } else {
+        const dailyGroups: Record<string, { clicks: number; views: number }> = {};
+        analyticsData.forEach(item => {
+          const date = item.created_at.split('T')[0];
+          dailyGroups[date] = (dailyGroups[date] || { clicks: 0, views: 0 });
+          if (item.event_type === 'click') dailyGroups[date].clicks++;
+          if (item.event_type === 'view') dailyGroups[date].views++;
         });
+        Object.entries(dailyGroups)
+          .sort(([a], [b]) => a.localeCompare(b))
+          .forEach(([date, data]) => {
+            dailyData.push({
+              date,
+              clicks: validateNumber(data.clicks),
+              views: validateNumber(data.views)
+            });
+          });
+      }
 
       const trends = {
         dailyData
       };
+
+      // Process Conversions Aggregation
+      const convCounts: Record<string, number> = {};
+      conversionEvents.forEach((e: any) => {
+        const key = (e.event_type || 'unknown').toString();
+        convCounts[key] = (convCounts[key] || 0) + 1;
+      });
+      const totalConversions = Object.values(convCounts).reduce((a, b) => a + b, 0);
+      const byType = Object.entries(convCounts)
+        .map(([event_type, count]) => ({
+          event_type,
+          count: validateNumber(count),
+          percentage: totalConversions > 0 ? Math.round((count / totalConversions) * 100) : 0
+        }))
+        .sort((a, b) => b.count - a.count);
 
       // Create final data object
       const premiumDashboardData: PremiumDashboardData = {
@@ -419,6 +508,10 @@ export const PremiumDashboardProvider: React.FC<PremiumDashboardProviderProps> =
         geography,
         devices,
         trends,
+        conversions: {
+          totalConversions,
+          byType
+        },
         lastFetch: Date.now()
       };
 
