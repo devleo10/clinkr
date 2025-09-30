@@ -4,7 +4,7 @@ import { usePremiumDashboardData } from '../PremiumDashboardContext'
 import LoadingScreen from '../../../ui/loadingScreen'
 
 const Overview = React.memo(() => {
-  const { data, isLoading, error } = usePremiumDashboardData()
+  const { data, isLoading, error, timeFrame } = usePremiumDashboardData()
 
   if (isLoading) {
     return (
@@ -49,8 +49,14 @@ const Overview = React.memo(() => {
     );
   }
 
+  const tfLabel = timeFrame === '7days' ? 'Last 7 Days' : timeFrame === '90days' ? 'Last 90 Days' : 'Last 30 Days'
+
   return (
     <div style={{ willChange: 'transform' }}>
+      <div className="mb-4 flex items-center gap-2 text-xs text-gray-600">
+        <div className="w-2 h-2 rounded-full" style={{ background: '#ED7B00' }} />
+        <span>Showing: {tfLabel}</span>
+      </div>
       <StatsGrid 
         totalClicks={data.overview.totalClicks}
         uniqueVisitors={data.overview.uniqueVisitors}
