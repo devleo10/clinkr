@@ -22,8 +22,6 @@ const SmartRouteResolver = () => {
 
   useEffect(() => {
     const resolveRoute = async () => {
-      console.log('Resolving route for identifier:', identifier);
-      
       // Only show loading for username resolution, not for short codes
       const isLikelyShortCode = identifier && identifier.length > 3 && !identifier.includes(' ');
       if (!isLikelyShortCode) {
@@ -31,7 +29,6 @@ const SmartRouteResolver = () => {
       }
 
       if (!identifier) {
-        console.log('No identifier provided');
         setResolution({ type: 'not_found' });
         hideLoading();
         return;
@@ -40,7 +37,7 @@ const SmartRouteResolver = () => {
       try {
         // If it looks like a short code, check short codes first
         if (isLikelyShortCode) {
-          console.log('Checking if identifier is a short code...');
+          // Checking if identifier is a short code
           const { data: shortLink, error: shortLinkError } = await supabase
             .from('shortened_links')
             .select('*')
@@ -48,15 +45,15 @@ const SmartRouteResolver = () => {
             .eq('is_active', true)
             .single();
 
-          console.log('Short link query result:', { shortLink, shortLinkError });
+          // Short link query completed
 
           if (shortLink && !shortLinkError) {
             // Check if link has expired
             if (shortLink.expires_at && new Date(shortLink.expires_at) < new Date()) {
-              console.log('Short link has expired');
+              // Short link has expired
               setResolution({ type: 'not_found' });
             } else {
-              console.log('Found short link, resolving as short code');
+              // Found short link, resolving as short code
               setResolution({ type: 'short_code', data: shortLink });
             }
             hideLoading();
@@ -65,17 +62,17 @@ const SmartRouteResolver = () => {
         }
 
         // Check if it's a username (existing profiles)
-        console.log('Checking if identifier is a username...');
+        // Checking if identifier is a username
         const { data: profile, error: profileError } = await supabase
           .from('profiles')
           .select('*')
           .eq('username', identifier)
           .single();
 
-        console.log('Profile query result:', { profile, profileError });
+        // Profile query completed
 
         if (profile && !profileError) {
-          console.log('Found profile, resolving as username');
+          // Found profile, resolving as username
           setResolution({ type: 'username', data: profile });
           hideLoading();
           return;
@@ -83,7 +80,7 @@ const SmartRouteResolver = () => {
 
         // If not a username and not checked as short code yet, check short codes
         if (!isLikelyShortCode) {
-          console.log('Not a username, checking if identifier is a short code...');
+          // Not a username, checking if identifier is a short code
           const { data: shortLink, error: shortLinkError } = await supabase
             .from('shortened_links')
             .select('*')
@@ -91,15 +88,15 @@ const SmartRouteResolver = () => {
             .eq('is_active', true)
             .single();
 
-          console.log('Short link query result:', { shortLink, shortLinkError });
+          // Short link query completed
 
           if (shortLink && !shortLinkError) {
             // Check if link has expired
             if (shortLink.expires_at && new Date(shortLink.expires_at) < new Date()) {
-              console.log('Short link has expired');
+              // Short link has expired
               setResolution({ type: 'not_found' });
             } else {
-              console.log('Found short link, resolving as short code');
+              // Found short link, resolving as short code
               setResolution({ type: 'short_code', data: shortLink });
             }
             hideLoading();
@@ -108,10 +105,8 @@ const SmartRouteResolver = () => {
         }
 
         // Neither username nor short code found
-        console.log('Neither username nor short code found');
         setResolution({ type: 'not_found' });
       } catch (error) {
-        console.error('Error resolving route:', error);
         setResolution({ type: 'not_found' });
       } finally {
         hideLoading();
@@ -142,7 +137,7 @@ const SmartRouteResolver = () => {
   }
 
   if (resolution?.type === 'username') {
-    console.log('Found profile, rendering PublicProfile for:', resolution.data.username);
+    // Found profile, rendering PublicProfile
     return (
       <Suspense fallback={<LoadingScreen compact />}>
         <PublicProfile />

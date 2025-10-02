@@ -109,7 +109,7 @@ const PrivateProfile = () => {
         const links = await linkShorteningService.getUserShortLinks(session.user.id);
         setShortLinks(links);
       } catch (err: any) {
-        console.error('Failed to fetch short links:', err.message);
+        // Failed to fetch short links
         // Don't set error state, just log it
       }
     };
@@ -212,7 +212,7 @@ const PrivateProfile = () => {
       
       // If Edge Function fails, fallback to client-side cleanup
       if (!result.success) {
-        console.warn('Edge Function cleanup failed, falling back to client-side cleanup:', result.message);
+        // Edge Function cleanup failed, falling back to client-side cleanup
         result = await cleanupUserDataFallback(userId);
       }
       
