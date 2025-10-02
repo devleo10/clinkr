@@ -118,7 +118,7 @@ export const usePerformanceOptimization = (options: PerformanceOptimizationOptio
     }
     
     if (renderTime > 16) { // More than one frame
-      console.warn(`Performance warning: ${name} took ${renderTime.toFixed(2)}ms`);
+      // Performance warning logged
     }
   }, [bundleAnalyzer]);
 

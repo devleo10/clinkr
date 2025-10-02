@@ -14,10 +14,9 @@ export const analyzeBundleSize = () => {
     const loadTime = endTime - startTime;
     dynamicImports.set(name, loadTime);
     
-    console.log(`📦 Dynamic import "${name}" loaded in ${loadTime.toFixed(2)}ms`);
-    
+    // Dynamic import tracking - only show warnings for slow loads
     if (loadTime > 1000) {
-      console.warn(`⚠️ Slow dynamic import: "${name}" took ${loadTime.toFixed(2)}ms`);
+      // Slow import warning: ${name} took ${loadTime.toFixed(2)}ms
     }
   };
 
