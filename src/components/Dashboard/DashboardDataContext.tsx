@@ -100,7 +100,6 @@ export const DashboardDataProvider: React.FC<DashboardDataProviderProps> = ({ ch
       // Get current user with proper error handling
       const { data: { user }, error: userError } = await supabase.auth.getUser();
       if (userError) {
-        console.error('User authentication error:', userError);
         throw new Error('Authentication failed. Please log in again.');
       }
       if (!user) {
@@ -111,13 +110,6 @@ export const DashboardDataProvider: React.FC<DashboardDataProviderProps> = ({ ch
       const now = new Date();
       const thirtyDaysAgo = new Date(now.getTime() - (30 * 24 * 60 * 60 * 1000));
       const sixtyDaysAgo = new Date(now.getTime() - (60 * 24 * 60 * 60 * 1000));
-
-      console.log('Fetching data for user:', user.id);
-      console.log('Date range:', {
-        now: now.toISOString(),
-        thirtyDaysAgo: thirtyDaysAgo.toISOString(),
-        sixtyDaysAgo: sixtyDaysAgo.toISOString()
-      });
 
       // Parallel data fetching + RPC aggregation
       const [analyticsResult, shortenedLinksResult, rpcOverview, rpcDevices, rpcCountry] = await Promise.all([
@@ -139,22 +131,15 @@ export const DashboardDataProvider: React.FC<DashboardDataProviderProps> = ({ ch
       ]);
 
       if (analyticsResult.error) {
-        console.error('Analytics fetch error:', analyticsResult.error);
         throw new Error(`Failed to fetch analytics data: ${analyticsResult.error.message}`);
       }
 
       if (shortenedLinksResult.error) {
-        console.error('Shortened links fetch error:', shortenedLinksResult.error);
         throw new Error(`Failed to fetch links data: ${shortenedLinksResult.error.message}`);
       }
 
       const analyticsData = analyticsResult.data || [];
       const shortenedLinksData = shortenedLinksResult.data || [];
-
-      console.log('Raw data counts:', {
-        analytics: analyticsData.length,
-        shortenedLinks: shortenedLinksData.length
-      });
 
       // Filter analytics data by time periods with proper date validation
       const currentPeriodData = analyticsData.filter(item => {
@@ -167,10 +152,7 @@ export const DashboardDataProvider: React.FC<DashboardDataProviderProps> = ({ ch
         return itemDate && itemDate >= sixtyDaysAgo && itemDate < thirtyDaysAgo;
       });
 
-      console.log('Filtered data counts:', {
-        currentPeriod: currentPeriodData.length,
-        previousPeriod: previousPeriodData.length
-      });
+      // Data filtered by time periods
 
       // Overview via RPC with fallback
       let shortenedLinkClicks = 0;
@@ -198,13 +180,7 @@ export const DashboardDataProvider: React.FC<DashboardDataProviderProps> = ({ ch
       // Calculate percentage change with proper validation
       const percentageChange = calculatePercentageChange(currentAnalyticsEvents, previousAnalyticsEvents);
 
-      console.log('Click calculations:', {
-        shortenedLinkClicks,
-        totalClicksFromAnalytics,
-        currentAnalyticsEvents,
-        previousAnalyticsEvents,
-        percentageChange
-      });
+      // Click calculations completed
 
       // Top countries via RPC with fallback
       let topCountries: Array<{ country: string; visits: number }> = [];
@@ -225,7 +201,7 @@ export const DashboardDataProvider: React.FC<DashboardDataProviderProps> = ({ ch
           .slice(0, 5);
       }
 
-      console.log('Top countries:', topCountries);
+      // Top countries calculated
 
       // Device split via RPC with fallback
       let deviceSplit = { mobile: 0, desktop: 0, tablet: 0 } as { mobile: number; desktop: number; tablet: number };
@@ -263,7 +239,7 @@ export const DashboardDataProvider: React.FC<DashboardDataProviderProps> = ({ ch
         deviceSplit[largestCategory] += (100 - totalPercentage);
       }
 
-      console.log('Device split:', deviceSplit);
+      // Device split calculated
 
       // Process links data with validation
       const links: Array<{ title: string; url: string; clicks: number }> = [];
@@ -280,7 +256,7 @@ export const DashboardDataProvider: React.FC<DashboardDataProviderProps> = ({ ch
       // Sort links by clicks (descending)
       links.sort((a, b) => b.clicks - a.clicks);
 
-      console.log('Processed links:', links.length);
+      // Links processed successfully
 
       // Create final data object with validation
       const dashboardData: DashboardData = {
@@ -294,11 +270,8 @@ export const DashboardDataProvider: React.FC<DashboardDataProviderProps> = ({ ch
         lastFetch: Date.now()
       };
 
-      console.log('Final dashboard data:', dashboardData);
-
       setData(dashboardData);
     } catch (err: any) {
-      console.error('Dashboard data fetch error:', err);
       setError(err.message || 'Failed to load dashboard data');
       setData(null);
     } finally {

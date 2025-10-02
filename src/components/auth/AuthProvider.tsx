@@ -38,9 +38,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log('Auth state change:', event, session?.user?.id);
-      
+    } =     supabase.auth.onAuthStateChange((event, session) => {
       setSession(session);
       
       // Only check profile if this is a new user or if we don't have profile data yet
@@ -68,7 +66,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const { data: { user }, error: userError } = await supabase.auth.getUser();
       
       if (userError || !user || user.id !== userId) {
-        console.log('User no longer exists in auth, clearing session');
         await supabase.auth.signOut();
         setSession(null);
         setHasProfile(false);
@@ -83,10 +80,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         .single();
 
       const profileExists = !!profile?.username;
-      console.log('Profile check result:', profileExists, 'for user:', userId);
       setHasProfile(profileExists);
     } catch (error) {
-      console.error('Error checking profile:', error);
       setHasProfile(false);
     }
   };
