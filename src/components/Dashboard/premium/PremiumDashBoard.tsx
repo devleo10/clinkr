@@ -134,7 +134,7 @@ const PremiumDashBoard = () => {
 
       toast.success(`Successfully exported as ${format.toUpperCase()}`);
     } catch (error) {
-      console.error('Export failed:', error);
+      // Export failed
       toast.error('Export failed. Please try again.');
     } finally {
       setIsExporting(false);

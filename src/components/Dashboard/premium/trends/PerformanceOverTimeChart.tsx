@@ -122,13 +122,13 @@ const PerformanceOverTimeChart: React.FC<PerformanceOverTimeChartProps> = ({
   const handleRefresh = () => {
     setIsRefreshing(true);
     setTimeout(() => {
-      console.log('Refreshing data...');
+      // Refreshing data
       setIsRefreshing(false);
     }, 1500);
   };
 
   const handleExport = () => {
-    console.log('Exporting chart data...');
+    // Exporting chart data
   };
 
   // Cool clean chart design with orange/amber palette
