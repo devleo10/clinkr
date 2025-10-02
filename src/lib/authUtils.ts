@@ -19,9 +19,9 @@ export const clearAuthState = async () => {
         .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
     });
     
-    console.log('Auth state cleared successfully');
+    // Auth state cleared successfully
   } catch (error) {
-    console.error('Error clearing auth state:', error);
+    // Error clearing auth state - fallback handled
   }
 };
 

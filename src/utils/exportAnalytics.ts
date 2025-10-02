@@ -64,7 +64,7 @@ export const exportAnalyticsData = async (userId: string, options: { format: 'cs
 
     throw new Error('Unsupported format');
   } catch (error) {
-    console.error('Export failed:', error);
+    // Export failed
     throw error;
   }
 };
