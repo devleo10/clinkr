@@ -40,7 +40,6 @@ const Onboarding = () => {
         const { data: { user }, error: userError } = await supabase.auth.getUser();
         
         if (userError || !user) {
-          console.log('Auth error - user not found, redirecting to signup:', userError?.message);
           // Clear any invalid session data
           await supabase.auth.signOut();
           navigate('/getstarted');
@@ -57,7 +56,7 @@ const Onboarding = () => {
         if (error) {
           // Treat RLS/Not Found as no profile yet; don't break onboarding
           if (!['PGRST116', '42501', 'PGRST301'].includes((error as any).code)) {
-            console.error('Error checking profile:', error);
+            // Profile check error handled gracefully
           }
           return;
         }
@@ -67,7 +66,6 @@ const Onboarding = () => {
           navigate('/dashboard');
         }
       } catch (error) {
-        console.error('Error checking profile:', error);
         // On error, clear session and redirect to get started
         await supabase.auth.signOut();
         navigate('/getstarted');
@@ -247,7 +245,7 @@ const Onboarding = () => {
           // Compress the image to under 300KB
           const compressionResult = await compressImageToTargetSize(formData.profile_picture, 300);
           
-          console.log(`Image compressed: ${formatFileSize(compressionResult.originalSize)} → ${formatFileSize(compressionResult.compressedSize)} (${compressionResult.compressionRatio.toFixed(1)}% reduction)`);
+          // Image compression successful
           
           const fileName = `${user.id}-${Math.random().toString(36).substring(7)}.jpg`;
           const storagePath = `${user.id}/${fileName}`;
@@ -292,13 +290,13 @@ const Onboarding = () => {
         .single();
   
       if (profileError) {
-        console.error('Profile save error:', profileError);
+        toast.error('Failed to create profile. Please try again.');
         throw new Error(`Failed to save profile: ${profileError.message}`);
       }
   
       // Navigate to dashboard after successful save
       if (profileData) {
-        console.log('Profile created successfully, navigating to dashboard');
+        // Profile created successfully, navigating to dashboard
         // Refresh the AuthProvider's profile check to ensure it knows about the new profile
         await refreshProfile();
         // Small delay to ensure state updates
@@ -309,7 +307,7 @@ const Onboarding = () => {
         throw new Error('Profile data not saved');
       }
     } catch (error: any) {
-      console.error('Submission failed:', error);
+      toast.error('Failed to complete onboarding. Please try again.');
       toast.error(`Error: ${error.message}`);
     } finally {
       setIsLoading(false);
