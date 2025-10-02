@@ -57,7 +57,7 @@ const Navbar = () => {
       await supabase.auth.signOut();
       navigate('/homepage');
     } catch (error) {
-      console.error('Logout error:', error);
+      // Logout failed - handle gracefully
     }
   };
 
@@ -78,7 +78,7 @@ const Navbar = () => {
       
       // If Edge Function fails, fallback to client-side cleanup
       if (!result.success) {
-        console.warn('Edge Function cleanup failed, falling back to client-side cleanup:', result.message);
+        // Edge Function cleanup failed, falling back to client-side cleanup
         result = await cleanupUserDataFallback(user.id);
       }
       
@@ -87,12 +87,12 @@ const Navbar = () => {
         // Navigate to homepage
         navigate('/homepage');
       } else {
-        console.error('Account deletion failed:', result.errors);
+        // Account deletion failed
         toast.error(`Account deletion failed: ${result.message}. Please contact support if you continue to experience issues.`);
       }
       
     } catch (error: any) {
-      console.error('Error deleting account:', error);
+      // Account deletion error
       toast.error('Failed to delete account: ' + error.message);
     }
   };
@@ -116,7 +116,7 @@ const Navbar = () => {
       // Refresh the page to update the dashboard
       window.location.reload();
     } catch (error) {
-      console.error('Clear links error:', error);
+      // Clear links error
       toast.error('Failed to delete links. Please try again.');
     }
   };

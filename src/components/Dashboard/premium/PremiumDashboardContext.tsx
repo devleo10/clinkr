@@ -173,7 +173,6 @@ export const PremiumDashboardProvider: React.FC<PremiumDashboardProviderProps> =
       // Get current user with proper error handling
       const { data: { user }, error: userError } = await supabase.auth.getUser();
       if (userError) {
-        console.error('User authentication error:', userError);
         throw new Error('Authentication failed. Please log in again.');
       }
       if (!user) {
@@ -193,9 +192,6 @@ export const PremiumDashboardProvider: React.FC<PremiumDashboardProviderProps> =
       }
       
       const startDateStr = startDate.toISOString();
-
-      console.log('Premium Dashboard - Fetching data for user:', user.id);
-      console.log('Time frame:', timeFrame, 'Start date:', startDateStr);
 
       // Batch fetch: minimal rows + RPC aggregates (DB-side)
       const [analyticsResult, profileViewsResult, shortenedLinksResult, conversionsResult, rpcOverview, rpcDevices, rpcBrowsers, rpcTrends, rpcCountryStats, rpcHeatmap, rpcGeoPoints] = await Promise.all([
@@ -234,21 +230,17 @@ export const PremiumDashboardProvider: React.FC<PremiumDashboardProviderProps> =
       ]);
 
       if (analyticsResult.error) {
-        console.error('Analytics fetch error:', analyticsResult.error);
         throw new Error(`Failed to fetch analytics data: ${analyticsResult.error.message}`);
       }
 
       if (profileViewsResult.error) {
-        console.error('Profile views fetch error:', profileViewsResult.error);
         throw new Error(`Failed to fetch profile views data: ${profileViewsResult.error.message}`);
       }
 
       if (shortenedLinksResult.error) {
-        console.error('Shortened links fetch error:', shortenedLinksResult.error);
         throw new Error(`Failed to fetch links data: ${shortenedLinksResult.error.message}`);
       }
       if (conversionsResult.error) {
-        console.error('Conversions fetch error:', conversionsResult.error);
         throw new Error(`Failed to fetch conversion events: ${conversionsResult.error.message}`);
       }
 
@@ -257,23 +249,9 @@ export const PremiumDashboardProvider: React.FC<PremiumDashboardProviderProps> =
       const shortenedLinksData = shortenedLinksResult.data || [];
       const conversionEvents = conversionsResult.data || [];
 
-      console.log('Premium Dashboard - Raw data counts:', {
-        analytics: analyticsData.length,
-        profileViews: profileViewsData.length,
-        shortenedLinks: shortenedLinksData.length,
-        conversions: conversionEvents.length
-      });
-
       // Debug unique visitors calculation
       const visitorIdentifiers = analyticsData.map(item => item.hashed_ip || `anonymous_${item.id}`);
       const uniqueVisitorSet = new Set(visitorIdentifiers.filter(id => id && id.trim() !== ''));
-      
-      console.log('Unique visitors debug:', {
-        totalAnalytics: analyticsData.length,
-        visitorIdentifiers: visitorIdentifiers.slice(0, 5), // Show first 5
-        uniqueCount: uniqueVisitorSet.size,
-        hashedIpCount: analyticsData.filter(item => item.hashed_ip).length
-      });
 
       // Calculate previous period for comparison - FIXED LOGIC
       const periodDuration = now.getTime() - startDate.getTime();
@@ -515,11 +493,8 @@ export const PremiumDashboardProvider: React.FC<PremiumDashboardProviderProps> =
         lastFetch: Date.now()
       };
 
-      console.log('Premium Dashboard - Final data:', premiumDashboardData);
-
       setData(premiumDashboardData);
     } catch (err: any) {
-      console.error('Premium Dashboard data fetch error:', err);
       setError(err.message || 'Failed to load premium dashboard data');
       setData(null);
     } finally {
