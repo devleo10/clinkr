@@ -11,7 +11,7 @@ export const extractFilePath = (profilePictureUrl: string): string => {
     // Remove the leading path segments to get just the filename
     return url.pathname.replace(/^\/storage\/v1\/object\/public\/user-data\//, '');
   } catch (error) {
-    console.error('Error extracting file path from URL:', error);
+    // Error extracting file path from URL
     return '';
   }
 };
@@ -27,25 +27,25 @@ export const deleteProfilePicture = async (profilePictureUrl: string): Promise<b
   try {
     const filePath = extractFilePath(profilePictureUrl);
     if (!filePath) {
-      console.warn('Could not extract file path from profile picture URL');
+      // Could not extract file path from profile picture URL
       return false;
     }
 
-    console.log('Deleting old profile picture:', filePath);
+    // Deleting old profile picture
     
     const { error } = await supabase.storage
       .from('user-data')
       .remove([filePath]);
 
     if (error) {
-      console.error('Error deleting profile picture:', error);
+      // Error deleting profile picture
       return false;
     }
 
-    console.log('Successfully deleted old profile picture');
+    // Successfully deleted old profile picture
     return true;
   } catch (error) {
-    console.error('Error in deleteProfilePicture:', error);
+    // Error in deleteProfilePicture
     return false;
   }
 };
@@ -67,7 +67,7 @@ export const updateProfilePicture = async (
     if (oldProfilePictureUrl) {
       const deleteSuccess = await deleteProfilePicture(oldProfilePictureUrl);
       if (!deleteSuccess) {
-        console.warn('Failed to delete old profile picture, but continuing with update');
+        // Failed to delete old profile picture, but continuing with update
       }
     }
 
@@ -81,14 +81,14 @@ export const updateProfilePicture = async (
       .eq('id', userId);
 
     if (updateError) {
-      console.error('Error updating profile picture:', updateError);
+      // Error updating profile picture
       return { success: false, error: updateError.message };
     }
 
-    console.log('Successfully updated profile picture');
+    // Successfully updated profile picture
     return { success: true };
   } catch (error: any) {
-    console.error('Error in updateProfilePicture:', error);
+    // Error in updateProfilePicture
     return { success: false, error: error.message };
   }
 };
@@ -108,7 +108,7 @@ export const removeProfilePicture = async (
     if (oldProfilePictureUrl) {
       const deleteSuccess = await deleteProfilePicture(oldProfilePictureUrl);
       if (!deleteSuccess) {
-        console.warn('Failed to delete old profile picture, but continuing with removal');
+        // Failed to delete old profile picture, but continuing with removal
       }
     }
 
@@ -122,14 +122,14 @@ export const removeProfilePicture = async (
       .eq('id', userId);
 
     if (updateError) {
-      console.error('Error removing profile picture:', updateError);
+      // Error removing profile picture
       return { success: false, error: updateError.message };
     }
 
-    console.log('Successfully removed profile picture');
+    // Successfully removed profile picture
     return { success: true };
   } catch (error: any) {
-    console.error('Error in removeProfilePicture:', error);
+    // Error in removeProfilePicture
     return { success: false, error: error.message };
   }
 };

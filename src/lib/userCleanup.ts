@@ -44,7 +44,7 @@ export const cleanupUserData = async (userId: string): Promise<CleanupResult> =>
     });
 
     if (error) {
-      console.error('Edge Function error:', error);
+      // Edge Function error
       return {
         success: false,
         message: 'Failed to call cleanup service',
@@ -75,14 +75,14 @@ export const cleanupUserData = async (userId: string): Promise<CleanupResult> =>
           document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
         });
         
-        console.log('All auth data cleared, redirecting to homepage');
+        // All auth data cleared, redirecting to homepage
         
         // Force a complete page reload to clear all state
         setTimeout(() => {
           window.location.href = '/homepage';
         }, 100);
       } catch (signOutError) {
-        console.error('Error signing out:', signOutError);
+        // Error signing out
         // Still redirect even if signout fails
         window.location.href = '/homepage';
       }
@@ -91,7 +91,7 @@ export const cleanupUserData = async (userId: string): Promise<CleanupResult> =>
     return data as CleanupResult;
 
   } catch (error: any) {
-    console.error('Error during user cleanup:', error);
+    // Error during user cleanup
     return {
       success: false,
       message: 'Failed to clean up user data',
@@ -200,14 +200,14 @@ export const cleanupUserDataFallback = async (userId: string): Promise<CleanupRe
         document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
       });
       
-      console.log('All auth data cleared, redirecting to homepage');
+      // All auth data cleared, redirecting to homepage
       
       // Force a complete page reload to clear all state
       setTimeout(() => {
         window.location.href = '/homepage';
       }, 100);
     } catch (signOutError) {
-      console.error('Error signing out:', signOutError);
+      // Error signing out
       // Still redirect even if signout fails
       window.location.href = '/homepage';
     }
@@ -221,7 +221,7 @@ export const cleanupUserDataFallback = async (userId: string): Promise<CleanupRe
     };
 
   } catch (error: any) {
-    console.error('Error during user cleanup:', error);
+    // Error during user cleanup
     return {
       success: false,
       message: 'Failed to clean up user data',
@@ -317,7 +317,7 @@ export const deleteUserCompletely = async (userId: string): Promise<CleanupResul
       deletedRecords
     };
   } catch (error: any) {
-    console.error('Error deleting user:', error);
+    // Error deleting user
     return {
       success: false,
       message: 'Failed to delete user',
@@ -337,7 +337,7 @@ export const findOrphanedStorageFiles = async (): Promise<string[]> => {
       });
 
     if (error) {
-      console.error('Error listing storage files:', error);
+      // Error listing storage files
       return [];
     }
 
@@ -372,7 +372,7 @@ export const findOrphanedStorageFiles = async (): Promise<string[]> => {
 
     return orphanedFiles;
   } catch (error) {
-    console.error('Error finding orphaned storage files:', error);
+    // Error finding orphaned storage files
     return [];
   }
 };
@@ -418,7 +418,7 @@ export const cleanupOrphanedStorageFiles = async (): Promise<CleanupResult> => {
       deletedFiles: deletedFiles.length > 0 ? deletedFiles : undefined
     };
   } catch (error: any) {
-    console.error('Error cleaning up orphaned storage files:', error);
+    // Error cleaning up orphaned storage files
     return {
       success: false,
       message: 'Failed to clean up orphaned storage files',
@@ -487,7 +487,7 @@ export const validateUserCleanup = async (userId: string): Promise<{
       hasProfilePicture: !!profileResult.data?.profile_picture
     };
   } catch (error) {
-    console.error('Error validating user cleanup:', error);
+    // Error validating user cleanup
     return {
       hasProfile: false,
       hasShortenedLinks: false,
