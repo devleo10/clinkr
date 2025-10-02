@@ -86,7 +86,7 @@ const CropModal = ({
       // Compress the cropped image to under 300KB
       const compressionResult = await compressImageToTargetSize(croppedBlob as File, 300);
       
-      console.log(`Image compressed: ${formatFileSize(compressionResult.originalSize)} → ${formatFileSize(compressionResult.compressedSize)} (${compressionResult.compressionRatio.toFixed(1)}% reduction)`);
+      // Image compression successful
       
       const userId = await getCurrentUserId();
       if (!userId) throw new Error('No user found');

@@ -20,7 +20,7 @@ export function usePublicProfile(identifier: string) {
     const fetchProfile = async () => {
       try {
         setLoading(true);
-        console.log('usePublicProfile: Fetching profile for identifier:', identifier);
+        // Fetching profile for identifier
         
         // Get the profile by username (identifier is the username)
         const { data: profileData, error: profileError } = await supabase
@@ -30,11 +30,11 @@ export function usePublicProfile(identifier: string) {
           .single();
         
         if (profileError) {
-          console.error('usePublicProfile: Profile fetch error:', profileError);
+          // Profile fetch error
           throw profileError;
         }
         
-        console.log('usePublicProfile: Profile found:', profileData);
+        // Profile found
         
         const profile: UserProfile = {
           id: profileData.id,
@@ -47,7 +47,7 @@ export function usePublicProfile(identifier: string) {
         setProfile(profile);
         
         // Get the shortened links for this user
-        console.log('usePublicProfile: Fetching links for user_id:', profileData.id);
+        // Fetching links for user
         const { data: links, error: linksError } = await supabase
           .from('shortened_links')
           .select('*')
@@ -56,15 +56,15 @@ export function usePublicProfile(identifier: string) {
           .order('created_at', { ascending: false });
         
         if (linksError) {
-          console.error('usePublicProfile: Links fetch error:', linksError);
+          // Links fetch error
           setShortLinks([]);
         } else {
-          console.log('usePublicProfile: Links found:', links);
+          // Links found
           setShortLinks(links || []);
         }
         
       } catch (err: any) {
-        console.error('usePublicProfile: Error:', err);
+        // Profile hook error
         setError(err?.message || 'Failed to load profile');
         setProfile(null);
         setShortLinks([]);
