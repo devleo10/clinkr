@@ -24,7 +24,6 @@ const ShortenedLinkRedirect = ({ shortLink }: ShortenedLinkRedirectProps) => {
     const trackClick = async () => {
       // Prevent double tracking (React StrictMode safe)
       if (hasTrackedRef.current) {
-        console.log('Click already tracked, skipping...');
         return;
       }
       
@@ -33,15 +32,9 @@ const ShortenedLinkRedirect = ({ shortLink }: ShortenedLinkRedirectProps) => {
       trackingIdRef.current = trackingId;
       hasTrackedRef.current = true;
       
-      console.log('Starting click tracking with ID:', trackingId);
-      
       try {
         const deviceType = detectDeviceType();
         const browser = detectBrowser();
-        
-        console.log('Tracking click for short code:', shortLink.short_code);
-        console.log('Detected device type:', deviceType);
-        console.log('Detected browser:', browser);
 
         // Get user's IP address and hash it for unique visitor tracking
         let hashedIp: string | null = null;
@@ -54,10 +47,9 @@ const ShortenedLinkRedirect = ({ shortLink }: ShortenedLinkRedirectProps) => {
           // Hash the IP address for privacy (simple hash for demo)
           if (userIp) {
             hashedIp = btoa(userIp).replace(/[^a-zA-Z0-9]/g, '').substring(0, 16);
-            console.log('IP hashed for unique visitor tracking:', hashedIp);
           }
         } catch (ipError) {
-          console.log('Could not get IP address:', ipError);
+          // IP address retrieval failed - use fallback identifier
           // Use a fallback identifier based on user agent + timestamp
           hashedIp = btoa(navigator.userAgent + Date.now().toString()).replace(/[^a-zA-Z0-9]/g, '').substring(0, 16);
         }
@@ -102,19 +94,18 @@ const ShortenedLinkRedirect = ({ shortLink }: ShortenedLinkRedirectProps) => {
                 }
                 
                 if (lat && lng && countryCode) {
-                  console.log('Geolocation data from', apiUrl, ':', { lat, lng, countryCode });
                   break; // Success, exit loop
                 }
               }
             } catch (apiError) {
-              console.log('API failed:', apiUrl, apiError);
+              // API failed, try next one
               continue; // Try next API
             }
           }
           
           // If all APIs failed, try browser geolocation as last resort
           if (!lat || !lng) {
-            console.log('Trying browser geolocation...');
+            // Try browser geolocation as fallback
             const position = await new Promise<GeolocationPosition>((resolve, reject) => {
               navigator.geolocation.getCurrentPosition(resolve, reject, {
                 timeout: 5000,
@@ -132,32 +123,27 @@ const ShortenedLinkRedirect = ({ shortLink }: ShortenedLinkRedirectProps) => {
               );
               const reverseData = await reverseResp.json();
               countryCode = reverseData.countryCode;
-              console.log('Browser geolocation + reverse geocoding:', { lat, lng, countryCode });
+              // Reverse geocoding successful
             } catch (reverseError) {
-              console.log('Reverse geocoding failed:', reverseError);
+              // Reverse geocoding failed
             }
           }
           
         } catch (error) {
-          console.log('All geolocation methods failed:', error);
           // Set default coordinates for India (Kolkata area) as fallback
           lat = 22.5726;
           lng = 88.3639;
           countryCode = 'IN';
-          console.log('Using fallback coordinates for India:', { lat, lng, countryCode });
         }
 
         // Update click count with atomic increment
-        console.log('Updating click count for link:', shortLink.id, 'from', shortLink.clicks, 'to', shortLink.clicks + 1);
         const { error: updateError } = await supabase
           .from('shortened_links')
           .update({ clicks: shortLink.clicks + 1 })
           .eq('id', shortLink.id);
-          
+
         if (updateError) {
-          console.error('Click count update error:', updateError);
-        } else {
-          console.log('Click count updated successfully');
+          // Click count update failed - continue anyway
         }
 
         // Track analytics
@@ -176,23 +162,18 @@ const ShortenedLinkRedirect = ({ shortLink }: ShortenedLinkRedirectProps) => {
           tracking_id: trackingIdRef.current, // Add tracking ID for debugging
         };
         
-        console.log('Inserting analytics data:', analyticsData);
-        
         const { error: analyticsError } = await supabase
           .from('link_analytics')
           .insert(analyticsData)
           .select();
           
         if (analyticsError) {
-          console.error('Analytics insertion error:', analyticsError);
-        } else {
-          console.log('Analytics data inserted successfully with tracking ID:', trackingIdRef.current);
+          // Analytics insertion failed - non-critical error
         }
 
         // Redirect to original URL
         window.location.href = shortLink.original_url;
       } catch (error) {
-        console.error('Error tracking shortened link click:', error);
         // Still redirect even if tracking fails
         window.location.href = shortLink.original_url;
       }

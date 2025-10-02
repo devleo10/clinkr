@@ -16,20 +16,12 @@ const PublicProfile = () => {
   const { simplifiedAnimations } = usePerformanceOptimization();
   const [showMenu, setShowMenu] = useState(false);
 
-  console.log('PublicProfile component mounted, identifier:', identifier);
-
   // Track profile view for analytics
   useEffect(() => {
     const trackProfileView = async () => {
-      console.log('Profile view tracking useEffect triggered');
-      console.log('Profile data:', { id: profile?.id, username: profile?.username });
-      
       if (!profile?.id) {
-        console.log('No profile ID available, skipping tracking');
         return; // Wait for profile to load
       }
-      
-      console.log('Starting profile view tracking...');
       try {
         // Get user's IP address and hash it for unique visitor tracking
         let viewerHash: string | null = null;
@@ -42,10 +34,9 @@ const PublicProfile = () => {
           // Hash the IP address for privacy (same method as shortened links)
           if (userIp) {
             viewerHash = btoa(userIp).replace(/[^a-zA-Z0-9]/g, '').substring(0, 16);
-            console.log('Profile view - IP hashed for unique visitor tracking:', viewerHash);
           }
         } catch (ipError) {
-          console.log('Could not get IP address for profile view:', ipError);
+          // IP address retrieval failed - continue without tracking
           // Use a fallback identifier based on user agent + timestamp
           viewerHash = btoa(navigator.userAgent + Date.now().toString()).replace(/[^a-zA-Z0-9]/g, '').substring(0, 16);
         }
@@ -66,7 +57,7 @@ const PublicProfile = () => {
           lat = geoData.latitude || null;
           lng = geoData.longitude || null;
         } catch (geoError) {
-          console.log('Could not get geolocation for profile view:', geoError);
+          // Continue without geolocation data
         }
 
         // Track profile view in link_analytics (consolidated tracking)
@@ -85,27 +76,16 @@ const PublicProfile = () => {
           created_at: new Date().toISOString(),
         };
         
-        console.log('Inserting profile view analytics:', profileViewData);
-        console.log('Profile data available:', { id: profile.id, username: profile.username });
-        
         const { data: insertedData, error: analyticsError } = await supabase
           .from('link_analytics')
           .insert(profileViewData)
           .select();
           
         if (analyticsError) {
-          console.error('Profile view analytics insertion error:', analyticsError);
-          console.error('Error details:', {
-            message: analyticsError.message,
-            details: analyticsError.details,
-            hint: analyticsError.hint,
-            code: analyticsError.code
-          });
-        } else {
-          console.log('Profile view analytics inserted successfully:', insertedData);
+          // Analytics failure shouldn't break user experience
         }
       } catch (error) {
-        console.error('Error tracking profile view:', error);
+        // Silent fail for analytics tracking
       }
     };
 
@@ -117,7 +97,7 @@ const PublicProfile = () => {
       // Navigate to the shortened link - this will trigger tracking in ShortenedLinkRedirect
       window.open(`/${shortCode}`, '_blank');
     } catch (error) {
-      console.error('Error opening link:', error);
+      // Link opening failed - handle gracefully
       // Don't call window.open again in catch block to avoid double tracking
     }
   };
@@ -153,7 +133,7 @@ const PublicProfile = () => {
         toast.success('Profile URL copied to clipboard!');
       }
     } catch (err) {
-      console.error('Failed to share profile:', err);
+      // Profile sharing failed - handle gracefully
     }
   };
 
