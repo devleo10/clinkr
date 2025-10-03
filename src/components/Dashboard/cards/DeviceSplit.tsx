@@ -1,10 +1,15 @@
+import React, { useMemo } from 'react';
 import { FaLaptop, FaMobileAlt } from 'react-icons/fa';
 import { useDashboardData } from '../DashboardDataContext';
 
 const DeviceSplit = () => {
   const { data, isLoading, error } = useDashboardData();
 
-  const deviceData = data?.deviceSplit || { mobile: 0, desktop: 0, tablet: 0 };
+  // Memoize device data to prevent object recreation
+  const deviceData = useMemo(() => 
+    data?.deviceSplit || { mobile: 0, desktop: 0, tablet: 0 },
+    [data?.deviceSplit]
+  );
 
   return (
     <div 
@@ -60,4 +65,4 @@ const DeviceSplit = () => {
   );
 };
 
-export default DeviceSplit;
+export default React.memo(DeviceSplit);

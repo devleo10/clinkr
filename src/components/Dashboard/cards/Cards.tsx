@@ -1,3 +1,4 @@
+import React from 'react';
 import TotalClicks from './TotalClicks';
 import ProfileViews from './ProfileViews';
 import TopCountry from './TopCountry';
@@ -29,4 +30,4 @@ const Cards = () => {
   );
 };
 
-export default Cards;
+export default React.memo(Cards);

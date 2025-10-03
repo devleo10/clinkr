@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react';
 import { FaGlobeAsia } from "react-icons/fa";
 import { useDashboardData } from '../DashboardDataContext';
 import { filterAndSortCountries } from '../../../lib/countryUtils';
@@ -5,16 +6,27 @@ import { filterAndSortCountries } from '../../../lib/countryUtils';
 const TopCountry = () => {
   const { data, isLoading } = useDashboardData();
 
-  // Process and validate country data
-  const processedCountries = data?.topCountries ? filterAndSortCountries(data.topCountries) : [];
+  // Memoize expensive country processing
+  const processedCountries = useMemo(() => 
+    data?.topCountries ? filterAndSortCountries(data.topCountries) : [],
+    [data?.topCountries]
+  );
   
-  // Get the best country to display (first valid country or fallback)
-  const displayCountry = processedCountries.length > 0 
-    ? processedCountries[0] 
-    : { country: 'Unknown', countryName: 'No Data', visits: 0, isValid: false, flag: '' };
+  // Memoize display country calculation
+  const displayCountry = useMemo(() => 
+    processedCountries.length > 0 
+      ? processedCountries[0] 
+      : { country: 'Unknown', countryName: 'No Data', visits: 0, isValid: false, flag: '' },
+    [processedCountries]
+  );
   
-  const totalClicks = data?.totalClicks || 0;
-  const percentage = totalClicks > 0 ? Math.round((displayCountry.visits / totalClicks) * 100 * 10) / 10 : 0;
+  // Memoize percentage calculation
+  const percentage = useMemo(() => {
+    const totalClicks = data?.totalClicks || 0;
+    return totalClicks > 0 
+      ? Math.round((displayCountry.visits / totalClicks) * 100 * 10) / 10 
+      : 0;
+  }, [data?.totalClicks, displayCountry.visits]);
 
   return (
     <div 
@@ -65,4 +77,4 @@ const TopCountry = () => {
   );
 };
 
-export default TopCountry;
+export default React.memo(TopCountry);

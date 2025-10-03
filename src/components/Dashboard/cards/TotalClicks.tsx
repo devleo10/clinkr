@@ -1,7 +1,27 @@
+import React, { useMemo } from 'react';
 import { useDashboardData } from '../DashboardDataContext';
 
 const TotalClicks = () => {
   const { data, isLoading, error } = useDashboardData();
+
+  // Memoize formatted values to prevent recalculation
+  const formattedClicks = useMemo(() => 
+    (data?.totalClicks || 0).toLocaleString(), 
+    [data?.totalClicks]
+  );
+  
+  const formattedViews = useMemo(() => 
+    (data?.profileViews || 0).toLocaleString(), 
+    [data?.profileViews]
+  );
+  
+  const formattedShortClicks = useMemo(() => 
+    (data?.shortenedLinkClicks || 0).toLocaleString(), 
+    [data?.shortenedLinkClicks]
+  );
+  
+  const percentageChange = data?.percentageChange || 0;
+  const isPositive = percentageChange >= 0;
 
   return (
     <div 
@@ -16,8 +36,8 @@ const TotalClicks = () => {
       
       <div className="flex justify-between relative z-10">
         <h1 className="font-bold text-black">Total Clicks</h1>
-        <p className={`${(data?.percentageChange || 0) >= 0 ? 'text-green-500' : 'text-red-500'} font-semibold px-2 py-1 rounded-md ${(data?.percentageChange || 0) >= 0 ? 'bg-green-50' : 'bg-red-50'}`}>
-          {(data?.percentageChange || 0) >= 0 ? '+' : ''}{data?.percentageChange || 0}%
+        <p className={`${isPositive ? 'text-green-500' : 'text-red-500'} font-semibold px-2 py-1 rounded-md ${isPositive ? 'bg-green-50' : 'bg-red-50'}`}>
+          {isPositive ? '+' : ''}{percentageChange}%
         </p>
       </div>
       <div className="mt-8 flex relative z-10">
@@ -27,7 +47,7 @@ const TotalClicks = () => {
           ) : error ? (
             <span className="text-red-500 text-xl">Error</span>
           ) : (
-            (data?.totalClicks || 0).toLocaleString()
+            formattedClicks
           )}
         </h1>
       </div>
@@ -37,11 +57,11 @@ const TotalClicks = () => {
             <div className="mt-2 flex flex-wrap gap-3 text-xs text-gray-600">
               <span className="flex items-center gap-1">
                 <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                Views: {(data.profileViews || 0).toLocaleString()}
+                Views: {formattedViews}
               </span>
               <span className="flex items-center gap-1">
                 <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                Short: {(data.shortenedLinkClicks || 0).toLocaleString()}
+                Short: {formattedShortClicks}
               </span>
             </div>
         )}
@@ -50,4 +70,4 @@ const TotalClicks = () => {
   );
 };
 
-export default TotalClicks;
+export default React.memo(TotalClicks);

@@ -1,4 +1,4 @@
-
+import React from 'react';
 import { motion } from 'framer-motion';
 
 const Features = () => {
@@ -258,4 +258,4 @@ const Features = () => {
   )
 }
 
-export default Features
+export default React.memo(Features);

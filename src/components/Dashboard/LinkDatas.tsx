@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import LoadingScreen from '../ui/loadingScreen';
 import { useDashboardData } from './DashboardDataContext';
 
@@ -6,53 +6,63 @@ interface LinkDatasProps {
   searchQuery: string;
 }
 
+// 🚀 OPTIMIZED: Memoize LinkWithIcon component to prevent re-renders
+const LinkWithIcon = React.memo(({ url }: { url: string }) => {
+  const domain = useMemo(() => {
+    try {
+      return new URL(url).hostname;
+    } catch {
+      return url;
+    }
+  }, [url]);
+
+  // 🚀 OPTIMIZED: Memoize trimmed URL calculation
+  const getTrimmedUrl = useMemo(() => {
+    if (typeof window !== 'undefined') {
+      const width = window.innerWidth;
+      if (width < 640) return url.length > 28 ? url.slice(0, 25) + '...' : url;
+      if (width < 1024) return url.length > 40 ? url.slice(0, 37) + '...' : url;
+      return url.length > 60 ? url.slice(0, 57) + '...' : url;
+    }
+    return url;
+  }, [url]);
+
+  return (
+    <div className="flex items-center gap-2">
+      <img
+        src={`https://logo.clearbit.com/${domain}`}
+        onError={(e) => {
+          (e.target as HTMLImageElement).src = `https://www.google.com/s2/favicons?sz=64&domain=${domain}`;
+        }}
+        alt={`${domain} icon`}
+        className="w-6 h-6 rounded"
+      />
+      <a href={url} target="_blank" rel="noopener noreferrer"
+        className="hover:underline text-black truncate max-w-[180px] sm:max-w-[320px] lg:max-w-[480px] inline-block align-middle"
+        style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', verticalAlign: 'middle' }}
+      >
+        {getTrimmedUrl}
+      </a>
+    </div>
+  );
+});
+
+LinkWithIcon.displayName = 'LinkWithIcon';
+
 const LinkDatas: React.FC<LinkDatasProps> = ({ searchQuery }) => {
   const { data, isLoading, error } = useDashboardData();
 
-  const links = data?.links || [];
-  const filteredLinks = links.filter(link =>
-    link.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    link.url.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
-  const LinkWithIcon = ({ url }: { url: string }) => {
-    let domain = "";
-    try {
-      domain = new URL(url).hostname;
-    } catch {
-      domain = url;
-    }
-
-    // Responsive trim length
-    const getTrimmedUrl = () => {
-      if (typeof window !== 'undefined') {
-        const width = window.innerWidth;
-        if (width < 640) return url.length > 28 ? url.slice(0, 25) + '...' : url; // mobile
-        if (width < 1024) return url.length > 40 ? url.slice(0, 37) + '...' : url; // tablet
-        return url.length > 60 ? url.slice(0, 57) + '...' : url; // desktop
-      }
-      return url;
-    };
-
-    return (
-      <div className="flex items-center gap-2">
-        <img
-          src={`https://logo.clearbit.com/${domain}`}
-          onError={(e) => {
-            (e.target as HTMLImageElement).src = `https://www.google.com/s2/favicons?sz=64&domain=${domain}`;
-          }}
-          alt={`${domain} icon`}
-          className="w-6 h-6 rounded"
-        />
-        <a href={url} target="_blank" rel="noopener noreferrer"
-          className="hover:underline text-black truncate max-w-[180px] sm:max-w-[320px] lg:max-w-[480px] inline-block align-middle"
-          style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', verticalAlign: 'middle' }}
-        >
-          {getTrimmedUrl()}
-        </a>
-      </div>
+  // 🚀 OPTIMIZED: Memoize links array
+  const links = useMemo(() => data?.links || [], [data?.links]);
+  
+  // 🚀 OPTIMIZED: Memoize filtered links to prevent unnecessary filtering
+  const filteredLinks = useMemo(() => {
+    const query = searchQuery.toLowerCase();
+    return links.filter(link =>
+      link.title.toLowerCase().includes(query) ||
+      link.url.toLowerCase().includes(query)
     );
-  };
+  }, [links, searchQuery]);
 
   if (isLoading) {
     return (
@@ -150,4 +160,5 @@ const LinkDatas: React.FC<LinkDatasProps> = ({ searchQuery }) => {
   );
 };
 
-export default LinkDatas;
+// 🚀 OPTIMIZED: Wrap with React.memo to prevent unnecessary re-renders
+export default React.memo(LinkDatas);

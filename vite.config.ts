@@ -26,10 +26,6 @@ export default defineConfig({
             '@radix-ui/react-alert-dialog'
           ],
           charts: [
-            '@nivo/bar',
-            '@nivo/line', 
-            '@nivo/pie',
-            '@nivo/core',
             'recharts'
           ],
           maps: [
@@ -74,12 +70,8 @@ export default defineConfig({
       'react-router-dom',
       '@supabase/supabase-js',
       'leaflet',
-      'react-leaflet'
-    ],
-    exclude: [
-      '@nivo/bar',
-      '@nivo/line',
-      '@nivo/pie'
+      'react-leaflet',
+      'recharts'
     ]
   },
   define: {
