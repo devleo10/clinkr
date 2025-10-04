@@ -17,7 +17,9 @@ node_modules
 dist
 dist-ssr
 *.local
-
+local.md
+analytics.md
+schema.sql
 # Environment variables
 .env
 .env.*
