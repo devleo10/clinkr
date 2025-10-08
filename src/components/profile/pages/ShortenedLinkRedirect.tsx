@@ -136,40 +136,20 @@ const ShortenedLinkRedirect = ({ shortLink }: ShortenedLinkRedirectProps) => {
           countryCode = 'IN';
         }
 
-        // Update click count with atomic increment
-        const { error: updateError } = await supabase
-          .from('shortened_links')
-          .update({ clicks: shortLink.clicks + 1 })
-          .eq('id', shortLink.id);
-
-        if (updateError) {
-          // Click count update failed - continue anyway
-        }
-
-        // Track analytics
-        const analyticsData = {
-          user_id: shortLink.user_id,
-          link_url: shortLink.original_url,
-          short_code: shortLink.short_code,
+        // Server-side: atomically record click + analytics via RPC (works for anon)
+        const meta = {
           device_type: deviceType,
           browser,
           country_code: countryCode,
-          event_type: 'click',
-          link_type: 'shortened_link',
           lat,
           lng,
           hashed_ip: hashedIp,
-          tracking_id: trackingIdRef.current, // Add tracking ID for debugging
+          tracking_id: trackingIdRef.current,
         };
-        
-        const { error: analyticsError } = await supabase
-          .from('link_analytics')
-          .insert(analyticsData)
-          .select();
-          
-        if (analyticsError) {
-          // Analytics insertion failed - non-critical error
-        }
+        await supabase.rpc('record_short_link_click', {
+          p_short_code: shortLink.short_code,
+          p_meta: meta,
+        });
 
         // Redirect to original URL
         window.location.href = shortLink.original_url;

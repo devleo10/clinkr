@@ -121,10 +121,15 @@ export const DashboardDataProvider: React.FC<DashboardDataProviderProps> = ({ ch
         }))
         .slice(0, 50);
 
+      // Compute totals with fallback to per-link clicks if analytics are missing
+      const totalClicksFromAnalytics = validateNumber(overview.total_clicks);
+      const shortenedClicksFromAnalytics = validateNumber(overview.shortened_link_clicks);
+      const totalClicksFallback = linksData.reduce((sum: number, l: any) => sum + validateNumber(l.clicks), 0);
+
       // Create final data object
       const dashboardData: DashboardData = {
-        totalClicks: validateNumber(overview.total_clicks),
-        shortenedLinkClicks: validateNumber(overview.shortened_link_clicks),
+        totalClicks: totalClicksFromAnalytics > 0 ? totalClicksFromAnalytics : totalClicksFallback,
+        shortenedLinkClicks: shortenedClicksFromAnalytics > 0 ? shortenedClicksFromAnalytics : totalClicksFallback,
         profileViews: validateNumber(overview.profile_views),
         percentageChange: 0, // TODO: Add historical comparison
         topCountries,
@@ -145,7 +150,7 @@ export const DashboardDataProvider: React.FC<DashboardDataProviderProps> = ({ ch
   useEffect(() => {
     fetchAllData();
   }, [fetchAllData]);
-
+ 
   const refetch = useCallback(async () => {
     await fetchAllData();
   }, [fetchAllData]);
